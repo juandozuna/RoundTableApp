@@ -392,7 +392,10 @@ viewer.
 - Before adding a type, search for an existing abstraction that can carry the behavior.
 - If `graphify-out/` exists, use `graphify query|path|explain` before raw searching, read exact
   source to verify, and run `graphify update .` after changes.
-- This repository has no ticket system: work on feature branches, with no ticket ids in branch names or commit messages.
+- Delivery workflow: this repository has no ticket system and does not use pull requests. Commit
+  small, coherent changes with clear messages and push them directly to `main`. Short-lived
+  local branches or worktrees are fine for parallel work, but merge them into `main` locally and
+  push; do not open PRs.
 
 ## 20. Verification and definition of done
 
