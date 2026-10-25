@@ -1,0 +1,78 @@
+# Gold Roundtables — PowerSync Sync Streams (edition 3; PowerSync Service ≥ 1.20, Flutter SDK
+# ≥ 1.16 — ADR 0004). Part of the security perimeter:
+# each device downloads only what its user may see; the scopes mirror the RLS policies in
+# supabase/migrations/20261025100400_rls.sql. Uploads never use these rules — they go through
+# the sync-upload Edge Function (ADR 0008).
+#
+# All streams auto-subscribe, so the client needs no subscription code.
+#
+# auth.user_id() is the `sub` claim of the Supabase JWT (auth.users.id). People and roster
+# rows carry that id (people.auth_user_id, table_members.auth_user_id) so every scope is a single
+# indexed subquery.
+#
+# Window (ADR 0005, 7 days offline): session-domain rows leave the buckets when archived_at is
+# set, 8 weeks after their session closed (app.archive_old_session_data), except the latest
+# closed session of each table (its commitments feed the next follow-up).
+#
+# A table's columns are selected identically in every stream that contains it, so a row that
+# is in several streams always has the same shape on the device.
+#
+# Online-only data (ADR 0003) is intentionally absent: invites, audit log, KPIs, other
+# organizations' data, people's contact data beyond the user's own rows.
+
+config:
+  edition: 3
+
+streams:
+  # Program reference data, identical for everyone.
+  curriculum:
+    auto_subscribe: true
+    queries:
+      - SELECT id, number, name, description, value_count, status FROM curriculum_modules
+      - SELECT id, module_id, number_in_module, sequence, name, description, booklet_reference, status FROM curriculum_values
+      - SELECT id, value_id, question_code, question_text, sort_order, response_type, status FROM value_questions
+
+  # The signed-in user's own person rows (one per organization) and memberships (history too).
+  my_identity:
+    auto_subscribe: true
+    queries:
+      - SELECT id, organization_id, first_name, last_name, position, email, phone, status FROM people WHERE auth_user_id = auth.user_id()
+      - SELECT id, organization_id, round_table_id, person_id, role, joined_at, left_at, left_reason, status, first_name, last_name FROM table_members WHERE auth_user_id = auth.user_id()
+
+  # The user's own answers in every table (members see only their own rows, PC-10), including
+  # last week's commitment for the follow-up, and their own attendance and role assignments.
+  my_rows:
+    auto_subscribe: true
+    with:
+      me: SELECT id FROM people WHERE auth_user_id = auth.user_id() AND status != 'inactive'
+    queries:
+      - SELECT id, person_id, role, organization_id, location_id, status FROM role_assignments WHERE person_id IN me
+      - SELECT * FROM member_assessments WHERE person_id IN me AND archived_at IS NULL
+      - SELECT * FROM member_answers WHERE person_id IN me AND archived_at IS NULL
+      - SELECT * FROM member_commitments WHERE person_id IN me AND archived_at IS NULL
+      - SELECT * FROM session_attendance WHERE person_id IN me AND archived_at IS NULL
+
+  # Shared table context for every active participant (facilitator or member): the table,
+  # its roster (names only), sessions, attendance, organization and locations.
+  table_shared:
+    auto_subscribe: true
+    with:
+      my_tables: SELECT round_table_id FROM table_members WHERE auth_user_id = auth.user_id() AND status = 'active'
+      my_orgs: SELECT organization_id FROM table_members WHERE auth_user_id = auth.user_id() AND status = 'active'
+    queries:
+      - SELECT id, organization_id, location_id, name, code, weekday, start_time, timezone, duration_minutes, status, current_value_id FROM round_tables WHERE id IN my_tables
+      - SELECT id, organization_id, round_table_id, person_id, role, joined_at, left_at, left_reason, status, first_name, last_name FROM table_members WHERE round_table_id IN my_tables
+      - SELECT * FROM sessions WHERE round_table_id IN my_tables AND archived_at IS NULL
+      - SELECT * FROM session_attendance WHERE round_table_id IN my_tables AND archived_at IS NULL
+      - SELECT id, name, kind, country_code, country_name, region, status FROM organizations WHERE id IN my_orgs
+      - SELECT id, organization_id, name, city, region, status FROM locations WHERE organization_id IN my_orgs
+
+  # Facilitator of a table: every participant's answers for the live board and review (PC-10).
+  table_facilitator:
+    auto_subscribe: true
+    with:
+      led_tables: SELECT round_table_id FROM table_members WHERE auth_user_id = auth.user_id() AND role = 'facilitator' AND status = 'active'
+    queries:
+      - SELECT * FROM member_assessments WHERE round_table_id IN led_tables AND archived_at IS NULL
+      - SELECT * FROM member_answers WHERE round_table_id IN led_tables AND archived_at IS NULL
+      - SELECT * FROM member_commitments WHERE round_table_id IN led_tables AND archived_at IS NULL

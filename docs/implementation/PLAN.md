@@ -31,7 +31,8 @@ Requirements: the RoundTables Obsidian vault (notes 00–07) and the ADRs. Spani
 - Supabase local via Supabase CLI (`supabase start`): API `http://127.0.0.1:54321`, DB
   `postgresql://postgres:postgres@127.0.0.1:54322/postgres`, Studio `54323`.
 - PowerSync service (self-hosted, Docker): `http://127.0.0.1:8080`; reads the Supabase Postgres via
-  logical replication (publication `powersync`); validates the Supabase JWT (local HS256 secret).
+  logical replication (publication `powersync`); validates the Supabase JWT through the local Auth
+  JWKS (`/auth/v1/.well-known/jwks.json`, ES256 — user tokens are not HS256-signed).
 - Flutter web build served on `http://127.0.0.1:3000`.
 - Config reaches the Flutter app only through `--dart-define` values: `SUPABASE_URL`,
   `SUPABASE_ANON_KEY`, `POWERSYNC_URL`, `DEV_AUTH` (true only for local testing), `APP_ENV`.
