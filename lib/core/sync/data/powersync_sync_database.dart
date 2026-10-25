@@ -51,14 +51,16 @@ class PowerSyncSyncDatabase implements SyncDatabase {
   Future<void> _open() async {
     final database = PowerSyncDatabase(
       schema: _schemaRegistry.buildSchema(),
-      path: await _databasePath(),
+      path: await databasePath(),
     );
     await database.initialize();
     _database = database;
     AppLog.info('sync', 'Local database ready');
   }
 
-  static Future<String> _databasePath() async {
+  /// File name on web (OPFS/IndexedDB); app support directory on mobile.
+  @visibleForTesting
+  Future<String> databasePath() async {
     if (kIsWeb) return fileName;
     final directory = await getApplicationSupportDirectory();
     return p.join(directory.path, fileName);
@@ -70,13 +72,39 @@ class PowerSyncSyncDatabase implements SyncDatabase {
 
   @override
   Future<void> connect() async {
-    if (!_config.hasPowerSync || !isOpen) return;
+    if (!isOpen) return;
+    final userId = _tokens.userId;
+    if (userId == null) return;
+    await _claimForUser(userId);
+    if (!_config.hasPowerSync) return;
     await powerSync.connect(
       connector: SupabasePowerSyncConnector(
         endpoint: _config.powerSyncUrl,
         tokens: _tokens,
         uploader: _uploader,
       ),
+    );
+  }
+
+  /// Clears the device when another user's data is on it, then records
+  /// [userId] as the owner.
+  Future<void> _claimForUser(String userId) async {
+    final owner = await powerSync.getOptional(
+      'SELECT ${CoreSyncTables.valueColumn} AS owner FROM '
+      '${CoreSyncTables.localSyncState} WHERE id = ?',
+      [CoreSyncTables.ownerUserIdKey],
+    );
+    final ownerId = owner?['owner'] as String?;
+    if (ownerId == userId) return;
+    if (ownerId != null) {
+      AppLog.info('sync', 'Another user signed in; clearing local data');
+      await powerSync.disconnectAndClear();
+    }
+    await powerSync.execute(
+      'INSERT INTO ${CoreSyncTables.localSyncState} '
+      '(id, ${CoreSyncTables.keyColumn}, ${CoreSyncTables.valueColumn}) '
+      'VALUES (?, ?, ?)',
+      [CoreSyncTables.ownerUserIdKey, CoreSyncTables.ownerUserIdKey, userId],
     );
   }
 

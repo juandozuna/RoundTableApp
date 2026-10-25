@@ -8,12 +8,20 @@ import '../../services/logging/app_log.dart';
 import 'pending_since_tracker.dart';
 import 'sync_database.dart';
 
-/// Opens the local database at startup and ties replication to sign-in:
-/// connect when authenticated, disconnect and clear on sign-out so no data
-/// remains for another user (ADR 0004).
+/// Opens the local database at startup and ties replication to sign-in
+/// (ADR 0004):
+/// - authenticated → connect (clearing the device first if another user's
+///   data is on it);
+/// - signed out → disconnect but keep local data, so answers captured
+///   offline are never lost to an expired or revoked session. Explicit
+///   "remove my data" flows call `SyncDatabase.disconnect(clearLocalData:
+///   true)` through a use case.
 @lazySingleton
 class SyncLifecycle {
   SyncLifecycle(this._database, this._tracker, this._auth);
+
+  /// Startup never waits longer than this for the local database.
+  static const Duration openTimeout = Duration(seconds: 20);
 
   final SyncDatabase _database;
   final PendingSinceTracker _tracker;
@@ -25,7 +33,7 @@ class SyncLifecycle {
   Future<void> start() async {
     if (_subscription != null) return;
     try {
-      await _database.open();
+      await _database.open().timeout(openTimeout);
       _tracker.start();
     } on Object catch (error, stackTrace) {
       AppLog.error('sync', 'Local database failed to open', error, stackTrace);
@@ -41,7 +49,7 @@ class SyncLifecycle {
         case AuthStatus.authenticated:
           await _database.connect();
         case AuthStatus.unauthenticated:
-          await _database.disconnect(clearLocalData: true);
+          await _database.disconnect(clearLocalData: false);
         case AuthStatus.unknown:
           break;
       }

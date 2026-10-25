@@ -18,11 +18,14 @@ abstract interface class SyncDatabase {
   /// database gets its own connection; table updates propagate between them.
   DatabaseConnection createDriftConnection();
 
-  /// Starts replication for the signed-in user. No-op when sync is not
-  /// configured.
+  /// Starts replication for the signed-in user. When a different user than
+  /// the device's previous owner signs in, all local data is cleared first so
+  /// one user's data is never shown to another. Replication itself is skipped
+  /// when sync is not configured.
   Future<void> connect();
 
-  /// Stops replication. With [clearLocalData] every synced row is deleted so
-  /// no data remains for the next user.
+  /// Stops replication. Without [clearLocalData], local rows and unsent
+  /// changes stay and upload when the same user signs in again. With it,
+  /// everything is deleted, including unsent changes.
   Future<void> disconnect({required bool clearLocalData});
 }
