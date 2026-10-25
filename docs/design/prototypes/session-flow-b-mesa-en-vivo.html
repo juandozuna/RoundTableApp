@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gold Roundtables · Opción B · Mesa en vivo</title>
+<style>
+:root{
+  --page:#08060f;--bg:#0E0B1A;--bg2:#14102A;--surf:#1A1530;--surf2:#251E45;--line:#3A3166;
+  --ink:#F4F1FF;--mut:#A9A1CC;--acc:#A48BFF;--accb:#6F4DFF;--accg:#8654F7;--bd:#7A70B5;--onacc:#fff;
+  --lime:#3DE08A;--amber:#FFB547;--off:#8F98BC;--mag:#FF4F9A;--err:#FF7A7A;--sky:#5CC8FF;--cyan:#2DD4D4;--lilac:#C7B6FF;
+  --onc:#0B0A14;--glow:rgba(139,108,255,.28);--shadow:0 20px 60px rgba(0,0,0,.55);
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme=dark]){
+    --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+    --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+    --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+    --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25);
+  }
+}
+:root[data-theme=light]{
+  --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+  --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+  --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+  --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.35}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.ic{flex:none;vertical-align:middle}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- reviewer header ---------- */
+.rv{max-width:1500px;margin:0 auto;padding:14px 18px 6px}
+.rv-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+.rv h1{margin:0;font-size:22px;font-weight:900;letter-spacing:-.01em}
+.rv h1 b{color:var(--acc)}
+.rv .concept{color:var(--mut);font-size:14px;max-width:820px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:12px 0 8px}
+.seg2{display:inline-flex;border:2px solid var(--bd);border-radius:14px;overflow:hidden;background:var(--surf)}
+.seg2 button{border:0;background:transparent;padding:0 16px;min-height:44px;font-weight:800;font-size:14px}
+.seg2 button[aria-pressed=true]{background:var(--accb);color:var(--onacc)}
+.seg2 button.offb[aria-pressed=true]{background:var(--off);color:var(--onc)}
+.rbtn{min-height:44px;padding:0 14px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);font-weight:700;font-size:14px}
+.rbtn.pri{background:var(--accb);border-color:var(--accb);color:var(--onacc)}
+.rbtn:hover{border-color:var(--acc)}
+.msw{display:flex;gap:6px;flex-wrap:wrap}
+.msw button{display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 12px 4px 5px;border-radius:999px;border:2px solid var(--bd);background:var(--surf);font-weight:700;font-size:13px}
+.msw button[aria-pressed=true]{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.msw .mini{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+.chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14px;font-weight:600;padding:0 4px}
+.chk input{width:22px;height:22px;accent-color:var(--accb)}
+.sel{min-height:44px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);padding:0 10px;font-weight:700;font-size:14px}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.refs{font-size:12.5px;color:var(--mut);border-top:1px solid var(--line);padding:8px 0 0;margin-top:6px}
+.refs b{color:var(--ink)}
+.refs span.pill{display:inline-block;margin:2px 4px 2px 0;padding:2px 9px;border-radius:999px;background:var(--surf);border:1px solid var(--line);color:var(--ink);font-weight:600}
+
+/* ---------- stage ---------- */
+.wrap{max-width:1500px;margin:0 auto;padding:10px 18px 24px;display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start}
+.col{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:100%}
+.cap{margin:0;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.cap b{color:var(--ink)}
+.phone{--tb:320px;position:relative;width:392px;max-width:100%;height:800px;border-radius:46px;border:10px solid #05040b;background:var(--bg);box-shadow:var(--shadow),0 0 0 2px var(--line);overflow:hidden;display:flex;flex-direction:column;isolation:isolate}
+.phone.tablet{--tb:360px;width:880px;height:780px;border-radius:30px;border-width:12px}
+.phone.small{width:380px;height:760px}
+.phone::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 60% at 50% -10%,var(--glow),transparent 60%);pointer-events:none;z-index:0}
+.phone>*{position:relative;z-index:1}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:12px;font-weight:800;color:var(--ink);flex:none}
+.sb .r{display:flex;gap:6px;align-items:center}
+.body{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 14px 14px;scrollbar-width:thin}
+.dock{flex:none;padding:10px 14px 16px;background:linear-gradient(180deg,transparent,var(--bg) 24%)}
+.dock .hint{font-size:12px;color:var(--mut);text-align:center;margin:8px 4px 0}
+.row{display:flex;gap:8px;align-items:stretch}
+.btn{width:100%;min-height:56px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--accb),var(--accg));color:var(--onacc);font-weight:900;font-size:17px;padding:0 18px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px var(--glow)}
+.btn:disabled,.btn[aria-disabled=true]{background:var(--surf2);color:var(--mut);box-shadow:none;cursor:not-allowed}
+.btn.off{background:linear-gradient(135deg,#4a527a,#5d6794);color:#fff}
+.btn.sec{background:var(--surf2);color:var(--ink);box-shadow:none;border:2px solid var(--bd);font-size:15px;min-height:48px}
+.btn.sm{width:auto;min-height:44px;font-size:14px;padding:0 14px;border-radius:14px}
+.ibtn{flex:none;min-width:56px;min-height:56px;border-radius:18px;border:2px solid var(--bd);background:var(--surf2);display:grid;place-items:center;color:var(--ink)}
+.ibtn.pulse{border-color:var(--amber);color:var(--amber)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:14px;margin-top:10px}
+.kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+h1,h2,h3{margin:0}
+.toast{position:absolute;left:14px;right:14px;top:44px;z-index:30;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 14px;font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .25s ease}
+@keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+
+/* conn + pills */
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:800;border:1.5px solid var(--c,var(--line));color:var(--c,var(--ink));background:color-mix(in srgb,var(--c,var(--line)) 14%,transparent)}
+.pill .d{width:8px;height:8px;border-radius:50%;background:var(--c,var(--ink))}
+.pill.live .d{animation:blink 1.6s infinite}
+.p-ok{--c:var(--lime)}.p-pend{--c:var(--amber)}.p-sync{--c:var(--acc)}.p-late{--c:var(--mag)}.p-off{--c:var(--off)}.p-err{--c:var(--err)}
+@keyframes blink{50%{opacity:.25}}
+.sync-pill{display:flex;gap:10px;align-items:flex-start;border-radius:16px;padding:10px 12px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--ink);margin-top:10px;font-size:13.5px;font-weight:700}
+.sync-pill .ic{color:var(--c);margin-top:2px}
+.sync-pill small{display:block;font-weight:500;color:var(--mut);font-size:12.5px;margin-top:2px}
+.sync-pill.sp-sync .ic{animation:spin 1s linear infinite}
+.warn{display:flex;gap:10px;border-radius:16px;padding:10px 12px;margin-top:10px;background:color-mix(in srgb,var(--amber) 16%,transparent);border:1.5px solid var(--amber);font-size:13px}
+.warn .ic{color:var(--amber);margin-top:2px}
+.errbox{display:flex;gap:10px;border-radius:16px;padding:10px 12px;margin-top:10px;background:color-mix(in srgb,var(--err) 16%,transparent);border:1.5px solid var(--err);font-size:13.5px;font-weight:700}
+.errbox .ic{color:var(--err);margin-top:2px}
+.info{display:flex;gap:10px;border-radius:16px;padding:10px 12px;margin-top:10px;background:color-mix(in srgb,var(--acc) 14%,transparent);border:1.5px solid var(--acc);font-size:13px}
+.info .ic{color:var(--acc);margin-top:2px}
+
+/* ---------- facilitator: stage bar ---------- */
+.stagebar{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--surf);border:1.5px solid var(--line);border-radius:20px;padding:4px;margin-top:6px}
+.stagebar button{min-height:54px;border:0;border-radius:16px;background:transparent;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:2px;position:relative}
+.stagebar b{font-size:16px;font-weight:900;line-height:1}
+.stagebar small{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.stagebar .done{color:var(--lime);background:color-mix(in srgb,var(--lime) 12%,transparent)}
+.stagebar .cur{background:linear-gradient(135deg,var(--accb),var(--accg));color:var(--onacc);box-shadow:0 6px 18px var(--glow)}
+.stagebar.verbal .cur{background:linear-gradient(135deg,#4a527a,#5d6794);color:#fff;box-shadow:none}
+.stagebar .view{outline:2px solid var(--acc);outline-offset:-2px}
+.hl{margin-top:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.hl h1{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.05}
+.hl .sub{color:var(--mut);font-size:13.5px;margin:2px 0 0;font-weight:600}
+.tmr{font-variant-numeric:tabular-nums;font-weight:900;font-size:15px;text-align:right;white-space:nowrap}
+.tmr small{display:block;font-size:10.5px;color:var(--mut);font-weight:700}
+.tmr.over{color:var(--amber)}
+.ribbon{width:100%;margin-top:8px;min-height:44px;border-radius:14px;border:1.5px dashed var(--acc);background:transparent;color:var(--acc);font-weight:800;font-size:13px}
+.vchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.vchip{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surf);border:1px solid var(--line)}
+.vchip b{color:var(--acc)}
+
+/* ---------- the table ---------- */
+.tblw{display:flex;justify-content:center;margin:4px 0 8px}
+.pips{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:1px 2px}
+.pp{width:10px;height:10px;border-radius:50%;border:2px solid var(--c);background:transparent}
+.pp.p-done,.pp.p-late{background:var(--c)}.pp.p-off{border-style:dashed}.pp.p-sync{border-style:dotted}
+.tb9 .big{font-size:30px}.tb9 .big i{font-size:19px}.tb9 .cap2{font-size:10px}
+.tbl{position:relative}
+.tbtop{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--surf2),var(--surf) 70%);border:2px solid var(--line);box-shadow:inset 0 0 40px var(--glow),0 0 70px var(--glow);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px}
+.tbtop .big{font-size:38px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.tbtop .big i{font-style:normal;color:var(--mut);font-size:24px}
+.tbtop .cap2{font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.tbtop .stg{font-size:10px;font-weight:800;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.seat{position:absolute;width:var(--sw,80px);display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;color:var(--ink);min-height:44px;text-align:center}
+.avw{position:relative;width:var(--sz,60px);height:var(--sz,60px)}
+.ring{position:absolute;inset:0;border-radius:50%;border:4px solid var(--c,var(--line))}
+.av{position:absolute;inset:6px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:calc(var(--sz,60px)*.25);letter-spacing:.02em}
+.bdg{position:absolute;right:-7px;top:-7px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--c,var(--line));color:var(--onc);border:2px solid var(--bg)}
+.pres{position:absolute;right:1px;bottom:1px;width:15px;height:15px;border-radius:50%;border:2.5px solid var(--bg);background:var(--lime)}
+.pres.n{background:var(--off)}
+.achip{position:absolute;left:-8px;top:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--surf2);border:1.5px solid var(--line);font-size:10px;font-weight:900;display:grid;place-items:center;color:var(--ink)}
+.achip.auto{background:var(--lime);color:var(--onc);border-color:var(--bg)}
+.nm{font-size:var(--nf,12.5px);font-weight:800;margin-top:6px;line-height:1.1;white-space:nowrap}
+.st{font-size:var(--sf,10.5px);font-weight:800;color:var(--c,var(--mut));line-height:1.1;margin-top:1px;white-space:nowrap}
+.s-done{--c:var(--lime)}.s-pres{--c:var(--lime)}
+.s-wait{--c:var(--amber)}
+.s-off{--c:var(--off)}
+.s-sync{--c:var(--acc)}
+.s-late{--c:var(--mag)}
+.s-skip{--c:var(--off)}.s-miss{--c:var(--err)}
+.s-tarde{--c:var(--cyan)}.s-exc{--c:var(--lilac)}.s-aus{--c:var(--off)}
+.s-idle{--c:var(--line)}.s-idle .st{color:var(--mut)}
+.s-wait .ring{animation:pulse 1.6s ease-in-out infinite}
+.s-off .ring{border-style:dashed}
+.s-sync .ring{border-color:var(--acc) transparent var(--acc) transparent;animation:spin 1s linear infinite}
+.s-late .ring{box-shadow:0 0 0 3px color-mix(in srgb,var(--mag) 30%,transparent),0 0 18px var(--mag)}
+.s-skip .ring{border-width:2px;border-style:dotted}
+.s-miss .ring,.s-aus .ring{border-color:var(--c)}
+.s-aus .av{opacity:.5}
+.s-exc .ring{border-style:double;border-width:5px}
+.s-idle .ring{border-width:2px}
+.s-sync .bdg .ic{animation:spin 1s linear infinite}
+.seat.hlt .ring{border-color:var(--err);animation:pulse 1s infinite}
+.seat:hover .av{filter:brightness(1.15)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 55%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 4px;margin-top:2px}
+.lg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ink);min-height:24px}
+.lg .mr{width:18px;height:18px;border-radius:50%;border:3px solid var(--c);flex:none}
+.lg.s-off .mr{border-style:dashed}.lg.s-sync .mr{border-color:var(--acc) transparent var(--acc) transparent}
+.lg.s-skip .mr{border-style:dotted;border-width:2px}.lg.s-exc .mr{border-style:double;border-width:4px}.lg.s-late .mr{box-shadow:0 0 8px var(--mag)}
+.lgttl{margin:6px 0 4px}
+.feed{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.fi{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:600;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:8px 10px}
+.fi time{font-variant-numeric:tabular-nums;color:var(--mut);font-size:11.5px;font-weight:800;padding-top:1px}
+.fi.k-late{border-color:var(--mag)}.fi.k-auto{border-color:var(--lime)}
+.verbal{display:flex;gap:10px;margin-top:8px;border-radius:16px;padding:8px 12px;background:color-mix(in srgb,var(--off) 20%,transparent);border:1.5px dashed var(--off)}
+.verbal q{display:block;font-weight:800;font-size:13.5px;margin-top:2px;quotes:none}
+.fgrid{display:block}
+.tablet .fgrid{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start}
+.tablet .hl h1{font-size:34px}
+.sumgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.tile{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.tile b{display:block;font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile span{font-size:11.5px;font-weight:700;color:var(--mut)}
+.tile.w{grid-column:1/-1}
+.sheet{position:absolute;inset:0;z-index:40;background:rgba(5,3,14,.62);display:flex;align-items:flex-end;justify-content:center}
+.sh{width:100%;max-width:520px;background:var(--surf);border-top:2px solid var(--acc);border-radius:26px 26px 0 0;padding:16px 16px 22px;animation:up .25s ease;max-height:92%;overflow:auto}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sh h3{font-size:20px;font-weight:900}
+.sh p{color:var(--mut);margin:6px 0 12px;font-size:14px}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.opt{min-height:64px;border-radius:16px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink)}
+.opt[aria-pressed=true]{background:var(--c);color:var(--onc)}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:700}
+
+/* ---------- member ---------- */
+.room{flex:none;padding:2px 14px 8px}
+.roompill{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
+.rp-l{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800}
+.rp-l b{color:var(--acc)}
+.rp-l.off b{color:var(--off)}
+.peers{display:flex;gap:var(--pg,7px);margin-top:8px;align-items:center}
+.pe{position:relative;width:var(--pw,38px);height:var(--pw,38px);flex:none}
+.pe .bdg{width:15px;height:15px;right:-5px;top:-5px;border-width:1.5px}
+.pe .ring{border-width:3px}
+.pe .av{inset:4px;font-size:10.5px}
+.pe .pres{width:11px;height:11px;border-width:2px}
+.pe.me::after{content:"TÚ";position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);font-size:8.5px;font-weight:900;color:var(--acc)}
+.pe.s-wait .ring{animation:none}
+.chips3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.sc{min-height:48px;border-radius:14px;border:2px solid var(--c,var(--line));background:color-mix(in srgb,var(--c,var(--line)) 10%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;padding:2px;color:var(--ink)}
+.sc small{font-size:10px;font-weight:700;color:var(--c,var(--mut));display:flex;align-items:center;gap:3px}
+.sc.on{background:var(--accb);border-color:var(--accb);color:var(--onacc)}
+.sc.on small{color:var(--onacc)}
+.sc.lk{--c:var(--line)}.sc.lk small{color:var(--mut)}
+.ttl{margin:14px 0 6px}
+.ttl h2{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.q{margin-top:14px}
+.q label,.q .qt{display:block;font-weight:800;font-size:16px;margin-bottom:6px}
+.q .opthint{font-weight:600;color:var(--mut);font-size:12.5px}
+.fld textarea,.fld input[type=text]{width:100%;min-height:56px;border-radius:16px;border:2px solid var(--bd);background:var(--surf);padding:12px 14px;font-size:16px;resize:none}
+.fld textarea{min-height:76px}
+.fld.bad textarea,.fld.bad input{border-color:var(--err)}
+.ferr{display:flex;gap:6px;align-items:flex-start;color:var(--err);font-weight:800;font-size:13px;margin:6px 2px 0}
+.cnt{text-align:right;font-size:11.5px;color:var(--mut);font-weight:700}
+.quote{border-left:5px solid var(--acc);background:var(--surf);border-radius:0 16px 16px 0;padding:12px 14px;font-size:17px;font-weight:700;margin-top:6px}
+.qchips{display:flex;flex-direction:column;gap:8px}
+.qc{min-height:52px;border-radius:16px;border:2px solid var(--bd);background:var(--surf);text-align:left;padding:8px 14px;font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px}
+.qc[aria-pressed=true]{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent);box-shadow:0 0 0 3px var(--glow)}
+.qc .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--mut);flex:none}
+.qc[aria-pressed=true] .rd{border:6px solid var(--acc)}
+.ex{min-height:44px;border-radius:999px;border:1.5px dashed var(--acc);background:transparent;color:var(--ink);font-size:13px;font-weight:700;padding:6px 12px;text-align:left}
+.exs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.scorep{margin-top:4px}
+.srow{margin-top:8px}
+.scap{font-size:11.5px;font-weight:800;color:var(--mut);letter-spacing:.04em;text-transform:uppercase}
+.sbtns{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:5px}
+.sk{min-height:54px;border-radius:16px;border:2px solid var(--bd);background:var(--surf);font-size:22px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.sk.lo{border-color:var(--bd)}
+.sk.hi{border-color:var(--bd)}
+.sk.on{background:var(--accb);border-color:var(--accb);color:var(--onacc);box-shadow:0 6px 18px var(--glow);transform:scale(1.06)}
+.sk.lock{background:repeating-linear-gradient(135deg,var(--surf2) 0 6px,transparent 6px 12px);color:var(--mut);border-style:dashed;cursor:not-allowed;font-size:12px;gap:0}
+.sk.lock small{font-weight:900}
+.five{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;color:var(--mut);margin:8px 2px 0;font-weight:600}
+.five.bad{color:var(--err);font-weight:800}
+.picked{font-size:13px;font-weight:800;color:var(--acc);margin:6px 2px 0}
+.wait{text-align:center;padding:26px 8px 10px}
+.wait h2{font-size:24px;font-weight:900;margin-top:16px;letter-spacing:-.02em}
+.wait p{color:var(--mut);font-size:15px;margin:8px 4px}
+.bigav{position:relative;width:96px;height:96px;margin:0 auto}
+.bigav .ring{border-width:5px;--c:var(--acc);animation:pulse 2s infinite}
+.bigav .av{font-size:28px;inset:9px}
+.attbig{margin:14px auto 0;display:inline-flex;align-items:center;gap:10px;border-radius:999px;border:3px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);padding:10px 22px;font-size:22px;font-weight:900}
+.res{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:700}
+.res:last-child{border:0}
+.res .v{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--acc)}
+.gentle{text-align:center;padding:22px 12px;margin-top:12px;border-radius:24px;background:linear-gradient(160deg,color-mix(in srgb,var(--acc) 16%,var(--surf)),var(--surf));border:1.5px solid var(--line)}
+.gentle h2{font-size:22px;font-weight:900;margin-top:10px}
+.gentle p{color:var(--mut);margin:8px 0 0;font-size:15px}
+.lockcard{margin-top:14px;text-align:center;padding:20px 14px;border-radius:22px;border:2px dashed var(--err);background:color-mix(in srgb,var(--err) 10%,transparent)}
+.lockcard h2{font-size:20px;font-weight:900;margin-top:8px}
+.lockcard p{margin:6px 0 0;color:var(--mut);font-size:14px}
+
+
+.crown{position:absolute;left:-9px;top:-6px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--onc);border:2px solid var(--bg);z-index:2}
+.ftabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surf);border:1.5px solid var(--line);border-radius:18px;padding:4px;margin-top:8px}
+.ftabs button{white-space:nowrap;min-height:46px;border:0;border-radius:14px;background:transparent;color:var(--mut);font-weight:800;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:6px}
+.ftabs button[aria-selected=true]{background:var(--accb);color:var(--onacc)}
+.nb{min-width:20px;height:20px;border-radius:10px;background:var(--amber);color:var(--onc);font-size:11px;font-weight:900;display:grid;place-items:center;padding:0 5px}
+.ministage{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:6px 6px 6px 12px;border-radius:16px;background:color-mix(in srgb,var(--acc) 14%,transparent);border:1.5px solid var(--acc);font-size:13px;font-weight:700}
+.ministage button{min-height:44px;border-radius:12px;border:2px solid var(--bd);background:var(--surf);font-weight:800;font-size:13px;padding:0 10px}
+.mine{max-width:560px;margin:0 auto}
+.tablet .dock{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch}
+.tablet .dock>.hint,.tablet .dock>.mine{grid-column:1/-1;margin:0 auto}
+.tablet .dock>.row:first-child{grid-column:1/-1}
+.tablet .dock>.btn.sec{margin:0!important;min-height:56px}
+.lgnote{font-size:11px;color:var(--mut);font-weight:600;margin-top:4px;display:flex;gap:6px;align-items:center}
+.seatnote{font-size:12px;color:var(--mut);font-weight:600}
+
+/* guide */
+.guide{max-width:1100px;margin:0 auto 40px;padding:0 18px;font-size:14px}
+.guide summary{min-height:44px;display:flex;align-items:center;font-weight:800;cursor:pointer}
+.guide ol{margin:0;padding-left:20px;color:var(--mut)} .guide li{margin:6px 0} .guide b{color:var(--ink)}
+@media (max-width:480px){
+  .wrap{padding:6px 0;gap:18px}
+  .phone,.phone.small{width:100%;border-width:0;border-radius:0;height:740px}
+  .legend{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="rv">
+  <div class="rv-top">
+    <h1><b>B</b> · Mesa en vivo</h1>
+    <div class="concept">Concepto: el teléfono del facilitador es una sala de control con una mesa redonda; cada asiento (incluido el del facilitador, con corona) muestra asistencia y avance en tiempo real. Los teléfonos de los miembros sienten “la mesa” (La mesa está en: Seguimiento).</div>
+  </div>
+  <div class="ctl" role="group" aria-label="Controles del revisor">
+    <div class="seg2" role="group" aria-label="Conexión de la sala">
+      <button type="button" id="bOn" data-act="online" data-v="1" aria-pressed="true">En línea</button>
+      <button type="button" id="bOff" class="offb" data-act="online" data-v="0" aria-pressed="false">Sin internet</button>
+    </div>
+    <button type="button" class="rbtn pri" data-act="simsync">Simular sincronización</button>
+    <button type="button" class="rbtn" data-act="simtable" title="Los demás miembros responden la etapa abierta">Simular a la mesa</button>
+    <div class="msw" id="msw" role="group" aria-label="Miembro mostrado"></div>
+    <label class="chk"><input type="checkbox" id="netChk" data-ctl="net"> Solo este miembro sin red</label>
+    <label class="lbl" for="seats">Lugares</label>
+    <select id="seats" class="sel" data-ctl="seats" aria-label="Lugares en la mesa"></select>
+    <label class="lbl" for="jump">Ir a etapa</label>
+    <select id="jump" class="sel" data-ctl="jump" aria-label="Ir a etapa">
+      <option value="1">1 · Abrir sesión</option><option value="2">2 · Asistencia</option><option value="3">3 · Seguimiento</option>
+      <option value="4">4 · Valor actual (+ compromiso)</option><option value="5">5 · Cierre</option>
+    </select>
+    <div class="seg2" role="group" aria-label="Vista del facilitador">
+      <button type="button" id="vPh" data-act="fview" data-v="phone" aria-pressed="true">Teléfono</button>
+      <button type="button" id="vTb" data-act="fview" data-v="tablet" aria-pressed="false">Tablet</button>
+    </div>
+    <div class="seg2" role="group" aria-label="Tamaño de pantalla">
+      <button type="button" id="sNo" data-act="screen" data-v="0" aria-pressed="true">Normal</button>
+      <button type="button" id="sSm" data-act="screen" data-v="1" aria-pressed="false">360×740</button>
+    </div>
+    <button type="button" class="rbtn" data-act="plus10">+10 min</button>
+    <button type="button" class="rbtn" data-act="theme" id="bTheme">Tema: auto</button>
+    <button type="button" class="rbtn" data-act="reset">Reiniciar</button>
+  </div>
+  <div class="seatnote" id="seatNote" role="status"></div>
+  <div class="refs"><b>Referencias (Mobbin):</b>
+    <span class="pill">Yubo · sala de encuesta en vivo, conteo de votos</span>
+    <span class="pill">Luma · lista de invitados con estados “Checked In” / chip “synced”</span>
+    <span class="pill">Insight Timer · cuadrícula de comunidad con avatares</span>
+    <span class="pill">Sweatcoin · lista de participantes, violeta oscuro</span>
+    <span class="pill">Bevel · píldora flotante “Syncing…”</span>
+    <span style="display:block;margin-top:4px">Nota: la sincronización es automática al reconectar (Sincronizando → Sincronizado / Sincronizado tarde); “Simular sincronización” fuerza la reconexión de todos. Si el facilitador cerró sin red, su cierre llega primero y las respuestas que llegan después se aceptan y se marcan “tarde”. Los textos de preguntas son marcadores de posición.</span>
+  </div>
+</header>
+
+<main class="wrap" id="wrap">
+  <section class="col" aria-label="Facilitador">
+    <h2 class="cap">Facilitador · <b>Mesa Esperanza 03</b></h2>
+    <div id="fac" class="phone" role="region" aria-label="Teléfono del facilitador"></div>
+  </section>
+  <section class="col" aria-label="Miembro">
+    <h2 class="cap">Miembro · <b id="mcap">Camila</b></h2>
+    <div id="mem" class="phone" role="region" aria-label="Teléfono del miembro"></div>
+  </section>
+</main>
+
+<details class="guide"><summary>Guía rápida de revisión (recorridos sugeridos)</summary>
+<ol>
+<li><b>En línea:</b> en el facilitador pulsa “Abrir sesión”, marca asistencia (intenta avanzar con gente sin marcar para ver el error), luego “Abrir seguimiento”. En el miembro aparece el formulario; responde (prueba el 5 bloqueado y enviar vacío) y mira el anillo de su asiento. “Simular a la mesa” hace que los demás respondan.</li>
+<li><b>El facilitador también responde:</b> en su teléfono usa la pestaña “Mis respuestas” (o el botón “Responder yo” del dock). Si intentas “Cerrar respuestas” con tus respuestas incompletas, aparece un recordatorio.</li>
+<li><b>Valor actual incluye el compromiso:</b> no hay una puerta aparte; el asiento muestra dos puntos (reflexión y compromiso) dentro de la etapa Valor.</li>
+<li><b>Ausente que responde:</b> Ana Lucía (Ausente) pasa a Presente automáticamente; solo aplica a Ausente (Excusado no cambia).</li>
+<li><b>Sin compromiso previo:</b> Valentina ve el estado amable y se omite el seguimiento.</li>
+<li><b>Sin internet:</b> los miembros avanzan a su ritmo; el facilitador pasa a guía verbal, y sus propias respuestas se guardan en su teléfono. Rodrigo ya empieza sin red y con 31 h sin sincronizar. Al volver “En línea” (sala o “Solo este miembro sin red”) la sincronización arranca sola.</li>
+<li><b>Sincronizado tarde:</b> cierra respuestas y sesión sin red, luego vuelve a “En línea”: el cierre del facilitador llega primero y las respuestas de los miembros quedan en magenta.</li>
+<li><b>Lugares 3–9:</b> el facilitador cuenta dentro del máximo de 9. Prueba 9 lugares con la pantalla 360×740.</li>
+</ol></details>
+
+<script>
+(function(){
+'use strict';
+/* ===== constants (product owner: the facilitator counts toward the table limits) ===== */
+var MAX_SEATS=9, MIN_SEATS=3, FAC_COUNTS=true;
+var CAP=FAC_COUNTS?MAX_SEATS:MAX_SEATS+1;
+
+var $=function(id){return document.getElementById(id)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var P={
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ dots:'<circle cx="6" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18" cy="12" r="1.6" fill="currentColor"/>',
+ off:'<path d="M3 3l18 18"/><path d="M8 7.5A6 6 0 0 1 18 11a4 4 0 0 1 1 7.5"/><path d="M6.5 18A4.5 4.5 0 0 1 6.2 9.6"/><path d="M7 18h8"/>',
+ sync:'<path d="M20 11a8 8 0 0 0-14-4"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 4"/><path d="M20 20v-4h-4"/>',
+ clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+ minus:'<path d="M6 12h12"/>',
+ lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ up:'<path d="M7 18h10a4 4 0 0 0 .8-7.9A6 6 0 0 0 6.3 9.3 4.5 4.5 0 0 0 7 18z"/><path d="M12 15v-5M9.5 12.5L12 10l2.5 2.5"/>',
+ warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/>',
+ users:'<circle cx="9" cy="9" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 6.5a3 3 0 0 1 0 5.5M18 14.5c1.7.7 2.7 2.1 3 4.5"/>',
+ bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+ user:'<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-4 3.5-6 7-6s6.2 2 7 6"/>',
+ wifi:'<path d="M4 9a12 12 0 0 1 16 0M7 12.5a8 8 0 0 1 10 0M10 16a4 4 0 0 1 4 0"/><circle cx="12" cy="19" r=".8" fill="currentColor"/>',
+ send:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',
+ crown:'<path d="M4 18L3 8l5 4 4-7 4 7 5-4-1 10z"/><path d="M5 21h14"/>'
+};
+function ic(n,s){s=s||16;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>'}
+
+/* 5 facilitator stages. Commitment is NOT a gate: it is a sub-step (step 5) of "Valor actual" (stage 4). */
+var STAGES=[null,{n:'Apertura',s:'Abrir'},{n:'Asistencia',s:'Lista'},{n:'Seguimiento',s:'Seguim.'},{n:'Valor actual',s:'Valor'},{n:'Cierre',s:'Cierre'}];
+var STEPN={3:'Seguimiento',4:'Valor actual',5:'Compromiso'};
+var STEPS={3:'Seguimiento',4:'Valor',5:'Compromiso'};
+function stageOf(k){return k===5?4:k}
+var STEPS_OF={3:[3],4:[4,5],5:[3,4,5]};
+var KEY={3:'fu',4:'cu',5:'co'};
+var ATTL={presente:'Presente',tarde:'Tarde',excusado:'Excusado',ausente:'Ausente'};
+var ATTC={presente:'pres',tarde:'tarde',excusado:'exc',ausente:'aus'};
+var ATTI={presente:'check',tarde:'clock',excusado:'minus',ausente:'x'};
+var ST={
+ done:['Respondió','check'],wait:['Pendiente','dots'],off:['Sin red','off'],sync:['Sincroniz.','sync'],
+ late:['Llegó tarde','clock'],skip:['Omitido','minus'],miss:['No respondió','x'],idle:['','']
+};
+var DEFS=[
+ {id:'fa',isFac:true,name:'Marta Quiroz',short:'Marta',ini:'MQ',col:'#9354cd',prev:'Preparar la mesa 15 minutos antes cada semana',net:true,hrs:0},
+ {id:'ca',name:'Camila Rojas',short:'Camila',ini:'CR',col:'#4a68e1',prev:'Llamar a mi mamá 3 veces esta semana',net:true,hrs:0},
+ {id:'jo',name:'Joaquín Mena',short:'Joaquín',ini:'JM',col:'#247aa8',prev:'Llegar puntual a todas mis clases',net:true,hrs:0},
+ {id:'va',name:'Valentina Cruz',short:'Valentina',ini:'VC',col:'#815bd5',prev:null,net:true,hrs:0},
+ {id:'ro',name:'Rodrigo Paz',short:'Rodrigo',ini:'RP',col:'#5864C0',prev:'Entregar mi reporte cada viernes antes de las 5 pm',net:false,hrs:31},
+ {id:'an',name:'Ana Lucía Soto',short:'Ana Lucía',ini:'AS',col:'#377c89',prev:'Pedirle perdón a mi hermano esta semana',net:true,hrs:0},
+ {id:'so',name:'Sofía Herrera',short:'Sofía',ini:'SH',col:'#6468c9',prev:'Hacer ejercicio 20 minutos los lunes y jueves',net:true,hrs:0},
+ {id:'ma',name:'Mateo Vargas',short:'Mateo',ini:'MV',col:'#2d79a1',prev:'Lavar los platos cada noche después de cenar',net:true,hrs:0},
+ {id:'is',name:'Isabela Núñez',short:'Isabela',ini:'IN',col:'#5472a9',prev:'Leer 10 páginas cada día antes de dormir',net:true,hrs:0}
+];
+var SAMPLE={
+ fa:{did:'si',ft:'La preparé el martes y el jueves.',fs:7,q1:'Mi pastor, siempre llega antes que todos.',q2:'Cumplo, pero a veces improviso.',cs:7,com:'Revisar la guía de la mesa cada lunes por 15 minutos.'},
+ ca:{did:'si',ft:'Llamé el lunes, miércoles y sábado.',fs:7,q1:'Mi abuelo: siempre responde por lo que dice.',q2:'Cumplo casi siempre, me falta avisar cuando no puedo.',cs:8,com:'Entregar mis tareas 2 días antes de la fecha, todas las semanas.'},
+ jo:{did:'parte',ft:'Llegué puntual 3 de 5 días.',fs:4,q1:'Mi entrenador de fútbol.',q2:'A veces dejo todo para última hora.',cs:6,com:'Preparar mi mochila cada noche antes de las 9 pm.'},
+ va:{did:null,ft:'',fs:null,q1:'Mi maestra de primaria.',q2:'Me esfuerzo, pero me cuesta pedir ayuda.',cs:9,com:'Pedir ayuda una vez al día cuando no entienda algo.'},
+ ro:{did:'no',ft:'No tuve tiempo.',fs:6,q1:'Mi jefe, cuida a su equipo.',q2:'Me comprometo y luego me desordeno.',cs:7,com:'Revisar mi lista de tareas cada lunes y viernes a las 8 am.'},
+ an:{did:'si',ft:'Hablamos el domingo.',fs:8,q1:'Mi mamá, siempre cumple.',q2:'Asumo mis errores, aunque cuesta.',cs:7,com:'Escribir un mensaje de gratitud a alguien cada miércoles.'},
+ so:{did:'parte',ft:'Fui 1 de 2 días.',fs:6,q1:'Mi hermana mayor.',q2:'Soy constante a medias.',cs:6,com:'Entrenar 20 minutos cada lunes y jueves.'},
+ ma:{did:'si',ft:'Todas las noches.',fs:9,q1:'Mi papá.',q2:'Ayudo sin que me lo pidan.',cs:8,com:'Sacar la basura todos los días antes de las 8 pm.'},
+ is:{did:'si',ft:'Leí 9 de 10 días.',fs:8,q1:'Mi tía, que cumple su palabra.',q2:'Me falta más orden.',cs:7,com:'Leer 10 páginas cada noche antes de dormir.'}
+};
+var EXAMPLES=['Llamar a mi abuela 2 veces esta semana, el martes y el sábado.','Ordenar mi cuarto cada noche antes de las 9 pm.','Terminar mi tarea antes del jueves, 30 minutos diarios.'];
+
+var U={fac:'phone',theme:'auto',seats:6,small:false};
+var S=null,PF='m-';
+function newMember(d){
+ var m={};for(var k in d)m[k]=d[k];
+ m.att=d.isFac?'presente':null;m.noPrev=!d.prev;m.auto=false;m.autoPend=false;m.lp=3;m.view=null;
+ m.fu={done:false};m.cu={done:false};m.co={done:false};
+ m.sy={fu:null,cu:null,co:null};
+ m.d={did:null,ft:'',fs:null,q1:'',q2:'',cs:null,com:''};
+ m.err={};
+ return m;
+}
+function init(){
+ var g=S?S.gen+1:1,all=DEFS.map(newMember);
+ S={gen:g,online:true,started:false,stage:1,fview:1,answersClosed:false,closed:false,facPend:false,facSyncing:false,
+    srv:{stage:1,ans:false,closed:false},elapsed:0,sel:'ca',sheet:null,errF:null,hlIds:[],feed:[],toastF:null,toastM:null,
+    all:all,members:all.slice(0,U.seats),ftab:'board'};
+}
+function FAC(){return S.all[0]}
+function cur(){for(var i=0;i<S.members.length;i++)if(S.members[i].id===S.sel)return S.members[i];S.sel='ca';return S.members[1]}
+function realMembers(){return S.members.filter(function(m){return !m.isFac})}
+function live(m){return m.isFac?S.online:(S.online&&m.net)}
+function stg(m){return m.isFac?S.stage:S.srv.stage}
+function ansC(m){return m.isFac?S.answersClosed:S.srv.ans}
+function clsd(m){return m.isFac?S.closed:S.srv.closed}
+function mStage(m){return (m.isFac||live(m))?stg(m):m.lp}
+function eligible(m,k){return !(k===3&&m.noPrev)}
+function done(m,k){return !!m[KEY[k]].done}
+function unlocked(m,k){
+ var sg=stageOf(k);
+ if(m.isFac||live(m))return stg(m)>=sg&&!(ansC(m)&&!done(m,k))&&!clsd(m);
+ return m.lp>=sg;
+}
+function fmt(sec){var mm=Math.floor(sec/60),ss=sec%60;return (mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss}
+function log(t,k){S.feed.unshift({t:fmt(S.elapsed),x:t,k:k||''});if(S.feed.length>40)S.feed.pop()}
+function toast(who,msg){
+ var key=who==='f'?'toastF':'toastM';S[key]=msg;var g=S.gen;
+ render();
+ setTimeout(function(){if(S.gen===g&&S[key]===msg){S[key]=null;render()}},3200);
+}
+function T(m,msg){toast(m.isFac?'f':'m',msg)}
+function fmut(){if(!S.online)S.facPend=true;pub()}
+function pub(){if(S.online&&!S.facPend)S.srv={stage:S.stage,ans:S.answersClosed,closed:S.closed}}
+function facHasPend(){var f=FAC();return S.facPend||['fu','cu','co'].some(function(k){return f.sy[k]==='pend'})}
+
+/* ---------- status model ---------- */
+function stepSeat(m,k){
+ var key=KEY[k],d=m[key],y;
+ if(!eligible(m,k))return {c:'skip',l:'Omitido'};
+ if(d.done){
+  y=m.sy[key];
+  if(y==='ok')return {c:'done'};
+  if(y==='late')return {c:'late'};
+  if(y==='sync')return {c:'sync'};
+  if(y==='pend')return {c:'off',l:m.isFac?'Guardado':null};
+  return {c:'done'};
+ }
+ if(m.isFac)return {c:ansC(m)?'miss':'wait'};
+ if(live(m))return {c:S.srv.ans?'miss':'wait'};
+ return {c:'off'};
+}
+function known(m,k){var c=stepSeat(m,k).c;return c==='done'||c==='late'||(m.isFac&&done(m,k))}
+function aggState(m,steps,tail){
+ var ks=steps.filter(function(j){return eligible(m,j)});
+ var sts=ks.map(function(j){return stepSeat(m,j).c});
+ var nd=sts.filter(function(c){return c==='done'||c==='late'}).length;
+ var c='done';
+ if(sts.indexOf('sync')>=0)c='sync';else if(sts.indexOf('off')>=0)c='off';else if(sts.indexOf('wait')>=0)c='wait';else if(sts.indexOf('miss')>=0)c='miss';else if(sts.indexOf('late')>=0)c='late';
+ var allDone=(nd===ks.length);
+ return {c:c,l:allDone&&tail==='Valor'?'Respondió':nd+'/'+ks.length+' '+tail,i:ST[c][1],pips:(steps.length===2&&ks.length===2)?sts:null};
+}
+function seatState(m,k){
+ var r;
+ if(k===1)return {c:'idle',l:live(m)?'En sala':'Sin red'};
+ if(k===2){
+  if(!m.att)return {c:'wait',l:'Sin marcar',i:'dots'};
+  return {c:ATTC[m.att],l:ATTL[m.att],i:ATTI[m.att]};
+ }
+ if(k===3){r=stepSeat(m,3);return {c:r.c,l:r.l||ST[r.c][0],i:ST[r.c][1]}}
+ if(k===4)return aggState(m,[4,5],'Valor');
+ return aggState(m,[3,4,5],'listo');
+}
+function counts(k){
+ var M=S.members,a,n;
+ if(k===1){return {a:M.length,b:CAP,lab:'lugares',sub:M.length+' de '+CAP+' lugares (facilitador incluido) · '+M.filter(live).length+' conectados'}}
+ if(k===2){a=M.filter(function(m){return m.att}).length;return {a:a,b:M.length,lab:'con lista',sub:a+' de '+M.length+' con asistencia marcada'}}
+ var note=S.online?'':'Sin internet: ves lo tuyo; el resto llega al sincronizar';
+ if(k===3){
+  var el=M.filter(function(m){return eligible(m,3)});
+  a=el.filter(function(m){return known(m,3)}).length;
+  var skip=M.length-el.length,sub=a+' de '+el.length+' respondieron'+(skip?' · '+skip+' sin compromiso previo':'');
+  return {a:a,b:el.length,lab:'respondieron',sub:note||sub};
+ }
+ if(k===4){
+  a=M.filter(function(m){return known(m,4)&&known(m,5)}).length;
+  var cp=M.filter(function(m){return known(m,4)&&!known(m,5)}).length;
+  return {a:a,b:M.length,lab:'completaron',sub:note||(a+' de '+M.length+' completaron Valor actual'+(cp?' · '+cp+' con compromiso pendiente':''))};
+ }
+ var tot=0,dn=0;
+ M.forEach(function(m){[3,4,5].forEach(function(j){if(eligible(m,j)){tot++;if(known(m,j))dn++}})});
+ return {a:dn,b:tot,lab:'respuestas',sub:S.closed?'Sesión cerrada · '+dn+' de '+tot+' respuestas recibidas':'Respuestas cerradas · falta cerrar la sesión · '+dn+' de '+tot};
+}
+function syncOf(m){
+ var v=[m.sy.fu,m.sy.cu,m.sy.co];
+ if(v.indexOf('sync')>=0)return 'sync';
+ if(v.indexOf('pend')>=0)return 'pend';
+ if(v.indexOf('late')>=0)return 'late';
+ if(v.indexOf('ok')>=0)return 'ok';
+ return 'none';
+}
+function mineMissing(){var f=FAC();return [3,4,5].filter(function(j){return eligible(f,j)&&!done(f,j)})}
+function mineOpenMissing(){var f=FAC();return [3,4,5].filter(function(j){return eligible(f,j)&&!done(f,j)&&unlocked(f,j)})}
+
+/* ---------- layout of the table: 3..9(+) seats, ellipse when crowded ---------- */
+function layoutFor(n,W){
+ var sz=n<=5?60:n<=7?52:n<=9?46:44,sw=n<=5?80:n<=7?70:n<=9?64:60,sh=sz+38;
+ var Rx=Math.floor((W-sw-8)/2);
+ var f=n<=5?1:n<=7?1.16:n<=9?1.3:1.42;
+ var Ry=Math.round(Rx*f),cx=W/2,cy=Ry+sz/2+4,H=2*Ry+sz+4+44,pos=[],i,ang;
+ for(i=0;i<n;i++){ang=(-90+360*i/n)*Math.PI/180;pos.push({l:cx+Rx*Math.cos(ang)-sw/2,t:cy+Ry*Math.sin(ang)-sz/2})}
+ var tw=Math.max(110,2*Rx-sw*1.1),th=n<=5?tw:Math.max(110,2*Ry-sh*0.9);
+ return {W:W,H:H,sz:sz,sw:sw,sh:sh,pos:pos,tw:tw,th:th,cx:cx,cy:cy,nf:n<=5?12.5:n<=7?12:11.5,sf:n<=5?10.5:10};
+}
+
+/* ---------- actions: facilitator ---------- */
+function setStage(n){
+ S.stage=n;S.fview=n;S.errF=null;S.hlIds=[];
+ S.members.forEach(function(m){m.view=null});
+ log('La mesa pasó a: '+STAGES[n].n);
+ fmut();
+}
+function advance(force){
+ var st=S.stage,un,others,off;
+ if(S.closed)return;
+ if(st===1){S.started=true;log('Sesión abierta · Mesa Esperanza 03');setStage(2);render();return}
+ if(st===2){
+  un=S.members.filter(function(m){return !m.att});
+  if(un.length){
+   S.errF={msg:'Falta marcar asistencia: '+un.map(function(m){return m.short}).join(', ')+'.'};
+   S.hlIds=un.map(function(m){return m.id});
+   render();return;
+  }
+  setStage(3);render();return;
+ }
+ if(st===3||st===4){
+  if(!force){
+   var steps=STEPS_OF[st];
+   var rm=realMembers().filter(function(m){return steps.some(function(j){return eligible(m,j)&&!done(m,j)})});
+   others=rm.filter(live).map(function(m){return m.short});
+   off=rm.filter(function(m){return !live(m)}).map(function(m){return m.short});
+   var mine=st===4?mineMissing().map(function(j){return STEPN[j]}):[];
+   if((S.online&&(others.length||off.length))||mine.length){
+    S.sheet={type:'confAdv',next:st+1,names:S.online?others:[],off:S.online?off:[],mine:mine};render();return;
+   }
+  }
+  S.sheet=null;
+  if(st===4){S.answersClosed=true;log('Respuestas cerradas'+(S.online?'':' (aviso verbal)'))}
+  setStage(st+1);render();return;
+ }
+ if(st===5)S.sheet={type:'confClose'};render();
+}
+function closeSession(){
+ S.closed=true;S.answersClosed=true;S.sheet=null;S.fview=5;
+ log('Sesión cerrada'+(S.online?'':' · guardada en este teléfono'));
+ fmut();render();
+}
+function markAtt(id,att){
+ var m=S.members.filter(function(x){return x.id===id})[0];if(!m)return;
+ m.att=att;m.autoPend=false;S.sheet=null;
+ log(m.short+': '+ATTL[att]);
+ S.hlIds=S.hlIds.filter(function(x){return x!==id});
+ if(!S.members.some(function(x){return !x.att}))S.errF=null;
+ fmut();render();
+}
+function syncFac(){
+ var f=FAC();
+ if(!facHasPend())return;
+ if(!S.online){toast('f','Sin internet: se sincroniza al reconectar');return}
+ S.facSyncing=true;
+ ['fu','cu','co'].forEach(function(k){if(f.sy[k]==='pend')f.sy[k]='sync'});
+ render();var g=S.gen;
+ setTimeout(function(){
+  if(S.gen!==g)return;
+  ['fu','cu','co'].forEach(function(k){if(f.sy[k]==='sync')f.sy[k]='ok'});
+  S.facSyncing=false;S.facPend=false;pub();
+  log('Teléfono del facilitador sincronizado'+(S.closed?' · cierre de sesión enviado':''));
+  render();
+ },900);
+}
+
+/* ---------- actions: member / facilitator-as-participant ---------- */
+function sampleFill(m){var s=SAMPLE[m.id];m.d={did:s.did,ft:s.ft,fs:s.fs,q1:s.q1,q2:s.q2,cs:s.cs,com:s.com}}
+function submitFor(m,step,fromUI){
+ var d=m.d,key=KEY[step],err={};
+ if(m[key].done)return false;
+ if(!unlocked(m,step)){if(fromUI)T(m,'Esta etapa está cerrada o aún no se abre.');return false}
+ if(step===3){
+  if(!d.did)err.did='Elige cómo te fue con tu compromiso.';
+  if(d.fs==null)err.fs='Elige tu puntaje de 1 a 10 (el 5 no se puede).';
+ }
+ if(step===4){
+  if(!d.q1||d.q1.trim().length<3)err.q1='Escribe una respuesta corta.';
+  if(!d.q2||d.q2.trim().length<3)err.q2='Escribe una respuesta corta.';
+  if(d.cs==null)err.cs='Elige tu puntaje de 1 a 10 (el 5 no se puede).';
+ }
+ if(step===5){
+  var t=(d.com||'').trim();
+  if(!t)err.com='Escribe una acción concreta para esta semana.';
+  else if(t.length<12)err.com='Muy corta. Cuenta qué harás y cuánto.';
+  else if(!/(\d|\buna?\b|\bdos\b|\btres\b|cada|antes|todos|todas|diari|semana|viernes|lunes|martes|mi[eé]rcoles|jueves|s[aá]bado|domingo)/i.test(t))err.com='Hazla medible: añade cuántas veces o para cuándo.';
+ }
+ if(Object.keys(err).length){m.err=err;if(fromUI){render();var f=document.querySelector((m.isFac?'#fac':'#mem')+' .ferr');if(f&&f.scrollIntoView)f.scrollIntoView({block:'center'})}return false}
+ m.err={};
+ if(step===3)m.fu={done:true,did:d.did,text:d.ft,score:d.fs};
+ if(step===4)m.cu={done:true,q1:d.q1,q2:d.q2,score:d.cs};
+ if(step===5)m.co={done:true,text:(d.com||'').trim()};
+ var L=live(m);
+ m.sy[key]=L?'sync':'pend';
+ if(m.att==='ausente')m.autoPend=true;   /* auto-attendance: Ausente only (Excusado/Tarde are never flipped) */
+ m.view=null;
+ if(m.isFac&&!S.online)S.facPend=true;
+ if(!m.isFac&&!L){
+  if(step===3)m.lp=Math.max(m.lp,4);
+  if([3,4,5].every(function(j){return done(m,j)||!eligible(m,j)}))m.lp=6;
+ }
+ if(!L){
+  if(fromUI)T(m,'Guardado en este teléfono · pendiente de sincronizar');else render();
+ }else{
+  var g=S.gen;
+  setTimeout(function(){if(S.gen===g)finish(m,key)},900);
+  render();
+ }
+ return true;
+}
+function skipFu(m,ui){
+ if(m.fu.done)return;
+ m.fu={done:true,skipped:true};m.view=null;
+ if(!m.isFac&&!live(m))m.lp=Math.max(m.lp,4);
+ if(ui)render();
+}
+function finish(m,key){
+ if(m.sy[key]!=='sync')return;
+ var n=STEPN[key==='fu'?3:key==='cu'?4:5];
+ if(m.isFac){m.sy[key]='ok';log(m.short+' (facilitadora) respondió '+n)}
+ else{
+  m.sy[key]=S.srv.closed?'late':'ok';
+  if(S.srv.closed)log(m.short+' sincronizó '+n+' tarde (después del cierre)','late');
+  else log(m.short+' respondió '+n,'');
+  if(m.autoPend){
+   m.autoPend=false;
+   if(m.att==='ausente'){m.att='presente';m.auto=true;log(m.short+' pasó de Ausente a Presente (asistencia automática)','auto')}
+  }
+ }
+ if(syncOf(m)!=='sync'&&syncOf(m)!=='pend')m.hrs=0;
+ render();
+}
+function syncMember(m,ui){
+ if(m.isFac){if(ui&&!S.online)toast('f','Sin internet: se sincroniza al reconectar');else syncFac();return}
+ if(!live(m)){if(ui)toast('m','Sin conexión: se enviará cuando haya internet');return}
+ var any=false,g=S.gen;
+ ['fu','cu','co'].forEach(function(k){
+  if(m.sy[k]==='pend'){m.sy[k]='sync';any=true;setTimeout(function(){if(S.gen===g)finish(m,k)},1000)}
+ });
+ if(!any&&m.hrs>0){m.hrs=0;if(ui)toast('m','Sincronizado · nada pendiente')}
+ render();
+}
+function scheduleSync(m,delay){var g=S.gen;setTimeout(function(){if(S.gen===g)syncMember(m,false)},delay)}
+function autoSyncAll(){
+ var delay=facHasPend()?1200:400;
+ if(facHasPend())syncFac();
+ realMembers().forEach(function(m,i){if(live(m))scheduleSync(m,delay+i*300)});
+}
+function nextSteps(m){
+ var out=[],j;
+ if(live(m)){var st=S.srv.stage;if(st===3||st===4)STEPS_OF[st].forEach(function(x){if(!done(m,x))out.push(x)});}
+ else{for(j=3;j<=5;j++)if(!done(m,j))out.push(j)}
+ return out;
+}
+function simTable(){
+ var cnt=0,g=S.gen,i=0;
+ realMembers().forEach(function(m){
+  if(m.id===S.sel)return;
+  var ks=nextSteps(m);
+  if(!ks.length)return;
+  cnt++;
+  var base=500+(i++)*750;
+  ks.forEach(function(k,j){
+   setTimeout(function(){
+    if(S.gen!==g)return;
+    if(k===3&&m.noPrev){skipFu(m,true);return}
+    sampleFill(m);submitFor(m,k,false);
+   },base+j*650);
+  });
+ });
+ if(!cnt)toast('f','Nada pendiente para simular: abre una etapa (3 o 4) o elige otro miembro.');
+}
+function setNet(m,v){
+ if(m.isFac||m.net===v)return;
+ var wasLive=live(m);
+ m.net=v;
+ if(wasLive&&!live(m))m.lp=Math.max(m.lp,3,Math.min(S.srv.stage,4));
+ m.view=null;
+ log(m.short+(v?' recuperó la conexión':' perdió la conexión'));
+ render();
+ if(v&&S.online)scheduleSync(m,facHasPend()?1500:600);
+}
+function setOnline(v){
+ if(S.online===v)return;
+ var was=S.members.map(live);
+ S.online=v;
+ S.members.forEach(function(m,i){if(!m.isFac&&was[i]&&!live(m))m.lp=Math.max(m.lp,3,Math.min(S.srv.stage,4));m.view=null});
+ log(v?'Conexión restablecida en la sala · sincronizando':'Sin internet en la sala · modo guía verbal');
+ render();
+ if(v){toast('f','Conexión restablecida · sincronizando…');autoSyncAll()}
+}
+function simAll(){
+ S.online=true;
+ S.all.forEach(function(m){m.net=true;m.view=null});
+ log('Reconexión simulada · sincronizando');
+ render();autoSyncAll();
+}
+function jump(n){
+ n=+n;
+ if(n>=2)S.started=true;
+ if(n>=3){S.members.forEach(function(m){if(!m.att)m.att=m.id==='an'?'ausente':m.id==='ma'?'excusado':'presente'})}
+ S.closed=false;S.answersClosed=(n>=5);
+ S.stage=n;S.fview=n;S.errF=null;S.hlIds=[];S.members.forEach(function(m){m.view=null});
+ log('Etapa → '+STAGES[n].n+' (salto del revisor)');fmut();
+ render();
+}
+function setSeats(n){
+ U.seats=Math.max(MIN_SEATS,Math.min(MAX_SEATS,+n));
+ S.members=S.all.slice(0,U.seats);
+ if(!S.members.some(function(m){return m.id===S.sel}))S.sel='ca';
+ S.sheet=null;
+ buildCtl();render();
+}
+
+/* ---------- render: shared bits ---------- */
+function avatar(m){return '<span class="av" style="background:'+m.col+'">'+esc(m.ini)+'</span>'}
+function connPill(){
+ if(!S.online)return '<span class="pill p-off">'+ic('off',14)+'Sin internet</span>';
+ if(S.facSyncing)return '<span class="pill p-sync">'+ic('sync',14)+'Sincronizando</span>';
+ if(facHasPend())return '<span class="pill p-pend">'+ic('up',14)+'Por sincronizar</span>';
+ return '<span class="pill p-ok live"><i class="d"></i>En vivo</span>';
+}
+function timerHTML(id){
+ var e=S.elapsed,over=e>1800;
+ return '<div class="tmr'+(over?' over':'')+'" id="'+id+'"><span class="tv">'+fmt(e)+'</span> <span style="color:var(--mut)">/ 30:00</span><small>'+(over?'Pasó de 30 min · solo informativo':'Tiempo · informativo')+'</small></div>';
+}
+function statusBar(L){
+ return '<div class="sb"><span>7:00</span><span class="r">'+(L?ic('wifi',15):ic('off',15))+'<span>'+(L?'5G':'Sin red')+'</span></span></div>';
+}
+function legendHTML(k){
+ var items;
+ if(k===1)return '';
+ if(k===2)items=[['pres','Presente'],['tarde','Tarde'],['exc','Excusado'],['aus','Ausente'],['wait','Sin marcar']];
+ else items=[['done','Respondió'],['wait','Pendiente'],['off','Sin red / guardado en su teléfono'],['sync','Sincronizando'],['late','Sincronizó tarde'],['skip','Omitido']];
+ return '<div class="kick lgttl">Leyenda de la mesa</div><div class="legend" role="list">'+items.map(function(i){return '<div class="lg s-'+i[0]+'" role="listitem"><span class="mr"></span>'+i[1]+'</div>'}).join('')+'</div><div class="lgnote">'+ic('crown',14)+' Corona = facilitador (también responde) · ● ○ = reflexión y compromiso dentro de Valor</div>';
+}
+function seatHTML(m,i,n,k,Lay){
+ var pos=Lay.pos[i],s=seatState(m,k),hl=S.hlIds.indexOf(m.id)>=0,chip='';
+ if(m.auto)chip='<span class="achip auto" title="Asistencia automática">AUTO</span>';
+ else if(k>=3&&m.att==='ausente')chip='<span class="achip" title="Ausente">A</span>';
+ else if(k>=3&&m.att==='tarde')chip='<span class="achip" title="Tarde">T</span>';
+ else if(k>=3&&m.att==='excusado')chip='<span class="achip" title="Excusado">E</span>';
+ var badge=s.i?'<span class="bdg">'+ic(s.i,14)+'</span>':'';
+ var crown=m.isFac?'<span class="crown" title="Facilitador">'+ic('crown',13)+'</span>':'';
+ var pips='';
+ if(s.pips)pips='<span class="pips" aria-hidden="true">'+s.pips.map(function(c){return '<i class="pp p-'+c+'" style="--c:var(--'+({done:'lime',late:'mag',wait:'amber',off:'off',sync:'acc',miss:'err',skip:'off'}[c]||'off')+')"></i>'}).join('')+'</span>';
+ var extra=(m.hrs>=24?' · '+m.hrs+' h sin sincronizar':'');
+ return '<button type="button" class="seat s-'+s.c+(hl?' hlt shake':'')+'" style="left:'+pos.l.toFixed(1)+'px;top:'+pos.t.toFixed(1)+'px" data-act="seat" data-id="'+m.id+'" aria-label="'+esc((m.isFac?'Facilitador, ':'')+m.name+', '+(s.l||'')+extra)+'">'+
+  '<span class="avw"><span class="ring"></span>'+avatar(m)+badge+chip+crown+pips+'<span class="pres'+(live(m)?'':' n')+'" title="'+(live(m)?'Conectado':'Sin conexión')+'"></span></span>'+
+  '<span class="nm">'+esc(m.short)+'</span><span class="st">'+esc(s.l||'')+'</span></button>';
+}
+function tableHTML(k,W){
+ var M=S.members,n=M.length,c=counts(k),Lay=layoutFor(n,W);
+ var top='<div class="tbtop" style="left:'+(Lay.cx-Lay.tw/2).toFixed(1)+'px;top:'+(Lay.cy-Lay.th/2).toFixed(1)+'px;width:'+Lay.tw.toFixed(1)+'px;height:'+Lay.th.toFixed(1)+'px"><div class="big">'+c.a+'<i>/'+c.b+'</i></div><div class="cap2">'+c.lab+'</div><div class="stg">'+(S.online?esc(STAGES[k].n):'Sin datos en vivo')+'</div></div>';
+ return '<div class="tblw"><div class="tbl'+(n>=8?' tb9':'')+'" style="width:'+W+'px;height:'+Lay.H+'px;--sz:'+Lay.sz+'px;--sw:'+Lay.sw+'px;--nf:'+Lay.nf+'px;--sf:'+Lay.sf+'px" role="group" aria-label="Mesa redonda: '+n+' de '+CAP+' lugares">'+top+M.map(function(m,i){return seatHTML(m,i,n,k,Lay)}).join('')+'</div></div>';
+}
+
+/* ---------- render: facilitator ---------- */
+var VERBAL={
+ 1:'Abrimos la mesa. Abran la app y esperen mis indicaciones.',
+ 2:'Yo marco la asistencia en mi teléfono. Digan “presente” cuando los nombre.',
+ 3:'Abran Seguimiento: cuenten qué hicieron con su compromiso y califíquense en Honestidad.',
+ 4:'Abran Valor actual: Responsabilidad. Respondan, pónganse un puntaje (sin 5) y escriban su compromiso: qué, cuánto y para cuándo.',
+ 5:'Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.'
+};
+function mineBtn(){
+ if(S.closed||S.stage<3)return '';
+ var miss=mineOpenMissing();
+ if(!miss.length)return '';
+ return '<button type="button" class="btn sec sm" data-act="ftab" data-v="mine" style="margin-bottom:8px;width:100%">'+ic('user',18)+'Responder yo · falta'+(miss.length>1?'n '+miss.length+' pasos':': '+STEPS[miss[0]])+'</button>';
+}
+function facDock(){
+ var o=!S.online,st=S.stage,lbl,hint='';
+ var sy='';
+ if(facHasPend())sy='<button type="button" class="ibtn'+(S.online?' pulse':'')+'" data-act="syncfac" aria-label="Sincronizar teléfono del facilitador" title="Sincronizar">'+ic(S.facSyncing?'sync':'up',22)+'</button>';
+ if(S.closed){
+  return '<div class="dock"><div class="row">'+sy+'<button type="button" class="btn sec" disabled>'+ic('lock',18)+'Sesión cerrada</button></div><p class="hint">'+(facHasPend()?'Cerrada en este teléfono · pendiente de sincronizar':'Cierre sincronizado · los teléfonos que lleguen después se marcan “tarde”.')+'</p></div>';
+ }
+ if(st===1)lbl=o?'Anunciar: abrir sesión':'Abrir sesión';
+ else if(st===2)lbl=o?'Anunciar: seguimiento':'Abrir seguimiento';
+ else if(st===3)lbl=o?'Anunciar: valor actual':'Abrir valor actual';
+ else if(st===4)lbl=o?'Anunciar: cerrar respuestas':'Cerrar respuestas';
+ else lbl='Cerrar sesión';
+ if(o)hint='Sin internet: los botones son guía verbal; cada teléfono avanza a su ritmo.';
+ else if(st===2)hint='Marca a cada persona tocando su asiento.';
+ else if(st===3)hint='Los miembros esperan hasta que abras la etapa.';
+ else if(st===4)hint='Valor actual incluye el compromiso. Al cerrar respuestas, los teléfonos en línea dejan de enviar.';
+ else hint='Respuestas cerradas. Cierra la sesión para enviar el resumen.';
+ var extra='';
+ if(st===2)extra='<button type="button" class="btn sec sm" data-act="allpres" style="margin-bottom:8px;width:100%">Marcar a todos Presente</button>';
+ else extra=mineBtn();
+ return '<div class="dock">'+extra+'<div class="row">'+sy+'<button type="button" class="btn'+(o?' off':'')+'" data-act="advance">'+(st===5?ic('lock',20):ic('bolt',20))+lbl+'</button></div><p class="hint">'+hint+'</p></div>';
+}
+function sheetHTML(){
+ var sh=S.sheet,m,h='';
+ if(!sh)return '';
+ if(sh.type==='att'){
+  m=S.members.filter(function(x){return x.id===sh.id})[0];
+  h='<div class="grab"></div><h3>Asistencia · '+esc(m.name)+'</h3><p>Toca una opción. Puedes cambiarla después.</p><div class="opts">'+
+   ['presente','tarde','excusado','ausente'].map(function(a){return '<button type="button" class="opt s-'+ATTC[a]+'" aria-pressed="'+(m.att===a)+'" data-act="mark" data-id="'+m.id+'" data-v="'+a+'">'+ic(ATTI[a],20)+ATTL[a]+'</button>'}).join('')+
+   '</div><button type="button" class="btn sec" data-act="closeSheet">Cancelar</button>';
+ }else if(sh.type==='mem'){
+  m=S.members.filter(function(x){return x.id===sh.id})[0];
+  h='<div class="grab"></div><h3>'+(m.isFac?ic('crown',18)+' ':'')+esc(m.name)+(m.isFac?' · facilitadora':'')+'</h3><p>'+(m.att?ATTL[m.att]:'Asistencia sin marcar')+(m.auto?' · asistencia automática':'')+(m.noPrev?' · sin compromiso previo':'')+'</p>';
+  [3,4,5].forEach(function(k){var s=seatState(m,k===5?5:k);var st=stepSeat(m,k);h+='<div class="mrow"><span>'+STEPN[k]+'</span><span class="pill s-'+st.c+'">'+esc(st.l||ST[st.c][0])+'</span></div>'});
+  if(m.hrs>=24)h+='<div class="warn" style="margin-top:12px">'+ic('warn',18)+'<div><b>'+m.hrs+' h sin sincronizar.</b> Un teléfono puede pasar hasta 7 días sin conexión.</div></div>';
+  if(m.isFac)h+='<button type="button" class="btn sm" data-act="ftab" data-v="mine" style="margin-top:12px;width:100%">Ir a Mis respuestas</button>';
+  h+='<div style="height:10px"></div><button type="button" class="btn sec" data-act="closeSheet">Cerrar</button>';
+ }else if(sh.type==='confAdv'){
+  var closing=sh.next===5,nm=sh.names.concat(sh.off);
+  h='<div class="grab"></div><h3>'+(closing?'¿Cerrar respuestas ya?':'¿Abrir valor actual ya?')+'</h3>';
+  if(sh.mine.length)h+='<div class="warn" style="margin-top:0">'+ic('user',18)+'<div><b>Tus propias respuestas están incompletas:</b> falta '+esc(sh.mine.join(', '))+'. Si cierras ahora, ya no podrás enviarlas.</div></div>';
+  if(nm.length)h+='<p>Aún no responden: <b>'+esc(nm.join(', '))+'</b>.'+(sh.off.length?' '+esc(sh.off.join(', '))+' no tiene conexión y podría llegar tarde.':'')+(closing?'':' Podrán volver a la etapa anterior hasta que cierres respuestas.')+'</p>';
+  else h+='<p style="margin-top:8px">Todos los demás ya respondieron.</p>';
+  if(sh.mine.length)h+='<button type="button" class="btn" data-act="gomine" style="margin-bottom:8px">'+ic('user',18)+'Responder yo ahora</button>';
+  h+='<div class="row"><button type="button" class="btn sec" data-act="closeSheet">Esperar</button><button type="button" class="btn'+(sh.mine.length?' sec':'')+'" data-act="doAdv">'+(closing?'Cerrar de todos modos':'Abrir ahora')+'</button></div>';
+ }else if(sh.type==='confClose'){
+  var pend=S.members.filter(function(x){return [3,4,5].some(function(k){return eligible(x,k)&&!done(x,k)})}).length;
+  h='<div class="grab"></div><h3>¿Cerrar la sesión?</h3><p>Se envía el resumen a la organización. Si algún teléfono sin red responde después, sus respuestas se aceptan y quedan marcadas <b style="color:var(--mag)">“Sincronizado tarde”</b>.'+(pend?' Hay '+pend+' persona(s) con respuestas incompletas.':'')+'</p><div class="row"><button type="button" class="btn sec" data-act="closeSheet">Volver</button><button type="button" class="btn" data-act="doClose">Cerrar sesión</button></div>';
+ }
+ return '<div class="sheet" data-act="scrim" role="dialog" aria-modal="true"><div class="sh">'+h+'</div></div>';
+}
+function summaryHTML(){
+ var M=S.members,pres=M.filter(function(m){return m.att==='presente'||m.att==='tarde'}).length,aus=M.filter(function(m){return m.att==='ausente'}).length;
+ var autoN=M.filter(function(m){return m.auto}).length;
+ function agg(k){
+  var el=M.filter(function(m){return eligible(m,k)}),got=el.filter(function(m){return done(m,k)}),synced=got.filter(function(m){var y=m.sy[KEY[k]];return y==='ok'||y==='late'});
+  var sc=synced.map(function(m){return m[KEY[k]].score}).filter(function(v){return v!=null});
+  var av=sc.length?(sc.reduce(function(a,b){return a+b},0)/sc.length).toFixed(1):'–';
+  return {el:el.length,got:got.length,synced:synced.length,av:av};
+ }
+ var f=agg(3),c=agg(4),o=agg(5);
+ var unsynced=(f.got-f.synced)+(c.got-c.synced)+(o.got-o.synced);
+ var late=M.reduce(function(n,m){return n+['fu','cu','co'].filter(function(k){return m.sy[k]==='late'}).length},0);
+ var h='<div class="sumgrid">'+
+  '<div class="tile"><b>'+pres+'/'+M.length+'</b><span>Presentes (incluye facilitador)'+(aus?' · '+aus+' ausente(s)':'')+'</span></div>'+
+  '<div class="tile"><b>'+fmt(S.elapsed)+'</b><span>Duración (meta 30:00)</span></div>'+
+  '<div class="tile"><b>'+f.synced+'/'+f.el+'</b><span>Seguimiento · prom. '+f.av+'</span></div>'+
+  '<div class="tile"><b>'+c.synced+'/'+c.el+'</b><span>Valor actual · prom. '+c.av+'</span></div>'+
+  '<div class="tile w"><b>'+o.synced+'/'+o.el+'</b><span>Compromisos recibidos (parte de Valor actual)</span></div></div>';
+ if(autoN)h+='<div class="info">'+ic('user',18)+'<div><b>Asistencia automática:</b> '+autoN+' persona(s) estaban Ausente y respondieron; pasaron a Presente.</div></div>';
+ if(late)h+='<div class="info" style="border-color:var(--mag);background:color-mix(in srgb,var(--mag) 14%,transparent)"><span style="color:var(--mag)">'+ic('clock',18)+'</span><div><b>Sincronizado tarde:</b> '+late+' respuesta(s) llegaron después del cierre. Se aceptaron y quedan marcadas.</div></div>';
+ if(unsynced>0)h+='<div class="warn">'+ic('warn',18)+'<div><b>Faltan '+unsynced+' respuesta(s) por sincronizar.</b> Están en teléfonos sin conexión; el resumen se actualizará cuando lleguen.</div></div>';
+ return h;
+}
+function renderFac(){
+ var root=$('fac'),tab=U.fac==='tablet',k=S.fview,st=S.stage,L=S.online,F=FAC();
+ root.className='phone fac'+(tab?' tablet':(U.small?' small':''));
+ var W=tab?(S.members.length>=8?330:380):Math.min(360,root.clientWidth-34);
+ var miss=mineOpenMissing().length;
+ var headRow='<div class="row" style="justify-content:space-between;align-items:center;margin-top:2px"><div><div style="font-weight:900;font-size:15px">Mesa Esperanza 03</div><div style="font-size:12px;color:var(--mut);font-weight:600">Fundación Luz · Módulo 1 · '+esc(F.short)+' (facilitadora)</div></div>'+connPill()+'</div>';
+ var tabs='<div class="ftabs" role="tablist" aria-label="Vista del facilitador"><button type="button" role="tab" aria-selected="'+(S.ftab==='board')+'" data-act="ftab" data-v="board">'+ic('crown',15)+'Dirigir la mesa</button><button type="button" role="tab" aria-selected="'+(S.ftab==='mine')+'" data-act="ftab" data-v="mine">Mis respuestas'+(miss?'<span class="nb" aria-label="'+miss+' pendientes">'+miss+'</span>':'')+'</button></div>';
+ if(S.ftab==='mine'){
+  PF='f-';
+  var r=memScreen(F);
+  var cnt=counts(Math.max(3,Math.min(st,5)));
+  var mini='<div class="ministage"><span>La mesa está en: <b>'+esc(STAGES[st].n)+'</b>'+(st>=3?' · '+cnt.a+'/'+cnt.b:'')+'</span><button type="button" data-act="ftab" data-v="board">Ir a la mesa</button></div>';
+  return statusBar(L)+'<div class="body"><div class="mine">'+headRow+tabs+mini+'<div style="height:6px"></div>'+r.peers+r.body+'</div></div>'+(r.dock?'<div class="dock"><div class="mine">'+r.dock+'</div></div>':'')+(S.toastF?'<div class="toast" role="status">'+esc(S.toastF)+'</div>':'');
+ }
+ var bar='<div class="stagebar'+(L?'':' verbal')+'" role="group" aria-label="Etapas de la sesión">'+
+  [1,2,3,4,5].map(function(i){
+   var cls=(S.closed||i<st)?'done':(i===st?'cur':'');
+   var isView=(i===k&&k!==st)?' view':'';
+   return '<button type="button" class="'+cls+isView+'" data-act="seg" data-k="'+i+'" aria-label="Etapa '+i+': '+STAGES[i].n+(i===st?' (actual)':i<st?' (completada)':' (pendiente)')+'"'+(i===st?' aria-current="step"':'')+'><b>'+((S.closed||i<st)?ic('check',16):i)+'</b><small>'+STAGES[i].s+'</small></button>';
+  }).join('')+'</div>';
+ var cnt2=counts(k);
+ var head='<div class="hl"><div><div class="kick">'+(S.closed?'Sesión':'La mesa está en')+'</div><h1>'+(S.closed?'Cerrada':esc(STAGES[st].n))+'</h1><p class="sub">'+esc(k===st||S.closed?cnt2.sub:'Viendo: '+STAGES[k].n+' · '+cnt2.sub)+'</p></div>'+timerHTML('tmF')+'</div>';
+ var ribbon=(k!==st&&!S.closed)?'<button type="button" class="ribbon" data-act="seg" data-k="'+st+'">Viendo '+esc(STAGES[k].n)+' · volver a la etapa actual</button>':'';
+ var vchips='<div class="vchips"><span class="vchip">Actual: <b>Valor 4 · Responsabilidad</b></span><span class="vchip">Anterior: <b>Valor 3 · Honestidad</b></span></div>';
+ var alerts='',errb='';
+ if(S.errF)errb='<div class="errbox" role="alert" style="margin-top:8px">'+ic('warn',18)+'<div>'+esc(S.errF.msg)+'</div></div>';
+ S.members.forEach(function(m){if(m.hrs>=24)alerts+='<div class="warn">'+ic('warn',18)+'<div><b>'+esc(m.short)+' lleva '+m.hrs+' h sin sincronizar.</b> Máximo 7 días: pídele que se conecte.</div></div>'});
+ var verbal='';
+ if(!L)verbal='<div class="verbal">'+ic('mic',20)+'<div><div class="kick">Guía verbal</div><q>“'+esc(VERBAL[st])+'”</q></div></div>';
+ var main=ribbon+errb+verbal+tableHTML(k,W)+legendHTML(k);
+ var side=alerts+vchips;
+ if(k===1&&!S.closed)side+='<div class="card"><div class="kick">Sesión de hoy</div>'+
+   '<div class="mrow"><span>Mesa</span><span>Mesa Esperanza 03</span></div><div class="mrow"><span>Organización</span><span>Fundación Luz</span></div>'+
+   '<div class="mrow"><span>Programada</span><span>Jue 7:00 pm · 30 min máx.</span></div><div class="mrow"><span>Valor actual</span><span>4 · Responsabilidad</span></div>'+
+   '<div class="mrow"><span>Valor anterior</span><span>3 · Honestidad</span></div><div class="mrow" style="border:0"><span>Lugares</span><span>'+S.members.length+' de '+CAP+' (facilitador incluido)</span></div></div>';
+ if(S.closed)side+=summaryHTML();
+ side+='<div class="kick" style="margin-top:14px">En vivo · actividad</div><div class="feed" aria-live="polite">'+
+   (S.feed.length?S.feed.slice(0,tab?7:3).map(function(f){return '<div class="fi k-'+(f.k||'x')+'"><time>'+f.t+'</time><span>'+esc(f.x)+'</span></div>'}).join(''):'<div class="fi"><span style="color:var(--mut)">Aún no hay actividad. Abre la sesión para empezar.</span></div>')+'</div>';
+ return statusBar(L)+'<div class="body">'+headRow+tabs+bar+head+'<div class="fgrid"><div class="g-main">'+main+'</div><div class="g-side">'+side+'</div></div></div>'+facDock()+sheetHTML()+(S.toastF?'<div class="toast" role="status">'+esc(S.toastF)+'</div>':'');
+}
+
+/* ---------- member screens (also used for the facilitator's own answers) ---------- */
+function valueStep(m){return done(m,4)?5:4}
+function viewOf(m){
+ var L=live(m),s=mStage(m);
+ if((m.isFac||L)&&clsd(m))return 'summary';
+ if(m.view&&m.view>=3&&m.view<=5&&(done(m,m.view)||unlocked(m,m.view)))return m.view;
+ if(m.isFac||L){if(s<=1)return 'lobby';if(s===2)return 'att';if(s>=5)return 'recap';return s===3?3:valueStep(m)}
+ return s>=6?'recap':(s===3?3:valueStep(m));
+}
+function syncBlock(m){
+ var s=syncOf(m),L=live(m),h='';
+ if(m.hrs>=24)h+='<div class="warn">'+ic('warn',20)+'<div><b>Llevas '+m.hrs+' h sin sincronizar.</b> Tu teléfono puede estar hasta 7 días sin conexión (te quedan '+Math.max(0,7-Math.floor(m.hrs/24))+'). Conéctate pronto para no perder tus respuestas.</div></div>';
+ var c,i,t,sub='',cls='';
+ if(s==='sync'){c='sync';i='sync';t='Sincronizando…';cls='sp-sync'}
+ else if(s==='pend'){c='pend';i='up';t='Guardado en este teléfono · pendiente de sincronizar';sub=L?'':'Se enviará cuando tengas internet.'}
+ else if(s==='late'){c='late';i='clock';t='Sincronizado tarde';sub='Llegó después del cierre de la sesión: se aceptó y quedó marcado.'}
+ else if(s==='ok'){c='ok';i='check';t='Sincronizado';sub='Tus respuestas ya están en la mesa.'}
+ else if(!L){c='off';i='off';t='Sin internet · todo se guarda en este teléfono';sub=m.isFac?'Tus respuestas se sincronizan igual que las de un miembro.':(S.online?'Tu teléfono perdió la señal. Sigue a tu ritmo.':'Tu facilitador te guía de palabra.')}
+ else return h;
+ h+='<div class="sync-pill p-'+c+' '+cls+'" style="--c:var(--'+(c==='ok'?'lime':c==='pend'?'amber':c==='sync'?'acc':c==='late'?'mag':'off')+')" role="status">'+ic(i,20)+'<div>'+t+(sub?'<small>'+sub+'</small>':'')+(s==='pend'&&L?'<button type="button" class="btn sm" style="margin-top:8px;min-height:44px" data-act="syncm">'+ic('sync',16)+'Sincronizar ahora</button>':'')+'</div></div>';
+ return h;
+}
+function peersHTML(m){
+ var L=live(m),st=stg(m),n=S.members.length,pw=n<=6?38:n<=8?32:30;
+ return '<div class="peers" style="--pw:'+pw+'px;--pg:'+(n<=6?7:5)+'px" role="group" aria-label="La mesa">'+S.members.map(function(p){
+  var cls;
+  if(st>=3&&(m.isFac||L))cls=seatState(p,Math.min(st,5)).c;
+  else if(st>=3)cls='off';
+  else cls='idle';
+  if(!m.isFac&&!L)cls='off';
+  var lab=cls==='done'?'ya respondió':cls==='wait'?'está respondiendo':cls==='off'?'sin conexión':cls==='late'?'llegó tarde':cls==='sync'?'sincronizando':cls==='skip'?'omitido':cls==='miss'?'no respondió':'';
+  var nm=p.short+(p.isFac?' (facilitadora)':'');
+  var bd=ST[cls]&&ST[cls][1]?'<span class="bdg">'+ic(ST[cls][1],9)+'</span>':'';
+  return '<span class="pe s-'+cls+(p.id===m.id?' me':'')+'" title="'+esc(nm+(lab?' · '+lab:''))+'" role="img" aria-label="'+esc(nm+(lab?', '+lab:''))+'"><span class="ring"></span>'+avatar(p)+bd+(p.isFac?'<span class="crown" style="width:14px;height:14px;left:-5px;top:-5px;border-width:1.5px">'+ic('crown',8)+'</span>':'')+'<span class="pres'+(live(p)?'':' n')+'"></span></span>';
+ }).join('')+'</div>';
+}
+function chipsHTML(m,v){
+ var L=live(m),h='<div class="chips3" role="group" aria-label="Tus etapas">';
+ [3,4,5].forEach(function(k){
+  var dn=done(m,k),un=unlocked(m,k),opened=((m.isFac||L)?stg(m)>=stageOf(k):m.lp>=stageOf(k));
+  var c,st,ic2;
+  if(dn){c='lime';st='Listo';ic2='check'}
+  else if(un){c='amber';st=(v===k?'Ahora':'Falta');ic2='dots'}
+  else if(opened){c='err';st='Cerrado';ic2='x'}
+  else {c='line';st='Aún no';ic2='lock'}
+  var can=dn||un;
+  h+='<button type="button" class="sc'+(v===k?' on':'')+(can?'':' lk')+'" style="--c:var(--'+c+')" '+(can?'data-act="mview" data-k="'+k+'"':'aria-disabled="true"')+' aria-label="'+STEPN[k]+': '+st+'"'+(v===k?' aria-current="step"':'')+'>'+STEPS[k]+'<small>'+ic(ic2,11)+st+'</small></button>';
+ });
+ return h+'</div><div class="seatnote" style="margin:4px 2px 0">Valor actual incluye tu compromiso (no es una etapa aparte).</div>';
+}
+function scorePick(field,val,s5){
+ function row(arr,cap){
+  return '<div class="srow"><div class="scap">'+cap+'</div><div class="sbtns">'+arr.map(function(n){
+   if(n===5)return '<button type="button" class="sk lock" data-act="five" data-f="'+field+'" aria-disabled="true" aria-describedby="'+PF+'f5-'+field+'" aria-label="5, bloqueado">'+ic('lock',16)+'<small>5</small></button>';
+   return '<button type="button" class="sk '+(n<5?'lo':'hi')+(val===n?' on':'')+'" data-act="score" data-f="'+field+'" data-v="'+n+'" aria-pressed="'+(val===n)+'">'+n+'</button>';
+  }).join('')+'</div></div>';
+ }
+ return '<div class="scorep" role="group" aria-label="Puntaje del 1 al 10, sin el 5">'+row([1,2,3,4,5],'Me inclino a mejorar · 1 a 4')+row([6,7,8,9,10],'Me inclino a estar bien · 6 a 10')+
+  '<p id="'+PF+'f5-'+field+'" class="five'+(s5===field?' bad shake':'')+'">'+ic('lock',14)+'<span>El 5 está bloqueado: elige si te inclinas hacia mejorar o hacia estar bien.</span></p>'+
+  (val!=null?'<div class="picked">Tu puntaje: '+val+'</div>':'')+'</div>';
+}
+function ferr(m,f){return m.err[f]?'<div class="ferr" id="'+PF+'e-'+f+'" role="alert">'+ic('warn',15)+'<span>'+esc(m.err[f])+'</span></div>':''}
+function resRows(m){
+ var h='';
+ if(m.fu.done)h+='<div class="res"><span>Seguimiento · Honestidad'+(m.fu.skipped?'<br><small style="color:var(--mut)">Sin compromiso previo (omitido)</small>':'')+'</span><span class="v">'+(m.fu.skipped?'–':m.fu.score)+'</span></div>';
+ if(m.cu.done)h+='<div class="res"><span>Valor actual · puntaje inicial</span><span class="v">'+m.cu.score+'</span></div>';
+ if(m.co.done)h+='<div class="res"><span style="max-width:78%">Mi compromiso<br><small style="color:var(--mut);font-weight:600">'+esc(m.co.text)+'</small></span></div>';
+ return h||'<p style="color:var(--mut)">Aún no hay respuestas guardadas.</p>';
+}
+function lockCard(m){return '<div class="lockcard">'+ic('lock',32)+'<h2>Etapa cerrada</h2><p>'+(m.isFac?'Cerraste las respuestas.':'Tu facilitador ya cerró las respuestas.')+'</p></div>'}
+function memScreen(m){
+ var L=live(m),v=viewOf(m),body='',dock='',d=m.d,fac=m.isFac;
+ var peers=peersHTML(m);
+ var stN=STAGES[Math.min(Math.max(stg(m),1),5)].n;
+ var room;
+ if(fac)room='';
+ else room='<div class="room"><div class="roompill"><div class="rp-l'+(L?'':' off')+'">'+(L?'<span class="pill p-ok live" style="padding:3px 9px"><i class="d"></i>En vivo</span><span>La mesa está en: <b>'+esc(S.srv.closed?'Cierre':stN)+'</b></span>':'<span class="pill p-off" style="padding:3px 9px">'+ic('off',13)+'Sin internet</span><span><b>A tu ritmo</b></span>')+'</div>'+timerHTML('tm'+PF)+'</div>'+peers+'<div style="height:12px"></div></div>';
+ var showChips=(typeof v==='number')||v==='recap';
+ if(showChips&&(fac||L?stg(m)>=3:true))body+=chipsHTML(m,v);
+ body+=syncBlock(m);
+ if(m.autoPend)body+='<div class="info">'+ic('user',18)+'<div><b>Te marcaron Ausente.</b> Como respondiste, tu asistencia pasará a <b>Presente</b> al sincronizar.</div></div>';
+ else if(m.auto)body+='<div class="info" style="border-color:var(--lime);background:color-mix(in srgb,var(--lime) 14%,transparent)"><span style="color:var(--lime)">'+ic('check',18)+'</span><div><b>Asistencia automática:</b> pasaste de Ausente a Presente porque respondiste.</div></div>';
+ else if(m.att==='ausente'&&typeof v==='number')body+='<div class="info">'+ic('info',18)+'<div>Estás marcado como <b>Ausente</b>. Si respondes, pasarás a Presente al sincronizar.</div></div>';
+ if(v==='lobby'){
+  body+='<div class="wait"><div class="bigav"><span class="ring"></span>'+avatar(m)+'</div><h2>'+(fac?'Aún no abres la sesión':'Esperando a tu facilitador')+'</h2><p>'+(fac?'Abre la sesión en “Dirigir la mesa”. Luego podrás responder como un miembro más.':'La mesa todavía no está abierta. Cuando se abra, verás aquí a tu mesa en vivo.')+'</p></div>';
+ }else if(v==='att'){
+  var a=m.att;
+  body+='<div class="wait"><div class="kick">Asistencia</div><h2 style="margin-top:8px">'+(fac?'Estás pasando lista':'Tu facilitador está pasando lista')+'</h2>'+(a?'<div class="attbig s-'+ATTC[a]+'" style="--c:var(--'+(a==='presente'?'lime':a==='tarde'?'cyan':a==='excusado'?'lilac':'off')+')">'+ic(ATTI[a],24)+ATTL[a]+'</div><p>'+(fac?'Como facilitador quedas Presente. Marca a los demás en “Dirigir la mesa”.':a==='ausente'?'Si respondes igualmente, pasarás a Presente al sincronizar.':'Perfecto. El seguimiento se abre en un momento.'):'<div class="attbig" style="--c:var(--amber)">'+ic('dots',24)+'Aún sin marcar</div><p>Espera a que te nombren.</p>')+'</div>';
+ }else if(v==='summary'){
+  body+='<div class="ttl"><div class="kick">Sesión cerrada</div><h2>Gracias, '+esc(m.short)+'</h2></div><div class="card" style="margin-top:6px"><div class="kick">Tu asistencia</div><div style="font-size:20px;font-weight:900;margin-top:4px">'+(m.att?ATTL[m.att]:'Sin marcar')+(m.auto?' · automática':'')+'</div></div><div class="card">'+resRows(m)+'</div>'+
+   ([3,4,5].some(function(k){return eligible(m,k)&&!done(m,k)})?'<div class="warn">'+ic('info',18)+'<div>Quedaron etapas sin responder. Ya no se pueden enviar desde la mesa en vivo.</div></div>':'');
+ }else if(v==='recap'){
+  var fin=[3,4,5].every(function(k){return done(m,k)||!eligible(m,k)});
+  body+='<div class="ttl"><div class="kick">'+(fin?'Terminaste':'Resumen')+'</div><h2>'+(fin?(fac?'Tus respuestas están completas':L?'Esperando el cierre de la mesa':'Todo guardado en tu teléfono'):'Tienes etapas pendientes')+'</h2></div><div class="card" style="margin-top:6px">'+resRows(m)+'</div>';
+  if(fin&&!L)body+='<div class="info">'+ic('info',18)+'<div>Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.</div></div>';
+  if(fin&&L&&ansC(m)&&!fac)body+='<div class="info">'+ic('lock',18)+'<div>Tu facilitador cerró las respuestas. Falta que cierre la sesión.</div></div>';
+ }else if(v===3){
+  var d3=m.fu;
+  body+='<div class="ttl"><div class="kick">Seguimiento · Valor 3</div><h2>Honestidad</h2></div>';
+  if(m.noPrev){
+   body+='<div class="gentle">'+ic('users',34)+'<h2>No tienes compromiso previo</h2><p>La semana pasada no estuviste en la mesa, así que no hay nada que revisar. ¡Qué bueno verte hoy!</p></div>';
+   dock=d3.done?'<button type="button" class="btn" disabled>'+(L?'Listo · esperando a la mesa':'Listo')+'</button>':'<button type="button" class="btn" data-act="skipfu">Seguir</button>';
+  }else if(d3.done){
+   body+='<div class="card">'+resRows({fu:d3,cu:{},co:{}})+'<div class="res"><span>¿Cómo te fue?</span><span>'+({si:'Lo cumplí',parte:'Cumplí una parte',no:'No pude'}[d3.did]||'')+'</span></div></div><div class="info">'+ic('check',18)+'<div>'+(L&&!fac?'Enviado. Mira cómo se llena la mesa arriba mientras esperas.':L?'Enviado.':'Guardado. Sigue con el siguiente paso cuando quieras.')+'</div></div>';
+   dock='<button type="button" class="btn" disabled>'+(L&&!fac?'Enviado · esperando a la mesa':'Guardado')+'</button>';
+  }else if(!unlocked(m,3)){
+   body+=lockCard(m);dock='<button type="button" class="btn" disabled>Cerrado</button>';
+  }else{
+   body+='<div class="kick" style="margin-top:6px">Tu compromiso de la semana pasada</div><div class="quote">'+esc(m.prev)+'</div>'+
+    '<div class="q fld'+(m.err.did?' bad':'')+'"><span class="qt" id="'+PF+'q-did">¿Cómo te fue?</span><div class="qchips" role="radiogroup" aria-labelledby="'+PF+'q-did">'+
+    [['si','Lo cumplí'],['parte','Cumplí una parte'],['no','No pude cumplirlo']].map(function(o){return '<button type="button" class="qc" role="radio" aria-checked="'+(d.did===o[0])+'" aria-pressed="'+(d.did===o[0])+'" data-act="did" data-v="'+o[0]+'"><span class="rd"></span>'+o[1]+'</button>'}).join('')+'</div>'+ferr(m,'did')+'</div>'+
+    '<div class="q fld"><label for="'+PF+'in-ft">Cuéntanos en una frase <span class="opthint">(opcional)</span></label><input type="text" id="'+PF+'in-ft" data-bind="ft" maxlength="80" value="'+esc(d.ft)+'" autocomplete="off"></div>'+
+    '<div class="q fld'+(m.err.fs?' bad':'')+'"><span class="qt">¿Cómo te calificas hoy en Honestidad?</span>'+scorePick('fs',d.fs,m.err.five)+ferr(m,'fs')+'</div>';
+   dock='<button type="button" class="btn" data-act="submit" data-k="3">'+ic('send',20)+'Enviar seguimiento</button>';
+  }
+ }else if(v===4){
+  var d4=m.cu;
+  body+='<div class="ttl"><div class="kick">Valor actual · Valor 4 · parte 1 de 2</div><h2>Responsabilidad</h2></div>';
+  if(d4.done){
+   body+='<div class="card"><div class="res"><span>Puntaje inicial</span><span class="v">'+d4.score+'</span></div><div class="res"><span style="max-width:100%">'+esc(d4.q1)+'</span></div></div>';
+   dock='<button type="button" class="btn" disabled>Guardado</button>';
+  }else if(!unlocked(m,4)){
+   body+=lockCard(m);dock='<button type="button" class="btn" disabled>Cerrado</button>';
+  }else{
+   body+='<p style="color:var(--mut);font-size:13.5px;margin:2px 0 0">El contenido está en tu folleto; aquí solo anotas tus respuestas. (Preguntas de ejemplo.)</p>'+
+    '<div class="q fld'+(m.err.q1?' bad':'')+'"><label for="'+PF+'in-q1">¿Quién es para ti un ejemplo de este valor?</label><textarea id="'+PF+'in-q1" data-bind="q1" maxlength="140" rows="2">'+esc(d.q1)+'</textarea>'+ferr(m,'q1')+'</div>'+
+    '<div class="q fld'+(m.err.q2?' bad':'')+'"><label for="'+PF+'in-q2">¿Por qué te diste ese puntaje?</label><textarea id="'+PF+'in-q2" data-bind="q2" maxlength="140" rows="2">'+esc(d.q2)+'</textarea>'+ferr(m,'q2')+'</div>'+
+    '<div class="q fld'+(m.err.cs?' bad':'')+'"><span class="qt">Tu puntaje inicial en Responsabilidad</span>'+scorePick('cs',d.cs,m.err.five)+ferr(m,'cs')+'</div>';
+   dock='<button type="button" class="btn" data-act="submit" data-k="4">'+ic('send',20)+'Enviar y seguir al compromiso</button>';
+  }
+ }else if(v===5){
+  var d5=m.co;
+  body+='<div class="ttl"><div class="kick">Valor actual · parte 2 de 2</div><h2>Tu compromiso de esta semana</h2></div>';
+  if(d5.done){
+   body+='<div class="quote">'+esc(d5.text)+'</div><div class="info">'+ic('check',18)+'<div>'+(L?(fac?'Enviado.':'Enviado. Falta que el facilitador cierre las respuestas.'):'Guardado en este teléfono.')+'</div></div>';
+   dock='<button type="button" class="btn" disabled>'+(L&&!fac?'Enviado · esperando a la mesa':'Guardado')+'</button>';
+  }else if(!unlocked(m,5)){
+   body+=lockCard(m);dock='<button type="button" class="btn" disabled>Cerrado</button>';
+  }else{
+   body+='<p style="color:var(--mut);font-size:14px;margin:2px 0 0">Una sola acción concreta y medible: <b style="color:var(--ink)">qué + cuánto + cuándo</b>.</p>'+
+    '<div class="q fld'+(m.err.com?' bad':'')+'"><label for="'+PF+'in-com">Mi compromiso</label><textarea id="'+PF+'in-com" data-bind="com" maxlength="120" rows="3" placeholder="Ej.: Llamar a mi abuela 2 veces esta semana">'+esc(d.com)+'</textarea><div class="cnt" id="'+PF+'cnt-com">'+(d.com||'').length+'/120</div>'+ferr(m,'com')+'</div>'+
+    '<div class="kick" style="margin-top:6px">¿Sin ideas? Toca un ejemplo</div><div class="exs">'+EXAMPLES.map(function(x,i){return '<button type="button" class="ex" data-act="ex" data-v="'+i+'">'+esc(x)+'</button>'}).join('')+'</div>';
+   dock='<button type="button" class="btn" data-act="submit" data-k="5">'+ic('send',20)+'Enviar mi compromiso</button>';
+  }
+ }
+ return {room:room,peers:peers,body:body,dock:dock,view:v};
+}
+function renderMem(){
+ var m=cur(),L=live(m);
+ PF='m-';
+ var root=$('mem');root.className='phone'+(U.small?' small':'');
+ var r=memScreen(m);
+ var html=statusBar(L)+r.room+'<div class="body">'+r.body+'</div>'+(r.dock?'<div class="dock">'+r.dock+'</div>':'')+(S.toastM?'<div class="toast" role="status">'+esc(S.toastM)+'</div>':'');
+ return {html:html,key:String(r.view)+':'+S.srv.stage};
+}
+
+/* ---------- render core ---------- */
+function fkey(el){if(!el||!el.dataset)return null;var d=el.dataset;if(el.id)return 'id:'+el.id;if(d.act)return 'a:'+[d.act,d.k,d.v,d.f,d.id].join('|');return null}
+function paint(root,html,key){
+ var ae=document.activeElement,fk=null,ss=null,se=null,body=root.querySelector('.body'),top=body?body.scrollTop:0;
+ if(ae&&root.contains(ae)){fk=fkey(ae);if(ae.selectionStart!=null){ss=ae.selectionStart;se=ae.selectionEnd}}
+ var prevKey=root.getAttribute('data-key');
+ root.innerHTML=html;
+ root.setAttribute('data-key',key);
+ var nb=root.querySelector('.body');if(nb&&prevKey===key)nb.scrollTop=top;
+ if(fk){
+  var n=null;
+  if(fk.indexOf('id:')===0)n=document.getElementById(fk.slice(3));
+  else{var all=root.querySelectorAll('[data-act]');for(var i=0;i<all.length;i++)if(fkey(all[i])===fk){n=all[i];break}}
+  if(n){n.focus({preventScroll:true});if(ss!=null&&n.setSelectionRange){try{n.setSelectionRange(ss,se)}catch(e){}}}
+ }
+}
+function render(){
+ var fh=renderFac(),mr=renderMem();
+ paint($('fac'),fh,'f'+S.ftab+':'+S.fview+':'+S.stage+':'+(S.closed?1:0)+':'+(S.online?1:0)+':'+S.members.length);
+ paint($('mem'),mr.html,mr.key+':'+S.sel+':'+(live(cur())?1:0));
+ syncCtl();
+}
+function seatNote(){
+ var n=S.members.length;
+ return 'Lugares: '+n+' de '+CAP+' · '+(FAC_COUNTS?'el facilitador cuenta dentro del máximo (facilitador + '+(n-1)+' miembros).':n-1+' miembros + facilitador (el facilitador no cuenta en el máximo).')+' Constante FACILITATOR_COUNTS='+FAC_COUNTS+'.';
+}
+function syncCtl(){
+ $('bOn').setAttribute('aria-pressed',String(S.online));$('bOff').setAttribute('aria-pressed',String(!S.online));
+ $('vPh').setAttribute('aria-pressed',String(U.fac==='phone'));$('vTb').setAttribute('aria-pressed',String(U.fac==='tablet'));
+ $('sNo').setAttribute('aria-pressed',String(!U.small));$('sSm').setAttribute('aria-pressed',String(U.small));
+ $('netChk').checked=!cur().net;
+ $('mcap').textContent=cur().name;
+ $('jump').value=String(S.stage);
+ $('seats').value=String(U.seats);
+ $('seatNote').textContent=seatNote();
+ var bs=$('msw').querySelectorAll('button');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-pressed',String(bs[i].dataset.id===S.sel));
+ $('bTheme').textContent='Tema: '+({auto:'auto',dark:'oscuro',light:'claro'}[U.theme]);
+}
+function buildCtl(){
+ $('msw').innerHTML=realMembers().map(function(d){return '<button type="button" data-act="sel" data-id="'+d.id+'" aria-pressed="false"><span class="mini" style="background:'+d.col+'">'+d.ini+'</span>'+esc(d.short)+'</button>'}).join('');
+ var o='';
+ for(var n=MIN_SEATS;n<=MAX_SEATS;n++)o+='<option value="'+n+'">'+n+' lugares · facilitador + '+(n-1)+(n===2?'':' miembros')+'</option>';
+ $('seats').innerHTML=o;
+}
+function tick(){
+ var els=document.querySelectorAll('.tmr');
+ for(var i=0;i<els.length;i++){
+  var e=S.elapsed,tv=els[i].querySelector('.tv');
+  if(tv)tv.textContent=fmt(e);
+  els[i].classList.toggle('over',e>1800);
+  var sm=els[i].querySelector('small');if(sm)sm.textContent=e>1800?'Pasó de 30 min · solo informativo':'Tiempo · informativo';
+ }
+}
+setInterval(function(){if(S&&S.started&&!S.closed){S.elapsed+=6;tick()}},1000);
+
+/* ---------- events ---------- */
+function subjectOf(ev){return(ev&&ev.target&&ev.target.closest&&ev.target.closest('#fac'))?FAC():cur()}
+function act(a,ds,ev){
+ var m=subjectOf(ev),k;
+ switch(a){
+  case 'online':setOnline(ds.v==='1');break;
+  case 'simsync':simAll();break;
+  case 'simtable':simTable();break;
+  case 'sel':S.sel=ds.id;render();break;
+  case 'reset':init();buildCtl();render();break;
+  case 'plus10':S.elapsed+=600;tick();break;
+  case 'fview':U.fac=ds.v;render();break;
+  case 'screen':U.small=ds.v==='1';render();break;
+  case 'theme':U.theme=U.theme==='auto'?'dark':U.theme==='dark'?'light':'auto';if(U.theme==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',U.theme);render();break;
+  case 'seg':k=+ds.k;if(k<=S.stage||S.closed){S.fview=k;render()}else toast('f','Aún no: usa el botón de abajo para abrir esa etapa.');break;
+  case 'ftab':S.ftab=ds.v;S.sheet=null;render();break;
+  case 'gomine':S.sheet=null;S.ftab='mine';render();break;
+  case 'advance':advance(false);break;
+  case 'doAdv':S.sheet=null;advance(true);break;
+  case 'doClose':closeSession();break;
+  case 'closeSheet':S.sheet=null;render();break;
+  case 'scrim':if(ev&&ev.target.classList.contains('sheet')){S.sheet=null;render()}break;
+  case 'seat':
+   var sm=S.members.filter(function(x){return x.id===ds.id})[0];
+   S.sheet=(S.fview===2&&!S.closed&&S.stage===2&&!sm.isFac)?{type:'att',id:sm.id}:{type:'mem',id:sm.id};render();break;
+  case 'mark':markAtt(ds.id,ds.v);break;
+  case 'allpres':S.members.forEach(function(x){if(!x.att){x.att='presente'}});log('Todos marcados Presente');S.errF=null;S.hlIds=[];fmut();render();break;
+  case 'syncfac':syncFac();break;
+  case 'syncm':syncMember(m,true);break;
+  case 'mview':m.view=+ds.k;render();break;
+  case 'did':m.d.did=ds.v;m.err.did=null;render();break;
+  case 'score':
+   if(ds.f==='fs')m.d.fs=+ds.v;else m.d.cs=+ds.v;
+   m.err[ds.f]=null;m.err.five=null;render();break;
+  case 'five':m.err.five=ds.f;render();break;
+  case 'ex':m.d.com=EXAMPLES[+ds.v];m.err.com=null;render();break;
+  case 'skipfu':skipFu(m,true);break;
+  case 'submit':submitFor(m,+ds.k,true);break;
+ }
+}
+document.addEventListener('click',function(e){
+ var t=e.target.closest?e.target.closest('[data-act]'):null;
+ if(!t||t.disabled)return;
+ act(t.dataset.act,t.dataset,e);
+});
+document.addEventListener('input',function(e){
+ var t=e.target;
+ if(!t.dataset||!t.dataset.bind)return;
+ var inF=!!t.closest('#fac'),m=inF?FAC():cur(),pf=inF?'f-':'m-',b=t.dataset.bind;
+ m.d[b]=t.value;
+ if(m.err[b]){m.err[b]=null;var er=document.getElementById(pf+'e-'+b);if(er)er.remove();var f=t.closest('.fld');if(f)f.classList.remove('bad')}
+ if(b==='com'){var c=document.getElementById(pf+'cnt-com');if(c)c.textContent=t.value.length+'/120'}
+});
+document.addEventListener('change',function(e){
+ var t=e.target;if(!t.dataset)return;
+ if(t.dataset.ctl==='net'){setNet(cur(),!t.checked)}
+ if(t.dataset.ctl==='jump')jump(t.value);
+ if(t.dataset.ctl==='seats')setSeats(t.value);
+});
+var rzT=null;
+window.addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){render()},120)});
+
+init();buildCtl();render();
+window.__rt={S:function(){return S},act:act,render:render,layoutFor:layoutFor,setSeats:setSeats,U:U};
+})();
+</script>
+</body>
+</html>
