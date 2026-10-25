@@ -1,0 +1,16 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Supabase / PostgREST / Edge Function payloads are snake_case.
+          field_rename: snake
+          explicit_to_json: true
+          include_if_null: false
+      freezed:
+        options:
+          format: true
+      drift_dev:
+        options:
+          # Tables live in PowerSync's schema; Drift only queries and watches them.
+          store_date_time_values_as_text: true
