@@ -7,8 +7,8 @@ part of 'health_status.dart';
 // **************************************************************************
 
 const _$HealthStatusEnumMap = {
-  HealthStatus.onTrack: 'on_track',
-  HealthStatus.atRisk: 'at_risk',
-  HealthStatus.offTrack: 'off_track',
-  HealthStatus.unknown: 'unknown',
+  HealthStatus.active: 'active',
+  HealthStatus.delayed: 'delayed',
+  HealthStatus.inactive: 'inactive',
+  HealthStatus.completed: 'completed',
 };

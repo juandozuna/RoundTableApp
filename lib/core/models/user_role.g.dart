@@ -7,7 +7,7 @@ part of 'user_role.dart';
 // **************************************************************************
 
 const _$UserRoleEnumMap = {
-  UserRole.administrator: 'administrator',
+  UserRole.administrator: 'platform_admin',
   UserRole.coordinator: 'coordinator',
   UserRole.facilitator: 'facilitator',
   UserRole.member: 'member',

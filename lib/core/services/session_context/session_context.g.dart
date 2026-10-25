@@ -25,7 +25,7 @@ Map<String, dynamic> _$SessionContextToJson(_SessionContext instance) =>
     };
 
 const _$UserRoleEnumMap = {
-  UserRole.administrator: 'administrator',
+  UserRole.administrator: 'platform_admin',
   UserRole.coordinator: 'coordinator',
   UserRole.facilitator: 'facilitator',
   UserRole.member: 'member',

@@ -7,14 +7,14 @@ part 'health_status.g.dart';
 /// Wire values must match `docs/implementation/api-contract.md`.
 @JsonEnum(alwaysCreate: true)
 enum HealthStatus {
-  @JsonValue('on_track')
-  onTrack,
-  @JsonValue('at_risk')
-  atRisk,
-  @JsonValue('off_track')
-  offTrack,
-  @JsonValue('unknown')
-  unknown;
+  @JsonValue('active')
+  active,
+  @JsonValue('delayed')
+  delayed,
+  @JsonValue('inactive')
+  inactive,
+  @JsonValue('completed')
+  completed;
 
   String get wireValue => _$HealthStatusEnumMap[this]!;
 

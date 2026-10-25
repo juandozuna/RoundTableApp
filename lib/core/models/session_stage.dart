@@ -7,18 +7,18 @@ part 'session_stage.g.dart';
 /// Wire values must match `docs/implementation/api-contract.md`.
 @JsonEnum(alwaysCreate: true)
 enum SessionStage {
-  @JsonValue('open')
-  open,
+  @JsonValue('lobby')
+  lobby,
   @JsonValue('attendance')
   attendance,
   @JsonValue('follow_up')
   followUp,
-  @JsonValue('current_value')
-  currentValue,
+  @JsonValue('value')
+  value,
   @JsonValue('commitment')
   commitment,
-  @JsonValue('closing')
-  closing;
+  @JsonValue('closed')
+  closed;
 
   String get wireValue => _$SessionStageEnumMap[this]!;
 

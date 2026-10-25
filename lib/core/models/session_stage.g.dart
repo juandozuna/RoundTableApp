@@ -7,10 +7,10 @@ part of 'session_stage.dart';
 // **************************************************************************
 
 const _$SessionStageEnumMap = {
-  SessionStage.open: 'open',
+  SessionStage.lobby: 'lobby',
   SessionStage.attendance: 'attendance',
   SessionStage.followUp: 'follow_up',
-  SessionStage.currentValue: 'current_value',
+  SessionStage.value: 'value',
   SessionStage.commitment: 'commitment',
-  SessionStage.closing: 'closing',
+  SessionStage.closed: 'closed',
 };

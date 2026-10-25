@@ -7,7 +7,7 @@ part 'user_role.g.dart';
 /// Wire values must match `docs/implementation/api-contract.md`.
 @JsonEnum(alwaysCreate: true)
 enum UserRole {
-  @JsonValue('administrator')
+  @JsonValue('platform_admin')
   administrator,
   @JsonValue('coordinator')
   coordinator,

@@ -7,6 +7,6 @@ part of 'assessment_kind.dart';
 // **************************************************************************
 
 const _$AssessmentKindEnumMap = {
+  AssessmentKind.initial: 'initial',
   AssessmentKind.followUp: 'follow_up',
-  AssessmentKind.currentValue: 'current_value',
 };

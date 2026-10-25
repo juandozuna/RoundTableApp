@@ -7,10 +7,10 @@ part 'assessment_kind.g.dart';
 /// Wire values must match `docs/implementation/api-contract.md`.
 @JsonEnum(alwaysCreate: true)
 enum AssessmentKind {
+  @JsonValue('initial')
+  initial,
   @JsonValue('follow_up')
-  followUp,
-  @JsonValue('current_value')
-  currentValue;
+  followUp;
 
   String get wireValue => _$AssessmentKindEnumMap[this]!;
 
