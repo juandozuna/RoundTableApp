@@ -550,12 +550,6 @@ abstract class AppLocalizations {
   /// **'Alto'**
   String get scoreHigh;
 
-  /// No description provided for @scoreLockedShort.
-  ///
-  /// In es, this message translates to:
-  /// **'No'**
-  String get scoreLockedShort;
-
   /// No description provided for @scoreLockedSemantics.
   ///
   /// In es, this message translates to:

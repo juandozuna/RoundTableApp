@@ -257,9 +257,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scoreHigh => 'Alto';
 
   @override
-  String get scoreLockedShort => 'No';
-
-  @override
   String get scoreLockedSemantics => '5, no disponible';
 
   @override

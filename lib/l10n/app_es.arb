@@ -98,7 +98,6 @@
   "scoreHint": "Elige un número del 1 al 10. El 5 no se permite.",
   "scoreLow": "Bajo",
   "scoreHigh": "Alto",
-  "scoreLockedShort": "No",
   "scoreLockedSemantics": "5, no disponible",
   "scoreFiveExplanation": "El 5 no se permite: elige un poco más arriba o un poco más abajo.",
   "scorePicked": "Elegiste {score}",
