@@ -10,4 +10,4 @@ ARB localization, UUIDs for device-created ids.
 ## Project-specific adjustments
 - PowerSync replaces the hand-written `isSynced` orchestration (ADR 0004).
 - No `.properties.dart` generator for now; models declare only `.freezed.dart` and `.g.dart`.
-- No ticket gate yet.
+- No ticket system is used in this repository.
