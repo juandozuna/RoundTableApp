@@ -392,7 +392,7 @@ viewer.
 - Before adding a type, search for an existing abstraction that can carry the behavior.
 - If `graphify-out/` exists, use `graphify query|path|explain` before raw searching, read exact
   source to verify, and run `graphify update .` after changes.
-- No ticket gate for now (no Plane ticket, branch format or commit trailer required).
+- This repository has no ticket system: work on feature branches, with no ticket ids in branch names or commit messages.
 
 ## 20. Verification and definition of done
 
