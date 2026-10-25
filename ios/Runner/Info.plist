@@ -15,7 +15,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>gold_roundtables</string>
+	<string>Gold Roundtables</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Usamos la cámara para escanear el código QR de tu invitación.</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
