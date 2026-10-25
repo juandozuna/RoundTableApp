@@ -1,0 +1,178 @@
+{
+  "@@locale": "es",
+  "appTitle": "Gold Roundtables",
+
+  "actionContinue": "Continuar",
+  "actionCancel": "Cancelar",
+  "actionConfirm": "Confirmar",
+  "actionAccept": "Aceptar",
+  "actionSave": "Guardar",
+  "actionRetry": "Reintentar",
+  "actionClose": "Cerrar",
+  "actionBack": "Volver",
+  "actionNext": "Siguiente",
+  "actionDone": "Listo",
+  "actionEdit": "Editar",
+  "actionDelete": "Eliminar",
+  "actionShare": "Compartir",
+  "actionSearch": "Buscar",
+  "actionGoHome": "Ir al inicio",
+
+  "tooltipBack": "Volver",
+  "tooltipClose": "Cerrar",
+  "tooltipMenu": "Menú",
+  "tooltipIncrease": "Aumentar",
+  "tooltipDecrease": "Disminuir",
+  "tooltipShowPassword": "Mostrar",
+
+  "loading": "Cargando…",
+  "confirmDialogDefaultTitle": "¿Quieres continuar?",
+  "toastSaved": "Guardado",
+
+  "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+  "errorNetwork": "No hay conexión con el servidor. Revisa tu internet.",
+  "errorTimeout": "El servidor tardó demasiado en responder. Inténtalo de nuevo.",
+  "errorUnauthorized": "Tu sesión terminó. Vuelve a ingresar.",
+  "errorForbidden": "No tienes permiso para hacer esto.",
+  "errorNotFound": "No encontramos lo que buscas.",
+  "errorConflict": "Estos datos cambiaron mientras tanto. Actualiza e inténtalo otra vez.",
+  "errorValidation": "Revisa los datos e inténtalo otra vez.",
+  "errorServer": "El servidor tuvo un problema. Inténtalo más tarde.",
+
+  "errorStateTitle": "No pudimos cargar esto",
+  "emptyStateTitle": "Todavía no hay nada aquí",
+  "notFoundTitle": "Esta página no existe",
+  "notFoundMessage": "Puede que el enlace esté incompleto o que la página se haya movido.",
+
+  "connectivityOnline": "En línea",
+  "connectivityOffline": "Sin conexión",
+  "offlineBanner": "Sin conexión · {detail}",
+  "@offlineBanner": {
+    "placeholders": { "detail": { "type": "String" } }
+  },
+  "offlineDetailOnlineOnly": "esta sección necesita internet",
+  "offlineDetailSavedLocally": "lo que respondas se guarda en este teléfono",
+
+  "syncPending": "Pendiente",
+  "syncSyncing": "Sincronizando",
+  "syncSynced": "Sincronizado",
+  "syncSyncedLate": "Sincronizado tarde",
+  "syncUnavailable": "Sincronización no disponible",
+  "syncNever": "Aún no se ha sincronizado",
+  "syncPendingCount": "{count, plural, =0{Nada pendiente} =1{1 cambio pendiente} other{{count} cambios pendientes}}",
+  "@syncPendingCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "syncLastSynced": "Última sincronización: {time}",
+  "@syncLastSynced": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "syncStaleWarning": "Hay respuestas sin sincronizar desde hace más de 24 horas. Conéctate a internet.",
+
+  "roleAdministrator": "Administrador",
+  "roleCoordinator": "Coordinador",
+  "roleFacilitator": "Facilitador",
+  "roleMember": "Miembro",
+
+  "stageOpen": "Abrir",
+  "stageAttendance": "Lista",
+  "stageFollowUp": "Seguimiento",
+  "stageCurrentValue": "Valor",
+  "stageCommitment": "Compromiso",
+  "stageClosing": "Cierre",
+
+  "attendancePresent": "Presente",
+  "attendanceLate": "Tarde",
+  "attendanceExcused": "Justificado",
+  "attendanceAbsent": "Ausente",
+
+  "assessmentFollowUp": "Seguimiento",
+  "assessmentCurrentValue": "Valor actual",
+
+  "healthOnTrack": "Al día",
+  "healthAtRisk": "En riesgo",
+  "healthOffTrack": "Retrasada",
+  "healthUnknown": "Sin datos",
+
+  "scoreLabel": "Puntaje",
+  "scoreHint": "Elige un número del 1 al 10. El 5 no se permite.",
+  "scoreLow": "Bajo",
+  "scoreHigh": "Alto",
+  "scoreLockedSemantics": "5, no disponible",
+  "scoreFiveExplanation": "El 5 no se permite: elige un poco más arriba o un poco más abajo.",
+  "scorePicked": "Elegiste {score}",
+  "@scorePicked": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "scoreSemantics": "Puntaje {score}",
+  "@scoreSemantics": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+
+  "seatsCount": "{count}/{max} lugares",
+  "@seatsCount": {
+    "placeholders": { "count": { "type": "int" }, "max": { "type": "int" } }
+  },
+  "seatsOverCapacity": "La mesa tiene más de {max} lugares",
+  "@seatsOverCapacity": {
+    "placeholders": { "max": { "type": "int" } }
+  },
+
+  "contextChipLabel": "Estás como",
+  "counterSemantics": "{label}: {value}",
+  "@counterSemantics": {
+    "placeholders": { "label": { "type": "String" }, "value": { "type": "int" } }
+  },
+  "dropdownHint": "Elige una opción",
+
+  "validationRequired": "Este campo es obligatorio.",
+  "validationEmail": "Escribe un correo válido, por ejemplo nombre@correo.com.",
+  "validationPhone": "Escribe el número con el código de país, por ejemplo +52 55 1234 5678.",
+  "validationPersonName": "Escribe un nombre válido, solo con letras.",
+  "validationScore": "Elige un número del 1 al 10.",
+  "validationScoreFive": "El 5 no se permite.",
+  "validationTooShort": "Escribe al menos {min} caracteres.",
+  "@validationTooShort": {
+    "placeholders": { "min": { "type": "int" } }
+  },
+  "validationInviteCode": "El código tiene 6 letras o números.",
+
+  "navHome": "Inicio",
+  "homeTitle": "Inicio",
+  "homeWelcome": "Te damos la bienvenida a Gold Roundtables",
+  "homeFoundationReady": "La base de la aplicación está lista. Aquí aparecerán tus mesas y sesiones.",
+  "homeOpenGallery": "Ver galería de componentes",
+
+  "galleryTitle": "Galería de componentes",
+  "galleryThemeLight": "Claro",
+  "galleryThemeDark": "Oscuro",
+  "gallerySectionButtons": "Botones",
+  "gallerySectionStatus": "Estados",
+  "gallerySectionAvatars": "Avatares y roles",
+  "gallerySectionFeedback": "Avisos",
+  "gallerySectionScore": "Puntaje",
+  "gallerySectionForms": "Formularios",
+  "gallerySectionStates": "Carga, vacío y error",
+  "gallerySectionTable": "Tabla de datos",
+  "gallerySectionDialogs": "Diálogos",
+  "galleryPrimary": "Principal",
+  "gallerySecondary": "Secundario",
+  "galleryDanger": "Peligro",
+  "galleryOfflineAction": "Sin internet",
+  "galleryShowToast": "Mostrar aviso",
+  "galleryShowDialog": "Abrir diálogo",
+  "galleryShowSheet": "Abrir hoja inferior",
+  "galleryFieldName": "Nombre completo",
+  "galleryFieldEmail": "Correo",
+  "galleryFieldPhone": "Teléfono",
+  "galleryFieldInvite": "Código de invitación",
+  "galleryFieldCountry": "País",
+  "galleryFieldConsent": "Acepto recibir recordatorios",
+  "galleryFieldSeats": "Lugares",
+  "galleryColumnName": "Nombre",
+  "galleryColumnRole": "Rol",
+  "galleryColumnStatus": "Estado",
+  "galleryInfoMessage": "La mesa está en: Seguimiento",
+  "galleryWarningMessage": "Rodrigo lleva 31 horas sin sincronizar.",
+  "galleryErrorMessage": "No se pudo guardar. Tus respuestas siguen en este teléfono."
+}
