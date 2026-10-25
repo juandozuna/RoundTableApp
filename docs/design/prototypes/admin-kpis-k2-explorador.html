@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gold Roundtables · Admin K2 · Explorador de mesas</title>
+<style>
+:root{
+  --page:#08060f;--bg:#0E0B1A;--bg2:#14102A;--surf:#1A1530;--surf2:#251E45;--line:#3A3166;
+  --ink:#F4F1FF;--mut:#A9A1CC;--acc:#A48BFF;--accb:#6F4DFF;--accg:#8654F7;--bd:#7A70B5;--onacc:#fff;
+  --lime:#3DE08A;--amber:#FFB547;--off:#8F98BC;--mag:#FF4F9A;--err:#FF7A7A;--sky:#5CC8FF;--cyan:#2DD4D4;--lilac:#C7B6FF;
+  --onc:#0B0A14;--glow:rgba(139,108,255,.28);--shadow:0 20px 60px rgba(0,0,0,.55);--row-h:48px;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme=dark]){
+    --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+    --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+    --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+    --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25);
+  }
+}
+:root[data-theme=light]{
+  --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+  --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+  --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+  --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.35;font-variant-numeric:tabular-nums}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.ic{flex:none;vertical-align:middle}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+h1,h2,h3,h4{margin:0}
+.lbl,.kick{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.mut{color:var(--mut)}
+
+/* ---------- reviewer header ---------- */
+.rv{max-width:1500px;margin:0 auto;padding:12px 16px 6px}
+.rv-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.rv h1{font-size:20px;font-weight:900;letter-spacing:-.01em}
+.rv h1 b{color:var(--acc)}
+.rv .concept{color:var(--mut);font-size:13.5px;max-width:900px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0 6px}
+.seg2{display:inline-flex;border:2px solid var(--bd);border-radius:14px;overflow:hidden;background:var(--surf)}
+.seg2 button{border:0;background:transparent;padding:0 14px;min-height:44px;font-weight:800;font-size:13.5px}
+.seg2 button[aria-pressed=true]{background:var(--accb);color:var(--onacc)}
+.seg2 button.offb[aria-pressed=true]{background:var(--off);color:var(--onc)}
+.rbtn{min-height:44px;padding:0 14px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);font-weight:700;font-size:13.5px}
+.rbtn:hover{border-color:var(--acc)}
+.sel{min-height:44px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);padding:0 10px;font-weight:700;font-size:13.5px;max-width:100%}
+.refs{font-size:12.5px;color:var(--mut);border-top:1px solid var(--line);padding:8px 0 0;margin-top:6px}
+.refs b{color:var(--ink)}
+.refs a{display:inline-block;margin:2px 4px 2px 0;padding:2px 9px;border-radius:999px;background:var(--surf);border:1px solid var(--line);color:var(--ink);font-weight:600;text-decoration:none}
+.refs a:hover{border-color:var(--acc)}
+.stagewrap{max-width:1500px;margin:0 auto;padding:6px 16px 28px;display:flex;justify-content:center}
+
+/* ---------- frame ---------- */
+.frame{position:relative;width:1280px;max-width:100%;height:820px;background:var(--bg);border:2px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.frame.vp-phone{border-radius:30px;border-width:8px;border-color:#05040b;box-shadow:var(--shadow),0 0 0 2px var(--line)}
+.frame.vp-tab{border-radius:24px;border-width:8px;border-color:#05040b}
+.frame::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 50% at 50% -10%,var(--glow),transparent 60%);pointer-events:none}
+.frame>*{position:relative}
+.topbar{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);flex:none}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accb),var(--accg));display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px;flex:none}
+.brand{font-weight:900;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.tabs{display:flex;gap:2px;margin-left:8px}
+.tab{min-height:44px;padding:0 14px;border:0;background:transparent;border-radius:12px;font-weight:800;font-size:14px;color:var(--mut);display:flex;align-items:center;gap:7px}
+.tab:hover{background:var(--surf)}
+.tab[aria-current=page]{background:var(--surf2);color:var(--ink);box-shadow:inset 0 -3px 0 var(--acc)}
+.sp{flex:1}
+.ctxbtn{display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 10px 4px 5px;border-radius:999px;border:2px solid var(--bd);background:var(--surf);text-align:left}
+.ctxbtn .t{display:flex;flex-direction:column;line-height:1.1}
+.ctxbtn .t small{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.ctxbtn .t b{font-size:13px;font-weight:800;white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.palbtn{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:12px;border:2px solid var(--bd);background:var(--surf);color:var(--mut);font-weight:600;font-size:13px;min-width:210px}
+.palbtn kbd{margin-left:auto;font:inherit;font-size:11px;font-weight:800;border:1px solid var(--bd);border-radius:6px;padding:1px 6px;color:var(--ink)}
+.ibtn{min-width:44px;min-height:44px;border-radius:12px;border:2px solid var(--bd);background:var(--surf);display:grid;place-items:center;color:var(--ink);position:relative}
+.ibtn:hover{border-color:var(--acc)}
+.av{border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:none;width:var(--s,32px);height:var(--s,32px);font-size:calc(var(--s,32px)*.38);letter-spacing:.02em}
+.main{flex:1;overflow:auto;min-height:0;scrollbar-width:thin}
+.bnav{display:none;flex:none;border-top:1px solid var(--line);background:var(--bg2);padding:4px 6px 8px}
+.bnav button{flex:1;min-height:52px;border:0;background:transparent;border-radius:14px;color:var(--mut);font-weight:800;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.bnav button[aria-current=page]{color:var(--ink);background:var(--surf2);box-shadow:inset 0 3px 0 var(--acc)}
+.vp-phone .bnav{display:flex}
+.vp-phone .tabs,.vp-phone .brand,.vp-phone .palbtn span,.vp-phone .palbtn kbd,.vp-phone .logo{display:none}
+.vp-phone .palbtn{min-width:44px;padding:0;justify-content:center}
+.vp-phone .topbar{padding:6px 10px}
+.vp-tab .brand{display:none}
+.vp-tab .palbtn{min-width:44px;padding:0;justify-content:center}
+.vp-tab .palbtn span,.vp-tab .palbtn kbd{display:none}
+.hide-phone{}
+.vp-phone .hide-phone{display:none!important}
+.show-phone{display:none!important}
+.vp-phone .show-phone{display:flex!important}
+
+/* offline banner (shared, L2) */
+.offbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 14px;border-top:0;border:1.5px solid var(--off);border-left:0;border-right:0;background:color-mix(in srgb,var(--off) 16%,var(--bg));font-weight:700;font-size:13.5px;flex:none}
+.offbar .ic{color:var(--off)}
+.offbar button{margin-left:auto;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--bd);background:var(--surf);font-weight:800}
+.offbar small{font-weight:500;color:var(--mut);font-size:12.5px}
+
+/* pills (shared) */
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px 3px 8px;font-size:12px;font-weight:800;border:1.5px var(--bs,solid) var(--c,var(--line));color:var(--c,var(--ink));background:color-mix(in srgb,var(--c,var(--line)) 14%,transparent)}
+.p-ok{--c:var(--lime)}.p-pend{--c:var(--amber);--bs:dotted}.p-late{--c:var(--amber);--bs:dashed}.p-off{--c:var(--off);--bs:dashed}.p-err{--c:var(--err);--bs:double}.p-mag{--c:var(--mag);--bs:dashed}.p-acc{--c:var(--acc)}.p-sky{--c:var(--sky)}
+.pill.p-in{--c:var(--off);--bs:dotted}
+
+/* buttons */
+.btn{min-height:48px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--accb),var(--accg));color:var(--onacc);font-weight:900;font-size:15px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px var(--glow)}
+.btn:hover{filter:brightness(1.08)}
+.btn[aria-disabled=true]{background:var(--surf2);color:var(--mut);box-shadow:none;border:2px dashed var(--off)}
+.btn.sec{background:var(--surf2);color:var(--ink);box-shadow:none;border:2px solid var(--bd)}
+.btn.danger{background:var(--err);color:var(--onc);box-shadow:none}
+.btn.sm{min-height:44px;font-size:13.5px;padding:0 14px;border-radius:12px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:none;border:2px solid transparent}
+.btn.ghost:hover{border-color:var(--bd)}
+.lnk{background:none;border:0;padding:0;color:var(--acc);font-weight:800;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+
+/* explore */
+.xp{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-height:100%;align-items:start}
+.vp-tab .xp,.vp-phone .xp{grid-template-columns:minmax(0,1fr)}
+.xmain{padding:14px 12px 20px;min-width:0}
+.xside{position:sticky;top:0;border-left:1px solid var(--line);background:color-mix(in srgb,var(--bg2) 70%,transparent);padding:14px;min-height:100%}
+.vp-tab .xside,.vp-phone .xside{display:none}
+.bar1{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar1 h2{font-size:22px;font-weight:900;letter-spacing:-.015em;margin-right:6px}
+.seg{display:inline-flex;border:2px solid var(--bd);border-radius:14px;overflow:hidden;background:var(--surf)}
+.seg button{border:0;background:transparent;padding:0 14px;min-height:44px;font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:7px}
+.seg button[aria-pressed=true]{background:var(--accb);color:var(--onacc)}
+.seg button em{font-style:normal;font-size:11px;font-weight:800;opacity:.85}
+.views{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 8px;align-items:center}
+.vchip{min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--bd);background:var(--surf);font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.vchip[aria-pressed=true]{border-color:var(--acc);background:var(--surf2);box-shadow:0 0 0 3px var(--glow)}
+.vchip em{font-style:normal;font-size:11px;min-width:22px;text-align:center;padding:1px 6px;border-radius:999px;background:var(--bg2);border:1px solid var(--line)}
+.bar2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.search{display:flex;align-items:center;gap:8px;min-height:44px;border:2px solid var(--bd);border-radius:12px;background:var(--surf);padding:0 10px;flex:1 1 220px;max-width:340px}
+.search input{border:0;background:transparent;outline:0;flex:1;min-width:0;min-height:44px;font-size:14px}
+.search:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.fchip{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 4px 0 12px;border-radius:999px;background:var(--surf2);border:1.5px solid var(--acc);font-size:12.5px;font-weight:700}
+.fchip b{color:var(--acc)}
+.fchip button{width:36px;height:36px;border:0;background:transparent;border-radius:50%;display:grid;place-items:center}
+.fchip.lock{border-style:dashed;padding-right:12px}
+.relw{position:relative;display:inline-block}
+.pop{position:absolute;z-index:40;top:calc(100% + 6px);left:0;min-width:260px;background:var(--surf);border:2px solid var(--bd);border-radius:16px;padding:10px;box-shadow:var(--shadow)}
+.pop.r{left:auto;right:0}
+.pop .mi{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;border:0;background:transparent;border-radius:10px;padding:0 10px;font-weight:700;text-align:left}
+.pop .mi:hover{background:var(--surf2)}
+.pop .mi[aria-disabled=true]{color:var(--mut)}
+.fld{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fld>label,.fld>.lb{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.in{min-height:44px;border:2px solid var(--bd);border-radius:12px;background:var(--surf);padding:0 12px;font-size:15px;width:100%}
+textarea.in{padding:10px 12px;min-height:84px}
+.in:focus{border-color:var(--acc);outline:0;box-shadow:0 0 0 3px var(--glow)}
+.in[aria-invalid=true]{border-color:var(--err);border-style:dashed}
+.ferr{display:flex;gap:6px;align-items:flex-start;color:var(--err);font-weight:700;font-size:13px}
+.hint{font-size:12.5px;color:var(--mut)}
+.gw{border:1px solid var(--line);border-radius:16px;overflow:auto;background:var(--surf)}
+table.g{border-collapse:separate;border-spacing:0;width:100%;min-width:900px;font-size:13px}
+table.g th{position:sticky;top:0;z-index:2;background:var(--surf2);text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--mut);padding:0;border-bottom:1px solid var(--line);white-space:nowrap}
+table.g th button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 8px;cursor:pointer;width:100%;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit}
+table.g th button:focus-visible{outline:3px solid var(--acc);outline-offset:-3px}
+table.g th[aria-sort] button{color:var(--ink)}
+table.g td{padding:0 8px;height:var(--row-h);border-bottom:1px solid var(--line);white-space:nowrap}
+table.g tr:last-child td{border-bottom:0}
+table.g tbody tr:hover td{background:color-mix(in srgb,var(--acc) 7%,var(--surf))}
+table.g tr.sel td{background:color-mix(in srgb,var(--acc) 14%,var(--surf))}
+table.g td.ck,table.g th.ck{width:48px;padding:0;text-align:center}
+.ckl{display:grid;place-items:center;width:48px;min-height:44px;cursor:pointer}
+.ckl input{width:20px;height:20px;accent-color:var(--accb)}
+.nm{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left;min-height:44px;font-weight:800}
+.nm:hover .tt{text-decoration:underline}
+.nm small{display:block;font-weight:500;color:var(--mut);font-size:12px}
+.tt{font-weight:800}
+.mb{display:inline-flex;align-items:center;gap:8px;min-width:96px}
+.mb i{display:block;width:54px;height:8px;border-radius:5px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+.mb i b{display:block;height:100%;background:var(--c,var(--lime))}
+.mb.lowv i b{background:repeating-linear-gradient(45deg,var(--amber) 0 4px,transparent 4px 7px)}
+.pips{display:inline-flex;gap:2px;align-items:center}
+.pips i{width:5px;height:13px;border-radius:2px;border:1.5px solid var(--bd);background:transparent}
+.pips i.on{background:var(--acc);border-color:var(--acc)}
+.pips i.min{border-style:dashed}
+.pips i.over{background:var(--err);border-color:var(--err)}
+.gfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--mut);margin-top:8px;align-items:center}
+.cards{display:none;flex-direction:column;gap:8px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:12px}
+.card.sel{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.card .r1{display:flex;gap:6px;align-items:center}
+.card .r2{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.mini{background:var(--bg2);border-radius:12px;padding:6px 10px}
+.mini b{display:block;font-size:17px;font-weight:900}
+.mini span{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.vp-phone .views{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.vp-phone .vchip{flex:none}.vp-phone .seg button{padding:0 9px;font-size:13px}.vp-phone .seg button em{display:none}.vp-phone .bar1 h2{font-size:20px}
+.vp-phone .gw{display:none}.vp-phone .cards{display:flex}
+.selbar{display:none;position:sticky;bottom:8px;margin-top:10px;background:var(--ink);color:var(--bg);border-radius:16px;padding:6px 8px 6px 14px;align-items:center;gap:8px;box-shadow:var(--shadow);font-weight:800}
+.vp-tab .selbar.on,.vp-phone .selbar.on{display:flex}
+.selbar .btn{min-height:44px}
+.empty{border:2px dashed var(--bd);border-radius:20px;padding:34px 18px;text-align:center;background:color-mix(in srgb,var(--surf) 60%,transparent)}
+.empty .big{width:56px;height:56px;border-radius:18px;background:var(--surf2);display:grid;place-items:center;margin:0 auto 10px;color:var(--acc)}
+.empty h3{font-size:18px;font-weight:900}
+.empty p{color:var(--mut);margin:6px auto 14px;max-width:420px}
+
+/* KPIs */
+.kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.kt{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.kt .v{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.kt .v small{font-size:13px;font-weight:700;color:var(--mut)}
+.kt .d{font-size:12px;color:var(--mut);font-weight:600}
+.krow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:12px 0}
+.vp-tab .krow{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vp-phone .krow{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stk{display:flex;height:12px;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:6px 0}
+.stk i{display:block;height:100%}
+.stk .s-a{background:var(--lime)}
+.stk .s-r{background:repeating-linear-gradient(45deg,var(--amber) 0 5px,transparent 5px 9px)}
+.stk .s-i{background:radial-gradient(circle,var(--off) 1.5px,transparent 2px) 0 0/6px 6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+
+/* pages */
+.pg{padding:14px 18px 28px;max-width:1180px;margin:0 auto}
+.vp-phone .pg{padding:12px 12px 24px}
+.crumb{display:flex;gap:2px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-bottom:6px}
+.crumb button{background:none;border:0;min-height:44px;padding:0 6px;font-weight:700;color:var(--mut);border-radius:8px;text-decoration:underline;text-underline-offset:3px}
+.crumb button:hover{color:var(--ink)}
+.crumb b{color:var(--ink);font-weight:800;padding:0 6px}
+.ph{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.ph h2{font-size:26px;font-weight:900;letter-spacing:-.02em}
+.ph .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.vp-phone .ph .acts{margin-left:0;width:100%}
+.pc{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px}
+.pc>h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--mut);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pc>h3 .sp{flex:1}
+.frm{max-width:760px}
+.frm .two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.vp-phone .frm .two{grid-template-columns:1fr}
+.alert{display:flex;gap:10px;align-items:flex-start;border-radius:14px;padding:10px 12px;border:1.5px var(--bs,solid) var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);font-weight:700;font-size:13.5px;margin-bottom:10px}
+.alert .ic{color:var(--c);margin-top:1px}
+.alert small{display:block;font-weight:500;color:var(--mut);font-size:12.5px}
+.al-err{--c:var(--err);--bs:double}.al-warn{--c:var(--amber);--bs:dashed}.al-info{--c:var(--sky)}.al-ok{--c:var(--lime)}.al-sens{--c:var(--mag);--bs:dashed}
+.formbar{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg) 30%);padding:14px 0 6px;display:flex;gap:8px;flex-wrap:wrap}
+.lst{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);min-height:56px}
+.li:last-child{border-bottom:0}
+.li .g{flex:1;min-width:0}
+.li .g b{display:block}
+.li .g small{color:var(--mut);font-size:12.5px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:14px}
+.kv dt{color:var(--mut);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}.kv dd{margin:0;font-weight:700}
+.vp-phone .kv{grid-template-columns:1fr}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vp-phone .two-col,.vp-tab .two-col{grid-template-columns:1fr}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;letter-spacing:.2em;font-size:22px;background:var(--bg2);border:2px dashed var(--bd);border-radius:12px;padding:6px 14px;display:inline-block}
+.tl{border-left:2px solid var(--line);margin-left:6px;padding-left:14px}
+.tl>div{position:relative;padding:4px 0 10px;font-size:13.5px}
+.tl>div::before{content:"";position:absolute;left:-21px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--acc);border:2px solid var(--bg)}
+.tl small{color:var(--mut);display:block}
+
+/* reports */
+.rbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin:8px 0 6px}
+.rbar .fld{margin:0;min-width:130px;flex:1 1 130px;max-width:210px}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vp-tab .cgrid,.vp-phone .cgrid{grid-template-columns:1fr}
+.cc{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:14px;min-width:0}
+.cc h3{font-size:15px;font-weight:900}
+.cc .hd{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
+.cc .hd .g{flex:1;min-width:160px}
+.cc .hd small{display:block;color:var(--mut);font-size:12.5px;font-weight:600}
+.cc svg{width:100%;height:auto;display:block;overflow:visible}
+.cc svg text{font-family:inherit;fill:var(--mut);font-size:11px;font-weight:700}
+.cc svg .bar{fill:var(--acc);cursor:pointer}
+.cc svg .bar:hover,.cc svg .bar:focus{fill:var(--lilac);stroke:var(--ink);stroke-width:2;outline:0}
+.cc svg [data-tip]{cursor:pointer}
+.cc svg [data-tip]:focus{outline:0;stroke:var(--ink);stroke-width:2.5}
+.dt{width:100%;border-collapse:collapse;font-size:13px}
+.dt th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:6px 8px;border-bottom:1px solid var(--line)}
+.dt td{padding:8px 8px;border-bottom:1px solid var(--line)}
+.dt td.n,.dt th.n{text-align:right}
+.dt-w{overflow:auto;max-height:260px}
+.tip{position:absolute;z-index:80;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:10px;padding:6px 10px;font-size:12.5px;font-weight:700;max-width:240px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.drill td.nm2{font-weight:800}
+.rowbtn{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;font-weight:800;color:var(--ink);width:100%}
+.rowbtn:hover span{text-decoration:underline}
+.rowbtn:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.sens{display:inline-flex;align-items:center;gap:5px;color:var(--mag);font-weight:800;font-size:11.5px}
+.mask{letter-spacing:.2em;color:var(--mut)}
+
+/* overlays */
+.ov{position:absolute;inset:0;z-index:60;background:rgba(5,3,14,.6);display:flex;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(2px)}
+.ov.top{align-items:flex-start;padding-top:70px}
+.dlg{width:min(480px,100%);background:var(--surf);border:2px solid var(--bd);border-radius:22px;padding:18px;box-shadow:var(--shadow);max-height:100%;overflow:auto}
+.dlg h3{font-size:19px;font-weight:900;margin-bottom:6px}
+.dlg .acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+.vp-phone .ov{align-items:flex-end;padding:0}
+.vp-phone .dlg,.vp-phone .sheet{border-radius:24px 24px 0 0;width:100%}
+.sheet{width:min(520px,100%);background:var(--surf);border:2px solid var(--bd);border-radius:22px;padding:16px;box-shadow:var(--shadow);max-height:88%;overflow:auto}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--bd);margin:0 auto 10px}
+.pal{width:min(620px,100%);background:var(--surf);border:2px solid var(--bd);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.vp-phone .ov.top{align-items:flex-start;padding:10px}
+.vp-phone .pal{border-radius:20px}
+.pal .si{display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--line)}
+.pal input{border:0;background:transparent;outline:0;min-height:54px;font-size:16px;flex:1;min-width:0}
+.pal .res{max-height:380px;overflow:auto;padding:6px}
+.pal .gh{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);padding:8px 10px 2px}
+.pal .it{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px}
+.pal .it[aria-selected=true]{background:var(--surf2);box-shadow:inset 3px 0 0 var(--acc)}
+.pal .it small{margin-left:auto;color:var(--mut);font-weight:600;font-size:12px}
+.pal .ft{display:flex;gap:14px;padding:8px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.pal kbd{font:inherit;font-weight:800;border:1px solid var(--bd);border-radius:5px;padding:0 5px}
+.toast{position:absolute;left:50%;transform:translateX(-50%);top:62px;z-index:90;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 16px;font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .25s ease;display:flex;gap:8px;align-items:center;max-width:calc(100% - 24px)}
+.toast.err{background:var(--err);color:var(--onc)}
+@keyframes pop{from{transform:translate(-50%,-8px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.sk{background:linear-gradient(90deg,var(--surf2) 25%,var(--surf) 50%,var(--surf2) 75%);background-size:200% 100%;animation:sh 1.3s infinite;border-radius:10px}
+@keyframes sh{to{background-position:-200% 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}.toast{animation:none}}
+.qr{width:120px;height:120px;background:#fff;border-radius:10px;padding:6px}
+.sharebox{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.ctxrow{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;border:2px solid var(--line);background:var(--bg2);border-radius:16px;padding:6px 10px;text-align:left;margin-bottom:6px}
+.ctxrow[aria-current=true]{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.ctxrow small{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.ctxrow b{font-size:14px}
+</style>
+</head>
+<body>
+<header class="rv" id="rv">
+  <div class="rv-top">
+    <h1>Gold Roundtables · Admin <b>K2</b> · Explorador de mesas</h1>
+    <div class="concept">Cuadrícula densa de datos (mesas / organizaciones / personas) con vistas guardadas, filtros, selección que agrega KPIs en un panel lateral, paleta de comandos ⌘K y un tab de Informes con desglose. Formularios a página completa. En teléfono la cuadrícula pasa a tarjetas.</div>
+  </div>
+  <div class="ctl" role="group" aria-label="Controles de revisión">
+    <div class="seg2" role="group" aria-label="Ancho"><button data-r="vp" data-v="phone">Teléfono 390</button><button data-r="vp" data-v="tab">Tablet 820</button><button data-r="vp" data-v="desk">Escritorio 1280</button></div>
+    <div class="seg2" role="group" aria-label="Rol"><button data-r="role" data-v="admin">Administrador</button><button data-r="role" data-v="coord">Coordinador</button></div>
+    <div class="seg2" role="group" aria-label="Conexión"><button data-r="net" data-v="on">En línea</button><button data-r="net" data-v="off" class="offb">Sin conexión</button></div>
+    <label class="lbl" for="theme">Tema</label>
+    <select class="sel" id="theme" data-r="theme"><option value="auto">Auto</option><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    <label class="lbl" for="jump">Saltar a</label>
+    <select class="sel" id="jump" data-r="jump" style="max-width:340px"></select>
+    <button class="rbtn" data-r="reset">Reiniciar</button>
+  </div>
+  <div class="refs" id="refs"><b>Referencias (Mobbin):</b>
+    <a href="https://mobbin.com/screens/a2dcb0ea-314f-4cee-94e6-fd608dde0d60" target="_blank" rel="noopener">Twenty · vistas guardadas + filtros</a>
+    <a href="https://mobbin.com/screens/9833316f-2f70-454f-8249-167f4f880582" target="_blank" rel="noopener">Aboard · chips de filtro + Guardar vista</a>
+    <a href="https://mobbin.com/screens/5ffa41d6-621d-409d-b2fc-34914afe0458" target="_blank" rel="noopener">Mercury · Saved views + panel de filtros</a>
+    <a href="https://mobbin.com/screens/ec4931ac-c3ca-46cd-8d07-39ffd02e22a9" target="_blank" rel="noopener">Navattic · tabla + paginación</a>
+    <a href="https://mobbin.com/screens/593d7acd-2e16-4365-bcd6-02ce52f48f3b" target="_blank" rel="noopener">Vapi · paleta (Cambiar organización)</a>
+    <a href="https://mobbin.com/screens/8450c1c7-7c10-40a3-9af3-c9c234ac4b53" target="_blank" rel="noopener">Mistral AI · paleta grupos Acciones/Navegación</a>
+    <a href="https://mobbin.com/screens/4121eb20-aa88-4eef-9cc2-dfa7c4ccb4fa" target="_blank" rel="noopener">Todoist · paleta con recientes</a>
+    <a href="https://mobbin.com/screens/fa5520ff-fda8-435f-b65b-bf910991fab4" target="_blank" rel="noopener">Cloudflare · registro de auditoría</a>
+    <a href="https://mobbin.com/screens/d7448333-6400-49dd-b11f-e48e4e229200" target="_blank" rel="noopener">PlanetScale · auditoría con filtro Actor</a>
+    <a href="https://mobbin.com/screens/0c2efddc-d2d9-4a17-b589-34523d08e1d8" target="_blank" rel="noopener">Front · auditoría con filtros + Export</a>
+    <span> · Informes/desglose y selección masiva: sin búsqueda en Mobbin (diseño propio).</span>
+  </div>
+</header>
+<div class="stagewrap"><div class="frame" id="frame" data-theme-host></div></div>
+<script>
+'use strict';
+/* ================= DATA (fictional) ================= */
+const TZ={DO:'America/Santo_Domingo',CO:'America/Bogota',GT:'America/Guatemala'};
+const ORGS0=[
+ {id:'luz',name:'Fundación Luz',type:'Fundación',country:'República Dominicana',region:'Santo Domingo',status:'activa',contact:'Marisol Peña',email:'marisol@fundacionluz.example',phone:'+1 809 555 0142',locs:['Sede Central','Barrio Norte']},
+ {id:'hor',name:'Colegio Horizonte',type:'Colegio',country:'Colombia',region:'Bogotá',status:'activa',contact:'Camilo Ardila',email:'camilo@horizonte.example',phone:'+57 310 555 0187',locs:['Campus Principal','Sede Sur']},
+ {id:'and',name:'Empresa Andina',type:'Empresa',country:'Colombia',region:'Medellín',status:'activa',contact:'Natalia Vélez',email:'natalia@andina.example',phone:'+57 300 555 0120',locs:['Planta Medellín']},
+ {id:'ali',name:'Centro Aliento',type:'Iglesia aliada',country:'Guatemala',region:'Quetzaltenango',status:'pausada',contact:'Sandra Tzoc',email:'sandra@aliento.example',phone:'+502 5555 0166',locs:['Salón Comunal']},
+ {id:'vec',name:'Red Vecinal Norte',type:'ONG',country:'Guatemala',region:'Ciudad de Guatemala',status:'activa',contact:'Jorge Mazariegos',email:'jorge@redvecinal.example',phone:'+502 5555 0190',locs:[]},
+ {id:'ant',name:'Taller Antorcha',type:'Empresa',country:'República Dominicana',region:'Santiago',status:'desactivada',contact:'Ramón Disla',email:'ramon@antorcha.example',phone:'+1 829 555 0111',locs:['Taller central']}
+];
+const TZORG={luz:TZ.DO,hor:TZ.CO,and:TZ.CO,ali:TZ.GT,vec:TZ.GT,ant:TZ.DO};
+// code,name,org,loc,day,time,status,att,vals,imp,late,lastDays,seats
+const T0=[
+ ['LUZ-01','Esperanza','luz','Sede Central','Martes','19:00','activa',92,14,1.6,0,3,8],
+ ['LUZ-02','Raíces','luz','Sede Central','Jueves','19:30','activa',84,12,1.3,1,4,7],
+ ['LUZ-03','Amanecer','luz','Barrio Norte','Miércoles','18:30','retrasada',66,9,0.9,3,12,6],
+ ['LUZ-04','Camino','luz','Barrio Norte','Sábado','10:00','activa',68,11,1.1,2,5,5],
+ ['LUZ-05','Fortaleza','luz','Sede Central','Lunes','20:00','inactiva',41,6,0.4,0,38,3],
+ ['LUZ-06','Brújula','luz','Barrio Norte','Viernes','19:00','activa',88,13,1.5,0,2,9],
+ ['HOR-01','Cima','hor','Campus Principal','Lunes','07:00','activa',90,16,1.8,0,2,8],
+ ['HOR-02','Rumbo','hor','Campus Principal','Martes','07:30','retrasada',58,8,0.7,4,15,7],
+ ['HOR-03','Semilla','hor','Sede Sur','Jueves','12:30','activa',81,12,1.2,1,6,6],
+ ['HOR-04','Puente','hor','Sede Sur','Viernes','12:30','activa',74,10,1.0,0,7,3],
+ ['AND-01','Turno A','and','Planta Medellín','Miércoles','06:30','activa',86,15,1.4,2,3,9],
+ ['AND-02','Turno B','and','Planta Medellín','Miércoles','14:30','retrasada',63,7,0.6,5,21,6],
+ ['AND-03','Directivos','and','Planta Medellín','Jueves','08:00','activa',95,18,2.0,0,1,5],
+ ['ALI-01','Aliento 1','ali','Salón Comunal','Domingo','16:00','inactiva',55,5,0.5,1,29,5],
+ ['ALI-02','Aliento 2','ali','Salón Comunal','Domingo','17:30','retrasada',62,6,0.6,2,18,4],
+ ['ANT-01','Antorcha 1','ant','Taller central','Martes','18:00','inactiva',0,3,0.2,0,70,3]
+];
+const FN=['Ana','Luis','Carla','Mateo','Rosa','Andrés','Lucía','Pedro','Sofía','Diego','Marta','Iván','Elena','Tomás','Paula','Hugo','Irene','Raúl','Nora','Félix'];
+const LN=['Castillo','Rivera','Mora','Salas','Vega','Ortiz','Rojas','Paz','Lara','Núñez','Duarte','Cano','Soto','Ibarra','Quiroz'];
+const CARGOS=['','','Docente','','Líder de equipo','','Voluntario','','Analista',''];
+const COORD={luz:['Marisol','Peña'],hor:['Camilo','Ardila'],and:['Natalia','Vélez'],ali:['Sandra','Tzoc']};
+let PEOPLE=[],TABLES=[],ORGS=[],AUDIT=[],pid=0;
+function mkP(fn,ln,role,org,state,table,cargo){const id='p'+(++pid);const p={id,fn,ln,role,org,state:state||'activo',table:table||null,cargo:cargo||'',email:(fn+'.'+ln).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z.]/g,'')+'@correo.example',phone:'+'+(50+pid%9)+' 555 '+String(1000+pid*37).slice(-4),hist:[]};PEOPLE.push(p);return p}
+function nameAt(i){return [FN[i%20],LN[(i*7+3+Math.floor(i/60))%15]]}
+function buildData(){
+  PEOPLE=[];TABLES=[];pid=0;ORGS=JSON.parse(JSON.stringify(ORGS0));
+  for(const o of ORGS){const c=COORD[o.id];if(c)mkP(c[0],c[1],'Coordinador',o.id,'activo',null,'Coordinación');}
+  mkP('Jorge','Mazariegos','Coordinador','vec','pendiente',null,'');
+  let k=0;
+  for(const r of T0){
+    const [code,name,org,loc,day,time,status,att,vals,imp,late,last,n]=r;
+    const t={id:code,code,name,org,loc,day,time,tz:TZORG[org],status,att,vals,imp,late,last,mem:[],hist:[],mv:[]};
+    for(let i=0;i<n;i++){const [a,b]=nameAt(k++);const p=mkP(a,b,i===0?'Facilitador':'Miembro',org,'activo',code,CARGOS[(k)%10]);if(i===0)t.fac=p.id;t.mem.push(p.id)}
+    t.hist.push({d:'12 ago 2026',txt:'Facilitador inicial: '+pn(t.fac)});
+    TABLES.push(t);
+  }
+  // two unassigned facilitators + a pending one + an inactive member
+  mkP('Valeria','Cano','Facilitador','luz','activo',null,'Voluntaria');
+  mkP('Esteban','Ruiz','Facilitador','luz','pendiente',null,'');
+  mkP('Gloria','Mendoza','Facilitador','hor','activo',null,'Docente');
+  const inact=mkP('Ernesto','Báez','Miembro','luz','inactivo',null,'');inact.hist.push('Desactivado el 02 oct 2026 · Mesa LUZ-03 (historial conservado)');
+  const lz3=TABLES.find(t=>t.id==='LUZ-03');lz3.hist.unshift({d:'02 oct 2026',txt:'Ernesto Báez desactivado (historial conservado)'});
+  // a table without facilitator
+  const nf=TABLES.find(t=>t.id==='ALI-02');
+  AUDIT=[
+   ['Hoy 09:12','Marisol Peña','Coordinador','Alta','Mesa LUZ-06 Brújula','luz','Creada en Barrio Norte, viernes 19:00 (America/Santo_Domingo)'],
+   ['Hoy 08:03','Camilo Ardila','Coordinador','Cierre de sesión','Mesa HOR-01 Cima','hor','Sesión 16 cerrada · 8 presentes · 0 sincronizadas tarde'],
+   ['Ayer 17:40','Daniela Cruz','Administrador','Alta','Organización Red Vecinal Norte','vec','Creada · coordinador invitado: Jorge Mazariegos'],
+   ['Ayer 11:20','Marisol Peña','Coordinador','Reasignación','Mesa LUZ-03 Amanecer','luz','Facilitador: Pedro Lara → Hugo Cano (historial conservado)'],
+   ['23 oct 19:55','Natalia Vélez','Coordinador','Cierre de sesión','Mesa AND-01 Turno A','and','Sesión 15 cerrada · 9 presentes · 2 sincronizadas tarde'],
+   ['22 oct 16:10','Daniela Cruz','Administrador','Cambio de rol','Camilo Ardila','hor','Facilitador → Coordinador · Colegio Horizonte'],
+   ['21 oct 10:02','Camilo Ardila','Coordinador','Baja','Miembro Ernesto Báez','luz','Desactivado sin borrar historial'],
+   ['20 oct 15:33','Daniela Cruz','Administrador','Baja','Organización Centro Aliento','ali','Pausada · motivo: renovación de contacto'],
+   ['19 oct 09:48','Daniela Cruz','Administrador','Vista sensible','Respuestas de Ana Castillo','luz','Consulta de respuestas individuales (Mesa LUZ-01)'],
+   ['17 oct 18:25','Natalia Vélez','Coordinador','Reasignación','Miembro Iván Ortiz','and','Mesa AND-02 → AND-03 (historial conservado)'],
+   ['15 oct 12:00','Daniela Cruz','Administrador','Alta','Organización Taller Antorcha','ant','Creada · luego desactivada el 20 oct'],
+   ['12 oct 20:14','Marisol Peña','Coordinador','Alta','Facilitador Valeria Cano','luz','Invitación enviada por enlace y código']
+  ].map(a=>({when:a[0],actor:a[1],arole:a[2],type:a[3],obj:a[4],org:a[5],det:a[6]}));
+}
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const P=id=>PEOPLE.find(p=>p.id===id);
+const pn=id=>{const p=P(id);return p?p.fn+' '+p.ln:'Sin facilitador'};
+const O=id=>ORGS.find(o=>o.id===id);
+const T=id=>TABLES.find(t=>t.id===id);
+const ini=(s)=>String(s).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+const AVC=['#5B3FE0','#0B6E6E','#9A2A6B','#8A4B00','#1F5FA8','#2E7D4F','#7A3FA0','#A3322E'];
+function hsh(s){let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h}
+function av(name,s){return `<span class="av" style="--s:${s||32}px;background:${AVC[hsh(name)%AVC.length]}" aria-hidden="true">${esc(ini(name))}</span>`}
+const fmtI=x=>(x>=0?'+':'−')+Math.abs(x).toFixed(1);
+const ICO={
+search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="m5 12.5 4.5 4.5L19 7"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',
+chd:'<path d="m6 9 6 6 6-6"/>',chr:'<path d="m9 6 6 6-6 6"/>',chl:'<path d="m15 6-6 6 6 6"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',dl:'<path d="M12 4v11m-4-4 4 4 4-4M5 20h14"/>',
+wifioff:'<path d="M3 3l18 18M5 10a10 10 0 0 1 4-2.4M19 10a10 10 0 0 0-4.3-2.6M8.5 14a5.5 5.5 0 0 1 3-1.4M15.5 14a5.5 5.5 0 0 0-1.2-.9"/><circle cx="12" cy="18" r="1"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 5a3.3 3.3 0 0 1 0 6M18 14.8c2 .6 3.2 2.3 3.5 5.2"/>',
+grid:'<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4v16"/>',bld:'<path d="M4 20V5l8-2v17M12 9l8 2v9M3 20h18M7 8h2M7 12h2M7 16h2M15 14h2M15 17h2"/>',
+chart:'<path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6"/>',list:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',alert:'<path d="M12 3 2.5 20h19zM12 10v4.5M12 17.5h.01"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',more:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',eyeoff:'<path d="M3 3l18 18M10.6 5.1A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A16 16 0 0 0 2 12s3.5 7 10 7c1.6 0 3-.4 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',cmd:'<path d="M9 9h6v6H9zM9 9V6.5A2.5 2.5 0 1 0 6.5 9H9zM15 9h2.5A2.5 2.5 0 1 0 15 6.5V9zM9 15v2.5A2.5 2.5 0 1 1 6.5 15H9zM15 15h2.5a2.5 2.5 0 1 1-2.5 2.5V15z"/>',
+upl:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M19 8v6M16 11h6"/>',pause:'<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',play:'<circle cx="12" cy="12" r="9"/><path d="m10 8.5 6 3.5-6 3.5z"/>',
+link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/>',shield:'<path d="M12 3 4 6v6c0 4.5 3.4 7.8 8 9 4.6-1.2 8-4.5 8-9V6z"/>',
+sortu:'<path d="m8 14 4-4 4 4"/>',sortd:'<path d="m8 10 4 4 4-4"/>',sortn:'<path d="m8 9 4-3 4 3M8 15l4 3 4-3"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>',home:'<path d="M3 11 12 4l9 7v9H3zM9 20v-6h6v6"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>',wa:'<path d="M4 20l1.4-4.2A8 8 0 1 1 8.3 18.7zM9 9c0 3 3 6 6 6l1.2-1.6-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/>',
+}; 
+function ic(n,s){s=s||18;return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n]||''}</svg>`}
+function pill(cls,icn,txt){return `<span class="pill ${cls}">${ic(icn,14)}${esc(txt)}</span>`}
+const ST={activa:['p-ok','check','Activa'],retrasada:['p-late','clock','Retrasada'],inactiva:['p-off','pause','Inactiva']};
+const OST={activa:['p-ok','check','Activa'],pausada:['p-pend','pause','Pausada'],desactivada:['p-err','ban','Desactivada']};
+const PST={activo:['p-ok','check','Activo'],pendiente:['p-pend','clock','Invitación pendiente'],inactivo:['p-off','ban','Inactivo']};
+const stPill=s=>pill(...ST[s]);
+const ostPill=s=>pill(...OST[s]);
+const pstPill=s=>pill(...PST[s]);
+const mod=(a,b)=>((a%b)+b)%b;
+const MODS=['M1 Fundamentos','M2 Relaciones','M3 Integridad','M4 Servicio','M5 Propósito'];
+const VALS=['Honestidad','Gratitud','Humildad','Perseverancia','Respeto','Generosidad','Responsabilidad','Paciencia','Lealtad','Servicio','Perdón','Disciplina','Empatía','Confianza','Valentía','Templanza'];
+const ANS=['Hoy dije la verdad en una conversación difícil.','Practiqué escuchar sin interrumpir a mi equipo.','Pedí perdón a un compañero y me sentí aliviado.','Agradecí por escrito a alguien que no lo esperaba.','Cumplí lo que prometí aunque costó.'];
+function agg(ts){
+  const n=ts.length,mem=sum(ts,t=>t.mem.length),vals=sum(ts,t=>t.vals),sess=ts.filter(t=>t.att>0);
+  const w=sum(sess,t=>t.mem.length);
+  return {n,mem,vals,att:w?Math.round(sum(sess,t=>t.att*t.mem.length)/w):0,imp:vals?sum(ts,t=>t.imp*t.vals)/vals:0,late:sum(ts,t=>t.late),
+    act:ts.filter(t=>t.status==='activa').length,ret:ts.filter(t=>t.status==='retrasada').length,ina:ts.filter(t=>t.status==='inactiva').length,low:ts.filter(t=>t.att>0&&t.att<70).length}
+}
+function memberStats(p,t){const h=hsh(p.id);return {att:t.att?Math.max(30,Math.min(100,t.att+((h%21)-10))):0,vals:Math.max(0,t.vals-(h%3)),imp:t.imp+((h%5)-2)*0.2,late:h%7===0?1:0}}
+function scores(p,t){
+  const ms=memberStats(p,t),out=[];const nvals=Math.min(ms.vals,8);
+  for(let k=0;k<nvals;k++){const h=hsh(p.id+k);let a=1+h%4+ (h%3===0?1:0);a=a>=5?a+1:a;let b=a+1+(h>>3)%3;b=Math.min(10,b);if(b===5)b=6;
+    out.push({v:VALS[(k+hsh(t.id))%VALS.length],m:MODS[Math.min(4,Math.floor(k/2))],a,b,d:b-a,late:(h%9===0),ans:ANS[h%ANS.length]})}
+  return out;
+}
+/* ================= STATE ================= */
+let S,LT=0,TT=0;
+const MYORG='luz';
+function freshState(keep){
+  return Object.assign({role:'admin',online:true,vp:'desk',theme:'auto',route:{n:'explore'},stack:[],ent:'mesas',
+   view:{mesas:'all',orgs:'all',pers:'all'},f:{mesas:{},orgs:{},pers:{}},q:{mesas:'',orgs:'',pers:''},
+   sort:{mesas:['code',1],orgs:['name',1],pers:['name',1]},sel:new Set(),pop:null,sheet:null,dlg:null,pal:null,form:null,loading:false,toast:null,dens:'cmf',
+   rf:{per:'12',country:'',org:'',loc:'',mesa:'',fac:'',mod:'',sel:null},drill:[],dg:'pais',chartT:{},reveal:{},aud:{type:'',org:'',q:''},customViews:[],palQ:'',palI:0,fresh:false},keep||{});
+}
+const isAdm=()=>S.role==='admin';
+const scopeTables=()=>isAdm()?TABLES:TABLES.filter(t=>t.org===MYORG);
+const scopeOrgs=()=>isAdm()?ORGS:ORGS.filter(o=>o.id===MYORG);
+const scopePeople=()=>isAdm()?PEOPLE:PEOPLE.filter(p=>p.org===MYORG);
+const canOrg=id=>isAdm()||id===MYORG;
+const VPW={phone:390,tab:820,desk:1280};
+const vpc=()=>{const f=$('#frame');const w=f?f.getBoundingClientRect().width:1280;return w<600?'phone':w<1000?'tab':'desk'};
+let VPCLS='desk';
+const dis=()=>S.online?'':' aria-disabled="true"';
+function onl(){if(!S.online){toast('Sin conexión: esta acción requiere internet','err');return false}return true}
+function toast(msg,kind){S.toast={msg,kind:kind||''};clearTimeout(TT);TT=setTimeout(()=>{S.toast=null;render()},3200);render()}
+function audit(type,obj,det,org,actor,arole){AUDIT.unshift({when:'Ahora',actor:actor||(isAdm()?'Daniela Cruz':'Marisol Peña'),arole:arole||(isAdm()?'Administrador':'Coordinador'),type,obj,org,det})}
+function nav(r,o){o=o||{};if(o.reset)S.stack=[];else if(!o.replace)S.stack.push(S.route);
+  S.route=r;S.pop=null;S.sheet=null;S.dlg=null;S.pal=null;S.loading=true;render();const m=$('#main');if(m)m.scrollTop=0;
+  clearTimeout(LT);LT=setTimeout(()=>{S.loading=false;render()},o.hold||240)}
+function back(){const r=S.stack.pop()||{n:'explore'};nav(r,{replace:true})}
+function goOrg(id){if(!canOrg(id)){nav({n:'forbidden',why:'org',id});return}nav({n:'org',id})}
+function goMesa(id){const t=T(id);if(!t)return;if(!canOrg(t.org)){nav({n:'forbidden',why:'org',id:t.org});return}nav({n:'mesa',id})}
+
+/* ================= GRID DATA ================= */
+const STO={activa:0,retrasada:1,inactiva:2};
+function viewDefs(ent){
+  if(ent==='mesas')return [{id:'all',l:'Todas las mesas',fn:()=>true},{id:'ret',l:'Mesas retrasadas',fn:t=>t.status==='retrasada',sort:['last',-1]},{id:'baja',l:'Baja asistencia',fn:t=>t.att>0&&t.att<70,sort:['att',1]},{id:'tarde',l:'Sincronizado tarde',fn:t=>t.late>0,sort:['late',-1]}].concat(S.customViews.map(v=>({id:v.id,l:v.l,fn:()=>true,custom:v})));
+  if(ent==='orgs')return [{id:'all',l:'Todas',fn:()=>true},{id:'pau',l:'Pausadas / desactivadas',fn:r=>r.o.status!=='activa'},{id:'vac',l:'Sin mesas',fn:r=>r.ts.length===0},{id:'sinc',l:'Sin coordinador',fn:r=>!r.coord||r.coord.state!=='activo'}];
+  return [{id:'all',l:'Todas',fn:()=>true},{id:'co',l:'Coordinadores',fn:p=>p.role==='Coordinador'},{id:'fa',l:'Facilitadores',fn:p=>p.role==='Facilitador'},{id:'mi',l:'Miembros',fn:p=>p.role==='Miembro'},{id:'pe',l:'Invitaciones pendientes',fn:p=>p.state==='pendiente'},{id:'in',l:'Inactivos',fn:p=>p.state==='inactivo'}];
+}
+function orgRows(){return scopeOrgs().map(o=>{const ts=TABLES.filter(t=>t.org===o.id);return {id:o.id,o,ts,a:agg(ts),coord:PEOPLE.find(p=>p.org===o.id&&p.role==='Coordinador')}})}
+function baseRows(ent){
+  const f=S.f[ent]||{},q=norm(S.q[ent]);
+  if(ent==='mesas')return scopeTables().filter(t=>(!f.country||O(t.org).country===f.country)&&(!f.org||t.org===f.org)&&(!f.loc||t.loc===f.loc)&&(!f.status||t.status===f.status)&&(!f.fac||t.fac===f.fac)&&(!q||norm(t.code+' '+t.name+' '+O(t.org).name+' '+pn(t.fac)).includes(q)));
+  if(ent==='orgs')return orgRows().filter(r=>(!f.country||r.o.country===f.country)&&(!f.status||r.o.status===f.status)&&(!q||norm(r.o.name+' '+r.o.region+' '+r.o.type).includes(q)));
+  return scopePeople().filter(p=>(!f.org||p.org===f.org)&&(!f.role||p.role===f.role)&&(!f.status||p.state===f.status)&&(!q||norm(p.fn+' '+p.ln+' '+p.email+' '+(p.table||'')).includes(q)));
+}
+const SORTS={
+ mesas:{code:t=>t.code,org:t=>O(t.org).name,loc:t=>t.loc,fac:t=>pn(t.fac),mem:t=>t.mem.length,status:t=>STO[t.status],att:t=>t.att,vals:t=>t.vals,imp:t=>t.imp,late:t=>t.late,last:t=>t.last},
+ orgs:{name:r=>r.o.name,country:r=>r.o.country,status:r=>r.o.status,mesas:r=>r.ts.length,mem:r=>r.a.mem,att:r=>r.a.att,imp:r=>r.a.imp,type:r=>r.o.type},
+ pers:{name:p=>p.fn+' '+p.ln,role:p=>p.role,org:p=>O(p.org).name,table:p=>p.table||'~',state:p=>p.state}
+};
+function rowsFor(ent){
+  const vd=viewDefs(ent).find(v=>v.id===S.view[ent])||viewDefs(ent)[0];
+  let r=baseRows(ent).filter(vd.fn);
+  const [k,d]=S.sort[ent];const acc=SORTS[ent][k]||(x=>0);
+  return r.slice().sort((a,b)=>{const x=acc(a),y=acc(b);return (x<y?-1:x>y?1:0)*d});
+}
+function viewCount(ent,v){if(v.custom)return v.custom.n;return baseRows(ent).filter(v.fn).length}
+const idOf=(ent,r)=>ent==='mesas'?r.id:ent==='orgs'?r.id:r.id;
+const selRows=()=>{const all=baseRows(S.ent);return all.filter(r=>S.sel.has(idOf(S.ent,r)))};
+function selTables(){const rs=selRows();if(S.ent==='mesas')return rs;if(S.ent==='orgs')return rs.flatMap(r=>r.ts);return []}
+
+/* ================= RENDER ENGINE ================= */
+function render(){
+  const fr=$('#frame');if(!fr)return;
+  const cls=vpc();
+  const act=document.activeElement;let fk=null,ss=null,se=null;
+  if(act&&fr.contains(act)){fk=act.getAttribute('data-fk')||(act.id?'#'+act.id:null);if(act.selectionStart!=null){ss=act.selectionStart;se=act.selectionEnd}}
+  const m0=$('#main');const sc=m0?m0.scrollTop:0;
+  fr.className='frame vp-'+cls;VPCLS=cls;
+  fr.style.width=VPW[S.vp]+'px';
+  fr.innerHTML=topbar()+offline()+`<main class="main" id="main" tabindex="-1">${S.loading?skel():body()}</main>`+bnav()+overlays();
+  const m=$('#main');if(m)m.scrollTop=sc;
+  if(fk){const e=fk[0]==='#'?fr.querySelector(fk):fr.querySelector('[data-fk="'+fk+'"]');if(e){e.focus({preventScroll:true});if(ss!=null&&e.setSelectionRange)try{e.setSelectionRange(ss,se)}catch(_){}}}
+  if(S.focusDlg){S.focusDlg=false;const d=fr.querySelector('[data-first]');if(d)d.focus()}
+  document.querySelectorAll('[data-r=vp]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.vp));
+  document.querySelectorAll('[data-r=role]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.role));
+  document.querySelectorAll('[data-r=net]').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='on')===S.online));
+}
+function offline(){return S.online?'':`<div class="offbar" role="status">${ic('wifioff',20)}<div>Sin conexión · La administración, las invitaciones y los informes solo funcionan en línea.<small> Puedes consultar los datos guardados (hace 12 min); las acciones están desactivadas.</small></div><button data-a="retry">Reintentar</button></div>`}
+function ctxInfo(){return isAdm()?{role:'Administrador',scope:'Todas las organizaciones',name:'Daniela Cruz'}:{role:'Coordinador',scope:'Fundación Luz',name:'Marisol Peña'}}
+function ctxRows(){return `<div class="lbl" style="margin:2px 4px 8px">Cambiar de contexto</div>
+ <button class="ctxrow" data-a="role" data-v="admin" aria-current="${isAdm()}">${av('Daniela Cruz',40)}<span style="flex:1"><small>Administrador</small><b>Iglesia Casa del Altísimo · todas</b></span>${isAdm()?ic('check',18):''}</button>
+ <button class="ctxrow" data-a="role" data-v="coord" aria-current="${!isAdm()}">${av('Marisol Peña',40)}<span style="flex:1"><small>Coordinador</small><b>Fundación Luz</b></span>${!isAdm()?ic('check',18):''}</button>
+ <button class="ctxrow" data-a="ctxm">${av('Marisol Peña',40)}<span style="flex:1"><small>Miembro</small><b>Mesa Esperanza 03</b></span><span class="pill p-off">${ic('lock',13)}Sesión en la app</span></button>`}
+function topbar(){
+  const c=ctxInfo(),ph=VPCLS==='phone';
+  const tab=(v,l,i)=>`<button class="tab" data-a="tab" data-v="${v}" ${tabOn()===v?'aria-current="page"':''}>${ic(i,18)}${l}</button>`;
+  return `<div class="topbar"><div class="logo" aria-hidden="true">GR</div><span class="brand">Mesas</span>
+  <div class="relw"><button class="ctxbtn" data-a="pop" data-v="ctx" data-fk="ctx" aria-haspopup="true" aria-expanded="${S.pop==='ctx'}" aria-label="Contexto: ${c.role}, ${c.scope}">${av(c.name,32)}<span class="t"><small>${c.role}</small><b>${c.scope}</b></span>${ic('chd',16)}</button>${S.pop==='ctx'&&!ph?`<div class="pop" role="menu">${ctxRows()}</div>`:''}</div>
+  <nav class="tabs" aria-label="Secciones">${tab('explore','Explorar','grid')}${tab('report','Informes','chart')}${tab('audit','Auditoría','list')}</nav>
+  <span class="sp"></span>
+  <button class="palbtn" data-a="pal" aria-label="Abrir paleta de comandos">${ic('search',18)}<span>Buscar o ejecutar…</span><kbd>Ctrl K</kbd></button></div>`;
+}
+function tabOn(){const n=S.route.n;return n==='report'?'report':n==='audit'?'audit':'explore'}
+function bnav(){const b=(v,l,i)=>`<button data-a="tab" data-v="${v}" ${tabOn()===v?'aria-current="page"':''}>${ic(i,22)}${l}</button>`;return `<nav class="bnav" aria-label="Secciones">${b('explore','Explorar','grid')}${b('report','Informes','chart')}${b('audit','Auditoría','list')}</nav>`}
+function skel(){const r=n=>Array.from({length:n},(_,i)=>`<div class="sk" style="height:44px;margin-bottom:8px;opacity:${1-i*.08}"></div>`).join('');
+  return `<div class="pg" role="status" aria-label="Cargando"><div class="sk" style="height:30px;width:240px;margin-bottom:14px"></div><div style="display:flex;gap:8px;margin-bottom:14px"><div class="sk" style="height:44px;width:140px;border-radius:999px"></div><div class="sk" style="height:44px;width:160px;border-radius:999px"></div><div class="sk" style="height:44px;width:150px;border-radius:999px"></div></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px"><div class="sk" style="height:76px"></div><div class="sk" style="height:76px"></div><div class="sk" style="height:76px"></div><div class="sk" style="height:76px"></div></div>${r(7)}<span class="sr">Cargando datos…</span></div>`}
+function body(){
+  const r=S.route;
+  switch(r.n){case 'explore':return explore();case 'report':return report();case 'audit':return auditPage();case 'org':return orgPage(r.id);case 'mesa':return mesaPage(r.id);case 'miembro':return miembroPage(r.id);case 'form':return formPage();case 'forbidden':return forbidden();}
+  return ''
+}
+function crumbs(list){return `<nav class="crumb" aria-label="Ruta">${list.map((c,i)=>i<list.length-1?`<button data-a="crumb" data-i="${i}" data-fk="cr${i}">${esc(c[0])}</button>${ic('chr',14)}`:`<b aria-current="page">${esc(c[0])}</b>`).join('')}</nav>`}
+let CRUMB=[];
+function setCrumb(list){CRUMB=list.map(c=>c[1]);return crumbs(list)}
+
+/* ================= EXPLORE ================= */
+const COLS={
+ mesas:[['code','Mesa'],['org','Organización / ubicación'],['fac','Facilitador'],['mem','Plazas'],['status','Estado'],['att','Asistencia'],['vals','Valores /48'],['imp','Mejora'],['late','Tarde']],
+ orgs:[['name','Organización'],['type','Tipo'],['country','País'],['status','Estado'],['mesas','Mesas'],['mem','Personas'],['att','Asistencia'],['imp','Mejora']],
+ pers:[['name','Persona'],['role','Rol'],['org','Organización'],['table','Mesa'],['state','Estado']]
+};
+function attCell(v){if(!v)return '<span class="mut">—</span>';const low=v<70;return `<span class="mb ${low?'lowv':''}"><i aria-hidden="true"><b style="width:${v}%"></b></i><span ${low?'style="color:var(--amber);font-weight:800"':''}>${v}%${low?' ▼':''}</span></span>`}
+function pips(n,hi){return `<span class="pips" role="img" aria-label="${n} de 9 plazas">${Array.from({length:9},(_,i)=>`<i class="${i<n?'on':''} ${i<3&&i>=n?'min':''}"></i>`).join('')}</span> <span style="font-size:12px;font-weight:800">${n}/9</span>`}
+function cell(ent,k,r){
+  if(ent==='mesas'){const t=r;switch(k){
+   case 'code':return `<button class="nm" data-a="open" data-k="mesa" data-id="${t.id}" data-fk="o-${t.id}"><span><span class="tt">${esc(t.code)} · ${esc(t.name)}</span><small>${esc(t.day)} ${t.time} · ${t.tz.split('/')[1].replace('_',' ')}</small></span></button>`;
+   case 'org':return `<span class="tt" style="font-weight:700">${esc(O(t.org).name)}</span><small class="mut" style="display:block;font-size:12px;line-height:1.1">${esc(t.loc)}</small>`;
+   case 'fac':return t.fac?`<span style="display:flex;gap:8px;align-items:center">${av(pn(t.fac),26)}${esc(pn(t.fac))}</span>`:pill('p-mag','alert','Sin facilitador');
+   case 'mem':return pips(t.mem.length);case 'status':return stPill(t.status);case 'att':return attCell(t.att);
+   case 'vals':return t.vals;case 'imp':return `<b>${fmtI(t.imp)}</b>`;
+   case 'late':return t.late?`<span class="pill p-late">${ic('clock',13)}${t.late}</span>`:'<span class="mut">0</span>'}}
+  if(ent==='orgs'){const o=r.o;switch(k){
+   case 'name':return `<button class="nm" data-a="open" data-k="org" data-id="${o.id}" data-fk="o-${o.id}">${av(o.name,30)}<span><span class="tt">${esc(o.name)}</span><small>${esc(o.region)}</small></span></button>`;
+   case 'type':return esc(o.type);case 'country':return esc(o.country);case 'status':return ostPill(o.status)+(r.coord&&r.coord.state==='activo'?'':' '+pill('p-mag','alert','Sin coordinador'));
+   case 'mesas':return r.ts.length?r.ts.length:'<span class="pill p-in">Sin mesas</span>';case 'mem':return r.a.mem;case 'att':return attCell(r.a.att);case 'imp':return r.ts.length?`<b>${fmtI(r.a.imp)}</b>`:'—'}}
+  const p=r;switch(k){
+   case 'name':return `<button class="nm" data-a="open" data-k="miembro" data-id="${p.id}" data-fk="o-${p.id}">${av(p.fn+' '+p.ln,30)}<span><span class="tt">${esc(p.fn+' '+p.ln)}</span><small>${esc(p.email)}</small></span></button>`;
+   case 'role':return esc(p.role);case 'org':return esc(O(p.org).name);case 'table':return p.table?esc(p.table):'<span class="mut">Sin mesa</span>';case 'state':return pstPill(p.state)}
+}
+function thead(ent){const [sk,sd]=S.sort[ent];return `<tr><th class="ck" scope="col"><label class="ckl"><input type="checkbox" data-a="selall" data-fk="selall" aria-label="Seleccionar todas las filas" ${allSel()?'checked':''}></label></th>${COLS[ent].map(c=>{const on=sk===c[0];return `<th scope="col" ${on?`aria-sort="${sd>0?'ascending':'descending'}"`:''}><button data-a="sort" data-k="${c[0]}" data-fk="s-${c[0]}">${c[1]}${ic(on?(sd>0?'sortu':'sortd'):'sortn',14)}</button></th>`}).join('')}</tr>`}
+function allSel(){const rs=rowsFor(S.ent);return rs.length>0&&rs.every(r=>S.sel.has(idOf(S.ent,r)))}
+function gridRow(ent,r){const id=idOf(ent,r),on=S.sel.has(id);
+  return `<tr class="${on?'sel':''}"><td class="ck"><label class="ckl"><input type="checkbox" data-a="sel" data-id="${id}" data-fk="ck-${id}" ${on?'checked':''} aria-label="Seleccionar ${esc(ent==='orgs'?r.o.name:ent==='mesas'?r.code:r.fn+' '+r.ln)}"></label></td>${COLS[ent].map(c=>`<td>${cell(ent,c[0],r)}</td>`).join('')}</tr>`}
+function cardRow(ent,r){const id=idOf(ent,r),on=S.sel.has(id);
+  const ck=`<label class="ckl" style="width:44px"><input type="checkbox" data-a="sel" data-id="${id}" data-fk="ck-${id}" ${on?'checked':''} aria-label="Seleccionar ${esc(id)}"></label>`;
+  if(ent==='mesas')return `<div class="card ${on?'sel':''}"><div class="r1">${ck}<button class="nm" style="flex:1" data-a="open" data-k="mesa" data-id="${r.id}"><span><span class="tt">${esc(r.code)} · ${esc(r.name)}</span><small>${esc(O(r.org).name)} · ${esc(r.loc)}</small></span></button>${stPill(r.status)}</div><div class="r2"><div class="mini"><span>Asist.</span><b>${r.att?r.att+'%':'—'}</b></div><div class="mini"><span>Valores</span><b>${r.vals}/48</b></div><div class="mini"><span>Mejora</span><b>${fmtI(r.imp)}</b></div></div><div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;font-size:12.5px">${pips(r.mem.length)} ${r.late?`<span class="pill p-late">${ic('clock',13)}Tarde ${r.late}</span>`:''}${r.fac?'':pill('p-mag','alert','Sin facilitador')}<span class="mut">${esc(pn(r.fac))}</span></div></div>`;
+  if(ent==='orgs')return `<div class="card ${on?'sel':''}"><div class="r1">${ck}<button class="nm" style="flex:1" data-a="open" data-k="org" data-id="${r.id}">${av(r.o.name,30)}<span><span class="tt">${esc(r.o.name)}</span><small>${esc(r.o.country)}</small></span></button>${ostPill(r.o.status)}</div><div class="r2"><div class="mini"><span>Mesas</span><b>${r.ts.length}</b></div><div class="mini"><span>Asist.</span><b>${r.a.att?r.a.att+'%':'—'}</b></div><div class="mini"><span>Mejora</span><b>${r.ts.length?fmtI(r.a.imp):'—'}</b></div></div></div>`;
+  return `<div class="card ${on?'sel':''}"><div class="r1">${ck}<button class="nm" style="flex:1" data-a="open" data-k="miembro" data-id="${r.id}">${av(r.fn+' '+r.ln,30)}<span><span class="tt">${esc(r.fn+' '+r.ln)}</span><small>${esc(r.role)} · ${esc(r.table||'Sin mesa')}</small></span></button>${pstPill(r.state)}</div></div>`}
+function activeF(ent){const f=S.f[ent],out=[];
+  const lab={country:'País',org:'Organización',loc:'Ubicación',status:'Estado',fac:'Facilitador',role:'Rol'};
+  for(const k in f){if(!f[k])continue;let v=f[k];if(k==='org')v=O(v).name;if(k==='fac')v=pn(v);if(k==='status')v=(ent==='mesas'?ST:ent==='orgs'?OST:PST)[v][2];out.push([k,lab[k],v])}
+  return out}
+function filtersBody(ent){
+  const f=S.f[ent];const sel=(k,l,opts)=>`<div class="fld"><label for="f-${k}">${l}</label><select class="in" id="f-${k}" data-chg="flt" data-k="${k}"><option value="">Todos</option>${opts.map(o=>`<option value="${esc(o[0])}" ${f[k]===o[0]?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+  const countries=[...new Set(scopeOrgs().map(o=>o.country))].map(c=>[c,c]);
+  const orgs=scopeOrgs().map(o=>[o.id,o.name]);
+  if(ent==='mesas'){const locs=[...new Set(scopeOrgs().filter(o=>!f.org||o.id===f.org).flatMap(o=>o.locs))].map(l=>[l,l]);
+   const facs=scopePeople().filter(p=>p.role==='Facilitador'&&p.state==='activo'&&(!f.org||p.org===f.org)).map(p=>[p.id,p.fn+' '+p.ln]);
+   return (isAdm()?sel('country','País',countries)+sel('org','Organización',orgs):'')+sel('loc','Ubicación',locs)+sel('status','Estado',Object.keys(ST).map(k=>[k,ST[k][2]]))+sel('fac','Facilitador',facs)}
+  if(ent==='orgs')return sel('country','País',countries)+sel('status','Estado',Object.keys(OST).map(k=>[k,OST[k][2]]));
+  return (isAdm()?sel('org','Organización',orgs):'')+sel('role','Rol',(isAdm()?['Coordinador']:[]).concat(['Facilitador','Miembro']).map(r=>[r,r]))+sel('status','Estado',Object.keys(PST).map(k=>[k,PST[k][2]]))}
+function createMenu(){const it=(k,l,i,ok)=>`<button class="mi" role="menuitem" data-a="create" data-k="${k}" ${ok?'':'aria-disabled="true"'}>${ic(i,18)}${l}${ok?'':`<span class="pill p-off" style="margin-left:auto">${ic('lock',12)}Solo Administrador</span>`}</button>`;
+  return `<div class="pop r" role="menu" style="min-width:270px">${it('mesa','Crear mesa','grid',true)}${it('org','Crear organización','bld',isAdm())}${it('pers','Invitar persona','upl',true)}</div>`}
+function explore(){
+  const ent=S.ent,ph=VPCLS==='phone',rows=rowsFor(ent),vds=viewDefs(ent);
+  const names={mesas:['mesa','mesas'],orgs:['organización','organizaciones'],pers:['persona','personas']}[ent];
+  const af=activeF(ent);
+  const entBtn=(k,l,n)=>`<button data-a="ent" data-v="${k}" data-fk="e-${k}" aria-pressed="${ent===k}">${l}<em>${n}</em></button>`;
+  const lockChip=!isAdm()&&ent!=='orgs'?`<span class="fchip lock" title="Tu rol solo ve esta organización">${ic('lock',13)}<span>Organización: <b>Fundación Luz</b></span></span>`:'';
+  const hdr=`<div class="bar1"><h2>${isAdm()?'Explorador':'Mi organización'}</h2>
+   <div class="seg" role="group" aria-label="Entidad">${entBtn('mesas','Mesas',scopeTables().length)}${isAdm()?entBtn('orgs','Organizaciones',ORGS.length):''}${entBtn('pers','Personas',scopePeople().length)}</div>
+   <span class="sp"></span>${!isAdm()?`<button class="btn ghost sm" data-a="open" data-k="org" data-id="${MYORG}">${ic('bld',16)}Mi organización</button>`:''}
+   <button class="btn sec sm hide-phone" data-a="dens" data-fk="dens" title="Densidad de filas (escritorio con puntero)">${ic('list',16)}${S.dens==='cmp'?'Compacta':'Cómoda'}</button>
+   <div class="relw"><button class="btn sm" data-a="pop" data-v="create" data-fk="create" aria-haspopup="true" aria-expanded="${S.pop==='create'}">${ic('plus',18)}Crear${ic('chd',14)}</button>${S.pop==='create'?createMenu():''}</div></div>`;
+  const views=`<div class="views" role="group" aria-label="Vistas guardadas"><span class="lbl" style="margin-right:2px">Vistas</span>${vds.map(v=>`<button class="vchip" data-a="view" data-v="${v.id}" data-fk="v-${v.id}" aria-pressed="${S.view[ent]===v.id}">${v.custom?ic('star',14):''}${esc(v.l)}<em>${viewCount(ent,v)}</em></button>`).join('')}${ent==='mesas'?`<button class="btn ghost sm" data-a="saveview" data-fk="savev" ${dis()}>${ic('star',16)}Guardar vista</button>`:''}</div>`;
+  const fb=`<div class="bar2"><label class="search">${ic('search',18)}<input id="q" type="search" placeholder="Buscar ${names[1]}…" value="${esc(S.q[ent])}" data-inp="q" aria-label="Buscar ${names[1]}"></label>
+   <div class="relw"><button class="btn sec sm" data-a="${ph?'sheet':'pop'}" data-v="filters" data-fk="filt" aria-haspopup="dialog" aria-expanded="${S.pop==='filters'}">${ic('filter',16)}Filtros${af.length?` (${af.length})`:''}</button>${S.pop==='filters'&&!ph?`<div class="pop" style="min-width:300px;max-height:420px;overflow:auto" role="dialog" aria-label="Filtros">${filtersBody(ent)}<button class="btn sec sm" style="width:100%" data-a="clearf">Limpiar filtros</button></div>`:''}</div>
+   ${lockChip}${af.map(a=>`<span class="fchip">${esc(a[1])}: <b>${esc(a[2])}</b><button data-a="rmf" data-k="${a[0]}" aria-label="Quitar filtro ${esc(a[1])}">${ic('x',14)}</button></span>`).join('')}${af.length||S.q[ent]?`<button class="lnk" data-a="clearf">Limpiar todo</button>`:''}</div>`;
+  let grid;
+  if(!rows.length){
+    const noData=baseRows(ent).length===0&&!af.length&&!S.q[ent];
+    grid=`<div class="empty" role="status"><div class="big">${ic(noData?'grid':'search',28)}</div><h3>${noData?'Aún no hay '+names[1]:'Sin resultados'}</h3><p>${noData?'Crea la primera '+names[0]+' para empezar a ver KPIs.':'Ningún elemento coincide con esta vista y estos filtros.'}</p>${noData?`<button class="btn" data-a="create" data-k="${ent==='orgs'?'org':ent==='pers'?'pers':'mesa'}">${ic('plus',18)}Crear ${names[0]}</button>`:`<button class="btn sec" data-a="clearf">Limpiar filtros y vista</button>`}</div>`;
+  }else grid=`<div class="gw" tabindex="0" role="region" aria-label="Tabla de ${names[1]}"><table class="g" aria-rowcount="${rows.length}"><thead>${thead(ent)}</thead><tbody>${rows.map(r=>gridRow(ent,r)).join('')}</tbody></table></div><div class="cards" aria-label="Lista de ${names[1]}">${rows.map(r=>cardRow(ent,r)).join('')}</div>`;
+  const stamp=S.online?'Datos al 25 oct 09:40 · en línea':'Datos guardados hace 12 min · solo lectura';
+  const foot=`<div class="gfoot"><span>${rows.length} de ${baseRows(ent).length} ${names[1]} · ${S.sel.size} seleccionad${S.sel.size===1?'a':'as'}</span><span>${stamp}</span></div>`;
+  const sb=`<div class="selbar ${S.sel.size?'on':''}" role="region" aria-label="Selección"><span style="flex:1">${S.sel.size} seleccionad${S.sel.size===1?'a':'as'}</span><button class="btn sm" data-a="sheet" data-v="panel">Ver KPIs</button><button class="btn ghost sm" style="color:var(--bg)" data-a="clearsel" aria-label="Limpiar selección">${ic('x',18)}</button></div>`;
+  return `<div class="xp" style="--row-h:${S.dens==='cmp'?'40px':'48px'}"><section class="xmain" aria-label="Explorador">${hdr}${views}${fb}${grid}${foot}${sb}</section><aside class="xside" aria-label="KPIs de la selección">${panelHTML()}</aside></div>`;
+}
+function panelHTML(){
+  const ent=S.ent,sel=selRows(),has=sel.length>0;
+  let ts,title;
+  if(ent==='pers'){const base=has?sel:rowsFor('pers');
+    const c=r=>base.filter(p=>p.role===r).length;
+    return `<div class="kick">${has?'Selección':'Vista actual'} · ${base.length} personas</div>
+    <div class="kgrid"><div class="kt"><div class="v">${c('Coordinador')}</div><div class="d">Coordinadores</div></div><div class="kt"><div class="v">${c('Facilitador')}</div><div class="d">Facilitadores</div></div><div class="kt"><div class="v">${c('Miembro')}</div><div class="d">Miembros</div></div><div class="kt"><div class="v">${base.filter(p=>p.state==='pendiente').length}</div><div class="d">Invitaciones pendientes</div></div></div>
+    <div class="alert al-info">${ic('info',18)}<div>Los KPIs de personas están en cada mesa.<small>Abre una persona para ver respuestas individuales (sensibles).</small></div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><button class="btn sec sm" data-a="csv" data-v="personas" ${dis()}>${ic('dl',16)}Exportar CSV</button>${has?`<button class="btn ghost sm" data-a="clearsel">Limpiar selección</button>`:''}</div>`}
+  ts=has?selTables():rowsFor('mesas');title=has?'Selección':'Vista actual';
+  const a=agg(ts),lowN=a.low;
+  const nm=ent==='orgs'&&has?sel.length+' organizaciones':ts.length+' mesas';
+  return `<div class="kick">${title} · ${nm}</div>
+  ${!ts.length?`<div class="alert al-info">${ic('info',18)}<div>Sin mesas para agregar.<small>La selección no tiene mesas.</small></div></div>`:`
+  <div class="kgrid"><div class="kt"><div class="v">${a.vals}</div><div class="d">Valores completados</div></div>
+   <div class="kt"><div class="v">${fmtI(a.imp)}<small> pts</small></div><div class="d">Mejora estimada</div></div>
+   <div class="kt"><div class="v">${a.att}<small>%</small></div><div class="d">Asistencia</div></div>
+   <div class="kt"><div class="v">${a.late}</div><div class="d">Sincronizado tarde</div></div></div>
+  <div class="kt"><div class="d">Mesas por estado</div><div class="stk" role="img" aria-label="${a.act} activas, ${a.ret} retrasadas, ${a.ina} inactivas"><i class="s-a" style="width:${a.act/a.n*100}%"></i><i class="s-r" style="width:${a.ret/a.n*100}%"></i><i class="s-i" style="width:${a.ina/a.n*100}%"></i></div>
+   <div class="chips"><span class="pill p-ok">${ic('check',13)}${a.act} activas</span><span class="pill p-late">${ic('clock',13)}${a.ret} retrasadas</span><span class="pill p-in">${ic('pause',13)}${a.ina} inactivas</span></div></div>
+  ${lowN?`<div class="alert al-warn" style="margin-top:10px">${ic('alert',18)}<div>${lowN} mesa${lowN>1?'s':''} con asistencia &lt; 70%<small>Umbral de alerta definido por la iglesia.</small></div></div>`:''}`}
+  ${has?`<div style="margin:12px 0 4px" class="lbl">Seleccionadas</div><div class="chips">${sel.slice(0,12).map(r=>{const id=idOf(ent,r);return `<span class="fchip">${esc(ent==='orgs'?r.o.name:r.code)}<button data-a="sel" data-id="${id}" data-fk="chip-${id}" aria-label="Quitar ${esc(id)} de la selección">${ic('x',14)}</button></span>`}).join('')}${sel.length>12?`<span class="hint">+${sel.length-12}</span>`:''}</div>`:`<div class="hint" style="margin-top:12px">Marca filas para agregar sus KPIs aquí. Sin selección se resume la vista filtrada.</div>`}
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px"><button class="btn sm" data-a="toreport" ${ts.length?'':'aria-disabled="true"'}>${ic('chart',16)}Abrir en Informes</button><button class="btn sec sm" data-a="csv" data-v="seleccion" ${dis()}>${ic('dl',16)}Exportar CSV</button>${has?`<button class="btn ghost sm" data-a="clearsel">Limpiar selección</button>`:''}</div>`;
+}
+/* ================= REPORTS ================= */
+const MODSH=[.18,.24,.22,.2,.16];
+function repTables(){
+  const r=S.rf;let ts=scopeTables();
+  if(r.sel)ts=ts.filter(t=>r.sel.includes(t.id));
+  if(r.country)ts=ts.filter(t=>O(t.org).country===r.country);
+  if(r.org)ts=ts.filter(t=>t.org===r.org);
+  if(r.loc)ts=ts.filter(t=>t.loc===r.loc);
+  if(r.mesa)ts=ts.filter(t=>t.id===r.mesa);
+  if(r.fac)ts=ts.filter(t=>t.fac===r.fac);
+  const d=drillPath();
+  for(const s of d){if(s.k==='pais')ts=ts.filter(t=>O(t.org).country===s.id);if(s.k==='org')ts=ts.filter(t=>t.org===s.id);if(s.k==='fac')ts=ts.filter(t=>t.fac===s.id);if(s.k==='mesa')ts=ts.filter(t=>t.id===s.id)}
+  return ts;
+}
+function drillPath(){return S.drill}
+const NW=()=>({4:4,12:12,26:26})[S.rf.per]||12;
+function series(ts){
+  const n=NW(),a=agg(ts),mi=S.rf.mod!==''?+S.rf.mod:-1,mf=mi>=0?MODSH[mi]*2:1;
+  const act=ts.filter(t=>t.status!=='inactiva').length,vals=[],att=[],late=[];
+  for(let i=0;i<n;i++){const s=Math.sin(i*1.7+ts.length);vals.push({l:'S'+(43-n+1+i),v:Math.round(act*(0.62+0.3*Math.abs(s))*mf)});
+    att.push({l:'S'+(43-n+1+i),v:a.att?Math.max(40,Math.min(100,a.att+Math.round(7*Math.sin(i*.9+1)))):0})}
+  return {vals,att}
+}
+function nice(v){const p=Math.pow(10,Math.floor(Math.log10(v)));for(const m of [1,2,2.5,5,10]){if(v<=m*p)return m*p}return 10*p}
+const cw=()=>({phone:330,tab:700,desk:540})[VPCLS];
+function yAxis(W,H,pl,pr,pt,pb,max,fmt){let g='';for(let i=0;i<=4;i++){const y=pt+(H-pt-pb)*(1-i/4);g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${pl-6}" y="${y+4}" text-anchor="end">${fmt(max*i/4)}</text>`}return g}
+function xLabels(d,W,pl,pr,H,step,center){const bw=(W-pl-pr)/d.length;return d.map((x,i)=>i%step===0?`<text x="${pl+bw*i+bw/2}" y="${H-6}" text-anchor="middle">${esc(x.l)}</text>`:'').join('')}
+function svgBars(d,title,fmt){fmt=fmt||(v=>Math.round(v));const W=cw(),H=190,pl=32,pr=4,pt=8,pb=24,max=nice(Math.max(1,...d.map(x=>x.v))),bw=(W-pl-pr)/d.length;
+  const bars=d.map((x,i)=>{const h=(H-pt-pb)*x.v/max;const tip=`${x.l}: ${fmt(x.v)}`;return `<rect class="bar" x="${(pl+i*bw+bw*.14).toFixed(1)}" y="${(H-pb-h).toFixed(1)}" width="${(bw*.72).toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" tabindex="0" role="img" aria-label="${esc(tip)}" data-tip="${esc(tip)}"/>`}).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(title)}">${yAxis(W,H,pl,pr,pt,pb,max,fmt)}${bars}${xLabels(d,W,pl,pr,H,Math.ceil(d.length/(VPCLS==='phone'?6:10)))}</svg>`}
+function svgLine(d,title,thr){const W=cw(),H=190,pl=36,pr=8,pt=10,pb=24,max=100,min=0,bw=(W-pl-pr)/Math.max(1,d.length-1);
+  const X=i=>pl+i*bw,Y=v=>pt+(H-pt-pb)*(1-v/100);
+  const pts=d.map((x,i)=>`${X(i).toFixed(1)},${Y(x.v).toFixed(1)}`).join(' ');
+  const dots=d.map((x,i)=>{const tip=`${x.l}: ${x.v}%${x.v<thr?' (bajo el umbral)':''}`;const low=x.v<thr;return `<circle cx="${X(i).toFixed(1)}" cy="${Y(x.v).toFixed(1)}" r="${d.length>14?3.5:5}" fill="${low?'var(--bg)':'var(--acc)'}" stroke="var(--acc)" stroke-width="2.5" tabindex="0" role="img" aria-label="${esc(tip)}" data-tip="${esc(tip)}"/>`}).join('');
+  const lab=d.map((x,i)=>i%Math.ceil(d.length/(VPCLS==='phone'?6:10))===0?`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${x.l}</text>`:'').join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(title)}">${yAxis(W,H,pl,pr,pt,pb,100,v=>Math.round(v)+'%')}<line x1="${pl}" x2="${W-pr}" y1="${Y(thr)}" y2="${Y(thr)}" stroke="var(--amber)" stroke-width="2" stroke-dasharray="6 4"/><text x="${W-pr}" y="${Y(thr)+14}" text-anchor="end" style="fill:var(--amber)">umbral ${thr}%</text><polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round"/>${dots}${lab}</svg>`}
+function modData(ts){const a=agg(ts);return MODS.map((m,i)=>{const ini=3.9+i*.18,imp=a.imp?a.imp*(0.75+(i%3)*.2):0;return {m,ini:+ini.toFixed(1),fin:+Math.min(9.5,ini+imp).toFixed(1),d:+imp.toFixed(1)}})}
+function svgDumb(d,title){const W=cw(),rh=36,H=d.length*rh+34,pl=VPCLS==='phone'?92:118,pr=44,X=v=>pl+(W-pl-pr)*(v-1)/9;let g='';
+  for(let v=1;v<=10;v++)g+=`<line x1="${X(v)}" x2="${X(v)}" y1="4" y2="${H-26}" stroke="var(--line)" ${v===5?'stroke-dasharray="4 4" stroke-width="2" stroke="var(--off)"':''}/><text x="${X(v)}" y="${H-8}" text-anchor="middle">${v===5?'5 ✕':v}</text>`;
+  d.forEach((r,i)=>{const y=i*rh+20;const t1=`${r.m} · inicial ${r.ini}`,t2=`${r.m} · seguimiento ${r.fin} (${fmtI(r.d)} pts)`;
+   g+=`<text x="${pl-8}" y="${y+4}" text-anchor="end" style="fill:var(--ink)">${esc(r.m.split(' ')[0]+' '+(VPCLS==='phone'?'':r.m.split(' ')[1]))}</text><line x1="${X(r.ini)}" x2="${X(r.fin)}" y1="${y}" y2="${y}" stroke="var(--acc)" stroke-width="4" stroke-linecap="round"/><circle cx="${X(r.ini)}" cy="${y}" r="7" fill="var(--bg)" stroke="var(--acc)" stroke-width="3" tabindex="0" role="img" aria-label="${esc(t1)}" data-tip="${esc(t1)}"/><circle cx="${X(r.fin)}" cy="${y}" r="7" fill="var(--acc)" tabindex="0" role="img" aria-label="${esc(t2)}" data-tip="${esc(t2)}"/><text x="${W-pr+6}" y="${y+4}" style="fill:var(--ink)">${fmtI(r.d)}</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(title)}">${g}</svg>`}
+function svgStack(ts,title){const orgs=[...new Set(ts.map(t=>t.org))],W=cw(),rh=34,H=orgs.length*rh+10,pl=VPCLS==='phone'?96:128,pr=10;
+  const rows=orgs.map(o=>({o,a:ts.filter(t=>t.org===o&&t.status==='activa').length,r:ts.filter(t=>t.org===o&&t.status==='retrasada').length,i:ts.filter(t=>t.org===o&&t.status==='inactiva').length}));
+  const mx=Math.max(1,...rows.map(r=>r.a+r.r+r.i)),sc=(W-pl-pr)/mx;let g=`<defs><pattern id="pa" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="var(--bg)"/><rect width="3" height="7" fill="var(--amber)"/></pattern><pattern id="pb" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="var(--bg)"/><circle cx="3" cy="3" r="1.5" fill="var(--off)"/></pattern></defs>`;
+  rows.forEach((r,i)=>{const y=i*rh+6;let x=pl;const nm=O(r.o).name;g+=`<text x="${pl-8}" y="${y+17}" text-anchor="end" style="fill:var(--ink)">${esc(nm.length>16?nm.slice(0,15)+'…':nm)}</text>`;
+   [['a','Activas','var(--lime)','var(--lime)'],['r','Retrasadas','url(#pa)','var(--amber)'],['i','Inactivas','url(#pb)','var(--off)']].forEach(s=>{const n=r[s[0]];if(!n)return;const w=n*sc;const tip=`${nm} · ${s[1]}: ${n}`;g+=`<rect x="${x}" y="${y}" width="${w-1}" height="24" rx="4" fill="${s[2]}" stroke="${s[3]}" stroke-width="1.5" tabindex="0" role="img" aria-label="${esc(tip)}" data-tip="${esc(tip)}"/><text x="${x+w/2}" y="${y+16}" text-anchor="middle" style="fill:var(--ink);font-weight:900">${n}</text>`;x+=w});});
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(title)}">${g}</svg><div class="chips" style="margin-top:6px"><span class="pill p-ok">${ic('check',12)}Activas</span><span class="pill p-late">${ic('clock',12)}Retrasadas</span><span class="pill p-in">${ic('pause',12)}Inactivas</span></div>`}
+function svgH(d,title,fmt){fmt=fmt||(v=>v);const W=cw(),rh=30,H=d.length*rh+6,pl=VPCLS==='phone'?96:128,pr=34,mx=Math.max(1,...d.map(x=>x.v));let g='';
+  d.forEach((x,i)=>{const y=i*rh+4,w=(W-pl-pr)*x.v/mx,tip=`${x.l}: ${fmt(x.v)}`;g+=`<text x="${pl-8}" y="${y+16}" text-anchor="end" style="fill:var(--ink)">${esc(x.l)}</text><rect class="bar" x="${pl}" y="${y}" width="${Math.max(w,2)}" height="22" rx="4" tabindex="0" role="img" aria-label="${esc(tip)}" data-tip="${esc(tip)}"/><text x="${pl+w+6}" y="${y+16}" style="fill:var(--ink);font-weight:900">${fmt(x.v)}</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(title)}">${g}</svg>`}
+function dtable(cols,rows){return `<div class="dt-w" tabindex="0" role="region" aria-label="Tabla de datos"><table class="dt"><thead><tr>${cols.map(c=>`<th scope="col" class="${c[1]||''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${cols[i][1]||''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function chartCard(id,title,sub,chart,table){const tb=!!S.chartT[id];
+  return `<section class="cc" aria-labelledby="h-${id}"><div class="hd"><div class="g"><h3 id="h-${id}">${title}</h3><small>${sub}</small></div><div class="seg" role="group" aria-label="Vista"><button data-a="ct" data-v="${id}" data-m="0" aria-pressed="${!tb}" data-fk="ct0-${id}">Gráfico</button><button data-a="ct" data-v="${id}" data-m="1" aria-pressed="${tb}" data-fk="ct1-${id}">Tabla</button></div><button class="ibtn" data-a="csv" data-v="${id}" aria-label="Exportar CSV de ${esc(title)}" title="Exportar CSV" ${dis()}>${ic('dl',18)}</button></div>${tb?table:chart}</section>`}
+function repFilters(){
+  const r=S.rf,sel=(k,l,opts,v)=>`<div class="fld"><label for="r-${k}">${l}</label><select class="in" id="r-${k}" data-chg="rf" data-k="${k}"><option value="">${k==='per'?'':'Todos'}</option>${opts.map(o=>`<option value="${esc(o[0])}" ${String(r[k])===String(o[0])?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+  const orgs=scopeOrgs().filter(o=>!r.country||o.country===r.country);
+  const locs=[...new Set(orgs.filter(o=>!r.org||o.id===r.org).flatMap(o=>o.locs))];
+  const mesas=scopeTables().filter(t=>(!r.org||t.org===r.org)&&(!r.loc||t.loc===r.loc));
+  const facs=PEOPLE.filter(p=>p.role==='Facilitador'&&p.state==='activo'&&scopeOrgs().some(o=>o.id===p.org)&&(!r.org||p.org===r.org));
+  return `<div class="rbar" role="group" aria-label="Filtros del informe">
+   ${sel('per','Período',[['4','4 semanas'],['12','12 semanas'],['26','26 semanas']]).replace('<option value=""></option>','')}
+   ${isAdm()?sel('country','País',[...new Set(scopeOrgs().map(o=>o.country))].map(c=>[c,c]))+sel('org','Organización',orgs.map(o=>[o.id,o.name])):`<div class="fld"><span class="lb">Organización</span><span class="fchip lock" style="min-height:44px">${ic('lock',14)}<b>Fundación Luz</b></span></div>`}
+   ${sel('loc','Ubicación',locs.map(l=>[l,l]))}${sel('mesa','Mesa',mesas.map(t=>[t.id,t.code+' · '+t.name]))}${sel('fac','Facilitador',facs.map(p=>[p.id,p.fn+' '+p.ln]))}${sel('mod','Módulo / valor',MODS.map((m,i)=>[String(i),m]))}
+   <button class="btn sec sm" data-a="rfclear">Limpiar</button><button class="btn sm" data-a="csv" data-v="informe completo" ${dis()}>${ic('dl',16)}Exportar CSV</button></div>${S.rf.sel?`<div class="chips" style="margin-bottom:6px"><span class="fchip">Selección del explorador: <b>${S.rf.sel.length} mesas</b><button data-a="rfsel" aria-label="Quitar selección">${ic('x',14)}</button></span></div>`:''}`}
+function drillRows(){
+  const path=isAdm()?S.drill:[{k:'org',id:MYORG}].concat(S.drill);const last=path[path.length-1];
+  const base=scopeTables().filter(t=>(!S.rf.country||O(t.org).country===S.rf.country)&&(!S.rf.org||t.org===S.rf.org)&&(!S.rf.loc||t.loc===S.rf.loc)&&(!S.rf.mesa||t.id===S.rf.mesa)&&(!S.rf.fac||t.fac===S.rf.fac)&&(!S.rf.sel||S.rf.sel.includes(t.id)));
+  const grp=(keys,labelFn,subFn,nextK,tsFn)=>keys.map(k=>{const ts=tsFn(k);return {id:k,label:labelFn(k),sub:subFn?subFn(k):'',a:agg(ts),next:nextK}}).filter(r=>r.a.n>0);
+  let rows,level,title;
+  if(!last){
+    if(S.dg==='pais'){level='País';rows=grp([...new Set(base.map(t=>O(t.org).country))],k=>k,null,'pais',k=>base.filter(t=>O(t.org).country===k))}
+    else if(S.dg==='org'){level='Organización';rows=grp([...new Set(base.map(t=>t.org))],k=>O(k).name,k=>O(k).country,'org',k=>base.filter(t=>t.org===k))}
+    else{level='Facilitador';rows=grp([...new Set(base.map(t=>t.fac).filter(Boolean))],k=>pn(k),k=>O(P(k).org).name,'fac',k=>base.filter(t=>t.fac===k))}
+  }else if(last.k==='pais'){level='Organización';rows=grp([...new Set(base.filter(t=>O(t.org).country===last.id).map(t=>t.org))],k=>O(k).name,k=>O(k).region,'org',k=>base.filter(t=>t.org===k))}
+  else if(last.k==='org'||last.k==='fac'){level='Mesa';const ts=base.filter(t=>last.k==='org'?t.org===last.id:t.fac===last.id);rows=ts.map(t=>({id:t.id,label:t.code+' · '+t.name,sub:t.loc,a:agg([t]),next:'mesa'}))}
+  else{level='Miembro';const t=T(last.id);rows=t.mem.map(id=>{const p=P(id),ms=memberStats(p,t);return {id,label:p.fn+' '+p.ln,sub:p.role,p:true,a:{n:1,mem:1,att:ms.att,vals:ms.vals,imp:ms.imp,late:ms.late}}})}
+  return {rows,level,path}
+}
+function crumbLabel(s){return s.k==='pais'?s.id:s.k==='org'?O(s.id).name:s.k==='fac'?pn(s.id):T(s.id).code}
+function drillCard(){
+  const {rows,level}=drillRows();const ph=VPCLS==='phone';
+  const bc=`<nav class="crumb" aria-label="Ruta del desglose">${isAdm()?`<button data-a="drillto" data-i="0" data-fk="dr-root">${S.dg==='pais'?'Todos los países':S.dg==='org'?'Todas las organizaciones':'Todos los facilitadores'}</button>`:`<b>Fundación Luz</b>`}${S.drill.map((s,i)=>`${ic('chr',14)}${i<S.drill.length-1?`<button data-a="drillto" data-i="${i+1}" data-fk="dr-${i}">${esc(crumbLabel(s))}</button>`:`<b>${esc(crumbLabel(s))}</b>`}`).join('')}</nav>`;
+  const grpSel=isAdm()&&!S.drill.length?`<div class="seg" role="group" aria-label="Agrupar por"><button data-a="dg" data-v="pais" aria-pressed="${S.dg==='pais'}" data-fk="dg1">País</button><button data-a="dg" data-v="org" aria-pressed="${S.dg==='org'}" data-fk="dg2">Organización</button><button data-a="dg" data-v="fac" aria-pressed="${S.dg==='fac'}" data-fk="dg3">Facilitador</button></div>`:'';
+  const cols=level==='Miembro'?[[`${level} <span class="sens">${ic('lock',12)}sensible</span>`],['Asist.','n'],['Valores','n hide-phone'],['Mejora','n'],['Tarde','n hide-phone']]:[[level],['Mesas','n hide-phone'],['Asist.','n'],['Valores','n hide-phone'],['Mejora','n'],['Tarde','n hide-phone']];
+  const trs=rows.map(r=>{const a=r.a;
+    const nameCell=r.p?`<button class="rowbtn" data-a="open" data-k="miembro" data-id="${r.id}" data-from="report"><span>${esc(r.label)}</span><span class="sens">${ic('lock',12)}</span></button><small class="mut">${esc(r.sub)}</small>`
+      :r.next==='mesa'?`<button class="rowbtn" data-a="drill" data-k="mesa" data-id="${r.id}" data-fk="dd-${r.id}"><span>${esc(r.label)}</span>${ic('chr',14)}</button><small class="mut">${esc(r.sub)}</small>`
+      :`<button class="rowbtn" data-a="drill" data-k="${r.next}" data-id="${esc(r.id)}" data-fk="dd-${esc(r.id)}"><span>${esc(r.label)}</span>${ic('chr',14)}</button><small class="mut">${esc(r.sub)}</small>`;
+    const att=a.att?a.att+'%'+(a.att<70?' ▼':''):'—';
+    return r.p?[nameCell,att,a.vals,fmtI(a.imp),a.late]:level==='Mesa'?[nameCell,'1',att,a.vals,fmtI(a.imp),a.late]:[nameCell,a.n,att,a.vals,fmtI(a.imp),a.late]}).map(r=>r);
+  const rowsH=level==='Miembro'?trs.map(r=>[r[0],r[1],r[2],r[3],r[4]]):trs;
+  return `<section class="cc" style="margin-top:12px" aria-labelledby="h-dr"><div class="hd"><div class="g"><h3 id="h-dr">Desglose · ${level}</h3><small>Agregado → organización → mesa → miembro. Pulsa una fila para bajar un nivel; los filtros y gráficos se acotan al nivel actual.</small></div>${grpSel}</div>${bc}${dtable(cols,rowsH)}${level==='Miembro'?`<div class="alert al-sens" style="margin-top:10px">${ic('lock',18)}<div>Respuestas individuales = datos sensibles<small>Visibles para facilitador, coordinador y administración. Cada consulta queda en la auditoría.</small></div></div>`:''}</section>`;
+}
+function report(){
+  if(!S.online)return `<div class="pg"><div class="empty" role="status" style="margin-top:20px"><div class="big" style="color:var(--off)">${ic('wifioff',28)}</div><h3>Los informes necesitan conexión</h3><p>Los KPIs se calculan en el servidor y no se guardan en este dispositivo. Reconéctate para verlos; el explorador sigue disponible en modo lectura.</p><button class="btn" data-a="retry">Reintentar</button> <button class="btn sec" data-a="tab" data-v="explore">Ir al explorador</button></div></div>`;
+  const ts=repTables(),a=agg(ts),mi=S.rf.mod!==''?+S.rf.mod:-1,mf=mi>=0?MODSH[mi]*2:1;
+  const head=`<div class="ph"><div><div class="kick">${isAdm()?'Todas las organizaciones':'Fundación Luz'} · períodos de ${NW()} semanas</div><h2>Informes</h2></div></div>${VPCLS==='phone'?`<button class="btn sec sm" data-a="rfo" data-fk="rfo" aria-expanded="${!!S.rfo}">${ic('filter',16)}Filtros del informe${ic('chd',14)}</button>${S.rfo?repFilters():''}`:repFilters()}`;
+  if(!ts.length)return `<div class="pg">${head}<div class="empty" role="status"><div class="big">${ic('chart',28)}</div><h3>Sin datos para estos filtros</h3><p>${S.rf.org==='vec'?'Red Vecinal Norte aún no tiene mesas, así que no hay KPIs que mostrar.':'Ninguna mesa coincide con la combinación de filtros.'}</p><button class="btn" data-a="rfclear">Quitar filtros</button></div></div>`;
+  const sr=series(ts),md=modData(ts),vals=Math.round(a.vals*mf),late=Math.round(a.late*(mi>=0?.5:1));
+  const kt=(l,v,d,extra)=>`<div class="kt"><div class="kick">${l}</div><div class="v">${v}</div><div class="d">${d}</div>${extra||''}</div>`;
+  const krow=`<div class="krow">${kt('Valores completados',vals,'de 48 posibles por mesa')}${kt('Mejora estimada',fmtI(a.imp)+'<small> pts</small>','seguimiento − inicial')}${kt('Asistencia',a.att+'<small>%</small>',a.low+' mesas bajo 70%')}${kt('Mesas',`${a.act}<small> · ${a.ret} · ${a.ina}</small>`,'activas · retrasadas · inactivas',`<button class="lnk" style="min-height:44px" data-a="tomesas" data-v="ret">Ver retrasadas</button>`)}${kt('Sincronizado tarde',late,'respuestas cargadas tras la sesión',`<button class="lnk" style="min-height:44px" data-a="tomesas" data-v="tarde">Ver mesas</button>`)}</div>`;
+  const lateRows=ts.filter(t=>t.late>0).sort((x,y)=>y.late-x.late).slice(0,6).map(t=>({l:t.code,v:t.late}));
+  const c1=chartCard('c1','Valores completados por semana',`${sr.vals.reduce((s,x)=>s+x.v,0)} en el período`,svgBars(sr.vals,'Valores completados por semana'),dtable([['Semana'],['Valores','n']],sr.vals.map(x=>[x.l,x.v])));
+  const c2=chartCard('c2','Asistencia',`Promedio ${a.att}% · umbral 70%`,svgLine(sr.att,'Asistencia por semana',70),dtable([['Semana'],['Asistencia','n']],sr.att.map(x=>[x.l,x.v+'%'])));
+  const c3=chartCard('c3','Mejora estimada por módulo','Puntaje inicial → seguimiento (1–10, el 5 está bloqueado)',svgDumb(md,'Mejora por módulo'),dtable([['Módulo'],['Inicial','n'],['Seguim.','n'],['Mejora','n']],md.map(r=>[r.m,r.ini,r.fin,fmtI(r.d)])));
+  const orgs=[...new Set(ts.map(t=>t.org))];
+  const c4=chartCard('c4','Mesas por estado','Por organización · activa / retrasada / inactiva',svgStack(ts,'Mesas por estado'),dtable([['Organización'],['Activas','n'],['Retrasadas','n'],['Inactivas','n']],orgs.map(o=>[esc(O(o).name),ts.filter(t=>t.org===o&&t.status==='activa').length,ts.filter(t=>t.org===o&&t.status==='retrasada').length,ts.filter(t=>t.org===o&&t.status==='inactiva').length])));
+  const c5=chartCard('c5','Sincronizado tarde',`Respuestas cargadas fuera de la ventana · ${late} en total`,lateRows.length?svgH(lateRows,'Sincronizado tarde por mesa'):`<div class="empty" style="padding:18px"><p style="margin:0">Ninguna mesa tuvo sincronización tardía en este alcance.</p></div>`,dtable([['Mesa'],['Tarde','n']],lateRows.map(x=>[x.l,x.v])));
+  return `<div class="pg">${head}${krow}<div class="cgrid">${c1}${c2}${c3}${c4}${c5}</div>${drillCard()}</div>`;
+}
+/* ================= AUDIT ================= */
+const AT={'Alta':['p-ok','plus'],'Baja':['p-err','ban'],'Reasignación':['p-acc','swap'],'Cierre de sesión':['p-sky','lock'],'Cambio de rol':['p-pend','shield'],'Vista sensible':['p-mag','eye']};
+function auditPage(){
+  let rows=AUDIT.filter(e=>isAdm()||e.org===MYORG);
+  const A=S.aud;rows=rows.filter(e=>(!A.type||e.type===A.type)&&(!A.org||e.org===A.org)&&(!A.q||norm(e.actor+' '+e.obj+' '+e.det).includes(norm(A.q))));
+  const types=Object.keys(AT);
+  return `<div class="pg"><div class="ph"><div><div class="kick">${isAdm()?'Toda la plataforma':'Fundación Luz'}</div><h2>Auditoría</h2></div><div class="acts"><button class="btn sec sm" data-a="csv" data-v="auditoría" ${dis()}>${ic('dl',16)}Exportar CSV</button></div></div>
+  <div class="views" role="group" aria-label="Tipo de evento"><button class="vchip" data-a="atype" data-v="" aria-pressed="${!A.type}" data-fk="at-all">Todos</button>${types.map(t=>`<button class="vchip" data-a="atype" data-v="${t}" aria-pressed="${A.type===t}" data-fk="at-${t}">${ic(AT[t][1],14)}${t}</button>`).join('')}</div>
+  <div class="bar2"><label class="search">${ic('search',18)}<input id="aq" type="search" placeholder="Buscar actor, objeto o detalle…" value="${esc(A.q)}" data-inp="aq" aria-label="Buscar en auditoría"></label>${isAdm()?`<select class="in" style="width:auto" data-chg="aorg" aria-label="Organización"><option value="">Todas las organizaciones</option>${ORGS.map(o=>`<option value="${o.id}" ${A.org===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`:`<span class="fchip lock">${ic('lock',13)}Organización: <b>Fundación Luz</b></span>`}${(A.type||A.org||A.q)?`<button class="lnk" data-a="aclear">Limpiar</button>`:''}</div>
+  ${rows.length?`<div class="pc" style="padding:6px 16px"><div class="lst" role="list">${rows.map(e=>`<div class="li" role="listitem" style="align-items:flex-start;padding:12px 0">${av(e.actor,36)}<div class="g"><b>${esc(e.actor)} <span class="mut" style="font-weight:600;font-size:12.5px">· ${esc(e.arole)}</span></b><span style="font-weight:700">${esc(e.obj)}</span><small>${esc(e.det)}${isAdm()?' · '+esc(O(e.org).name):''}</small></div><div style="text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end"><span class="pill ${AT[e.type][0]}">${ic(AT[e.type][1],13)}${e.type}</span><small class="mut" style="font-size:12px">${e.when}</small></div></div>`).join('')}</div></div>`
+  :`<div class="empty" role="status"><div class="big">${ic('list',28)}</div><h3>Sin eventos</h3><p>No hay registros con estos filtros.</p><button class="btn sec" data-a="aclear">Limpiar filtros</button></div>`}
+  <div class="gfoot"><span>${rows.length} eventos · el registro no se puede editar ni borrar</span><span>${S.online?'En línea':'Datos guardados · solo lectura'}</span></div></div>`;
+}
+/* ================= FORBIDDEN ================= */
+function forbidden(){const r=S.route;const o=r.id?O(r.id):null;
+  return `<div class="pg"><div class="empty" role="alert" style="margin-top:24px;border-color:var(--err);border-style:double"><div class="big" style="color:var(--err)">${ic('lock',28)}</div><h3>Sin permiso${o?' para '+esc(o.name):''}</h3><p>${r.why==='admin'?'Esta acción es solo para Administrador (personal de la iglesia).':`Tu rol Coordinador · Fundación Luz solo ve y administra su propia organización. ${esc(o?o.name:'Esa organización')} pertenece a otro espacio.`} El intento quedó registrado.</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn" data-a="open" data-k="org" data-id="${MYORG}">${ic('home',18)}Ir a mi organización</button><button class="btn sec" data-a="askaccess" ${dis()}>Pedir acceso a un administrador</button></div></div></div>`}
+/* ================= ORG PAGE ================= */
+function orgPage(id){
+  const o=O(id),ts=TABLES.filter(t=>t.org===id),a=agg(ts),coords=PEOPLE.filter(p=>p.org===id&&p.role==='Coordinador');
+  const bc=setCrumb(isAdm()?[['Explorar',{n:'explore'}],['Organizaciones',{n:'explore',ent:'orgs'}],[o.name]]:[['Explorar',{n:'explore'}],[o.name]]);
+  const stBanner=o.status==='pausada'?`<div class="alert al-warn" role="status">${ic('pause',18)}<div>Organización pausada<small>Las sesiones y nuevas invitaciones están detenidas. Datos e historial se conservan. Se puede reanudar.</small></div></div>`:o.status==='desactivada'?`<div class="alert al-err" role="status">${ic('ban',18)}<div>Organización desactivada<small>Nadie puede iniciar sesión en este espacio. El historial se conserva para auditoría.</small></div></div>`:'';
+  const acts=isAdm()?`<button class="btn sec sm" data-a="create" data-k="orgedit" data-id="${id}">${ic('edit',16)}Editar</button>${o.status==='activa'?`<button class="btn sec sm" data-a="dlg" data-k="orgPause" data-id="${id}">${ic('pause',16)}Pausar</button>`:o.status==='pausada'?`<button class="btn sec sm" data-a="dlg" data-k="orgResume" data-id="${id}">${ic('play',16)}Reanudar</button>`:''}${o.status!=='desactivada'?`<button class="btn sec sm" style="border-color:var(--err);color:var(--err)" data-a="dlg" data-k="orgDeact" data-id="${id}">${ic('ban',16)}Desactivar</button>`:''}`:'';
+  const coordSec=coords.length?coords.map(p=>`<div class="li">${av(p.fn+' '+p.ln,40)}<div class="g"><b>${esc(p.fn+' '+p.ln)}</b><small>${esc(p.email)}</small></div>${pstPill(p.state)}${p.state==='pendiente'?`<button class="btn sec sm" data-a="resend" data-id="${p.id}" ${dis()}>Reenviar</button>`:''}</div>`).join(''):`<div class="alert al-warn">${ic('alert',18)}<div>Sin coordinador<small>Esta organización no puede crear mesas hasta tener un Coordinador.</small></div></div>`;
+  const locSec=o.locs.length?o.locs.map(l=>{const n=ts.filter(t=>t.loc===l).length;return `<div class="li"><span class="logo" style="width:36px;height:36px;background:var(--surf2);color:var(--acc)">${ic('home',18)}</span><div class="g"><b>${esc(l)}</b><small>${n} mesa${n===1?'':'s'}</small></div><button class="btn ghost sm" data-a="locfilter" data-id="${id}" data-v="${esc(l)}">Ver mesas</button></div>`}).join(''):`<p class="hint" style="margin:0 0 8px">Sin ubicaciones todavía. Agrega la primera para poder crear mesas.</p>`;
+  const mesas=ts.length?ts.map(t=>`<div class="li"><div class="g"><button class="nm" data-a="open" data-k="mesa" data-id="${t.id}"><span><span class="tt">${esc(t.code)} · ${esc(t.name)}</span><small>${esc(t.loc)} · ${esc(t.day)} ${t.time} · ${esc(pn(t.fac))}</small></span></button></div>${stPill(t.status)}<span style="min-width:62px;text-align:right">${t.att?t.att+'%':'—'}</span></div>`).join(''):`<div class="empty" role="status"><div class="big">${ic('grid',28)}</div><h3>Esta organización aún no tiene mesas</h3><p>${coords.some(c=>c.state==='activo')?'Crea la primera mesa: elige ubicación, horario y facilitador.':'Primero invita a un Coordinador; luego podrá crear mesas.'}</p><button class="btn" data-a="create" data-k="${coords.some(c=>c.state==='activo')?'mesa':'pers'}" data-org="${id}" data-role="Coordinador">${ic('plus',18)}${coords.some(c=>c.state==='activo')?'Crear primera mesa':'Invitar primer coordinador'}</button></div>`;
+  const act=AUDIT.filter(e=>e.org===id).slice(0,4);
+  return `<div class="pg">${bc}<div class="ph"><div style="display:flex;gap:12px;align-items:center">${av(o.name,52)}<div><div class="kick">${esc(o.type)} · ${esc(o.country)} · ${esc(o.region)}</div><h2>${esc(o.name)}</h2></div>${ostPill(o.status)}</div><div class="acts">${acts}</div></div>${stBanner}
+  ${ts.length?`<div class="krow"><div class="kt"><div class="kick">Mesas</div><div class="v">${a.n}</div><div class="d">${a.act} activas · ${a.ret} retras. · ${a.ina} inact.</div></div><div class="kt"><div class="kick">Valores</div><div class="v">${a.vals}</div><div class="d">completados</div></div><div class="kt"><div class="kick">Mejora</div><div class="v">${fmtI(a.imp)}</div><div class="d">pts estimados</div></div><div class="kt"><div class="kick">Asistencia</div><div class="v">${a.att}%</div><div class="d">${a.mem} personas</div></div><div class="kt"><div class="kick">Tarde</div><div class="v">${a.late}</div><div class="d">sincronizado tarde</div></div></div>`:''}
+  <div class="two-col"><section class="pc"><h3>Coordinación<span class="sp"></span>${isAdm()?`<button class="btn sec sm" data-a="create" data-k="pers" data-org="${id}" data-role="Coordinador" ${o.status==='desactivada'?'aria-disabled="true"':''}>${ic('upl',16)}Invitar coordinador</button>`:''}</h3>${coordSec}</section>
+  <section class="pc"><h3>Ubicaciones</h3>${locSec}<div style="display:flex;gap:8px;align-items:flex-end;margin-top:8px"><div class="fld" style="flex:1;margin:0"><label for="nl">Nueva ubicación</label><input class="in" id="nl" data-inp="newloc" placeholder="Ej. Sede Este" value="${esc(S.newloc||'')}"></div><button class="btn sec sm" data-a="addloc" data-id="${id}" ${dis()}>${ic('plus',16)}Agregar</button></div></section></div>
+  <section class="pc"><h3>Mesas<span class="sp"></span><button class="btn sm" data-a="create" data-k="mesa" data-org="${id}" ${o.status!=='activa'||!o.locs.length?'':''}>${ic('plus',16)}Crear mesa</button></h3>${mesas}</section>
+  <div class="two-col"><section class="pc"><h3>Datos principales</h3><dl class="kv"><dt>Contacto</dt><dd>${esc(o.contact)}</dd><dt>Correo</dt><dd>${esc(o.email)}</dd><dt>Teléfono</dt><dd>${esc(o.phone)} <span class="hint">· sin verificar</span></dd><dt>País</dt><dd>${esc(o.country)}</dd><dt>Región</dt><dd>${esc(o.region)}</dd></dl></section>
+  <section class="pc"><h3>Actividad reciente</h3>${act.length?`<div class="tl">${act.map(e=>`<div><b>${esc(e.type)}</b> · ${esc(e.obj)}<small>${esc(e.actor)} · ${e.when}</small></div>`).join('')}</div>`:'<p class="hint">Sin actividad todavía.</p>'}<button class="lnk" data-a="auditorg" data-id="${id}">Ver en auditoría</button></section></div></div>`;
+}
+/* ================= MESA PAGE ================= */
+function mesaPage(id){
+  const t=T(id),o=O(t.org),a=agg([t]);
+  const bc=setCrumb([['Explorar',{n:'explore'}],[o.name,{n:'org',id:o.id}],[t.code]]);
+  const al=[];
+  if(!t.fac)al.push(`<div class="alert al-err" role="alert">${ic('alert',18)}<div>Sin facilitador<small>La mesa no puede abrir sesiones. Asigna un facilitador.</small></div></div>`);
+  if(t.status==='retrasada')al.push(`<div class="alert al-warn">${ic('clock',18)}<div>Mesa retrasada<small>Última sesión hace ${t.last} días; se espera una por semana.</small></div></div>`);
+  if(t.mem.length<3)al.push(`<div class="alert al-warn">${ic('users',18)}<div>Faltan ${3-t.mem.length} persona${3-t.mem.length>1?'s':''}<small>Una mesa necesita de 3 a 9 personas incluyendo al facilitador.</small></div></div>`);
+  if(t.mem.length>=9)al.push(`<div class="alert al-info">${ic('info',18)}<div>Mesa llena (9/9)<small>Para sumar a alguien, mueve o desactiva a otra persona.</small></div></div>`);
+  const mem=t.mem.map(pid=>{const p=P(pid),ms=memberStats(p,t),isF=pid===t.fac;
+   return `<div class="li">${av(p.fn+' '+p.ln,40)}<div class="g"><b>${esc(p.fn+' '+p.ln)} ${isF?pill('p-acc','star','Facilitador'):''}</b><small>${esc(p.cargo||'Miembro')} · asist. ${ms.att||'—'}%${ms.late?' · '+'sincronizado tarde':''}</small></div>
+   <button class="btn ghost sm" data-a="open" data-k="miembro" data-id="${pid}" aria-label="Ver respuestas de ${esc(p.fn)}">${ic('eye',16)}<span class="hide-phone">Respuestas</span></button>
+   ${isF?`<button class="btn ghost sm" data-a="dlg" data-k="fac" data-id="${t.id}" aria-label="Cambiar facilitador">${ic('swap',16)}<span class="hide-phone">Cambiar</span></button>`:`<button class="btn ghost sm" data-a="dlg" data-k="move" data-id="${pid}" data-t="${t.id}" aria-label="Mover a otra mesa">${ic('swap',16)}<span class="hide-phone">Mover</span></button><button class="btn ghost sm" data-a="dlg" data-k="deact" data-id="${pid}" data-t="${t.id}" aria-label="Desactivar a ${esc(p.fn)}">${ic('ban',16)}<span class="hide-phone">Desactivar</span></button>`}</div>`}).join('');
+  const hist=t.hist.map(h=>`<div><b>${esc(h.txt)}</b><small>${esc(h.d)}</small></div>`).join('');
+  const mv=t.mv.map(h=>`<div><b>${esc(h)}</b><small>Historial de movimientos</small></div>`).join('');
+  return `<div class="pg">${bc}<div class="ph"><div><div class="kick">${esc(o.name)} · ${esc(t.loc)}</div><h2>${esc(t.code)} · ${esc(t.name)}</h2></div>${stPill(t.status)}<div class="acts"><button class="btn sec sm" data-a="create" data-k="mesaedit" data-id="${t.id}">${ic('edit',16)}Editar horario</button><button class="btn sm" data-a="create" data-k="pers" data-org="${o.id}" data-role="Miembro" data-table="${t.id}">${ic('upl',16)}Agregar miembro</button></div></div>${al.join('')}
+  ${t.att?`<div class="krow"><div class="kt"><div class="kick">Valores</div><div class="v">${t.vals}<small>/48</small></div><div class="d">completados</div></div><div class="kt"><div class="kick">Mejora</div><div class="v">${fmtI(t.imp)}</div><div class="d">pts estimados</div></div><div class="kt"><div class="kick">Asistencia</div><div class="v">${t.att}%</div><div class="d">promedio</div></div><div class="kt"><div class="kick">Tarde</div><div class="v">${t.late}</div><div class="d">sincronizado tarde</div></div><div class="kt"><div class="kick">Última sesión</div><div class="v">${t.last}<small> d</small></div><div class="d">hace</div></div></div>`:`<div class="alert al-info">${ic('info',18)}<div>Mesa nueva<small>Aún sin sesiones: no hay KPIs. Se activa al cerrar la primera sesión.</small></div></div>`}
+  <div class="two-col"><section class="pc"><h3>Programación<span class="sp"></span></h3><dl class="kv"><dt>Día</dt><dd>${esc(t.day)}</dd><dt>Hora</dt><dd>${t.time}</dd><dt>Zona horaria</dt><dd>${esc(t.tz)}</dd></dl><p class="hint" style="margin:10px 0 0">${ic('lock',13)} El horario lo controla la coordinación: el facilitador no puede moverlo.</p></section>
+  <section class="pc"><h3>Facilitador e historial</h3><div class="li">${t.fac?av(pn(t.fac),40):''}<div class="g"><b>${esc(pn(t.fac))}</b><small>Facilitador actual</small></div><button class="btn sec sm" data-a="dlg" data-k="fac" data-id="${t.id}">${ic('swap',16)}${t.fac?'Cambiar':'Asignar'}</button></div><div class="tl" style="margin-top:8px">${hist}${mv}</div></section></div>
+  <section class="pc"><h3>Miembros<span class="sp"></span><span style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;gap:8px;align-items:center">${pips(t.mem.length)}</span></h3><div class="lst">${mem}</div><p class="hint" style="margin:8px 0 0">De 3 a 9 personas incluyendo al facilitador. Desactivar no borra el historial.</p></section></div>`;
+}
+/* ================= MEMBER PAGE ================= */
+function miembroPage(id){
+  const p=P(id),t=p.table?T(p.table):null,o=O(p.org);
+  const bc=setCrumb([[S.from==='report'?'Informes':'Explorar',{n:S.from==='report'?'report':'explore'}],[t?t.code:o.name,t?{n:'mesa',id:t.id}:{n:'org',id:o.id}],[p.fn+' '+p.ln]]);
+  const hasAns=t&&p.state==='activo'&&(p.role==='Miembro'||p.role==='Facilitador');
+  const rv=!!S.reveal[id];
+  const sc=hasAns?scores(p,t):[],ms=t?memberStats(p,t):null;
+  const table=hasAns?`<div class="alert al-sens" role="note">${ic('lock',18)}<div>Datos sensibles · respuestas individuales<small>Visibles solo para facilitador, coordinador y administración. ${rv?'Consulta registrada en la auditoría.':'Al mostrarlas se registra quién las consultó.'}</small></div></div>
+   ${rv?'':`<button class="btn" data-a="reveal" data-id="${id}" ${dis()}>${ic('eye',18)}Mostrar respuestas (se registra)</button>`}
+   ${sc.length?dtable([['Valor'],['Inicial','n'],['Seguim.','n'],['Mejora','n'],['Respuesta']],sc.map(s=>[`<b>${esc(s.v)}</b><br><small class="mut">${s.m}</small>`,rv?s.a:'<span class="mask">••</span>',rv?s.b:'<span class="mask">••</span>',rv?`<b>${fmtI(s.d)}</b>`:'<span class="mask">••</span>',rv?esc(s.ans)+(s.late?' '+pill('p-late','clock','Sincronizado tarde'):''):'<span class="mask">••••••••</span>'])):'<p class="hint">Sin respuestas todavía.</p>'}`
+   :`<p class="hint" style="margin:0">${p.state==='pendiente'?'Aún no aceptó la invitación: no hay respuestas.':'Esta persona no tiene respuestas visibles (sin mesa o inactiva).'}</p>`;
+  return `<div class="pg">${bc}<div class="ph"><div style="display:flex;gap:12px;align-items:center">${av(p.fn+' '+p.ln,52)}<div><div class="kick">${esc(p.role)} · ${esc(o.name)}${t?' · '+esc(t.code):''}</div><h2>${esc(p.fn+' '+p.ln)}</h2></div>${pstPill(p.state)}</div><div class="acts">${p.state==='pendiente'?`<button class="btn sec sm" data-a="resend" data-id="${id}" ${dis()}>${ic('copy',16)}Reenviar invitación</button>`:''}${t&&p.state==='activo'&&p.id!==t.fac?`<button class="btn sec sm" data-a="dlg" data-k="move" data-id="${id}" data-t="${t.id}">${ic('swap',16)}Mover</button><button class="btn sec sm" data-a="dlg" data-k="deact" data-id="${id}" data-t="${t.id}">${ic('ban',16)}Desactivar</button>`:''}</div></div>
+  ${ms&&hasAns?`<div class="krow"><div class="kt"><div class="kick">Asistencia</div><div class="v">${ms.att}%</div></div><div class="kt"><div class="kick">Valores</div><div class="v">${ms.vals}</div></div><div class="kt"><div class="kick">Mejora</div><div class="v">${fmtI(ms.imp)}</div></div><div class="kt"><div class="kick">Tarde</div><div class="v">${ms.late}</div></div></div>`:''}
+  <section class="pc"><h3>Respuestas individuales</h3>${table}</section>
+  <section class="pc"><h3>Datos</h3><dl class="kv"><dt>Correo</dt><dd>${esc(p.email)}</dd><dt>Teléfono</dt><dd>${esc(p.phone)} <span class="hint">· contacto sin verificar; no sirve para iniciar sesión</span></dd><dt>Cargo</dt><dd>${esc(p.cargo||'—')}</dd></dl>${p.hist.length?`<div class="tl" style="margin-top:10px">${p.hist.map(h=>`<div><b>${esc(h)}</b></div>`).join('')}</div>`:''}</section></div>`;
+}
+/* ================= FORMS ================= */
+const COUNTRIES=['República Dominicana','Colombia','Guatemala','México','Ecuador'];
+function openForm(kind,o){o=o||{};let v,edit=o.id||null;
+  if(kind==='org'){v={name:'',type:'Fundación',country:'',region:'',cname:'',cemail:'',cphone:'',invite:true}}
+  if(kind==='orgedit'){const x=O(o.id);kind='org';v={name:x.name,type:x.type,country:x.country,region:x.region,cname:x.contact,cemail:x.email,cphone:x.phone,invite:false}}
+  if(kind==='mesa'){v={name:'',code:'',org:isAdm()?(o.org||''):MYORG,loc:'',day:'Martes',time:'19:00',tz:o.org?TZORG[o.org]:TZ.DO,fac:'',newloc:''};if(!isAdm()||o.org)v.tz=TZORG[v.org]||TZ.DO;edit=null}
+  if(kind==='mesaedit'){const t=T(o.id);kind='mesa';v={name:t.name,code:t.code,org:t.org,loc:t.loc,day:t.day,time:t.time,tz:t.tz,fac:t.fac||'',newloc:''}}
+  if(kind==='pers'){v={role:o.role||(isAdm()?'Coordinador':'Facilitador'),fn:'',ln:'',cargo:'',email:'',phone:'',org:isAdm()?(o.org||''):MYORG,table:o.table||''};edit=null;if(!isAdm()&&v.role==='Coordinador')v.role='Facilitador'}
+  S.form={kind,edit,v,err:{},summary:'',done:null};nav({n:'form'});
+}
+function fi(name,label,o){o=o||{};const f=S.form,val=f.v[name]==null?'':f.v[name],e=f.err[name],id='f_'+name;
+  const common=`id="${id}" data-fv="${name}" ${o.rr?'data-rr="1"':''} aria-invalid="${!!e}" aria-describedby="${id}_h ${id}_e" ${o.req?'aria-required="true"':''}`;
+  let ctl;
+  if(o.opts)ctl=`<select class="in" ${common}><option value="">${o.ph||'Selecciona…'}</option>${o.opts.map(x=>{const a=Array.isArray(x)?x:[x,x];return `<option value="${esc(a[0])}" ${String(val)===String(a[0])?'selected':''} ${a[2]?'disabled':''}>${esc(a[1])}</option>`}).join('')}</select>`;
+  else ctl=`<input class="in" type="${o.type||'text'}" value="${esc(val)}" placeholder="${esc(o.ph||'')}" ${o.ac?`autocomplete="${o.ac}"`:''} ${common}>`;
+  return `<div class="fld"><label for="${id}">${label}${o.req?' <span aria-hidden="true">*</span>':''}</label>${ctl}${o.hint?`<span class="hint" id="${id}_h">${o.hint}</span>`:`<span id="${id}_h"></span>`}${e?`<span class="ferr" id="${id}_e" role="alert">${ic('alert',16)}${esc(e)}</span>`:`<span id="${id}_e"></span>`}</div>`}
+function formPage(){
+  const f=S.form;if(!f)return '';
+  if(f.done)return doneInvite();
+  const k=f.kind;
+  const nerr=Object.keys(f.err).length;
+  const sum=nerr?`<div class="alert al-err" role="alert" id="fsum" tabindex="-1">${ic('alert',18)}<div>${f.summary||'Corrige '+nerr+' campo'+(nerr>1?'s':'')+' para continuar'}<small>${Object.values(f.err).slice(0,3).map(esc).join(' · ')}</small></div></div>`:'';
+  const off=!S.online?`<div class="alert al-warn">${ic('wifioff',18)}<div>Sin conexión<small>Puedes llenar el formulario, pero guardar requiere internet.</small></div></div>`:'';
+  let secs='',title='',submit='';
+  if(k==='org'){title=f.edit?'Editar organización':'Crear organización';submit=f.edit?'Guardar cambios':'Crear organización';
+   secs=`<section class="pc"><h3>Organización</h3>${fi('name','Nombre',{req:1,ph:'Ej. Fundación Esperanza',ac:'off'})}<div class="two">${fi('type','Tipo',{req:1,opts:['Fundación','Colegio','Empresa','ONG','Iglesia aliada']})}${fi('country','País',{req:1,opts:COUNTRIES})}</div>${fi('region','Región / ciudad',{req:1,ph:'Ej. Santo Domingo'})}</section>
+   <section class="pc"><h3>Contacto principal</h3><div class="two">${fi('cname','Nombre completo',{req:1})}${fi('cemail','Correo',{req:1,type:'email',ph:'nombre@organizacion.org',ac:'email'})}</div>${fi('cphone','Teléfono',{type:'tel',hint:'Se guarda como contacto sin verificar. No se usa para iniciar sesión.'})}
+   ${f.edit?'':`<label class="chk" style="display:flex;gap:10px;align-items:center;min-height:44px;font-weight:700"><input type="checkbox" data-fv="invite" ${f.v.invite?'checked':''} style="width:22px;height:22px;accent-color:var(--accb)"> Invitar ahora al contacto como primer Coordinador</label>`}</section>`}
+  if(k==='mesa'){title=f.edit?'Editar mesa':'Crear mesa';submit=f.edit?'Guardar cambios':'Crear mesa';
+   const oid=f.v.org,og=oid?O(oid):null,locs=og?og.locs:[];
+   const facs=oid?PEOPLE.filter(p=>p.org===oid&&p.role==='Facilitador'&&p.state!=='inactivo'&&(!TABLES.some(t=>t.fac===p.id&&t.id!==f.edit))).map(p=>[p.id,p.fn+' '+p.ln+(p.state==='pendiente'?' (invitación pendiente)':'')]):[];
+   secs=`<section class="pc"><h3>Identidad</h3>${isAdm()?fi('org','Organización',{req:1,rr:1,opts:ORGS.filter(o=>o.status==='activa').map(o=>[o.id,o.name])}):`<div class="fld"><span class="lb">Organización</span><span class="fchip lock" style="min-height:44px">${ic('lock',14)}<b>Fundación Luz</b></span></div>`}<div class="two">${fi('name','Nombre de la mesa',{req:1,ph:'Ej. Esperanza'})}${fi('code','Código',{req:1,ph:'LUZ-07',hint:'Formato AAA-00, único dentro de la plataforma.'})}</div></section>
+   <section class="pc"><h3>Ubicación y horario</h3>${locs.length||!oid?fi('loc','Ubicación',{req:1,opts:locs,ph:oid?'Selecciona…':'Primero elige la organización'}):`<div class="alert al-warn">${ic('alert',18)}<div>${esc(og.name)} no tiene ubicaciones<small>Escribe la primera ubicación abajo; se crea junto con la mesa.</small></div></div>${fi('newloc','Nueva ubicación',{req:1,ph:'Ej. Sede Central'})}`}
+   <div class="two">${fi('day','Día de la semana',{req:1,opts:['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']})}${fi('time','Hora',{req:1,type:'time'})}</div>${fi('tz','Zona horaria',{req:1,opts:Object.values(TZ)})}<p class="hint" style="margin:0">${ic('lock',13)} La programación es central: solo coordinación puede cambiarla; el facilitador la ve pero no la edita.</p></section>
+   <section class="pc"><h3>Facilitador</h3>${fi('fac','Facilitador de la mesa',{req:1,opts:facs,ph:facs.length?'Selecciona…':'No hay facilitadores disponibles',hint:'Cada mesa necesita exactamente un facilitador. Se registra el historial de cambios.'})}<button class="lnk" data-a="create" data-k="pers" data-org="${oid||''}" data-role="Facilitador" ${oid?'':'aria-disabled="true"'}>${ic('upl',16)}&nbsp;Invitar a un nuevo facilitador</button>${f.edit?'':`<p class="hint" style="margin:8px 0 0">La mesa se crea sin sesiones. Agrega miembros después (mínimo 3 incluyendo al facilitador).</p>`}</section>`}
+  if(k==='pers'){const r=f.v.role;title=r==='Coordinador'?'Invitar coordinador':r==='Facilitador'?'Invitar facilitador':'Agregar miembro';submit='Crear e invitar';
+   const oid=f.v.org,tabs=oid?TABLES.filter(t=>t.org===oid):[];const tsel=r==='Miembro'?tabs.map(t=>[t.id,t.code+' · '+t.name+' · '+t.mem.length+'/9'+(t.mem.length>=9?' (llena)':''),false]):tabs.filter(t=>!t.fac).map(t=>[t.id,t.code+' · '+t.name+' (sin facilitador)']);
+   const tt=f.v.table?T(f.v.table):null;
+   secs=`<section class="pc"><h3>Rol y alcance</h3><div class="two">${fi('role','Rol',{req:1,rr:1,opts:(isAdm()?['Coordinador']:[]).concat(['Facilitador','Miembro'])})}${isAdm()?fi('org','Organización',{req:1,rr:1,opts:ORGS.filter(o=>o.status!=='desactivada').map(o=>[o.id,o.name])}):`<div class="fld"><span class="lb">Organización</span><span class="fchip lock" style="min-height:44px">${ic('lock',14)}<b>Fundación Luz</b></span></div>`}</div>
+   ${r==='Coordinador'?'':fi('table','Mesa'+(r==='Facilitador'?' (opcional)':''),{req:r==='Miembro',rr:1,opts:tsel,ph:r==='Facilitador'?'Asignar después':'Selecciona…'})}
+   ${tt&&r==='Miembro'?`<div class="alert ${tt.mem.length>=9?'al-err':'al-info'}">${ic('users',18)}<div>${esc(tt.code)} · plazas ${pips(tt.mem.length)}<small>${tt.mem.length>=9?'Mesa llena: 9 es el máximo incluyendo al facilitador.':'Quedan '+(9-tt.mem.length)+' plaza'+(9-tt.mem.length>1?'s':'')+'.'}</small></div></div>`:''}</section>
+   <section class="pc"><h3>Datos de la persona</h3><div class="two">${fi('fn','Nombre',{req:1,ac:'given-name'})}${fi('ln','Apellido',{req:1,ac:'family-name'})}</div>${fi('cargo','Cargo (si aplica)',{ph:'Ej. Docente'})}<div class="two">${fi('email','Correo',{req:1,type:'email',ac:'email',ph:'nombre@correo.org',hint:'La persona entrará con Google, Apple o Facebook usando este correo.'})}${fi('phone','Teléfono',{type:'tel',hint:'Contacto sin verificar; no permite iniciar sesión.'})}</div></section>`}
+  const bc=setCrumb([['Explorar',{n:'explore'}],[title]]);
+  return `<div class="pg frm">${bc}<div class="ph"><div><div class="kick">Formulario</div><h2>${title}</h2></div></div>${off}${sum}<form id="theform" novalidate>${secs}<div class="formbar"><button type="submit" class="btn" data-a="submit" ${dis()}>${ic('check',18)}${submit}</button><button type="button" class="btn sec" data-a="back">Cancelar</button></div></form></div>`;
+}
+function qrSvg(seed){const n=21,h=hsh(seed);let r='';const f=(x,y)=>(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){let on;if(f(x,y)){const a=x>13?x-14:x,b=y>13?y-14:y;on=a===0||a===6||b===0||b===6||(a>=2&&a<=4&&b>=2&&b<=4)}else on=((h>>((x*3+y*5)%24))+x*y+x+y*7)%3===0;if(on)r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}
+  return `<svg class="qr" viewBox="-1 -1 23 23" role="img" aria-label="Código QR de la invitación (simulado)" fill="#0E0B1A">${r}</svg>`}
+function doneInvite(){const d=S.form.done,p=d.p;
+  return `<div class="pg frm"><div class="alert al-ok" role="status">${ic('check',18)}<div>Invitación creada para ${esc(p.fn+' '+p.ln)}<small>${esc(p.role)} · ${esc(O(p.org).name)}${p.table?' · '+esc(p.table):''}. Comparte el enlace o el código; al iniciar sesión con Google, Apple o Facebook se vincula su identidad.</small></div></div>
+  <section class="pc"><h3>Compartir invitación</h3><div class="sharebox">${qrSvg(d.code)}<div><div class="lbl">Código corto</div><div class="code" aria-label="Código ${d.code.split('').join(' ')}">${d.code}</div><div class="hint" style="margin-top:6px;word-break:break-all">${d.link}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn sm" data-a="share" data-v="WhatsApp">${ic('wa',16)}WhatsApp</button><button class="btn sec sm" data-a="share" data-v="Enlace">${ic('copy',16)}Copiar enlace</button><button class="btn sec sm" data-a="share" data-v="Código">Copiar código</button></div></div></div><p class="hint" style="margin:12px 0 0">Mismo flujo de invitación que el Workflow 1 (enlace + código corto + QR). Vence en 7 días.</p></section>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-a="create" data-k="pers" data-org="${p.org}" data-role="${p.role}" data-table="${p.table||''}">${ic('plus',18)}Invitar a otra persona</button><button class="btn sec" data-a="open" data-k="${p.table?'mesa':'org'}" data-id="${p.table||p.org}">Volver a ${p.table?esc(p.table):esc(O(p.org).name)}</button><button class="btn ghost" data-a="tab" data-v="explore">Ir al explorador</button></div></div>`}
+function validate(){
+  const f=S.form,v=f.v,e={};const req=(k,m)=>{if(!String(v[k]||'').trim())e[k]=m||'Este campo es obligatorio'};const em=k=>{if(v[k]&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v[k]))e[k]='Correo no válido (ej. nombre@dominio.org)'};
+  if(f.kind==='org'){req('name','Escribe el nombre de la organización');if(v.name&&ORGS.some(o=>norm(o.name)===norm(v.name)&&o.id!==f.edit))e.name='Ya existe una organización con este nombre';req('country','Elige un país');req('region','Indica la región o ciudad');req('cname','Indica el contacto principal');req('cemail','El correo del contacto es obligatorio');em('cemail')}
+  if(f.kind==='mesa'){req('name','Ponle un nombre a la mesa');req('code','El código es obligatorio');if(v.code&&!/^[A-Z]{2,4}-\d{2}$/.test(v.code))e.code='Usa el formato AAA-00 (ej. LUZ-07)';else if(v.code&&TABLES.some(t=>t.code===v.code&&t.id!==f.edit))e.code='El código '+v.code+' ya existe. Usa otro (ej. '+v.code.split('-')[0]+'-'+String(TABLES.filter(t=>t.org===v.org).length+1).padStart(2,'0')+')';
+   if(isAdm())req('org','Elige la organización');const og=v.org?O(v.org):null;if(og&&!og.locs.length){req('newloc','Escribe la primera ubicación')}else req('loc','Elige una ubicación');req('day','Elige el día');req('time','Elige la hora');req('tz','Elige la zona horaria');req('fac','Falta el facilitador: cada mesa necesita uno')}
+  if(f.kind==='pers'){req('fn','Escribe el nombre');req('ln','Escribe el apellido');req('email','El correo es obligatorio');em('email');if(v.email&&PEOPLE.some(p=>norm(p.email)===norm(v.email)))e.email='Ya existe una persona con este correo';if(isAdm())req('org','Elige la organización');
+   if(v.role==='Miembro'){req('table','Elige la mesa del miembro');const t=v.table?T(v.table):null;if(t&&t.mem.length>=9)e.table='Mesa llena: una mesa tiene máximo 9 personas incluyendo al facilitador. Este sería el 10.º lugar.'}}
+  f.err=e;return Object.keys(e).length===0;
+}
+function submitForm(){
+  const f=S.form,v=f.v;if(!onl())return;
+  if(!validate()){f.summary='';render();const s=$('#fsum');if(s)s.focus();return}
+  if(f.kind==='org'){
+    if(f.edit){const o=O(f.edit);Object.assign(o,{name:v.name,type:v.type,country:v.country,region:v.region,contact:v.cname,email:v.cemail,phone:v.cphone});audit('Cambio de rol','Organización '+o.name,'Datos principales actualizados',o.id);S.stack.pop();toast('Organización actualizada');nav({n:'org',id:o.id},{replace:true});return}
+    const id=(norm(v.name).replace(/[^a-z]/g,'').slice(0,3)||'org')+(ORGS.length);
+    ORGS.push({id,name:v.name,type:v.type,country:v.country,region:v.region,status:'activa',contact:v.cname,email:v.cemail,phone:v.cphone,locs:[]});TZORG[id]=v.country==='Colombia'?TZ.CO:v.country==='Guatemala'?TZ.GT:TZ.DO;
+    audit('Alta','Organización '+v.name,'Creada en '+v.country+(v.invite?' · invitación de coordinador enviada a '+v.cemail:''),id);
+    if(v.invite){const [a,...b]=v.cname.split(' ');const p=mkP(a,b.join(' ')||'—','Coordinador',id,'pendiente');p.email=v.cemail;p.phone=v.cphone}
+    S.stack=[];S.sel.clear();S.ent='orgs';toast('Organización creada'+(v.invite?' · invitación enviada':''));nav({n:'org',id},{replace:true,reset:true});return}
+  if(f.kind==='mesa'){
+    const og=O(v.org);let loc=v.loc;if(!og.locs.length){loc=v.newloc;og.locs.push(loc)}
+    if(f.edit){const t=T(f.edit);Object.assign(t,{name:v.name,code:v.code,loc,day:v.day,time:v.time,tz:v.tz});if(t.fac!==v.fac){t.hist.unshift({d:'Hoy',txt:pn(t.fac)+' → '+pn(v.fac)});t.fac=v.fac}audit('Reasignación','Mesa '+t.code,'Programación actualizada: '+v.day+' '+v.time+' '+v.tz,t.org);S.stack.pop();toast('Mesa actualizada');nav({n:'mesa',id:t.id},{replace:true});return}
+    const t={id:v.code,code:v.code,name:v.name,org:v.org,loc,day:v.day,time:v.time,tz:v.tz,status:'inactiva',att:0,vals:0,imp:0,late:0,last:0,mem:[v.fac],fac:v.fac,hist:[{d:'Hoy',txt:'Facilitador inicial: '+pn(v.fac)}],mv:[]};
+    TABLES.push(t);const fp=P(v.fac);fp.table=t.id;audit('Alta','Mesa '+t.code+' '+t.name,'Creada en '+loc+', '+v.day+' '+v.time+' ('+v.tz+') · facilitador '+pn(v.fac),v.org);
+    S.stack=[];toast('Mesa creada');nav({n:'mesa',id:t.id},{replace:true,reset:true});return}
+  if(f.kind==='pers'){
+    const p=mkP(v.fn,v.ln,v.role,v.org,'pendiente',v.role==='Coordinador'?null:(v.table||null),v.cargo);p.email=v.email;if(v.phone)p.phone=v.phone;
+    if(v.table){const t=T(v.table);t.mem.push(p.id);if(v.role==='Facilitador'){t.fac=p.id;t.hist.unshift({d:'Hoy',txt:'Facilitador asignado: '+p.fn+' '+p.ln})}}
+    const code=Array.from({length:6},(_,i)=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[(hsh(v.email+i)+i*7)%31]).join('');
+    audit('Alta',v.role+' '+p.fn+' '+p.ln,'Invitación creada'+(v.table?' · '+v.table:''),v.org);
+    f.done={p,code,link:'https://goldroundtables.example/i/'+code.toLowerCase()};toast('Invitación creada');render();return}
+}
+/* ================= DIALOGS / SHEETS / PALETTE ================= */
+function dlgHTML(){
+  const d=S.dlg;let t='',b='',ok='Confirmar',danger=false,okDis=false;
+  if(d.k==='orgPause'){const o=O(d.id);t='Pausar '+o.name;b=`<p>Se detienen las sesiones y las nuevas invitaciones. Los datos y el historial se conservan y puedes reanudar cuando quieras.</p>`;ok='Pausar organización'}
+  if(d.k==='orgResume'){const o=O(d.id);t='Reanudar '+o.name;b='<p>La organización vuelve a estar activa: las sesiones y las invitaciones se reanudan.</p>';ok='Reanudar'}
+  if(d.k==='orgDeact'){const o=O(d.id);t='Desactivar '+o.name;danger=true;ok='Desactivar organización';okDis=norm(d.v.confirm||'')!==norm(o.name);b=`<div class="alert al-err">${ic('alert',18)}<div>Acción difícil de revertir<small>Nadie de esta organización podrá iniciar sesión. El historial y los informes se conservan.</small></div></div><div class="fld"><label for="dc">Escribe «${esc(o.name)}» para confirmar</label><input class="in" id="dc" data-dv="confirm" data-first autocomplete="off" value="${esc(d.v.confirm||'')}"></div>`}
+  if(d.k==='fac'){const tb=T(d.id);t=tb.fac?'Cambiar facilitador':'Asignar facilitador';ok=tb.fac?'Cambiar facilitador':'Asignar';
+   const cands=PEOPLE.filter(p=>p.org===tb.org&&p.state==='activo'&&p.id!==tb.fac&&(p.role==='Facilitador'||tb.mem.includes(p.id))&&!TABLES.some(x=>x.fac===p.id));
+   b=`${tb.fac?`<p>Actual: <b>${esc(pn(tb.fac))}</b>. Pasará a ser miembro de la mesa y el historial se conserva.</p>`:`<div class="alert al-err">${ic('alert',18)}<div>La mesa no tiene facilitador</div></div>`}<div class="fld"><label for="dn">Nuevo facilitador *</label><select class="in" id="dn" data-dv="nf" data-first aria-invalid="${!!d.err}"><option value="">Selecciona…</option>${cands.map(p=>`<option value="${p.id}" ${d.v.nf===p.id?'selected':''}>${esc(p.fn+' '+p.ln)}${tb.mem.includes(p.id)?' · ya en la mesa':''}</option>`).join('')}</select></div><div class="fld"><label for="dm">Motivo (queda en el historial) *</label><input class="in" id="dm" data-dv="why" value="${esc(d.v.why||'')}" placeholder="Ej. Cambio de horario laboral"></div>`}
+  if(d.k==='move'){const p=P(d.id),tb=T(d.t);t='Mover a '+p.fn+' '+p.ln;ok='Mover';const dest=TABLES.filter(x=>x.org===tb.org&&x.id!==tb.id);
+   b=`<p>Sale de <b>${esc(tb.code)}</b>. El historial de respuestas viaja con la persona.</p><div class="fld"><label for="dt2">Mesa de destino *</label><select class="in" id="dt2" data-dv="to" data-first aria-invalid="${!!d.err}"><option value="">Selecciona…</option>${dest.map(x=>`<option value="${x.id}" ${d.v.to===x.id?'selected':''}>${esc(x.code+' · '+x.name+' · '+x.mem.length+'/9'+(x.mem.length>=9?' (llena)':''))}</option>`).join('')}</select></div>`}
+  if(d.k==='deact'){const p=P(d.id),tb=T(d.t);t='Desactivar a '+p.fn+' '+p.ln;danger=true;ok='Desactivar';const after=tb.mem.length-1;
+   b=`<p>Deja de contar en <b>${esc(tb.code)}</b> y no podrá responder. <b>No se borra nada</b>: respuestas e historial se conservan.</p>${after<3?`<div class="alert al-warn">${ic('alert',18)}<div>La mesa quedará con ${after} persona${after===1?'':'s'}<small>El mínimo es 3 incluyendo al facilitador; la mesa pasará a inactiva hasta completarlo.</small></div></div>`:''}`}
+  const err=d.err?`<div class="alert al-err" role="alert">${ic('alert',18)}<div>${esc(d.err)}</div></div>`:'';
+  return `<div class="ov" data-a="ovclose"><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dt"><h3 id="dt">${esc(t)}</h3>${b}${err}${!S.online?`<div class="alert al-warn">${ic('wifioff',18)}<div>Sin conexión: no se puede confirmar</div></div>`:''}<div class="acts"><button class="btn sec sm" data-a="dlgx" ${d.k==='orgDeact'?'':'data-first'}>Cancelar</button><button class="btn sm ${danger?'danger':''}" data-a="dlgok" ${okDis||!S.online?'aria-disabled="true"':''}>${ok}</button></div></div></div>`;
+}
+function dlgOk(){
+  const d=S.dlg;if(!onl())return;
+  if(d.k==='orgPause'){const o=O(d.id);o.status='pausada';audit('Baja','Organización '+o.name,'Pausada · datos conservados',o.id);S.dlg=null;toast(o.name+' pausada');render();return}
+  if(d.k==='orgResume'){const o=O(d.id);o.status='activa';audit('Alta','Organización '+o.name,'Reanudada',o.id);S.dlg=null;toast(o.name+' reanudada');render();return}
+  if(d.k==='orgDeact'){const o=O(d.id);if(norm(d.v.confirm||'')!==norm(o.name))return;o.status='desactivada';audit('Baja','Organización '+o.name,'Desactivada · historial conservado',o.id);S.dlg=null;toast(o.name+' desactivada');render();return}
+  if(d.k==='fac'){const tb=T(d.id);if(!d.v.nf){d.err='Elige al nuevo facilitador.';render();return}if(!(d.v.why||'').trim()){d.err='Escribe el motivo del cambio para el historial.';render();return}
+   if(!tb.mem.includes(d.v.nf)&&tb.mem.length>=9){d.err='La mesa ya tiene 9 personas; no hay plaza para un facilitador externo. Elige a alguien de la mesa.';render();return}
+   const old=tb.fac;if(old){const op=P(old);op.role='Miembro'}const np=P(d.v.nf);np.role='Facilitador';if(!tb.mem.includes(np.id)){tb.mem.push(np.id);np.table=tb.id}
+   tb.fac=np.id;tb.hist.unshift({d:'Hoy',txt:(old?pn(old):'Sin facilitador')+' → '+pn(np.id)+' · '+d.v.why});audit('Reasignación','Mesa '+tb.code,'Facilitador: '+(old?pn(old):'—')+' → '+pn(np.id)+' (historial conservado)',tb.org);S.dlg=null;toast('Facilitador actualizado');render();return}
+  if(d.k==='move'){const p=P(d.id),from=T(d.t);if(!d.v.to){d.err='Elige la mesa de destino.';render();return}const to=T(d.v.to);if(to.mem.length>=9){d.err='La mesa '+to.code+' ya tiene 9 personas (máximo). Elige otra o libera una plaza.';render();return}
+   from.mem=from.mem.filter(x=>x!==p.id);to.mem.push(p.id);p.table=to.id;from.mv.unshift(p.fn+' '+p.ln+' → '+to.code);to.mv.unshift(p.fn+' '+p.ln+' ← '+from.code);audit('Reasignación','Miembro '+p.fn+' '+p.ln,from.code+' → '+to.code+' (historial conservado)',from.org);S.dlg=null;toast('Miembro movido a '+to.code);render();return}
+  if(d.k==='deact'){const p=P(d.id),tb=T(d.t);if(p.id===tb.fac){d.err='Es el facilitador: primero cambia el facilitador.';render();return}
+   tb.mem=tb.mem.filter(x=>x!==p.id);p.state='inactivo';p.table=null;p.hist.unshift('Desactivado hoy · '+tb.code+' (historial conservado)');tb.hist.unshift({d:'Hoy',txt:p.fn+' '+p.ln+' desactivado (historial conservado)'});if(tb.mem.length<3&&tb.status==='activa')tb.status='inactiva';
+   audit('Baja','Miembro '+p.fn+' '+p.ln,'Desactivado sin borrar historial · '+tb.code,tb.org);S.dlg=null;toast(p.fn+' desactivado');render();return}
+}
+function sheetHTML(){
+  const k=S.sheet;let b='';
+  if(k==='filters')b=`<h3 style="margin-bottom:10px">Filtros</h3>${filtersBody(S.ent)}<div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" data-a="clearf">Limpiar</button><button class="btn" style="flex:1" data-a="sheetx" data-first>Ver ${rowsFor(S.ent).length} resultados</button></div>`;
+  if(k==='panel')b=`<h3 style="margin-bottom:6px">KPIs de la selección</h3>${panelHTML()}`;
+  if(k==='ctx')b=ctxRows()+`<button class="btn sec" style="width:100%;margin-top:6px" data-a="sheetx" data-first>Cerrar</button>`;
+  return `<div class="ov" data-a="ovclose" style="align-items:${VPCLS==='phone'?'flex-end':'center'}"><div class="sheet" role="dialog" aria-modal="true" aria-label="${k==='filters'?'Filtros':k==='panel'?'KPIs':'Contexto'}"><div class="grab" aria-hidden="true"></div>${b}</div></div>`;
+}
+function palItems(){
+  const q=norm(S.palQ).trim(),items=[];const A=(g,l,id,i,h,ok)=>items.push({g,l,id,i,h:h||'',ok:ok!==false});
+  A('Acciones','Crear mesa','c:mesa','plus','');A('Acciones','Crear organización','c:org','bld',isAdm()?'':'Solo Administrador',isAdm());A('Acciones','Invitar coordinador','c:coord','upl',isAdm()?'':'Solo Administrador',isAdm());A('Acciones','Invitar facilitador','c:fac','upl');A('Acciones','Invitar miembro','c:mem','upl');
+  [['ret','Mesas retrasadas'],['baja','Baja asistencia'],['tarde','Sincronizado tarde']].forEach(v=>A('Vistas guardadas','Abrir vista · '+v[1],'v:'+v[0],'star'));
+  A('Ir a','Informes','r:report','chart');A('Ir a','Auditoría','r:audit','list');A('Ir a','Explorador de mesas','r:explore','grid');
+  ORGS.forEach(o=>A('Ir a','Ir a '+o.name,'g:org:'+o.id,'bld',canOrg(o.id)?o.country:'Otra organización · sin acceso',true));
+  if(q)scopeTables().forEach(t=>A('Mesas','Ir a mesa '+t.code+' · '+t.name,'g:mesa:'+t.id,'grid',O(t.org).name));
+  A('Ajustes','Cambiar a '+(isAdm()?'Coordinador · Fundación Luz':'Administrador'),'s:role','shield');A('Ajustes','Alternar sin conexión','s:net','wifioff');A('Ajustes','Cambiar tema claro/oscuro','s:theme','star');
+  return items.filter(x=>!q||q.split(/\s+/).every(w=>norm(x.l+' '+x.g+' '+x.h).includes(w)));
+}
+function palHTML(){const its=palItems();S.palI=Math.max(0,Math.min(S.palI,its.length-1));let g='',last='';
+  const list=its.map((x,i)=>{let h='';if(x.g!==last){h=`<div class="gh" role="presentation">${x.g}</div>`;last=x.g}return h+`<div class="it" role="option" id="po${i}" data-a="palrun" data-i="${i}" aria-selected="${i===S.palI}" ${x.ok?'':'aria-disabled="true" style="opacity:.75"'}>${ic(x.i,18)}<span>${esc(x.l)}</span>${x.h?`<small>${x.ok?'':ic('lock',12)+' '}${esc(x.h)}</small>`:''}</div>`}).join('');
+  return `<div class="ov top" data-a="ovclose"><div class="pal" role="dialog" aria-modal="true" aria-label="Paleta de comandos"><div class="si">${ic('search',20)}<input id="palq" role="combobox" aria-expanded="true" aria-controls="pallist" aria-activedescendant="po${S.palI}" placeholder="Escribe una acción o destino…" value="${esc(S.palQ)}" data-inp="palq" autocomplete="off" aria-label="Comando"></div><div class="res" id="pallist" role="listbox">${its.length?list:`<div class="empty" style="border:0;padding:20px"><p style="margin:0">Sin resultados para «${esc(S.palQ)}»</p></div>`}</div><div class="ft"><span><kbd>↑</kbd> <kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> ejecutar</span><span><kbd>Esc</kbd> cerrar</span></div></div></div>`}
+function runCmd(it){
+  if(!it)return;const [a,b,c]=it.id.split(':');S.pal=null;S.palQ='';
+  if(a==='c'){if(b==='mesa')return openForm('mesa',{});if(b==='org'){if(!isAdm())return nav({n:'forbidden',why:'admin'});return openForm('org')}
+   if(b==='coord'){if(!isAdm())return nav({n:'forbidden',why:'admin'});return openForm('pers',{role:'Coordinador'})}if(b==='fac')return openForm('pers',{role:'Facilitador'});if(b==='mem')return openForm('pers',{role:'Miembro'})}
+  if(a==='v'){S.ent='mesas';S.view.mesas=b;const vd=viewDefs('mesas').find(v=>v.id===b);if(vd&&vd.sort)S.sort.mesas=vd.sort;S.sel.clear();return nav({n:'explore'},{reset:true})}
+  if(a==='r')return nav({n:b},{reset:true});
+  if(a==='g'){if(b==='org')return goOrg(c);return goMesa(c)}
+  if(a==='s'){if(b==='role'){S.role=isAdm()?'coord':'admin';S.sel.clear();S.f={mesas:{},orgs:{},pers:{}};S.ent='mesas';S.drill=[];return nav({n:'explore'},{reset:true})}if(b==='net'){S.online=!S.online;return render()}if(b==='theme'){setTheme(document.documentElement.dataset.theme==='light'?'dark':'light');return render()}}
+}
+function setTheme(t){S.theme=t;if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);const s=$('#theme');if(s)s.value=t}
+function overlays(){let h='';
+  if(S.dlg)h+=dlgHTML();if(S.sheet)h+=sheetHTML();if(S.pal)h+=palHTML();
+  if(S.toast)h+=`<div class="toast ${S.toast.kind}" role="status">${ic(S.toast.kind==='err'?'alert':'check',18)}${esc(S.toast.msg)}</div>`;
+  return h+`<div class="tip" id="tip" hidden role="tooltip"></div>`}
+/* ================= ACTIONS ================= */
+function prune(){const ids=new Set(baseRows(S.ent).map(r=>idOf(S.ent,r)));[...S.sel].forEach(i=>{if(!ids.has(i))S.sel.delete(i)})}
+const DSORT={mesas:['code',1],orgs:['name',1],pers:['name',1]};
+const RFD=()=>({per:'12',country:'',org:'',loc:'',mesa:'',fac:'',mod:'',sel:null});
+function applyRole(v){S.role=v;S.sel.clear();S.f={mesas:{},orgs:{},pers:{}};S.q={mesas:'',orgs:'',pers:''};S.view={mesas:'all',orgs:'all',pers:'all'};S.ent='mesas';S.drill=[];S.rf=RFD();S.sheet=null;S.pop=null;nav({n:'explore'},{reset:true});}
+const AC={
+ tab(el){nav({n:el.dataset.v},{reset:true})},
+ ent(el){S.ent=el.dataset.v;S.sel.clear();S.pop=null;render()},
+ view(el){const e=S.ent,v=el.dataset.v,vd=viewDefs(e).find(x=>x.id===v);S.view[e]=v;if(vd&&vd.custom){S.f.mesas=Object.assign({},vd.custom.f);S.sort.mesas=vd.custom.sort.slice()}else if(vd&&vd.sort)S.sort[e]=vd.sort;else S.sort[e]=DSORT[e].slice();prune();render()},
+ sort(el){const e=S.ent,k=el.dataset.k,s=S.sort[e];S.sort[e]=s[0]===k?[k,-s[1]]:[k,1];render()},
+ sel(el){const id=el.dataset.id;S.sel.has(id)?S.sel.delete(id):S.sel.add(id);render()},
+ selall(){const rs=rowsFor(S.ent);if(allSel())rs.forEach(r=>S.sel.delete(idOf(S.ent,r)));else rs.forEach(r=>S.sel.add(idOf(S.ent,r)));render()},
+ clearsel(){S.sel.clear();S.sheet=null;render()},
+ open(el){const k=el.dataset.k,id=el.dataset.id;S.from=el.dataset.from||null;if(k==='mesa')goMesa(id);else if(k==='org')goOrg(id);else nav({n:'miembro',id})},
+ pop(el){const v=el.dataset.v;if(v==='ctx'&&VPCLS==='phone'){S.sheet='ctx';S.pop=null}else S.pop=S.pop===v?null:v;render()},
+ sheet(el){S.sheet=el.dataset.v;S.pop=null;S.focusDlg=true;render()},
+ sheetx(){S.sheet=null;render()},
+ ovclose(el,e){if(e.target!==el)return;S.dlg=null;S.sheet=null;S.pal=null;render()},
+ role(el){applyRole(el.dataset.v);toast('Contexto: '+(el.dataset.v==='admin'?'Administrador':'Coordinador · Fundación Luz'))},
+ ctxm(){S.sheet=null;S.pop=null;toast('Ese contexto es de la app de sesiones; la administración no aplica')},
+ clearf(){const e=S.ent;S.f[e]={};S.q[e]='';S.view[e]='all';S.sort[e]=DSORT[e].slice();render()},
+ rmf(el){delete S.f[S.ent][el.dataset.k];prune();render()},
+ dens(){S.dens=S.dens==='cmp'?'cmf':'cmp';render()},
+ saveview(){if(!onl())return;const n=S.customViews.length+1,id='cv'+n;S.customViews.push({id,l:'Mi vista '+n,f:Object.assign({},S.f.mesas),sort:S.sort.mesas.slice(),n:rowsFor('mesas').length});S.view.mesas=id;toast('Vista guardada: Mi vista '+n)},
+ create(el){const k=el.dataset.k;if(k==='org'&&!isAdm()){nav({n:'forbidden',why:'admin'});return}
+   if(k==='orgedit'||k==='mesaedit')return openForm(k,{id:el.dataset.id});
+   if(k==='pers'&&el.dataset.role==='Coordinador'&&!isAdm())return nav({n:'forbidden',why:'admin'});
+   openForm(k,{org:el.dataset.org||'',role:el.dataset.role||'',table:el.dataset.table||''})},
+ back(){back()},
+ crumb(el){const r=CRUMB[+el.dataset.i];if(!r)return;if(r.ent)S.ent=r.ent;nav(r,{reset:r.n==='explore'})},
+ submit(){},
+ dlg(el){const k=el.dataset.k;S.dlg={k,id:el.dataset.id,t:el.dataset.t,v:{},err:''};S.focusDlg=true;render()},
+ dlgx(){S.dlg=null;render()},
+ dlgok(){dlgOk()},
+ pal(){S.pal=true;S.palQ='';S.palI=0;S.focusPal=true;S.pop=null;render();const i=$('#palq');if(i)i.focus()},
+ palrun(el){runCmd(palItems()[+el.dataset.i])},
+ csv(el){if(!onl())return;toast('CSV generado (simulado): '+el.dataset.v.replace(/\s+/g,'-')+'-2026-10-25.csv')},
+ retry(){S.online=true;toast('Conexión restablecida');},
+ tomesas(el){S.ent='mesas';S.view.mesas=el.dataset.v;const vd=viewDefs('mesas').find(v=>v.id===el.dataset.v);S.sort.mesas=vd.sort||['code',1];S.sel.clear();nav({n:'explore'},{reset:true})},
+ toreport(el){const ts=S.sel.size?selTables():rowsFor('mesas');if(!ts.length)return;S.rf=RFD();S.rf.sel=ts.map(t=>t.id);S.drill=[];nav({n:'report'},{reset:true})},
+ rfo(){S.rfo=!S.rfo;render()},
+ rfsel(){S.rf.sel=null;render()},
+ rfclear(){S.rf=RFD();S.drill=[];render()},
+ ct(el){S.chartT[el.dataset.v]=el.dataset.m==='1';render()},
+ drill(el){S.drill.push({k:el.dataset.k,id:el.dataset.id});render()},
+ drillto(el){S.drill=S.drill.slice(0,+el.dataset.i);render()},
+ dg(el){S.dg=el.dataset.v;S.drill=[];render()},
+ reveal(el){if(!onl())return;const p=P(el.dataset.id);S.reveal[p.id]=true;audit('Vista sensible','Respuestas de '+p.fn+' '+p.ln,'Consulta de respuestas individuales ('+(p.table||'sin mesa')+')',p.org);toast('Consulta registrada en la auditoría')},
+ resend(el){if(!onl())return;toast('Invitación reenviada')},
+ share(el){toast(el.dataset.v==='WhatsApp'?'Abriendo WhatsApp (simulado)':el.dataset.v+' copiado')},
+ addloc(el){if(!onl())return;const n=(S.newloc||'').trim(),o=O(el.dataset.id);if(!n){toast('Escribe el nombre de la ubicación','err');return}if(o.locs.includes(n)){toast('Esa ubicación ya existe','err');return}o.locs.push(n);audit('Alta','Ubicación '+n,'Agregada a '+o.name,o.id);S.newloc='';toast('Ubicación agregada')},
+ locfilter(el){S.ent='mesas';S.f.mesas={org:el.dataset.id,loc:el.dataset.v};S.view.mesas='all';S.sel.clear();nav({n:'explore'},{reset:true})},
+ auditorg(el){S.aud={type:'',org:el.dataset.id,q:''};nav({n:'audit'},{reset:true})},
+ atype(el){S.aud.type=el.dataset.v;render()},
+ aclear(){S.aud={type:'',org:'',q:''};render()},
+ askaccess(){if(!onl())return;toast('Solicitud enviada al equipo de administración')},
+};
+document.addEventListener('click',e=>{
+  const fr=$('#frame');if(!fr||!fr.contains(e.target)){return}
+  const t=e.target,el=t.closest('[data-a]');
+  if(S.pop&&!t.closest('.pop')&&!(el&&el.dataset.a==='pop')){S.pop=null;if(!el)render()}
+  if(t.closest('[data-tip]')&&!el){showTip(t.closest('[data-tip]'),true);return}
+  if(!el)return;
+  const a=el.dataset.a;
+  if(el.getAttribute('aria-disabled')==='true'&&!['create','dlgok','submit','csv','reveal','resend','saveview','addloc','askaccess','tomesas','toreport'].includes(a)){return}
+  if(el.getAttribute('aria-disabled')==='true'&&a==='toreport')return;
+  if(AC[a])AC[a](el,e);
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.r){const v=t.value;if(t.dataset.r==='theme')setTheme(v);if(t.dataset.r==='jump'){const i=+v;if(i>0)runScenario(i);}return}
+  if(!$('#frame').contains(t))return;
+  if(t.dataset.chg==='flt'){S.f[S.ent][t.dataset.k]=t.value;if(!t.value)delete S.f[S.ent][t.dataset.k];if(t.dataset.k==='org'){delete S.f[S.ent].loc;delete S.f[S.ent].fac}prune();render()}
+  else if(t.dataset.chg==='rf'){const k=t.dataset.k;S.rf[k]=t.value;if(k==='per'&&!t.value)S.rf.per='12';if(k==='country'){S.rf.org='';S.rf.loc='';S.rf.mesa='';S.rf.fac=''}if(k==='org'){S.rf.loc='';S.rf.mesa='';S.rf.fac=''}if(k==='loc'){S.rf.mesa=''}S.drill=[];render()}
+  else if(t.dataset.chg==='aorg'){S.aud.org=t.value;render()}
+  else if(t.dataset.fv){const f=S.form,k=t.dataset.fv;f.v[k]=t.type==='checkbox'?t.checked:t.value;
+    if(t.dataset.rr){if(f.kind==='mesa'&&k==='org'){f.v.loc='';f.v.fac='';f.v.newloc='';f.v.tz=TZORG[t.value]||f.v.tz}if(f.kind==='pers'&&(k==='org'||k==='role'))f.v.table='';delete f.err[k];render()}}
+  else if(t.dataset.dv){S.dlg.v[t.dataset.dv]=t.value;S.dlg.err='';if(S.dlg.k==='orgDeact')render()}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;if(!$('#frame').contains(t))return;
+  if(t.dataset.inp==='q'){S.q[S.ent]=t.value;prune();render()}
+  else if(t.dataset.inp==='aq'){S.aud.q=t.value;render()}
+  else if(t.dataset.inp==='palq'){S.palQ=t.value;S.palI=0;render()}
+  else if(t.dataset.inp==='newloc'){S.newloc=t.value}
+  else if(t.dataset.fv){S.form.v[t.dataset.fv]=t.type==='checkbox'?t.checked:t.value}
+  else if(t.dataset.dv){S.dlg.v[t.dataset.dv]=t.value;S.dlg.err='';if(S.dlg.k==='orgDeact')render()}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='theform'){e.preventDefault();submitForm()}});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();AC.pal();return}
+  if(e.key==='Escape'){if(S.dlg||S.sheet||S.pal||S.pop){S.dlg=null;S.sheet=null;S.pal=null;S.pop=null;render()}return}
+  if(S.pal){const n=palItems().length;if(e.key==='ArrowDown'){e.preventDefault();S.palI=(S.palI+1)%n;render()}else if(e.key==='ArrowUp'){e.preventDefault();S.palI=(S.palI-1+n)%n;render()}else if(e.key==='Enter'){e.preventDefault();runCmd(palItems()[S.palI])}}
+  if(e.key==='Tab'&&(S.dlg||S.sheet||S.pal)){const c=$('#frame .dlg,#frame .sheet,#frame .pal');if(!c)return;const f=[...c.querySelectorAll('button,input,select,textarea,[tabindex="0"]')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}
+});
+function showTip(el,toggle){const tip=$('#tip'),fr=$('#frame');if(!tip)return;if(toggle&&!tip.hidden&&tip.dataset.for===el.getAttribute('data-tip')){tip.hidden=true;return}
+  tip.textContent=el.getAttribute('data-tip');tip.dataset.for=el.getAttribute('data-tip');tip.hidden=false;const r=el.getBoundingClientRect(),f=fr.getBoundingClientRect();
+  let x=r.left+r.width/2-f.left-tip.offsetWidth/2;x=Math.max(8,Math.min(f.width-tip.offsetWidth-8,x));tip.style.left=x+'px';tip.style.top=Math.max(4,r.top-f.top-tip.offsetHeight-8)+'px'}
+document.addEventListener('mouseover',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(el&&$('#frame').contains(el))showTip(el)});
+document.addEventListener('mouseout',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(el){const t=$('#tip');if(t)t.hidden=true}});
+document.addEventListener('focusin',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(el&&$('#frame').contains(el))showTip(el)});
+document.addEventListener('focusout',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(el){const t=$('#tip');if(t)t.hidden=true}});
+// reviewer header
+document.getElementById('rv').addEventListener('click',e=>{const b=e.target.closest('button[data-r]');if(!b)return;const r=b.dataset.r,v=b.dataset.v;
+  if(r==='vp'){S.vp=v;render()}
+  if(r==='role'){if((v==='admin')!==isAdm())applyRole(v)}
+  if(r==='net'){S.online=v==='on';render()}
+  if(r==='reset'){resetAll()}
+});
+/* ================= SCENARIOS ================= */
+function resetAll(){const vp=S.vp,th=S.theme;buildData();S=freshState({vp,theme:th});nav({n:'explore'},{reset:true});const j=$('#jump');if(j)j.value='0'}
+function base(role){const vp=S.vp,th=S.theme;buildData();S=freshState({vp,theme:th,role:role||'admin'})}
+function go(r,o){nav(r,Object.assign({reset:true},o||{}))}
+function selTbl(ids){ids.forEach(i=>S.sel.add(i))}
+const SC=[
+ ['— Elegir escenario —',null],
+ ['Admin · Explorador de mesas (inicio)',()=>{base();go({n:'explore'})}],
+ ['Admin · Vista «Mesas retrasadas»',()=>{base();S.view.mesas='ret';S.sort.mesas=['last',-1];go({n:'explore'})}],
+ ['Admin · Vista «Baja asistencia»',()=>{base();S.view.mesas='baja';S.sort.mesas=['att',1];go({n:'explore'})}],
+ ['Admin · Vista «Sincronizado tarde»',()=>{base();S.view.mesas='tarde';S.sort.mesas=['late',-1];go({n:'explore'})}],
+ ['Admin · Selección de mesas → panel de KPIs',()=>{base();selTbl(['LUZ-03','HOR-02','AND-02']);go({n:'explore'});if(VPCLS!=='desk')setTimeout(()=>{S.sheet='panel';render()},300)}],
+ ['Admin · Organizaciones (cuadrícula)',()=>{base();S.ent='orgs';go({n:'explore'})}],
+ ['Admin · Personas (invitaciones pendientes)',()=>{base();S.ent='pers';S.view.pers='pe';go({n:'explore'})}],
+ ['Admin · Sin resultados (búsqueda)',()=>{base();S.q.mesas='zzz';go({n:'explore'})}],
+ ['Admin · Filtros abiertos',()=>{base();go({n:'explore'});setTimeout(()=>{if(VPCLS==='phone')S.sheet='filters';else S.pop='filters';render()},300)}],
+ ['Admin · Crear organización (vacío)',()=>{base();openForm('org')}],
+ ['Admin · Crear organización — errores de validación',()=>{base();openForm('org');S.form.v.name='Fundación Luz';S.form.v.cemail='correo-sin-arroba';validate();render()}],
+ ['Admin · Organización vacía (sin mesas ni coordinador activo)',()=>{base();go({n:'org',id:'vec'})}],
+ ['Admin · Detalle de organización (Colegio Horizonte)',()=>{base();go({n:'org',id:'hor'})}],
+ ['Admin · Invitar primer coordinador (formulario)',()=>{base();openForm('pers',{org:'vec',role:'Coordinador'})}],
+ ['Admin · Invitación creada (enlace + código + QR)',()=>{base();openForm('pers',{org:'vec',role:'Coordinador'});Object.assign(S.form.v,{fn:'Rosa',ln:'Montenegro',email:'rosa@redvecinal.example'});submitForm()}],
+ ['Admin · Diálogo pausar organización',()=>{base();go({n:'org',id:'and'});setTimeout(()=>{S.dlg={k:'orgPause',id:'and',v:{},err:''};render()},350)}],
+ ['Admin · Diálogo desactivar organización (destructivo)',()=>{base();go({n:'org',id:'hor'});setTimeout(()=>{S.dlg={k:'orgDeact',id:'hor',v:{},err:''};render()},350)}],
+ ['Admin · Organización pausada (Centro Aliento)',()=>{base();go({n:'org',id:'ali'})}],
+ ['Coordinador · Mis mesas (Fundación Luz)',()=>{base('coord');go({n:'explore'})}],
+ ['Coordinador · Crear mesa (vacío)',()=>{base('coord');openForm('mesa',{})}],
+ ['Coordinador · Crear mesa — código duplicado y sin facilitador',()=>{base('coord');openForm('mesa',{});Object.assign(S.form.v,{name:'Faro',code:'LUZ-03',loc:'Sede Central'});validate();render()}],
+ ['Coordinador · Mesa LUZ-03 (miembros, historial)',()=>{base('coord');go({n:'mesa',id:'LUZ-03'})}],
+ ['Coordinador · Error 10.º lugar (mesa LUZ-06 llena)',()=>{base('coord');openForm('pers',{role:'Miembro',table:'LUZ-06',org:'luz'});Object.assign(S.form.v,{fn:'Julia',ln:'Ferrer',email:'julia@correo.example'});validate();render()}],
+ ['Coordinador · Mesa sin 3 miembros (aviso)',()=>{base('coord');go({n:'mesa',id:'LUZ-05'})}],
+ ['Coordinador · Diálogo cambiar facilitador',()=>{base('coord');go({n:'mesa',id:'LUZ-03'});setTimeout(()=>{S.dlg={k:'fac',id:'LUZ-03',v:{},err:''};render()},350)}],
+ ['Coordinador · Diálogo mover miembro',()=>{base('coord');go({n:'mesa',id:'LUZ-03'});setTimeout(()=>{S.dlg={k:'move',id:T('LUZ-03').mem[2],t:'LUZ-03',v:{},err:''};render()},350)}],
+ ['Coordinador · Diálogo desactivar miembro (mesa quedará con 2)',()=>{base('coord');go({n:'mesa',id:'LUZ-05'});setTimeout(()=>{S.dlg={k:'deact',id:T('LUZ-05').mem[2],t:'LUZ-05',v:{},err:''};render()},350)}],
+ ['Coordinador · Acceso denegado (otra organización)',()=>{base('coord');goOrg('hor')}],
+ ['Coordinador · Acción solo Administrador',()=>{base('coord');nav({n:'forbidden',why:'admin'},{reset:true})}],
+ ['Informes · Administrador (global)',()=>{base();go({n:'report'})}],
+ ['Informes · Desglose País → Organización → Mesa',()=>{base();S.drill=[{k:'pais',id:'Colombia'},{k:'org',id:'hor'}];go({n:'report'})}],
+ ['Informes · Miembro (respuestas sensibles, ocultas)',()=>{base();S.from='report';go({n:'miembro',id:T('HOR-02').mem[1]})}],
+ ['Informes · Gráfico como tabla',()=>{base();S.chartT={c1:true,c2:true,c3:true,c4:true,c5:true};go({n:'report'})}],
+ ['Informes · Sin datos (Red Vecinal Norte)',()=>{base();S.rf.org='vec';go({n:'report'})}],
+ ['Informes · Coordinador (solo Fundación Luz)',()=>{base('coord');go({n:'report'})}],
+ ['Auditoría · Administrador',()=>{base();go({n:'audit'})}],
+ ['Auditoría · Coordinador (solo su org)',()=>{base('coord');go({n:'audit'})}],
+ ['Auditoría · Sin resultados',()=>{base();S.aud.q='zzz';go({n:'audit'})}],
+ ['Estado · Cargando (esqueleto)',()=>{base();go({n:'explore'},{hold:4000})}],
+ ['Estado · Sin conexión (explorador solo lectura)',()=>{base();S.online=false;go({n:'explore'})}],
+ ['Estado · Sin conexión (informes)',()=>{base();S.online=false;go({n:'report'})}],
+ ['Estado · Sin conexión al guardar un formulario',()=>{base();openForm('org');Object.assign(S.form.v,{name:'Fundación Alba',country:'Colombia',region:'Cali',cname:'Rita Gil',cemail:'rita@alba.example'});S.online=false;render()}],
+ ['Estado · Éxito (crear mesa completa)',()=>{base('coord');openForm('mesa',{});Object.assign(S.form.v,{name:'Faro',code:'LUZ-07',loc:'Sede Central',fac:'p'+PEOPLE.find(p=>p.fn==='Valeria').id.slice(1)});submitForm()}],
+ ['Paleta de comandos (Ctrl/⌘ K)',()=>{base();go({n:'explore'});setTimeout(()=>AC.pal(),350)}],
+ ['Paleta · «Ir a Colegio Horizonte» como Coordinador',()=>{base('coord');go({n:'explore'});setTimeout(()=>{AC.pal();S.palQ='colegio';render()},350)}],
+ ['Cambiar de contexto (selector)',()=>{base();go({n:'explore'});setTimeout(()=>{if(VPCLS==='phone')S.sheet='ctx';else S.pop='ctx';render()},350)}]
+];
+function runScenario(i){const s=SC[i];if(s&&s[1])s[1]()}
+/* ================= INIT ================= */
+function init(){
+  buildData();
+  S=freshState({vp:window.innerWidth<700?'phone':window.innerWidth<1100?'tab':'desk'});
+  const j=$('#jump');j.innerHTML=SC.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join('');
+  render();
+  const ro=new ResizeObserver(()=>{const c=vpc();if(c!==VPCLS)render()});ro.observe($('#frame'));
+  window.addEventListener('resize',()=>render());
+  nav({n:'explore'},{reset:true});
+  const h=location.hash.match(/s=(\d+)/),th=location.hash.match(/t=(light|dark)/);if(th)setTheme(th[1]);const vv=location.hash.match(/v=(phone|tab|desk)/);if(vv){S.vp=vv[1];render()}if(h)setTimeout(()=>{runScenario(+h[1]);if(j)j.value=h[1]},50);
+}
+window.__errs=[];window.addEventListener('error',e=>window.__errs.push(String(e.message)+' @'+e.lineno));
+init();
+</script>
+</body>
+</html>

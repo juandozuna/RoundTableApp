@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L2 · Puerta única — Gold Roundtables</title>
+<style>
+:root{
+  --page:#08060f;--bg:#0E0B1A;--bg2:#14102A;--surf:#1A1530;--surf2:#251E45;--line:#3A3166;
+  --ink:#F4F1FF;--mut:#A9A1CC;--acc:#A48BFF;--accb:#6F4DFF;--accg:#8654F7;--bd:#7A70B5;--onacc:#fff;
+  --lime:#3DE08A;--amber:#FFB547;--off:#8F98BC;--mag:#FF4F9A;--err:#FF7A7A;--sky:#5CC8FF;--cyan:#2DD4D4;--lilac:#C7B6FF;
+  --onc:#0B0A14;--glow:rgba(139,108,255,.28);--shadow:0 20px 60px rgba(0,0,0,.55);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){
+  --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+  --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+  --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+  --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25)}}
+:root[data-theme=light]{
+  --page:#E4DEFA;--bg:#F3F0FF;--bg2:#E9E4FF;--surf:#FFFFFF;--surf2:#ECE7FF;--line:#C9BFF0;
+  --ink:#1B1438;--mut:#554C7E;--acc:#5B3FE0;--accb:#5B3FE0;--accg:#7a4df0;--bd:#7C72B8;--onacc:#fff;
+  --lime:#096B3A;--amber:#8A5200;--off:#515A80;--mag:#B0165F;--err:#B3261E;--sky:#095F8F;--cyan:#086363;--lilac:#5B3FE0;
+  --onc:#fff;--glow:rgba(91,63,224,.18);--shadow:0 20px 50px rgba(60,40,140,.25)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.35}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.ic{flex:none;vertical-align:middle}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+h1,h2,h3,p{margin:0}
+/* reviewer */
+.rv{max-width:1500px;margin:0 auto;padding:14px 18px 6px}
+.rv-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+.rv h1{font-size:22px;font-weight:900;letter-spacing:-.01em}.rv h1 b{color:var(--acc)}
+.rv .concept{color:var(--mut);font-size:14px;max-width:900px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:12px 0 8px}
+.ctl label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--mut)}
+.seg2{display:inline-flex;border:2px solid var(--bd);border-radius:14px;overflow:hidden;background:var(--surf)}
+.seg2 button{border:0;background:transparent;padding:0 14px;min-height:44px;font-weight:800;font-size:14px}
+.seg2 button[aria-pressed=true]{background:var(--accb);color:var(--onacc)}
+.seg2 button.offb[aria-pressed=true]{background:var(--off);color:var(--onc)}
+.rbtn{min-height:44px;padding:0 14px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);font-weight:700;font-size:14px}
+.rbtn:hover{border-color:var(--acc)}
+.sel{min-height:44px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);padding:0 10px;font-weight:700;font-size:14px;max-width:100%}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.refs{font-size:12.5px;color:var(--mut);border-top:1px solid var(--line);padding:8px 0 0;margin-top:6px}
+.refs b{color:var(--ink)}
+.refs a{display:inline-block;margin:2px 4px 2px 0;padding:2px 9px;border-radius:999px;background:var(--surf);border:1px solid var(--line);color:var(--ink);font-weight:600;text-decoration:none}
+.refs a:hover{border-color:var(--acc)}
+.stagew{max-width:1500px;margin:0 auto;padding:10px 18px 30px;display:flex;justify-content:center;overflow-x:auto}
+.frame{position:relative;width:390px;max-width:100%;height:800px;border-radius:44px;border:10px solid #05040b;box-shadow:var(--shadow),0 0 0 2px var(--line);overflow:hidden;background:var(--bg);flex:none}
+.frame.t{width:820px;height:780px;border-radius:28px;border-width:12px}
+.frame.d{width:1280px;height:760px;border-radius:12px;border-width:2px}
+.chrome{display:none;height:34px;background:var(--bg2);border-bottom:1px solid var(--line);align-items:center;gap:8px;padding:0 12px;font-size:12px;color:var(--mut)}
+.frame.d .chrome{display:flex}
+.chrome i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.chrome .url{margin-left:12px;flex:1;max-width:420px;background:var(--surf);border-radius:8px;padding:3px 10px}
+.fin{position:absolute;inset:0;display:flex;flex-direction:column}
+.app{container-type:inline-size;container-name:app;position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+.app::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 50% at 50% -10%,var(--glow),transparent 60%);pointer-events:none}
+.app>*{position:relative}
+.sbar{display:flex;justify-content:space-between;padding:8px 22px 2px;font-size:12px;font-weight:800;flex:none}
+.frame.t .sbar,.frame.d .sbar{display:none}
+/* buttons */
+.btn{width:100%;min-height:54px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--accb),var(--accg));color:var(--onacc);font-weight:900;font-size:16.5px;padding:0 18px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px var(--glow)}
+.btn:disabled,.btn[aria-disabled=true]{background:var(--surf2);color:var(--mut);box-shadow:none;cursor:not-allowed}
+.btn.sec{background:var(--surf2);color:var(--ink);box-shadow:none;border:2px solid var(--bd);font-size:15px;min-height:48px}
+.btn.ghost{background:transparent;color:var(--acc);box-shadow:none;font-size:15px;min-height:46px}
+.btn.dng{background:transparent;color:var(--err);border:2px solid var(--err);box-shadow:none;font-size:15px;min-height:48px}
+.btn.sm{width:auto;min-height:44px;font-size:14px;padding:0 14px;border-radius:14px}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.prov{width:100%;min-height:54px;border-radius:16px;border:2px solid transparent;display:flex;align-items:center;justify-content:center;gap:12px;font-weight:800;font-size:16px;margin-top:10px}
+.prov.g{background:#fff;color:#1f1f1f;border-color:#dadce0}
+.prov.a{background:var(--ink);color:var(--bg)}
+.prov.f{background:#1763d6;color:#fff}
+.prov:disabled{opacity:.55;cursor:not-allowed}
+.prov:hover:not(:disabled){filter:brightness(1.07)}
+.lnk{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border-radius:16px;border:2px solid var(--bd);background:var(--surf);font-weight:800;font-size:15px;margin-top:10px}
+.lnk:hover{border-color:var(--acc)}
+.ibtn{min-width:44px;min-height:44px;border-radius:14px;border:2px solid var(--bd);background:var(--surf2);display:inline-grid;place-items:center}
+.ibtn:hover{border-color:var(--acc)}
+.kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:14px;margin-top:12px}
+/* feedback */
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800;border:1.5px solid var(--c,var(--line));color:var(--ink);background:color-mix(in srgb,var(--c,var(--line)) 14%,transparent)}
+.pill .ic{color:var(--c)}
+.p-ok{--c:var(--lime)}.p-pend{--c:var(--amber)}.p-late{--c:var(--mag)}.p-off{--c:var(--off)}.p-err{--c:var(--err)}.p-acc{--c:var(--acc)}
+.pill.p-pend{border-style:dotted}.pill.p-off{border-style:dashed}.pill.p-err{border-style:double;border-width:4px;padding:2px 9px}
+.msg{display:flex;gap:10px;border-radius:16px;padding:10px 12px;margin-top:12px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);font-size:13.5px}
+.msg .ic{color:var(--c);margin-top:2px}.msg b{font-weight:800}.msg small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
+.m-err{--c:var(--err)}.m-warn{--c:var(--amber)}.m-info{--c:var(--acc)}.m-ok{--c:var(--lime)}
+.offline{display:flex;gap:10px;align-items:center;margin:0;padding:9px 14px;background:color-mix(in srgb,var(--off) 16%,var(--bg));border-bottom:1.5px solid var(--off);font-size:13px;font-weight:700;flex:none}
+.offline .ic{color:var(--off)}.offline button{margin-left:auto;min-height:44px;border:0;background:transparent;color:var(--acc);font-weight:800;padding:0 8px}
+.toast{position:absolute;left:14px;right:14px;top:44px;z-index:50;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 14px;font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .25s ease;display:flex;gap:8px;align-items:center}
+@container app (min-width:700px){.toast{left:auto;right:20px;top:70px;max-width:380px}}
+@keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+.busy{position:absolute;inset:0;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);display:grid;place-items:center;text-align:center;font-weight:800}
+.spin{width:36px;height:36px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--acc);animation:spin .9s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* avatar */
+.av{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:900;flex:none;width:var(--s,40px);height:var(--s,40px);font-size:calc(var(--s,40px)*.36);letter-spacing:.02em}
+.av.sq{border-radius:12px}
+/* flow (gate) layout */
+.flow{flex:1;min-height:0;display:flex;flex-direction:column}
+.brandpane{display:none}
+.pane{flex:1;overflow-y:auto;padding:8px 18px 16px;display:flex;flex-direction:column}
+.pane>.inner{width:100%;max-width:460px;margin:0 auto;flex:1;display:flex;flex-direction:column}
+.fbar{display:flex;align-items:center;gap:10px;min-height:52px;flex:none;margin-bottom:4px}
+.fbar .t{font-weight:900;font-size:15px}
+.lock{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
+.mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--accb),var(--accg));display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px var(--glow)}
+.wm{font-weight:900;font-size:17px;letter-spacing:-.01em;line-height:1}.wm small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-top:3px;font-weight:800}
+.h1{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.05;margin-top:6px}
+.sub{color:var(--mut);font-size:14.5px;margin-top:6px;font-weight:500}
+.steps{display:flex;gap:6px;align-items:center;margin:2px 0 10px}
+.steps i{height:6px;flex:1;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--acc)}.steps i.cur{background:linear-gradient(90deg,var(--accb),var(--accg))}
+.steps span{font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;margin-left:4px}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--mut);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.fine{font-size:12px;color:var(--mut);text-align:center;margin-top:auto;padding-top:14px}
+@container app (min-width:700px){
+  .flow{flex-direction:row}
+  .brandpane{display:flex;flex-direction:column;justify-content:space-between;flex:0 0 42%;padding:34px 36px;background:linear-gradient(160deg,var(--surf2),var(--bg2) 60%);border-right:1px solid var(--line);overflow:hidden}
+  .brandpane h2{font-size:44px;font-weight:900;letter-spacing:-.03em;line-height:1}
+  .brandpane h2 em{font-style:normal;color:var(--acc)}
+  .brandpane p{color:var(--mut);margin-top:14px;font-size:16px;max-width:360px}
+  .pane{justify-content:center;padding:28px 40px}
+  .pane>.inner{flex:0 1 auto}
+  .lock.mobonly{display:none}
+  .fine{margin-top:20px}
+}
+.seatrow{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.seat{width:30px;height:30px;border-radius:50%;border:3px solid var(--lime);background:color-mix(in srgb,var(--lime) 18%,transparent);display:grid;place-items:center}
+.seat.pe{border-style:dashed;border-color:var(--amber);background:transparent}
+.seat.me{border-color:var(--acc);background:var(--acc);color:#fff;box-shadow:0 0 0 4px var(--glow)}
+.seat.em{border-style:dotted;border-color:var(--off);background:transparent}
+.seat.full{border-color:var(--err)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:8px;font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:5px}.legend i{width:12px;height:12px;border-radius:50%;border:2.5px solid var(--lime);display:inline-block}
+.legend i.pe{border-style:dashed;border-color:var(--amber)}.legend i.me{border-color:var(--acc);background:var(--acc)}.legend i.em{border-style:dotted;border-color:var(--off)}
+/* code input */
+.codew{position:relative;margin-top:18px}
+.codein{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;z-index:2;cursor:text}
+.cells{display:flex;gap:8px;justify-content:center}
+.cell{flex:1;max-width:58px;aspect-ratio:.82;border-radius:14px;border:2px solid var(--bd);background:var(--surf);display:grid;place-items:center;font-size:28px;font-weight:900;font-variant-numeric:tabular-nums}
+.cell.act{border-color:var(--acc);box-shadow:0 0 0 4px var(--glow)}
+.cell.bad{border-color:var(--err);animation:shk .3s}
+.cell.ok{border-color:var(--lime)}
+.codew:focus-within .cell.act::after{content:"";width:2px;height:28px;background:var(--acc);animation:blk 1s steps(2) infinite}
+@keyframes blk{50%{opacity:0}}
+@keyframes shk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.chipsrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{min-height:44px;padding:0 12px;border-radius:999px;border:1.5px solid var(--bd);background:var(--surf);font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed=true]{background:var(--accb);border-color:var(--accb);color:var(--onacc)}
+.chip b{font-variant-numeric:tabular-nums}
+.chip.mono{font-family:ui-monospace,Menlo,monospace;letter-spacing:.06em}
+/* camera */
+.cam{position:relative;border-radius:24px;background:#000;aspect-ratio:1/1;max-height:340px;margin:10px auto 0;width:100%;overflow:hidden;display:grid;place-items:center;color:#fff}
+.cam .cr{position:absolute;width:44px;height:44px;border:4px solid #fff;border-radius:10px}
+.cam .tl{left:18%;top:18%;border-right:0;border-bottom:0}.cam .tr{right:18%;top:18%;border-left:0;border-bottom:0}
+.cam .bl{left:18%;bottom:18%;border-right:0;border-top:0}.cam .br{right:18%;bottom:18%;border-left:0;border-top:0}
+.cam .ln{position:absolute;left:18%;right:18%;height:3px;background:var(--lime);box-shadow:0 0 14px var(--lime);animation:sweep 2.2s ease-in-out infinite alternate}
+@keyframes sweep{from{top:20%}to{top:78%}}
+.cam .txt{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:12.5px;font-weight:700;color:#eee}
+.osdlg{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(0,0,0,.55);padding:20px}
+.osdlg>div{background:#f2f2f7;color:#111;border-radius:16px;width:100%;max-width:290px;text-align:center;overflow:hidden}
+.osdlg h3{font-size:16px;padding:16px 16px 4px}.osdlg p{font-size:13px;padding:0 16px 14px;color:#333}
+.osdlg .r{display:flex;border-top:1px solid #c6c6c8}.osdlg .r button{flex:1;min-height:48px;border:0;background:transparent;color:#0a5fd0;font-weight:700;font-size:16px}
+.osdlg .r button+button{border-left:1px solid #c6c6c8}
+/* preview */
+.pv{background:var(--surf);border:1.5px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}
+.pv .who{display:flex;align-items:center;gap:12px}
+.pv dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:14px}
+.pv dt{color:var(--mut);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;align-self:center}
+.pv dd{margin:0;font-weight:700}
+.big-ic{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);margin:18px auto 12px}
+.res{text-align:center}.res .h1{font-size:26px}
+.res .sub{max-width:340px;margin-left:auto;margin-right:auto}
+/* form */
+.fld{margin-top:12px}
+.fld label,.fld .fl{display:block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
+.fld label i,.fl i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:600}
+.inp{width:100%;min-height:50px;border-radius:14px;border:2px solid var(--bd);background:var(--surf);padding:0 14px;font-size:16px;font-weight:600}
+.inp:focus{border-color:var(--acc);outline:none;box-shadow:0 0 0 4px var(--glow)}
+.inp[aria-invalid=true]{border-color:var(--err)}
+.inp:disabled{opacity:.6}
+.ferr{display:flex;gap:6px;align-items:center;color:var(--err);font-size:13px;font-weight:700;margin-top:5px}
+.fhint{font-size:12.5px;color:var(--mut);margin-top:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.phrow{display:grid;grid-template-columns:128px 1fr;gap:8px}
+.radio{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;min-height:56px;padding:10px 12px;border-radius:16px;border:2px solid var(--bd);background:var(--surf);margin-top:8px}
+.radio[aria-checked=true]{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--surf));box-shadow:0 0 0 3px var(--glow)}
+.radio[aria-disabled=true]{opacity:.65;border-style:dashed;cursor:not-allowed}
+.radio .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--bd);flex:none;margin-top:2px;display:grid;place-items:center}
+.radio[aria-checked=true] .dot{border-color:var(--acc);background:var(--acc)}
+.radio b{display:block;font-size:15px}.radio small{color:var(--mut);font-size:12.5px;font-weight:500}
+.dockb{flex:none;padding:10px 16px 14px;background:linear-gradient(180deg,transparent,var(--bg) 24%);display:flex;gap:8px;flex-direction:column}
+/* shell */
+.shell{flex:1;min-height:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:10px;padding:8px 14px;flex:none;border-bottom:1px solid var(--line);min-height:60px}
+.top .sp{flex:1}
+.ctxchip{display:flex;align-items:center;gap:9px;min-height:48px;padding:3px 12px 3px 4px;border-radius:999px;border:2px solid var(--bd);background:var(--surf);text-align:left;max-width:calc(100% - 60px)}
+.ctxchip:hover:not(.static){border-color:var(--acc)}
+.ctxchip .tx{min-width:0;line-height:1.1}
+.ctxchip .tx small{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.ctxchip .tx b{display:block;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctxchip.static{border-style:dashed;cursor:default}
+.mainw{flex:1;min-height:0;display:flex;flex-direction:column}
+.side{display:none}
+.main{flex:1;overflow-y:auto;padding:14px 16px 20px}
+.main>.in{max-width:980px;margin:0 auto}
+.bnav{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border-top:1px solid var(--line);background:var(--bg2);flex:none;padding-bottom:6px}
+.bnav button{border:0;background:transparent;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:800;color:var(--mut)}
+.bnav button[aria-current=page]{color:var(--acc)}
+.bnav button[aria-current=page] .ic{filter:drop-shadow(0 0 6px var(--glow))}
+.pt{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.05}
+.hrow{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat div{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.stat b{display:block;font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat small{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+@container app (min-width:700px){
+  .mainw{flex-direction:row}
+  .side{display:flex;flex-direction:column;gap:4px;width:220px;flex:none;padding:14px 10px;border-right:1px solid var(--line);background:var(--bg2)}
+  .side button{display:flex;align-items:center;gap:10px;min-height:46px;border:0;border-radius:12px;background:transparent;padding:0 12px;font-weight:800;font-size:14px;color:var(--mut);text-align:left}
+  .side button:hover{background:var(--surf)}
+  .side button[aria-current=page]{background:var(--surf2);color:var(--ink)}
+  .side .grow{flex:1}
+  .bnav{display:none}
+  .main{padding:22px 28px}
+  .btn{width:auto;min-width:200px}
+  .dockb .btn,.pane .btn,.shell .fullw{width:100%}
+}
+/* list / table */
+.fbar2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.fbar2 .inp{flex:1;min-width:150px;min-height:44px}
+.icard{display:flex;gap:12px;align-items:center;background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:8px}
+.icard .bd{flex:1;min-width:0}
+.icard .nm{font-weight:800;font-size:15px}.icard .mt{font-size:12.5px;color:var(--mut);font-weight:600;margin-top:1px}
+.icard .ac{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tw{display:none}
+table.tb{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;background:var(--surf);border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.tb th{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 12px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.tb td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tb tr:hover td{background:color-mix(in srgb,var(--acc) 7%,transparent)}
+.tb tr.sel td{background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.tb .nmc{display:flex;gap:10px;align-items:center;font-weight:800}.tb .nmc small{display:block;color:var(--mut);font-weight:600;font-size:12px}
+.tb td.act{white-space:nowrap;text-align:right}
+.tb input[type=checkbox]{width:22px;height:22px;accent-color:var(--accb)}
+.cb{display:inline-grid;place-items:center;min-width:44px;min-height:44px}
+.bulk{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-radius:14px;border:1.5px solid var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);margin-top:10px;font-weight:800;font-size:14px}
+@container app (min-width:700px){.tw{display:block}.cardlist{display:none}}
+.skel{height:64px;border-radius:18px;background:linear-gradient(90deg,var(--surf),var(--surf2),var(--surf));background-size:200% 100%;animation:sk 1.2s linear infinite;margin-top:8px}
+@keyframes sk{to{background-position:-200% 0}}
+.empty{text-align:center;padding:30px 10px;border:2px dashed var(--bd);border-radius:22px;margin-top:14px}
+.empty .big-ic{margin-top:0}
+/* sheets */
+.ov{position:absolute;inset:0;z-index:30;background:rgba(5,4,12,.62);display:flex;align-items:flex-end}
+.sheet{width:100%;background:var(--bg2);border-top:2px solid var(--bd);border-radius:26px 26px 0 0;padding:8px 16px 18px;max-height:90%;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--bd);margin:4px auto 10px}
+.sheet h3{font-size:20px;font-weight:900;letter-spacing:-.01em}
+.crow{display:flex;gap:12px;align-items:center;width:100%;min-height:62px;padding:8px 12px;border-radius:16px;border:2px solid var(--line);background:var(--surf);margin-top:8px;text-align:left}
+.crow:hover{border-color:var(--acc)}
+.crow[aria-current=true]{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.crow .tx{flex:1;min-width:0}.crow small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.crow b{display:block;font-size:15.5px;font-weight:800}.crow em{font-style:normal;font-size:12.5px;color:var(--mut)}
+@container app (min-width:700px){
+  .ov{align-items:center;justify-content:center}
+  .sheet{max-width:460px;border-radius:22px;border:2px solid var(--bd);padding:18px 20px}
+  .sheet .grab{display:none}
+  .ov.pop{background:transparent;align-items:flex-start;justify-content:flex-start}
+  .ov.pop .sheet{margin:62px 0 0 16px;width:360px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+}
+.qr{background:#fff;padding:10px;border-radius:14px;display:inline-block;line-height:0}
+.codebig{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.codebig span{width:40px;height:50px;border-radius:12px;background:var(--surf2);border:2px solid var(--bd);display:grid;place-items:center;font-weight:900;font-size:24px;font-variant-numeric:tabular-nums}
+.bubble{background:#dcf8c6;color:#111;border-radius:14px 14px 4px 14px;padding:10px 12px;font-size:14px;margin-top:10px}
+.shgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.shgrid .lnk{margin:0;min-height:56px}
+@container app (min-width:900px){.two{display:grid;grid-template-columns:1.2fr .9fr;gap:24px;align-items:start}.two>aside .card:first-child{margin-top:0}}
+.pickh{text-align:left}
+.pk{width:100%;display:flex;gap:14px;align-items:center;min-height:84px;padding:12px 14px;border-radius:20px;border:2px solid var(--bd);background:var(--surf);margin-top:10px;text-align:left}
+.pk:hover{border-color:var(--acc);box-shadow:0 0 0 4px var(--glow)}
+.pk b{display:block;font-size:19px;font-weight:900}.pk small{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}.pk em{font-style:normal;font-size:13px;color:var(--mut)}
+.check{display:flex;gap:10px;align-items:center;font-weight:700;margin-top:10px}.check .ic{color:var(--lime)}
+</style></head>
+<body>
+<header class="rv" id="rv"></header>
+<div class="stagew"><div id="frame" class="frame"><div class="fin"><div class="chrome"><i></i><i></i><i></i><span class="url">app.goldroundtables.example</span></div><div class="sbar"><span>9:41</span><span>5G ▮▮▮</span></div><div class="app" id="app"></div></div></div></div>
+<script>
+"use strict";
+/* ============ icons ============ */
+const P={
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',
+back:'<path d="M15 5l-7 7 7 7"/>',chev:'<path d="M6 9l6 6 6-6"/>',
+copy:'<rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 017.5 4H15"/>',
+qr:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 20h3v-3"/>',
+cam:'<path d="M4 8.5A2.5 2.5 0 016.5 6h1.2l1.3-2h6l1.300 2h1.200A2.500 2.500 0 0120 8.500v8A2.500 2.500 0 0117.500 19h-11A2.500 2.500 0 014 16.500z"/><circle cx="12" cy="12.5" r="3.5"/>',
+camoff:'<path d="M3 3l18 18"/><path d="M9 6h.5l1.500-2h4l1.300 2H17.500A2.500 2.500 0 0120 8.500V15M16 19H6.500A2.500 2.500 0 014 16.500v-8A2.500 2.500 0 016.500 6"/>',
+wa:'<path d="M4 20l1.300-4.200A8 8 0 1112 20a8 8 0 01-3.800-1z"/><path d="M9 8.500c0 3.500 3 6.500 6.500 6.500l1-1.500-2-1-1 .8c-1-.4-2-1.400-2.400-2.400l.8-1-1-2z"/>',
+link:'<path d="M10 14a4 4 0 005.700 0l3-3a4 4 0 00-5.700-5.700l-1 1M14 10a4 4 0 00-5.700 0l-3 3a4 4 0 005.700 5.700l1-1"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2.500"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+alert:'<path d="M12 4l9 16H3z"/><path d="M12 10v4.500M12 17.500v.01"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.500v.01"/>',
+user:'<circle cx="12" cy="8.500" r="3.800"/><path d="M4.500 20a7.500 7.500 0 0115 0"/>',
+users:'<circle cx="9" cy="8.500" r="3.300"/><path d="M2.500 19.500a6.500 6.500 0 0113 0M16 5.500a3.300 3.300 0 010 6.500M18 14.500a6.500 6.500 0 013.500 5"/>',
+mail:'<rect x="3.500" y="5.500" width="17" height="13" rx="2.500"/><path d="M4 7.500l8 6 8-6"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',refresh:'<path d="M20 11a8 8 0 00-14-4.500L4 9M4 4v5h5M4 13a8 8 0 0014 4.500L20 15M20 20v-5h-5"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>',
+logout:'<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 8l-4 4 4 4M6 12h10"/>',
+home:'<path d="M4 11l8-7 8 7v8.500a1 1 0 01-1 1h-4v-6h-6v6H5a1 1 0 01-1-1z"/>',
+send:'<path d="M21 3L3 10.500l7 3 3 7z"/><path d="M10 13.500L21 3"/>',
+wifioff:'<path d="M3 3l18 18M8.500 16.500a5 5 0 017 0M5 12.800a10 10 0 014-2.400M12 20v.01M15 9.500a10 10 0 015 3.300M2.500 9a15 15 0 015-3.300M11 5.100A15 15 0 0121.500 9"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5.500l3.500 2"/>',
+crown:'<path d="M4 17l-1-9 5 4 4-7 4 7 5-4-1 9zM5 20h14"/>',
+shield:'<path d="M12 3l8 3v6c0 4.500-3.300 7.800-8 9-4.700-1.200-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+sync:'<path d="M4 12a8 8 0 0113.500-5.800L20 8.500M20 4v4.500h-4.500M20 12a8 8 0 01-13.500 5.800L4 15.500M4 20v-4.500h4.500"/>',
+phone:'<rect x="7" y="3" width="10" height="18" rx="2.500"/><path d="M11 18h2"/>',
+list:'<path d="M8 7h12M8 12h12M8 17h12M4 7v.01M4 12v.01M4 17v.01"/>',
+dots:'<path d="M5 12v.01M12 12v.01M19 12v.01"/>',
+table:'<ellipse cx="12" cy="12" rx="8.500" ry="5.500"/><path d="M12 3v2.500M12 18.500V21M3.500 12H2M22 12h-1.500"/>',
+};
+function ic(n,s){s=s||18;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||'')+'</svg>'}
+const GL='<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22 12.2c0-.7-.1-1.400-.2-2H12v3.800h5.600a4.800 4.800 0 01-2.100 3.100v2.600h3.400c2-1.800 3.100-4.500 3.100-7.500z"/><path fill="#34A853" d="M12 22.500c2.800 0 5.200-.9 6.900-2.500l-3.400-2.600c-.9.600-2.100 1-3.500 1-2.700 0-5-1.800-5.800-4.300H2.700v2.700A10.500 10.500 0 0012 22.500z"/><path fill="#FBBC05" d="M6.200 14.100a6.300 6.300 0 010-4.200V7.200H2.700a10.500 10.500 0 000 9.600z"/><path fill="#EA4335" d="M12 5.800c1.500 0 2.900.5 4 1.600l3-3A10.500 10.500 0 002.700 7.200l3.500 2.700C7 7.500 9.300 5.800 12 5.800z"/></svg>';
+const AP='<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.400 12.600c0-2.300 1.900-3.400 2-3.500-1.100-1.600-2.800-1.800-3.400-1.800-1.400-.1-2.800.9-3.500.9s-1.800-.8-3-.8c-1.500 0-3 .9-3.800 2.300-1.600 2.800-.4 7 1.200 9.300.8 1.100 1.700 2.400 2.900 2.300 1.200 0 1.600-.7 3-.7s1.800.7 3 .7c1.300 0 2.100-1.100 2.800-2.200.9-1.300 1.300-2.500 1.300-2.600-.1 0-2.500-1-2.500-3.900zM14.200 5.700c.6-.8 1.100-1.800.9-2.900-.9 0-2 .6-2.700 1.400-.6.700-1.100 1.800-1 2.800 1 .1 2.100-.5 2.800-1.300z"/></svg>';
+const FB='<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#fff"/><path fill="#1763d6" d="M13.200 21v-7.500h2.500l.4-3h-2.900V8.700c0-.9.300-1.400 1.500-1.400h1.500V4.600c-.3 0-1.200-.1-2.200-.1-2.200 0-3.700 1.300-3.700 3.800v2.200H7.800v3h2.500V21z"/></svg>';
+const PROVS={google:{n:'Google',cls:'g',svg:GL},apple:{n:'Apple',cls:'a',svg:AP},facebook:{n:'Facebook',cls:'f',svg:FB}};
+
+/* ============ data ============ */
+const CTX={
+ adm:{id:'adm',role:'Administrador',scope:'Casa del Altísimo',org:'Casa del Altísimo',desc:'Todas las organizaciones'},
+ coo:{id:'coo',role:'Coordinador',scope:'Fundación Luz',org:'Fundación Luz',desc:'Mesas y facilitadores de tu organización'},
+ fac:{id:'fac',role:'Facilitador',scope:'Mesa Luz 01',org:'Fundación Luz',table:'Mesa Luz 01',desc:'Diriges esta mesa y agregas integrantes'},
+ mie:{id:'mie',role:'Miembro',scope:'Mesa Esperanza 03',org:'Colegio Horizonte',table:'Mesa Esperanza 03',desc:'Participas en esta mesa'}};
+const PERSONA={
+ ana:{name:'Ana María Soto',email:'ana.soto@ejemplo.org',ctx:['coo','fac','mie'],label:'Ana · 3 roles'},
+ admin:{name:'Marta Gil',email:'marta.gil@ejemplo.org',ctx:['adm','mie'],label:'Marta · Administradora + Miembro'},
+ single:{name:'Pedro Rojas',email:'pedro.r@ejemplo.org',ctx:['mie'],label:'Pedro · un solo rol'},
+ norole:{name:'Lorena Díaz',email:'lorena.d@ejemplo.org',ctx:[],label:'Cuenta sin rol asignado'},
+ deact:{name:'Iván Mora',email:'ivan.m@ejemplo.org',ctx:['mie'],label:'Cuenta desactivada'},
+ unknown:{name:'Desconocido',email:'',ctx:[],label:'Cuenta sin invitación'}};
+const COLORS=['#5B3FE0','#B0165F','#086363','#8A5200','#1D6F42','#9B3FB0','#2F5FB0','#A8431C'];
+function colorOf(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return COLORS[h%COLORS.length]}
+function ini(s){const w=s.replace(/[·]/g,' ').split(/\s+/).filter(Boolean);return ((w[0]||'')[0]+((w[1]||'')[0]||'')).toUpperCase()}
+function av(name,s){return '<span class="av" style="--s:'+(s||40)+'px;background:'+colorOf(name)+'" aria-hidden="true">'+esc(ini(name))+'</span>'}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const mkTables=()=>[
+ {n:'Mesa Luz 01',org:'Fundación Luz',used:6,pend:1,max:9,pais:'República Dominicana'},
+ {n:'Mesa Luz 04',org:'Fundación Luz',used:4,pend:0,max:9,pais:'República Dominicana'},
+ {n:'Mesa Esperanza 03',org:'Colegio Horizonte',used:7,pend:1,max:9,pais:'Colombia'},
+ {n:'Mesa Horizonte 02',org:'Colegio Horizonte',used:9,pend:0,max:9,pais:'Colombia'},
+ {n:'Mesa Andina 05',org:'Empresa Andina',used:3,pend:0,max:9,pais:'Guatemala'}];
+const ORGS=['Fundación Luz','Colegio Horizonte','Empresa Andina'];
+const CODES={
+ MESA42:{st:'pendiente',inviter:'Luis Paredes',irole:'Facilitador',org:'Colegio Horizonte',table:'Mesa Esperanza 03',role:'Miembro',first:'Valeria',last:'Cordero',cargo:'Docente',email:'valeria.c@ejemplo.com',cc:'+57',tel:'300 555 0148',left:'5 días'},
+ COORD7:{st:'pendiente',inviter:'Marta Gil',irole:'Administradora',org:'Fundación Luz',table:'',role:'Coordinador',first:'Esteban',last:'Ruiz',cargo:'Director de formación',email:'esteban.r@ejemplo.com',cc:'+1 809',tel:'555 0112',left:'3 días'},
+ VENCE3:{st:'vencida',inviter:'Luis Paredes',irole:'Facilitador',org:'Colegio Horizonte',table:'Mesa Esperanza 03',role:'Miembro',first:'Rosa',last:'Marte',cargo:'',email:'rosa.m@ejemplo.com',cc:'+1 809',tel:'555 0177',left:''},
+ USADO9:{st:'aceptada',inviter:'Luis Paredes',irole:'Facilitador',org:'Colegio Horizonte',table:'Mesa Esperanza 03',role:'Miembro',first:'Sofía',last:'Mendoza',cargo:'',email:'sofia.m@ejemplo.com',cc:'+57',tel:'300 555 0190',left:''},
+ REVOC1:{st:'revocada',inviter:'Ana María Soto',irole:'Coordinadora',org:'Empresa Andina',table:'Mesa Andina 05',role:'Miembro',first:'Tomás',last:'Quispe',cargo:'',email:'tomas.q@ejemplo.com',cc:'+502',tel:'5555 0134',left:''},
+ LLENA9:{st:'pendiente',inviter:'Luis Paredes',irole:'Facilitador',org:'Colegio Horizonte',table:'Mesa Horizonte 02',role:'Miembro',first:'Diego',last:'Alvarado',cargo:'',email:'diego.a@ejemplo.com',cc:'+57',tel:'300 555 0166',left:'6 días'}};
+const mkInvites=()=>[
+ ['Valeria','Cordero','Miembro','Mesa Esperanza 03','Colegio Horizonte','pendiente','hace 1 día','vence en 5 días','MESA42','valeria.c@ejemplo.com'],
+ ['Esteban','Ruiz','Coordinador','Fundación Luz','Fundación Luz','pendiente','hace 3 días','vence en 3 días','COORD7','esteban.r@ejemplo.com'],
+ ['Lucía','Barrios','Miembro','Mesa Luz 01','Fundación Luz','pendiente','hace 6 días','vence hoy','LUCIA8','lucia.b@ejemplo.com'],
+ ['Camila','Ortiz','Miembro','Mesa Luz 01','Fundación Luz','aceptada','hace 9 días','aceptó el 12 oct','CAMIL5','camila.o@ejemplo.com'],
+ ['Julián','Peña','Facilitador','Mesa Luz 04','Fundación Luz','aceptada','hace 12 días','aceptó el 8 oct','JULIA3','julian.p@ejemplo.com'],
+ ['Rosa','Marte','Miembro','Mesa Luz 01','Fundación Luz','vencida','hace 16 días','venció el 20 oct','VENCE3','rosa.m@ejemplo.com'],
+ ['Andrés','Cuevas','Miembro','Mesa Luz 04','Fundación Luz','pendiente','hace 2 días','vence en 4 días','ANDRE4','andres.c@ejemplo.com'],
+ ['Noemí','Salas','Miembro','Mesa Luz 01','Fundación Luz','aceptada','hace 20 días','aceptó el 30 sep','NOEMI2','noemi.s@ejemplo.com'],
+ ['Tomás','Quispe','Miembro','Mesa Andina 05','Empresa Andina','revocada','hace 8 días','revocada por Ana','REVOC1','tomas.q@ejemplo.com'],
+ ['Diego','Alvarado','Facilitador','Mesa Horizonte 02','Colegio Horizonte','vencida','hace 14 días','venció el 18 oct','DIEGO6','diego.a@ejemplo.com'],
+ ['Sofía','Mendoza','Miembro','Mesa Esperanza 03','Colegio Horizonte','aceptada','hace 18 días','aceptó el 10 oct','USADO9','sofia.m@ejemplo.com']
+].map((r,i)=>({id:i+1,first:r[0],last:r[1],role:r[2],scope:r[3],org:r[4],st:r[5],sent:r[6],note:r[7],code:r[8],email:r[9],cc:'+1 809',tel:'555 01'+(10+i)}));
+const ST={pendiente:{c:'p-pend',i:'clock',t:'Pendiente'},aceptada:{c:'p-ok',i:'check',t:'Aceptada'},vencida:{c:'p-off',i:'alert',t:'Vencida'},revocada:{c:'p-err',i:'ban',t:'Revocada'}};
+function pill(k){const s=ST[k];return '<span class="pill '+s.c+'">'+ic(s.i,14)+s.t+'</span>'}
+const CAN={Administrador:['Miembro','Facilitador','Coordinador'],Coordinador:['Miembro','Facilitador','Coordinador'],Facilitador:['Miembro'],Miembro:[]};
+const ROLEDESC={Miembro:'Responde en una mesa',Facilitador:'Dirige una mesa y responde como participante',Coordinador:'Crea mesas y facilitadores en su organización'};
+const CCS=[['+1 809','República Dominicana'],['+57','Colombia'],['+502','Guatemala']];
+/* ============ state ============ */
+const R={vp:'p',theme:'auto',online:true,outcome:'ok',persona:'ana'};
+let S=null,TM=[],toastT=null;
+function fresh(){return {screen:'gate',tab:'home',ident:null,user:null,base:[],extra:[],ctxId:null,inv:null,codeVal:'',codeErr:'',attempts:0,gateMsg:null,result:null,cam:'ask',
+ prof:null,profSub:false,apple:false,iv:null,ivSub:false,last:null,flt:'todas',q:'',sel:[],sheet:null,busy:null,toast:null,listLoad:false,unsynced:0,
+ tables:mkTables(),invites:mkInvites(),hide:false}}
+function later(ms,fn){const t=setTimeout(fn,ms);TM.push(t);return t}
+function clearTM(){TM.forEach(clearTimeout);TM=[];clearTimeout(toastT)}
+function toast(m){S.toast=m;clearTimeout(toastT);toastT=setTimeout(()=>{S.toast=null;render()},3200);render()}
+function ctxs(){return S.base.map(i=>CTX[i]).concat(S.extra)}
+function cur(){return ctxs().find(c=>c.id===S.ctxId)||ctxs()[0]||null}
+function can(){const c=cur();return c?CAN[c.role]:[]}
+const NETSCR=['gate','code','qr','preview','profile'];
+const $=id=>document.getElementById(id);
+
+/* ============ views ============ */
+const MARK='<span class="mark" aria-hidden="true">'+ic('table',22)+'</span>';
+function brandLock(){return '<div class="lock mobonly">'+MARK+'<div class="wm">Gold Roundtables<small>Mesas de valores</small></div></div>'}
+function msg(k,ico,t,sm){return '<div class="msg m-'+k+'" role="'+(k==='err'?'alert':'status')+'">'+ic(ico,18)+'<div><b>'+t+'</b>'+(sm?'<small>'+sm+'</small>':'')+'</div></div>'}
+function seats(tb,mode){ // mode: 'join' marks me; 'inv' shows pending
+ let h='';const solid=tb.used-tb.pend;
+ for(let i=0;i<tb.max;i++){
+  if(i<solid)h+='<span class="seat'+(tb.used>=tb.max&&mode==='inv'?' full':'')+'" title="'+(i===0?'Facilitador':'Integrante')+'">'+(i===0?ic('crown',15):'')+'</span>';
+  else if(mode==='join'&&i===solid)h+='<span class="seat me" title="Tu lugar">'+ic('user',15)+'</span>';
+  else if(i<tb.used)h+='<span class="seat pe" title="Invitación pendiente"></span>';
+  else if(mode==='inv'&&i===tb.used)h+='<span class="seat em" title="Lugar libre"></span>';
+  else h+='<span class="seat em" title="Lugar libre"></span>'}
+ return '<div class="seatrow" role="img" aria-label="'+tb.used+' de '+tb.max+' lugares ocupados, el facilitador cuenta">'+h+'</div>'+
+ '<div class="legend"><span><i></i>Integrante</span><span><i class="pe"></i>Invitado</span>'+(mode==='join'?'<span><i class="me"></i>Tú</span>':'')+'<span><i class="em"></i>Libre</span></div>'}
+function steps(n){const L=['Código','Confirmar','Perfil'];return '<div class="steps" role="img" aria-label="Paso '+n+' de 3: '+L[n-1]+'">'+L.map((_,i)=>'<i class="'+(i+1<n?'on':i+1===n?'cur':'')+'"></i>').join('')+'<span>'+n+'/3 · '+L[n-1]+'</span></div>'}
+function flow(inner,o){o=o||{};
+ return '<div class="flow"><aside class="brandpane"><div class="lock" style="margin:0">'+MARK+'<div class="wm">Gold Roundtables<small>Mesas de valores</small></div></div><div><h2>Una sola puerta para <em>todas</em> tus mesas.</h2><p>Entra con Google, Apple o Facebook. Si te invitaron, usa tu código o escanea el QR y confirma a qué te unes.</p></div><div class="legend" style="margin:0"><span>Iglesia Casa del Altísimo</span><span>·</span><span>Organizaciones y mesas</span></div></aside>'+
+ '<section class="pane"><div class="inner">'+(o.back?'<div class="fbar"><button class="ibtn" data-act="'+o.back+'" aria-label="Volver">'+ic('back',20)+'</button><span class="t">'+(o.title||'')+'</span></div>':'')+(o.step?steps(o.step):'')+inner+'</div></section></div>'}
+function provBtns(prefix,dis){return ['google','apple','facebook'].map(k=>'<button class="prov '+PROVS[k].cls+'" data-act="signin" data-p="'+k+'"'+(dis?' disabled':'')+'>'+PROVS[k].svg+'<span>'+prefix+' '+PROVS[k].n+'</span></button>').join('')}
+
+function vGate(){
+ return flow(brandLock()+'<h1 class="h1">Entra a tu mesa</h1><p class="sub">Usa la cuenta que ya tienes. Sin contraseñas nuevas.</p>'+
+ (S.gateMsg?msg('warn','info',S.gateMsg.t,S.gateMsg.s):'')+
+ '<div style="margin-top:14px">'+provBtns('Continuar con')+'</div><div class="or">¿Te invitaron?</div>'+
+ '<button class="lnk" data-act="toCode">'+ic('list',20)+'Tengo un código de invitación</button><button class="lnk" data-act="toQr">'+ic('qr',20)+'Escanear QR</button>'+
+ '<p class="fine">Solo Google, Apple o Facebook. No se usa SMS ni teléfono para entrar.</p>')}
+
+function codeCells(){const v=S.codeVal;let h='';for(let i=0;i<6;i++)h+='<span class="cell'+(i===v.length&&v.length<6?' act':'')+(S.codeErr&&v.length===6?' bad':'')+'">'+esc(v[i]||'')+'</span>';return h}
+function vCode(){
+ const dis=S.attempts>=5;
+ return flow('<h1 class="h1">Escribe tu código</h1><p class="sub">Son 6 caracteres. Te lo envió quien te invitó, por WhatsApp o en persona.</p>'+
+ '<form data-form="code"><div class="codew"><input id="codeIn" class="codein" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Código de invitación, 6 caracteres" aria-describedby="codeHelp" value="'+esc(S.codeVal)+'"'+(dis?' disabled':'')+'><div class="cells" id="cells">'+codeCells()+'</div></div>'+
+ '<div id="codeHelp" aria-live="polite">'+(S.codeErr?'<div class="ferr" role="alert">'+ic('alert',16)+S.codeErr+'</div>':'<p class="fhint" style="text-align:center">Sin distinguir mayúsculas. Puedes pegarlo.</p>')+'</div>'+
+ (dis?msg('err','lock','Demasiados intentos','Espera 60 segundos o escanea el QR.'):'')+
+ '<button class="btn" style="margin-top:16px" type="submit"'+(dis||!R.online?' aria-disabled="true"':'')+'>Continuar</button></form>'+
+ '<button class="lnk" data-act="toQr">'+ic('qr',20)+'Prefiero escanear el QR</button>'+
+ '<div style="margin-top:18px"><div class="kick">Códigos de prueba (prototipo)</div><div class="chipsrow">'+Object.keys(CODES).map(k=>'<button type="button" class="chip mono" data-act="fillcode" data-c="'+k+'">'+k+'</button>').join('')+'<button type="button" class="chip mono" data-act="fillcode" data-c="MESA4Z">MESA4Z</button></div></div>',{back:'toGate',title:'Código de invitación',step:1})}
+
+function vQr(){
+ let body;
+ if(S.cam==='denied')body='<div class="cam" style="background:var(--surf);color:var(--ink);border:2px dashed var(--bd)"><div style="padding:18px;text-align:center">'+ic('camoff',40)+'<h3 style="margin-top:8px;font-size:18px">No podemos usar la cámara</h3><p class="fhint">El permiso está desactivado. Actívalo en Ajustes del teléfono o escribe el código.</p></div></div><button class="btn" style="margin-top:14px" data-act="toCode">Escribir el código</button><button class="lnk" data-act="camask">'+ic('refresh',18)+'Volver a pedir permiso</button>';
+ else body='<div class="cam" aria-label="Vista de cámara simulada"><span class="cr tl"></span><span class="cr tr"></span><span class="cr bl"></span><span class="cr br"></span>'+(S.cam==='on'?'<span class="ln"></span>':'')+'<span class="txt">'+(S.cam==='on'?'Apunta al QR de tu invitación':'Esperando permiso…')+'</span></div>'+
+ '<div class="card" style="margin-top:12px"><div class="kick">Prototipo · simular lectura</div><div class="shgrid"><button class="lnk" data-act="qrok">'+ic('check',18)+'QR válido</button><button class="lnk" data-act="qrbad">'+ic('x',18)+'QR de otra app</button></div></div><button class="lnk" data-act="toCode">'+ic('list',20)+'Escribir el código</button>';
+ return flow('<h1 class="h1">Escanea el QR</h1><p class="sub">Quien te invitó puede mostrarte el QR en su teléfono.</p>'+body,{back:'toGate',title:'Escanear QR',step:1})}
+
+function vPreview(){
+ const v=S.inv,tb=v.table?S.tables.find(t=>t.n===v.table):null;
+ const act=S.ident?'<button class="btn" style="margin-top:16px" data-act="join">Unirme como '+v.role+'</button><p class="fhint" style="text-align:center">Sesión iniciada con '+PROVS[S.ident.provider].n+'</p>':
+  '<div class="kick" style="margin-top:16px">Confirma con tu cuenta · se vincula a esta invitación</div>'+provBtns('Unirme con');
+ return flow('<h1 class="h1">Esto es a lo que te unes</h1><p class="sub">Revisa los datos antes de vincular tu cuenta.</p>'+
+ '<div class="pv"><div class="who">'+av(v.inviter,48)+'<div><div class="kick">Te invitó</div><b style="font-size:17px">'+esc(v.inviter)+'</b> <span class="fhint">· '+v.irole+'</span></div></div>'+
+ '<dl><dt>Organización</dt><dd>'+esc(v.org)+'</dd>'+(v.table?'<dt>Mesa</dt><dd>'+esc(v.table)+'</dd>':'')+'<dt>Tu rol</dt><dd><span class="pill p-acc">'+ic('user',14)+v.role+'</span></dd><dt>Invitada/o</dt><dd>'+esc(v.first+' '+v.last)+'</dd><dt>Vence en</dt><dd>'+v.left+'</dd></dl>'+
+ (tb?'<div style="margin-top:14px">'+seats(tb,'join')+'<p class="fhint">Mesa de 3 a 9 personas; el facilitador cuenta como un lugar.</p></div>':'')+'</div>'+
+ (!R.online?msg('warn','wifioff','Necesitas internet para unirte'):'')+act,{back:'toCode',title:'Vista previa',step:2})}
+
+const RES={
+ expired:{k:'amber',i:'clock',t:'Esta invitación venció',b:v=>'Las invitaciones duran 7 días. Pídele a <b>'+esc(v.inviter)+'</b> que te envíe una nueva.',a:[['Probar otro código','toCode',''],['Volver a la puerta','toGate','ghost']]},
+ used:{k:'sky',i:'check',t:'Esta invitación ya se usó',b:v=>'Otra cuenta ya aceptó este código. Si eres tú, inicia sesión con el mismo proveedor que usaste.',a:[['Iniciar sesión','toGate',''],['Probar otro código','toCode','sec']]},
+ revoked:{k:'err',i:'ban',t:'Esta invitación fue revocada',b:v=>'<b>'+esc(v.inviter)+'</b> la canceló. Si crees que es un error, habla con esa persona.',a:[['Probar otro código','toCode','sec'],['Volver a la puerta','toGate','ghost']]},
+ full:{k:'amber',i:'users',t:'La mesa ya está llena',b:v=>esc(v.table)+' tiene 9 de 9 lugares (el facilitador cuenta). Pídele a '+esc(v.inviter)+' que libere un lugar.',a:[['Volver a la puerta','toGate','']]},
+ linked:{k:'err',i:'link',t:'Esa cuenta ya está vinculada a otro miembro',b:()=>'Tu cuenta de este proveedor pertenece a otra persona en la plataforma. Usa otra cuenta o pide ayuda a quien te invitó.',a:[['Usar otra cuenta','toPreview',''],['Pedir ayuda por WhatsApp','help','sec']]},
+ qrbad:{k:'amber',i:'qr',t:'Ese QR no es una invitación',b:()=>'Escaneaste un código que no es de Gold Roundtables. Intenta de nuevo o escribe el código de 6 caracteres.',a:[['Escanear otra vez','toQr',''],['Escribir el código','toCode','sec']]},
+ norole:{k:'sky',i:'user',t:'Todavía no tienes un rol asignado',b:()=>'Tu cuenta existe, pero nadie te ha asignado a una organización o mesa. Cuando ocurra, te avisaremos por correo.',a:[['Tengo un código de invitación','toCode',''],['Cerrar sesión','signoutnow','sec']]},
+ deact:{k:'err',i:'lock',t:'Tu cuenta está desactivada',b:()=>'No puedes entrar por ahora. Habla con el coordinador de tu organización o con Casa del Altísimo.',a:[['Contactar soporte','help',''],['Cerrar sesión','signoutnow','ghost']]},
+ unknown:{k:'amber',i:'mail',t:'No encontramos tu cuenta',b:()=>'Entraste, pero esta cuenta no está registrada ni tiene invitación. Las cuentas se crean cuando alguien te invita.',a:[['Tengo un código de invitación','toCode',''],['Escanear QR','toQr','sec'],['Cerrar sesión','signoutnow','ghost']]},
+ offline:{k:'off',i:'wifioff',t:'Necesitas internet para entrar',b:()=>'El primer inicio de sesión en este teléfono requiere conexión. Después, tu sesión de mesa sigue funcionando sin internet.',a:[['Reintentar','retry',''],['Volver','toGate','ghost']]}};
+function vResult(){
+ const r=RES[S.result.k],c='var(--'+r.k+')';
+ return flow('<div class="res"><div class="big-ic" style="--c:'+c+'">'+ic(r.i,38)+'</div><h1 class="h1">'+r.t+'</h1><p class="sub">'+r.b(S.inv||{})+'</p></div><div style="margin-top:22px">'+r.a.map(a=>'<button class="btn '+a[2]+'" style="margin-top:8px" data-act="'+a[1]+'">'+a[0]+'</button>').join('')+'</div>')}
+
+function prof(){return S.prof}
+function perr(){const p=S.prof,e={};if(!p.first.trim())e.first='Escribe tu nombre';if(!p.last.trim())e.last='Escribe tu apellido';
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(p.email.trim()))e.email='Revisa el correo (ejemplo: nombre@correo.com)';
+ if(p.tel.replace(/\D/g,'').length<7)e.tel='Escribe un teléfono de al menos 7 dígitos';return e}
+function field(id,label,val,o){o=o||{};const e=o.err;return '<div class="fld"><label for="'+id+'">'+label+(o.opt?' <i>(opcional)</i>':'')+'</label><input class="inp" id="'+id+'" value="'+esc(val)+'" '+(o.type?'type="'+o.type+'" ':'')+'autocomplete="off"'+(e?' aria-invalid="true" aria-describedby="'+id+'e"':'')+(o.hint?' aria-describedby="'+id+'h"':'')+'>'+(e?'<div class="ferr" id="'+id+'e" role="alert">'+ic('alert',15)+e+'</div>':'')+(o.hint?'<div class="fhint" id="'+id+'h">'+o.hint+'</div>':'')+'</div>'}
+function ccsel(id,v){return '<select class="inp" id="'+id+'" aria-label="Código de país">'+CCS.map(c=>'<option value="'+c[0]+'"'+(c[0]===v?' selected':'')+'>'+c[0]+' '+c[1].slice(0,3)+'.</option>').join('')+'</select>'}
+function vProfile(){
+ const p=S.prof,e=S.profSub?perr():{},pv=PROVS[S.ident.provider],n=Object.keys(e).length;
+ return flow('<h1 class="h1">Confirma tu perfil</h1><p class="sub">Tu facilitador ya registró estos datos. Corrígelos si hace falta.</p>'+
+ '<div class="card" style="display:flex;gap:10px;align-items:center;margin-top:12px"><span style="width:34px;height:34px;display:grid;place-items:center;background:'+(S.ident.provider==='apple'?'var(--ink);color:var(--bg)':S.ident.provider==='google'?'#fff':'#1763d6')+';border-radius:10px">'+pv.svg+'</span><div style="min-width:0"><div class="kick">Cuenta vinculada</div><b>'+pv.n+'</b> <span class="fhint">'+esc(S.ident.mail)+'</span></div>'+pill('aceptada').replace('Aceptada','Vinculada')+'</div>'+
+ (S.apple?msg('info','shield','Ocultaste tu correo con Apple','Para avisos usaremos el correo que registró tu facilitador. Puedes cambiarlo aquí.'):'')+
+ (n?msg('err','alert','Revisa '+n+(n>1?' campos':' campo'),'Corrige los marcados en rojo para continuar.'):'')+
+ '<form data-form="prof" novalidate><div class="g2">'+field('f_first','Nombre',p.first,{err:e.first})+field('f_last','Apellido',p.last,{err:e.last})+'</div>'+
+ field('f_cargo','Cargo',p.cargo,{opt:1})+field('f_email','Correo de contacto',p.email,{err:e.email,type:'email'})+
+ '<div class="fld"><label for="f_tel">Teléfono</label><div class="phrow">'+ccsel('f_cc',p.cc)+'<input class="inp" id="f_tel" inputmode="tel" value="'+esc(p.tel)+'"'+(e.tel?' aria-invalid="true" aria-describedby="f_tele"':'')+'></div>'+(e.tel?'<div class="ferr" id="f_tele" role="alert">'+ic('alert',15)+e.tel+'</div>':'')+'<div class="fhint">'+ic('info',13)+' Sin verificar: solo es un dato de contacto, no sirve para entrar.</div></div>'+
+ '<button class="btn" style="margin-top:18px" type="submit">Confirmar y entrar</button></form>',{back:'toPreview',title:'Tu perfil',step:3})}
+
+function vWelcome(){const v=S.inv,c=cur();
+ return flow('<div class="res"><div class="big-ic" style="--c:var(--lime)">'+ic('check',40)+'</div><h1 class="h1">Listo, '+esc(S.prof.first)+'</h1><p class="sub">Ya tienes lugar en '+esc(v.table||v.org)+' como '+v.role+'.</p></div>'+
+ '<div class="card"><div class="check">'+ic('check',18)+'Cuenta de '+PROVS[S.ident.provider].n+' vinculada</div><div class="check">'+ic('check',18)+'Perfil confirmado</div><div class="check">'+ic('check',18)+'Contexto: '+c.role+' · '+esc(c.scope)+'</div></div>'+
+ '<button class="btn" style="margin-top:20px" data-act="enter">Entrar a mi mesa</button>')}
+
+function vPicker(){
+ return flow('<div class="pickh"><div class="kick">Primer acceso en este teléfono</div><h1 class="h1">¿Con qué rol entras hoy?</h1><p class="sub">Tienes varios roles, '+esc(S.user.name.split(' ')[0])+'. Recordaremos tu elección y podrás cambiar desde el chip de arriba, en cualquier pantalla.</p></div>'+
+ ctxs().map(c=>'<button class="pk" data-act="pick" data-id="'+c.id+'">'+av(c.scope,52)+'<span style="flex:1;min-width:0"><small>'+c.role+'</small><b>'+esc(c.scope)+'</b><em>'+c.desc+'</em></span>'+ic('chev',20).replace('<svg','<svg style="transform:rotate(-90deg)"')+'</button>').join('')+
+ '<button class="btn ghost" style="margin-top:12px" data-act="signoutnow">'+ic('logout',18)+'No soy '+esc(S.user.name.split(' ')[0])+'</button>')}
+
+/* ----- shell ----- */
+function chip(){const c=cur(),many=ctxs().length>1;
+ return '<button class="ctxchip'+(many?'':' static')+'" '+(many?'data-act="ctx" aria-haspopup="dialog"':'disabled')+' aria-label="Contexto actual: '+c.role+', '+esc(c.scope)+(many?'. Cambiar':'')+'">'+av(c.scope,38)+'<span class="tx"><small>'+c.role+'</small><b>'+esc(c.scope)+'</b></span>'+(many?ic('chev',16):'')+'</button>'}
+function tabs(){const t=[['home','Inicio','home']];if(can().length)t.push(['invite','Invitar','plus'],['invites','Invitaciones','list']);t.push(['account','Cuenta','user']);return t}
+function shell(content){
+ const tb=tabs();
+ return '<div class="shell"><div class="top">'+chip()+'<span class="sp"></span><button class="ibtn" style="border-radius:50%" data-act="nav" data-t="account" aria-label="Mi cuenta">'+av(S.user.name,36)+'</button></div>'+
+ '<div class="mainw"><nav class="side" aria-label="Principal">'+tb.map(t=>'<button data-act="nav" data-t="'+t[0]+'"'+((S.tab==='share'?'invite':S.tab)===t[0]?' aria-current="page"':'')+'>'+ic(t[2],20)+t[1]+'</button>').join('')+'<span class="grow"></span><button data-act="signout">'+ic('logout',20)+'Cerrar sesión</button></nav>'+
+ '<main class="main" id="main"><div class="in">'+content+'</div></main></div>'+
+ '<nav class="bnav" aria-label="Principal">'+tb.map(t=>'<button data-act="nav" data-t="'+t[0]+'"'+((S.tab==='share'?'invite':S.tab)===t[0]?' aria-current="page"':'')+'>'+ic(t[2],22)+t[1]+'</button>').join('')+'</nav></div>'}
+function denied(){return '<div class="res" style="margin-top:20px"><div class="big-ic" style="--c:var(--err)">'+ic('lock',38)+'</div><h1 class="h1">No tienes permiso para esto</h1><p class="sub">Como '+cur().role+' no puedes invitar personas. Pídele a tu facilitador o coordinador que lo haga.</p><button class="btn" style="margin-top:18px" data-act="nav" data-t="home">Volver al inicio</button></div>'}
+function offState(what){return '<div class="empty"><div class="big-ic" style="--c:var(--off)">'+ic('wifioff',36)+'</div><h2 style="font-size:20px;font-weight:900">'+what+' necesita conexión</h2><p class="sub">Invitaciones y administración solo funcionan en línea. Tu sesión de mesa no se ve afectada.</p><button class="btn sm" style="margin-top:14px" data-act="retry">'+ic('refresh',16)+'Reintentar</button></div>'}
+
+function vHome(){
+ const c=cur(),first=S.user.name.split(' ')[0],inv=S.invites,pend=inv.filter(i=>i.st==='pendiente').length;
+ let b='<div class="hrow"><div><div class="kick">'+c.role+' · '+esc(c.scope)+'</div><h1 class="pt">Hola, '+esc(first)+'</h1></div></div>';
+ if(S.unsynced)b+=msg('warn','sync','1 sesión sin sincronizar en este teléfono','Mesa Esperanza 03 · 3 respuestas guardadas. Se enviarán al conectarte.');
+ if(c.role==='Miembro'){const t=S.tables.find(x=>x.n===c.table);
+  b+='<div class="card"><div class="kick">Tu mesa</div><h2 style="font-size:22px;font-weight:900;margin:2px 0 10px">'+esc(c.table)+'</h2>'+seats(t,'x')+'<p class="fhint" style="margin-top:10px">Próxima sesión: jueves · 7:00 pm · 30 min</p></div>'+msg('info','info','¿Quieres invitar a alguien?','Pídeselo a tu facilitador. Solo él agrega integrantes a la mesa.')}
+ else{
+  b+='<div class="stat"><div><b>'+pend+'</b><small>Pendientes</small></div><div><b>'+visible().filter(i=>i.st==='aceptada').length+'</b><small>Aceptadas</small></div><div><b>'+visible().filter(i=>i.st==='vencida').length+'</b><small>Vencidas</small></div></div>';
+  if(c.role==='Facilitador'){const t=S.tables.find(x=>x.n===c.table);b+='<div class="card"><div class="kick">'+esc(c.table)+'</div><div style="margin:8px 0">'+seats(t,'inv')+'</div><b>'+(t.used>=t.max?'Mesa llena · 9 de 9':'Quedan '+(t.max-t.used)+' lugares')+'</b></div>'}
+  b+='<div style="display:grid;gap:8px;margin-top:14px;max-width:420px"><button class="btn" data-act="nav" data-t="invite">'+ic('plus',20)+'Invitar a alguien</button><button class="btn sec" data-act="nav" data-t="invites">'+ic('list',18)+'Ver invitaciones</button></div>'+msg('info','wifioff','Invitaciones y administración requieren internet','Tu sesión de mesa sigue funcionando sin conexión.')}
+ return b}
+
+function initIv(){const c=cur();let org=c.org,role='Miembro';if(c.role==='Administrador')org='Fundación Luz';
+ const t=c.table||(S.tables.find(x=>x.org===org)||{}).n;S.iv={first:'',last:'',cargo:'',email:'',cc:'+1 809',tel:'',role,org,table:t};S.ivSub=false}
+function ivErr(){const v=S.iv,e={},c=cur();if(!v.first.trim())e.first='Escribe el nombre';if(!v.last.trim())e.last='Escribe el apellido';
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v.email.trim()))e.email='Escribe un correo válido';
+ else if(S.invites.some(i=>i.email.toLowerCase()===v.email.trim().toLowerCase()&&i.st==='pendiente'))e.email='Ya hay una invitación pendiente para este correo. Reenvíala desde Invitaciones.';
+ if(v.tel.replace(/\D/g,'').length<7)e.tel='Escribe un teléfono de al menos 7 dígitos';
+ if(!can().includes(v.role))e.role='Tu rol no puede invitar a '+v.role+'s';return e}
+function vInvite(){
+ const c=cur();if(!can().length)return denied();
+ const v=S.iv,e=S.ivSub?ivErr():{},needT=v.role!=='Coordinador',tb=needT?S.tables.find(t=>t.n===v.table):null,full=tb&&tb.used>=tb.max;
+ const orgs=c.role==='Administrador'?ORGS:[c.org],tl=S.tables.filter(t=>t.org===v.org);
+ const roles=['Miembro','Facilitador','Coordinador'].map(r=>{const ok=can().includes(r);return '<button type="button" class="radio" role="radio" aria-checked="'+(v.role===r)+'" '+(ok?'data-act="role" data-r="'+r+'"':'aria-disabled="true" data-act="rolelock" data-r="'+r+'"')+'><span class="dot">'+(v.role===r?ic('check',12).replace('currentColor','#fff'):'')+'</span><span><b>'+r+(ok?'':' '+ic('lock',14))+'</b><small>'+(ok?ROLEDESC[r]:'Solo Coordinador o Administrador')+'</small></span></button>'}).join('');
+ const side='<aside>'+(needT&&tb?'<div class="card"><div class="kick">'+esc(tb.n)+'</div><div style="margin:10px 0 4px">'+seats(tb,'inv')+'</div><b>'+(full?'Mesa llena · '+tb.used+' de '+tb.max:tb.used+' de '+tb.max+' lugares · quedan '+(tb.max-tb.used))+'</b><p class="fhint">Las mesas tienen de 3 a 9 personas; el facilitador cuenta.</p></div>'+(full?msg('err','users','No hay lugares libres','Elige otra mesa o revoca una invitación pendiente para liberar un lugar.'):''):'<div class="card"><div class="kick">Alcance</div><b>Toda la organización '+esc(v.org)+'</b><p class="fhint">Un coordinador no ocupa lugar en una mesa.</p></div>')+
+  '<div class="card"><div class="kick">Qué recibirá</div><p class="fhint" style="margin-top:6px">Un enlace, un código de 6 caracteres y un QR. Al usarlos, entra con Google, Apple o Facebook y esa cuenta queda vinculada. Vence en 7 días.</p></div></aside>';
+ const form='<form data-form="inv" novalidate><div class="g2">'+field('i_first','Nombre',v.first,{err:e.first})+field('i_last','Apellido',v.last,{err:e.last})+'</div>'+field('i_cargo','Cargo',v.cargo,{opt:1})+field('i_email','Correo',v.email,{err:e.email,type:'email'})+
+ '<div class="fld"><label for="i_tel">Teléfono</label><div class="phrow">'+ccsel('i_cc',v.cc)+'<input class="inp" id="i_tel" inputmode="tel" value="'+esc(v.tel)+'"'+(e.tel?' aria-invalid="true" aria-describedby="i_tele"':'')+'></div>'+(e.tel?'<div class="ferr" id="i_tele" role="alert">'+ic('alert',15)+e.tel+'</div>':'')+'<div class="fhint">Sin verificar: se guarda solo como dato de contacto.</div></div>'+
+ '<div class="fld" role="radiogroup" aria-label="Rol"><span class="fl">Rol</span>'+roles+(e.role?'<div class="ferr" role="alert">'+ic('alert',15)+e.role+'</div>':'')+'</div>'+
+ (c.role==='Administrador'?'<div class="fld"><label for="i_org">Organización</label><select class="inp" id="i_org">'+orgs.map(o=>'<option'+(o===v.org?' selected':'')+'>'+o+'</option>').join('')+'</select></div>':'')+
+ (needT&&c.role!=='Facilitador'?'<div class="fld"><label for="i_table">Mesa</label><select class="inp" id="i_table">'+tl.map(t=>'<option value="'+t.n+'"'+(t.n===v.table?' selected':'')+'>'+t.n+' · '+t.used+'/'+t.max+'</option>').join('')+'</select></div>':'')+
+ (needT&&c.role==='Facilitador'?'<div class="fld"><span class="fl">Mesa</span><div class="inp" style="display:flex;align-items:center;gap:8px;background:var(--surf2)">'+ic('lock',16)+esc(v.table)+'</div><div class="fhint">Como facilitador solo agregas integrantes a tu mesa.</div></div>':'')+
+ (!R.online?msg('warn','wifioff','Sin conexión','No puedes crear invitaciones hasta volver a conectarte.'):'')+
+ '<div class="dockb" style="padding:16px 0 0"><button class="btn" type="submit"'+(full||!R.online?' aria-disabled="true"':'')+'>'+ic('send',20)+'Crear invitación</button></div></form>';
+ return '<div class="hrow"><div><div class="kick">Nueva invitación</div><h1 class="pt">Registra a la persona</h1></div></div><p class="sub">Primero se registra; después se comparte el enlace, el código o el QR.</p><div class="two" style="margin-top:6px"><div>'+form+'</div>'+side+'</div>'}
+
+function qrSvg(seed,px){const N=25;let h=0;for(const ch of seed)h=(h*131+ch.charCodeAt(0))>>>0;const m=[];
+ const fin=(x,y)=>{const a=x<8&&y<8,b=x>N-9&&y<8,c=y>N-9&&x<8;if(!(a||b||c))return null;const lx=x<8?x:x-(N-7),ly=y<8?y:y-(N-7);const X=a||c?x:x-(N-7),Y=a||b?y:y-(N-7);
+  if(X<0||X>6||Y<0||Y>6)return false;return X===0||X===6||Y===0||Y===6||(X>=2&&X<=4&&Y>=2&&Y<=4)};
+ let r='';for(let y=0;y<N;y++)for(let x=0;x<N;x++){let f=fin(x,y);if(f===null){h=(h*1103515245+12345)>>>0;f=(h>>>16)%2===0}if(f)r+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>'}
+ return '<span class="qr" role="img" aria-label="Código QR de la invitación (simulado)"><svg width="'+px+'" height="'+px+'" viewBox="0 0 '+N+' '+N+'" shape-rendering="crispEdges" fill="#111">'+r+'</svg></span>'}
+function link(code){return 'https://goldroundtables.example/i/'+code}
+
+function vShare(){const i=S.last,c=i.code;
+ return '<div class="hrow"><div><div class="kick">'+ic('check',13)+' Invitación creada</div><h1 class="pt">Comparte con '+esc(i.first)+'</h1></div>'+pill(i.st)+'</div>'+
+ '<div class="two" style="margin-top:12px"><div class="card" style="text-align:center;margin-top:0">'+qrSvg(c,168)+'<div class="kick" style="margin-top:12px">Código</div><div class="codebig" aria-label="Código '+c.split('').join(' ')+'">'+c.split('').map(x=>'<span>'+x+'</span>').join('')+'</div><p class="fhint">'+i.note+' · '+esc(i.role)+' · '+esc(i.scope)+'</p></div>'+
+ '<div><div class="shgrid" style="margin-top:0"><button class="lnk" data-act="wa">'+ic('wa',20)+'WhatsApp</button><button class="lnk" data-act="copy" data-w="enlace">'+ic('link',20)+'Copiar enlace</button><button class="lnk" data-act="copy" data-w="código">'+ic('copy',20)+'Copiar código</button><button class="lnk" data-act="qrfull">'+ic('qr',20)+'Mostrar QR grande</button></div>'+
+ '<div class="card"><div class="kick">Enlace</div><p style="font-weight:700;word-break:break-all;margin-top:4px">'+link(c)+'</p></div>'+
+ '<button class="btn" style="margin-top:16px" data-act="newinv">'+ic('plus',20)+'Invitar a otra persona</button><button class="btn sec" style="margin-top:8px" data-act="nav" data-t="invites">Ver todas las invitaciones</button></div></div>'}
+
+function visible(){const c=cur();if(!c)return[];return S.invites.filter(i=>c.role==='Administrador'||(c.role==='Coordinador'&&i.org===c.org)||(c.role==='Facilitador'&&i.scope===c.table))}
+function vInvites(){
+ if(!can().length)return denied();
+ const all=visible(),cnt=k=>k==='todas'?all.length:all.filter(i=>i.st===k).length;
+ let rows=all.filter(i=>(S.flt==='todas'||i.st===S.flt)&&(!S.q||(i.first+' '+i.last+' '+i.email).toLowerCase().includes(S.q.toLowerCase())));
+ const head='<div class="hrow"><div><div class="kick">'+esc(cur().scope)+'</div><h1 class="pt">Invitaciones</h1></div><button class="btn sm" data-act="nav" data-t="invite">'+ic('plus',18)+'Invitar</button></div>';
+ if(!R.online)return head+offState('Ver invitaciones');
+ const flt='<div class="fbar2"><input class="inp" id="q" type="search" placeholder="Buscar por nombre o correo" aria-label="Buscar invitaciones" value="'+esc(S.q)+'"></div><div class="chipsrow" role="group" aria-label="Filtrar por estado">'+['todas','pendiente','aceptada','vencida','revocada'].map(k=>'<button class="chip" data-act="flt" data-k="'+k+'" aria-pressed="'+(S.flt===k)+'">'+(k==='todas'?'Todas':ST[k].t+'s'.replace('s','s'))+' <b>'+cnt(k)+'</b></button>').join('')+'</div>';
+ if(S.listLoad)return head+flt+'<div aria-busy="true" aria-label="Cargando invitaciones"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
+ if(!all.length)return head+'<div class="empty"><div class="big-ic" style="--c:var(--acc)">'+ic('mail',36)+'</div><h2 style="font-size:20px;font-weight:900">Aún no has invitado a nadie</h2><p class="sub">Registra a la primera persona y comparte su invitación.</p><button class="btn sm" style="margin-top:14px" data-act="nav" data-t="invite">'+ic('plus',18)+'Invitar a la primera persona</button></div>';
+ if(!rows.length)return head+flt+'<div class="empty"><div class="big-ic" style="--c:var(--off)">'+ic('list',34)+'</div><h2 style="font-size:19px;font-weight:900">Nada con este filtro</h2><p class="sub">No hay invitaciones '+(S.flt==='todas'?'que coincidan':ST[S.flt].t.toLowerCase()+'s')+'.</p><button class="btn sm" style="margin-top:12px" data-act="flt" data-k="todas">Ver todas</button></div>';
+ const acts=(i,sm)=>{let a='';if(i.st==='pendiente')a+='<button class="btn sec sm" data-act="share" data-id="'+i.id+'">'+ic('send',16)+'Compartir</button>';
+  if(i.st==='pendiente'||i.st==='vencida')a+='<button class="btn sec sm" data-act="resend" data-id="'+i.id+'"'+(R.online?'':' aria-disabled="true"')+'>'+ic('refresh',16)+'Reenviar</button>';
+  if(i.st==='pendiente'||i.st==='vencida')a+='<button class="btn dng sm" data-act="revoke" data-id="'+i.id+'"'+(R.online?'':' aria-disabled="true"')+'>'+ic('ban',16)+'Revocar</button>';return a||'<span class="fhint">Sin acciones</span>'};
+ const cards='<div class="cardlist">'+rows.map(i=>'<div class="icard">'+av(i.first+' '+i.last,44)+'<div class="bd"><div class="nm">'+esc(i.first+' '+i.last)+'</div><div class="mt">'+i.role+' · '+esc(i.scope)+'</div><div class="mt">'+i.sent+' · '+i.note+'</div><div style="margin-top:6px">'+pill(i.st)+'</div><div class="ac">'+acts(i)+'</div></div></div>').join('')+'</div>';
+ const allSel=rows.length&&rows.every(i=>S.sel.includes(i.id));
+ const tbl='<div class="tw">'+(S.sel.length?'<div class="bulk" role="region" aria-label="Acciones en lote"><span>'+S.sel.length+' seleccionada'+(S.sel.length>1?'s':'')+'</span><button class="btn sec sm" data-act="bulk" data-w="resend"'+(R.online?'':' aria-disabled="true"')+'>'+ic('refresh',16)+'Reenviar</button><button class="btn dng sm" data-act="bulk" data-w="revoke"'+(R.online?'':' aria-disabled="true"')+'>'+ic('ban',16)+'Revocar</button><button class="btn ghost sm" data-act="bulk" data-w="clear">Limpiar</button></div>':'')+
+ '<table class="tb"><thead><tr><th style="width:52px"><label class="cb"><input type="checkbox" id="selall" data-act="selall" aria-label="Seleccionar todas"'+(allSel?' checked':'')+'></label></th><th>Persona</th><th>Rol · Ámbito</th><th>Estado</th><th>Enviada</th><th>Detalle</th><th></th></tr></thead><tbody>'+
+ rows.map(i=>'<tr class="'+(S.sel.includes(i.id)?'sel':'')+'"><td><label class="cb"><input type="checkbox" id="sel'+i.id+'" data-act="sel" data-id="'+i.id+'" aria-label="Seleccionar '+esc(i.first+' '+i.last)+'"'+(S.sel.includes(i.id)?' checked':'')+'></label></td><td><div class="nmc">'+av(i.first+' '+i.last,34)+'<span>'+esc(i.first+' '+i.last)+'<small>'+esc(i.email)+'</small></span></div></td><td>'+i.role+'<br><small class="fhint">'+esc(i.scope)+'</small></td><td>'+pill(i.st)+'</td><td>'+i.sent+'</td><td>'+i.note+'</td><td class="act">'+acts(i)+'</td></tr>').join('')+'</tbody></table></div>';
+ return head+flt+'<div id="ann" class="sr" aria-live="polite">'+rows.length+' invitaciones</div>'+cards+tbl}
+
+function vAccount(){const u=S.user;
+ return '<div class="hrow"><h1 class="pt">Cuenta</h1></div><div class="card" style="display:flex;gap:14px;align-items:center">'+av(u.name,56)+'<div><b style="font-size:18px">'+esc(u.name)+'</b><div class="fhint">'+esc(u.email)+'</div><div style="margin-top:6px"><span class="pill p-ok">'+ic('link',14)+'Vinculada con '+PROVS[u.provider||'google'].n+'</span></div></div></div>'+
+ '<div class="card"><div class="kick">Teléfono de contacto</div><b>'+esc(u.phone||'+1 809 555 0101')+'</b> <span class="pill p-pend">'+ic('clock',13)+'Sin verificar</span></div>'+
+ '<div class="card"><div class="kick">Tus contextos</div>'+ctxs().map(c=>'<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'+av(c.scope,32)+'<span><b>'+c.role+'</b> · '+esc(c.scope)+(c.id===S.ctxId?' <span class="pill p-acc">Actual</span>':'')+'</span></div>').join('')+(ctxs().length>1?'<button class="btn sec sm" style="margin-top:12px" data-act="ctx">Cambiar contexto</button>':'')+'</div>'+
+ '<button class="btn dng" style="margin-top:16px;max-width:420px" data-act="signout">'+ic('logout',18)+'Cerrar sesión</button>'}
+
+function vShellBody(){switch(S.tab){case'home':return vHome();case'invite':return vInvite();case'share':return vShare();case'invites':return vInvites();default:return vAccount()}}
+
+function sheet(){const s=S.sheet;if(!s)return'';let b='',cls='';
+ if(s.t==='ctx'){cls=' pop';b='<div class="grab"></div><h3 id="shT">Cambiar de contexto</h3><p class="fhint">Un solo inicio de sesión, varios roles.</p>'+ctxs().map(c=>'<button class="crow" data-act="pickctx" data-id="'+c.id+'"'+(c.id===S.ctxId?' aria-current="true"':'')+'>'+av(c.scope,40)+'<span class="tx"><small>'+c.role+'</small><b>'+esc(c.scope)+'</b><em>'+esc(c.org)+'</em></span>'+(c.id===S.ctxId?ic('check',20):'')+'</button>').join('')}
+ if(s.t==='signout'){b='<div class="grab"></div><h3 id="shT">¿Cerrar sesión?</h3>'+(S.unsynced?msg('warn','sync','Este teléfono tiene datos sin sincronizar','Mesa Esperanza 03 · 3 respuestas guardadas solo aquí. Si sales sin sincronizar, se perderán.')+
+  '<button class="btn" style="margin-top:14px"'+(R.online?' data-act="syncout"':' aria-disabled="true" data-act="offnote"')+'>'+ic('sync',18)+'Sincronizar y salir</button>'+(R.online?'':'<p class="fhint">Sin conexión: conéctate para sincronizar primero.</p>')+'<button class="btn dng" style="margin-top:8px" data-act="signoutnow">Salir y perder 3 respuestas</button>':'<p class="sub">Volverás a la puerta de entrada. Tus datos ya están sincronizados.</p><button class="btn" style="margin-top:14px" data-act="signoutnow">Cerrar sesión</button>')+'<button class="btn ghost" data-act="closesheet">Cancelar</button>'}
+ if(s.t==='revoke'){const n=s.ids.length,i=S.invites.find(x=>x.id===s.ids[0]);b='<div class="grab"></div><h3 id="shT">¿Revocar '+(n>1?n+' invitaciones':'la invitación de '+esc(i.first))+'?</h3><p class="sub">El enlace, el código y el QR dejarán de funcionar. Se libera el lugar en la mesa. No se puede deshacer; puedes crear otra invitación.</p><button class="btn dng" style="margin-top:14px" data-act="dorevoke">Sí, revocar</button><button class="btn ghost" data-act="closesheet">Cancelar</button>'}
+ if(s.t==='wa'){const i=S.last;b='<div class="grab"></div><h3 id="shT">Enviar por WhatsApp</h3><p class="fhint">Vista previa del mensaje (simulado).</p><div class="bubble">Hola '+esc(i.first)+', te invito a Gold Roundtables ('+esc(i.scope)+'). Entra aquí: '+link(i.code)+' o usa el código <b>'+i.code+'</b>. Vence en 7 días.</div><button class="btn" style="margin-top:14px" data-act="wasend">'+ic('wa',20)+'Abrir WhatsApp</button><button class="btn ghost" data-act="closesheet">Cancelar</button>'}
+ if(s.t==='qrfull'){const i=S.last;b='<div class="grab"></div><h3 id="shT">QR para '+esc(i.first)+'</h3><div style="text-align:center;margin:12px 0">'+qrSvg(i.code,230)+'</div><p class="fhint" style="text-align:center">Muéstralo en persona. Se escanea desde la puerta de entrada.</p><button class="btn ghost" data-act="closesheet">Cerrar</button>'}
+ return '<div class="ov'+cls+'" data-act="ovclick"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">'+b+'</div></div>'}
+
+function offbar(){return '<div class="offline" role="status">'+ic('wifioff',18)+'<span>Sin conexión · '+(NETSCR.includes(S.screen)?'para entrar y unirte necesitas internet':'invitaciones y administración requieren internet')+'</span><button data-act="retry">Reintentar</button></div>'}
+function view(){let v;
+ switch(S.screen){case'gate':v=vGate();break;case'code':v=vCode();break;case'qr':v=vQr();break;case'preview':v=vPreview();break;case'result':v=vResult();break;case'profile':v=vProfile();break;case'welcome':v=vWelcome();break;case'picker':v=vPicker();break;default:v=shell(vShellBody())}
+ return (!R.online?offbar():'')+v}
+function render(){
+ const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd;
+ const app=$('app'),sc=app.querySelector('.main,.pane'),top=sc?sc.scrollTop:0,cls=sc&&sc.className;
+ app.innerHTML=view()+sheet()+(S.busy?'<div class="busy" role="status"><div><div class="spin"></div>'+S.busy+'</div></div>':'')+(S.screen==='qr'&&S.cam==='ask'?'<div class="osdlg" role="alertdialog" aria-modal="true" aria-labelledby="osT"><div><h3 id="osT">“Gold Roundtables” quiere acceder a la cámara</h3><p>Se usa solo para leer el QR de tu invitación.</p><div class="r"><button data-act="camno">No permitir</button><button data-act="camyes" autofocus>Permitir</button></div></div></div>':'')+(S.toast?'<div class="toast" role="status">'+ic('check',18)+esc(S.toast)+'</div>':'');
+ const ns=app.querySelector('.main,.pane');if(ns&&ns.className===cls&&S.keepScroll!==false)ns.scrollTop=top;
+ if(S.sheet){const f=app.querySelector('.sheet button');if(f&&!(app.querySelector('.sheet').contains(ae)))f.focus()}
+ else if(S.screen==='qr'&&S.cam==='ask'){const f=app.querySelector('.osdlg button:last-child');f&&f.focus()}
+ else if(id){const e=$(id);if(e){e.focus();try{e.setSelectionRange(ss,se)}catch(_){}}}
+ renderRv()}
+/* ============ logic ============ */
+function norm(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+function initProf(){const v=S.inv;S.prof={first:v.first,last:v.last,cargo:v.cargo,email:v.email,cc:v.cc,tel:v.tel};S.profSub=false}
+function mailFor(p,v){if(p==='apple'&&R.outcome==='hide')return 'xk3q9a7@privaterelay.appleid.com';return norm(v.first)+'.'+norm(v.last)+'@'+(p==='google'?'gmail.com':p==='apple'?'icloud.com':'outlook.com')}
+function busy(label,ms,fn){S.busy=label;render();later(ms,()=>{S.busy=null;fn();})}
+function afterRender(fn){setTimeout(fn,0)}
+function focusFirstInvalid(){afterRender(()=>{const e=document.querySelector('#app [aria-invalid=true]');if(e)e.focus()})}
+
+function verify(val){
+ if(!R.online){S.codeErr='Necesitas internet para comprobar el código.';return render()}
+ busy('Comprobando código…',650,()=>{
+  const c=CODES[val];
+  if(!c){S.attempts++;S.codeErr='No encontramos ese código. Revisa letras y números'+(S.attempts<5?' ('+(5-S.attempts)+' intentos restantes).':'.');return render()}
+  S.inv=Object.assign({code:val},c);S.codeErr='';
+  if(c.st==='vencida')S.result={k:'expired'};else if(c.st==='aceptada')S.result={k:'used'};else if(c.st==='revocada')S.result={k:'revoked'};
+  else{const t=S.tables.find(x=>x.n===c.table);if(t&&t.used>=t.max)S.result={k:'full'}}
+  S.screen=S.result?'result':'preview';if(S.screen==='preview')toast('Código válido');else render()})}
+
+function signIn(p){
+ S.pendProv=p;
+ if(!R.online){S.result={k:'offline'};S.screen='result';return render()}
+ const n=PROVS[p].n;
+ busy('Conectando con '+n+'…',900,()=>{
+  if(R.outcome==='cancel'){if(S.inv){return toast('Cancelaste el inicio con '+n+'. No se vinculó nada.')}S.gateMsg={t:'Cancelaste el inicio con '+n,s:'No se hizo ningún cambio. Puedes intentarlo de nuevo.'};S.screen='gate';return render()}
+  S.gateMsg=null;
+  if(S.inv){
+   if(R.outcome==='linked'){S.result={k:'linked'};S.screen='result';return render()}
+   S.ident={provider:p,mail:mailFor(p,S.inv)};S.apple=p==='apple'&&R.outcome==='hide';
+   S.user={name:S.inv.first+' '+S.inv.last,email:S.inv.email,provider:p};initProf();S.screen='profile';return render()}
+  const pe=PERSONA[R.persona];S.ident={provider:p,mail:pe.email||'cuenta@ejemplo.com'};S.user={name:pe.name,email:pe.email,provider:p};S.base=pe.ctx.slice();
+  S.apple=p==='apple'&&R.outcome==='hide';
+  if(R.persona==='unknown'){S.result={k:'unknown'};S.screen='result';return render()}
+  if(R.persona==='deact'){S.result={k:'deact'};S.screen='result';return render()}
+  if(!pe.ctx.length){S.result={k:'norole'};S.screen='result';return render()}
+  if(pe.ctx.length>1)S.screen='picker';else{S.ctxId=pe.ctx[0];S.screen='app';S.tab='home';}
+  render();if(S.screen==='app')toast('Bienvenido, '+pe.name.split(' ')[0])})}
+
+function enterApp(id,tab){S.screen='app';S.ctxId=id;S.tab=tab||'home'}
+function newCtx(v){return {id:'n1',role:v.role,scope:v.table||v.org,org:v.org,table:v.table||'',desc:'Tu nuevo lugar'}}
+function load(ms){S.listLoad=true;later(ms||700,()=>{S.listLoad=false;render()})}
+function nav(t){if(t==='invite'||t==='invites'||t==='home'||t==='account'){S.tab=t;S.sel=[];S.sheet=null;if(t==='invite')initIv();if(t==='invites'&&R.online)load();render();const m=$('main');if(m)m.scrollTop=0}}
+function resend(ids){if(!R.online)return toast('Sin conexión: no se puede reenviar.');let n=0;S.invites.forEach(i=>{if(ids.includes(i.id)&&(i.st==='pendiente'||i.st==='vencida')){i.st='pendiente';i.note='reenviada hoy · vence en 7 días';n++}});S.sel=[];toast(n?(n>1?n+' invitaciones reenviadas':'Invitación reenviada'):'Nada que reenviar')}
+
+const A={
+ toGate(){S.screen='gate';S.inv=null;S.result=null;S.codeVal='';S.codeErr='';S.ident=S.base.length?S.ident:null;render()},
+ toCode(){S.screen='code';S.result=null;S.codeVal='';S.codeErr='';render();afterRender(()=>{const e=$('codeIn');e&&e.focus()})},
+ toQr(){S.screen='qr';S.result=null;render()},
+ toPreview(){S.screen='preview';S.result=null;S.ident=null;render()},
+ fillcode(el){S.codeVal=el.dataset.c;S.codeErr='';render();verify(S.codeVal)},
+ signin(el){signIn(el.dataset.p)},
+ retry(){if(!R.online)return toast('Sigue sin conexión. Revisa tu Wi-Fi o datos.');if(S.screen==='result'&&S.result.k==='offline')return signIn(S.pendProv||'google');toast('Conexión restablecida');},
+ camyes(){S.cam='on';render()},camno(){S.cam='denied';render()},camask(){S.cam='ask';render()},
+ qrok(){S.inv=Object.assign({code:'MESA42'},CODES.MESA42);S.screen='preview';render();toast('QR leído')},
+ qrbad(){S.result={k:'qrbad'};S.screen='result';render()},
+ join(){initProf();S.screen='profile';render()},
+ enter(){enterApp('n1','home');render();toast('Bienvenido a '+(S.inv.table||S.inv.org))},
+ pick(el){enterApp(el.dataset.id,'home');render();const c=cur();toast('Ahora: '+c.role+' · '+c.scope)},
+ ctx(){S.sheet={t:'ctx'};render()},
+ pickctx(el){S.ctxId=el.dataset.id;S.sheet=null;if(!tabs().some(t=>t[0]===S.tab))S.tab='home';S.sel=[];render();const c=cur();toast('Ahora: '+c.role+' · '+c.scope)},
+ nav(el){nav(el.dataset.t)},
+ signout(){S.sheet={t:'signout'};render()},
+ signoutnow(){const w=S.ident;S.sheet=null;S.screen='gate';S.ident=null;S.user=null;S.base=[];S.extra=[];S.inv=null;S.result=null;S.ctxId=null;S.unsynced=0;render();toast('Sesión cerrada')},
+ syncout(){S.sheet=null;busy('Sincronizando 3 respuestas…',1100,()=>{S.unsynced=0;A.signoutnow();toast('Sincronizado. Sesión cerrada.')})},
+ offnote(){toast('Sin conexión: conéctate para sincronizar.')},
+ closesheet(){S.sheet=null;render()},
+ ovclick(el,ev){if(ev.target===el){S.sheet=null;render()}},
+ flt(el){S.flt=el.dataset.k;S.sel=[];render()},
+ sel(el){const id=+el.dataset.id,i=S.sel.indexOf(id);if(i<0)S.sel.push(id);else S.sel.splice(i,1);render()},
+ selall(){const rows=visible().filter(i=>(S.flt==='todas'||i.st===S.flt));S.sel=rows.every(i=>S.sel.includes(i.id))?[]:rows.map(i=>i.id);render()},
+ bulk(el){const w=el.dataset.w;if(w==='clear'){S.sel=[];return render()}if(!R.online)return toast('Sin conexión: acción no disponible.');if(w==='resend'){resend(S.sel.slice())}else{S.sheet={t:'revoke',ids:S.sel.slice()};render()}},
+ resend(el){if(!R.online)return toast('Sin conexión: no se puede reenviar.');resend([+el.dataset.id])},
+ revoke(el){if(!R.online)return toast('Sin conexión: no se puede revocar.');S.sheet={t:'revoke',ids:[+el.dataset.id]};render()},
+ dorevoke(){const ids=S.sheet.ids;S.sheet=null;busy('Revocando…',600,()=>{ids.forEach(id=>{const i=S.invites.find(x=>x.id===id);if(!i)return;i.st='revocada';i.note='revocada por '+S.user.name.split(' ')[0];const t=S.tables.find(x=>x.n===i.scope);if(t&&t.pend>0&&i.role!=='Coordinador'){t.pend--;t.used--}});S.sel=[];toast(ids.length>1?ids.length+' invitaciones revocadas':'Invitación revocada. Lugar liberado.')})},
+ share(el){S.last=S.invites.find(i=>i.id===+el.dataset.id);S.tab='share';render()},
+ copy(el){toast('Copiado: '+el.dataset.w)},
+ wa(){S.sheet={t:'wa'};render()},
+ wasend(){S.sheet=null;toast('Abriendo WhatsApp con el mensaje…')},
+ qrfull(){S.sheet={t:'qrfull'};render()},
+ newinv(){S.tab='invite';initIv();render()},
+ role(el){S.iv.role=el.dataset.r;render()},
+ rolelock(el){toast('Solo un Coordinador o Administrador puede invitar '+(el.dataset.r==='Miembro'?'miembros':el.dataset.r.toLowerCase()+'es'))},
+ help(){toast('Abriendo WhatsApp con soporte (simulado)')}
+};
+document.addEventListener('click',ev=>{const el=ev.target.closest('[data-act]');if(!el||!document.getElementById('app').contains(el))return;
+ if(el.getAttribute('aria-disabled')==='true'&&!['rolelock','offnote'].includes(el.dataset.act)){if(!R.online)toast('Sin conexión: acción no disponible.');return}
+ const f=A[el.dataset.act];if(f)f(el,ev)});
+document.addEventListener('input',ev=>{const t=ev.target,id=t.id;if(!id)return;
+ if(id==='codeIn'){const v=t.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);t.value=v;S.codeVal=v;S.codeErr='';const c=$('cells');if(c)c.innerHTML=codeCells();const h=$('codeHelp');if(h)h.innerHTML='<p class="fhint" style="text-align:center">'+(v.length<6?'Faltan '+(6-v.length)+' caracteres':'')+'</p>';if(v.length===6)verify(v);return}
+ if(id[0]==='f'&&id[1]==='_'&&S.prof)S.prof[id.slice(2)]=t.value;
+ else if(id[0]==='i'&&id[1]==='_'&&S.iv)S.iv[id.slice(2)]=t.value;
+ else if(id==='q'){S.q=t.value;render()}});
+document.addEventListener('change',ev=>{const t=ev.target,id=t.id;
+ if(id==='f_cc')S.prof.cc=t.value;
+ if(id==='i_cc')S.iv.cc=t.value;
+ if(id==='i_org'){S.iv.org=t.value;S.iv.table=(S.tables.find(x=>x.org===t.value)||{}).n;render()}
+ if(id==='i_table'){S.iv.table=t.value;render()}});
+document.addEventListener('submit',ev=>{const f=ev.target.closest('[data-form]');if(!f)return;ev.preventDefault();
+ const k=f.dataset.form;
+ if(k==='code'){if(!R.online){S.codeErr='Necesitas internet para comprobar el código.';return render()}if(S.attempts>=5)return;if(S.codeVal.length<6){S.codeErr='Faltan '+(6-S.codeVal.length)+' caracteres.';return render()}verify(S.codeVal)}
+ if(k==='prof'){S.profSub=true;if(Object.keys(perr()).length){render();return focusFirstInvalid()}
+  if(!R.online)return toast('Sin conexión: necesitas internet para terminar.');
+  busy('Creando tu lugar…',900,()=>{const v=S.inv;S.extra=[newCtx(v)];S.base=[];S.ctxId='n1';const p=S.prof;S.user={name:p.first+' '+p.last,email:p.email,provider:S.ident.provider,phone:p.cc+' '+p.tel};S.screen='welcome';render()})}
+ if(k==='inv'){S.ivSub=true;const e=ivErr(),v=S.iv;if(!R.online){render();return toast('Sin conexión: no se puede crear la invitación.')}
+  const tb=v.role!=='Coordinador'?S.tables.find(t=>t.n===v.table):null;if(tb&&tb.used>=tb.max){render();return toast('La mesa está llena (9 de 9).')}
+  if(Object.keys(e).length){render();return focusFirstInvalid()}
+  busy('Creando invitación…',800,()=>{const code=(v.first.slice(0,3)+v.last.slice(0,2)+'7').toUpperCase().replace(/[^A-Z0-9]/g,'X').padEnd(6,'X').slice(0,6);
+   const inv={id:S.invites.length+1,first:v.first.trim(),last:v.last.trim(),role:v.role,scope:v.role==='Coordinador'?v.org:v.table,org:v.org,st:'pendiente',sent:'hoy',note:'vence en 7 días',code,email:v.email.trim(),cc:v.cc,tel:v.tel};
+   S.invites.unshift(inv);S.invites.forEach((x,i)=>x.id=S.invites.length-i);if(tb){tb.used++;tb.pend++}S.last=S.invites[0];S.tab='share';render()})}});
+document.addEventListener('keydown',ev=>{
+ if(ev.key==='Escape'&&S&&S.sheet){S.sheet=null;render();return}
+ if(ev.key==='Tab'&&S&&S.sheet){const sh=document.querySelector('.sheet');if(!sh)return;const f=[...sh.querySelectorAll('button,[href],input,select')].filter(x=>!x.disabled);if(!f.length)return;const a=document.activeElement;
+  if(ev.shiftKey&&(a===f[0]||!sh.contains(a))){ev.preventDefault();f[f.length-1].focus()}else if(!ev.shiftKey&&(a===f[f.length-1]||!sh.contains(a))){ev.preventDefault();f[0].focus()}}});
+
+/* ============ reviewer ============ */
+const SCEN=[
+ ['Puerta única',[['gate','Puerta (sin sesión)'],['gate-cancel','Proveedor cancelado'],['offline-first','Primer acceso sin internet']]],
+ ['Canjear invitación',[['code-empty','Código: vacío'],['code-typo','Código: error de tipeo'],['code-lock','Código: demasiados intentos'],['expired','Invitación vencida'],['used','Invitación ya usada'],['revoked','Invitación revocada'],['full','Mesa llena'],['preview','Vista previa (miembro)'],['preview-coo','Vista previa (coordinador)'],['linked','Cuenta ya vinculada a otro'],['apple-hidden','Apple: correo oculto'],['profile-err','Perfil con errores'],['welcome','Bienvenida tras unirse']]],
+ ['Escanear QR',[['qr-ask','QR: permiso de cámara'],['qr-on','QR: cámara activa'],['qr-denied','QR: cámara denegada'],['qr-bad','QR de otra app']]],
+ ['Retorno y contextos',[['picker','Selector completo (varios roles)'],['single','Un solo rol: directo a inicio'],['norole','Sin rol asignado'],['deact','Cuenta desactivada'],['unknown','Cuenta sin invitación'],['ctx-sheet','Chip de contexto abierto'],['signout','Cerrar sesión con datos sin sincronizar'],['signout-ok','Cerrar sesión (todo sincronizado)']]],
+ ['Invitar',[['home-coo','Inicio: Coordinador'],['home-fac','Inicio: Facilitador'],['home-mie','Inicio: Miembro'],['inv-fac','Formulario: Facilitador (teléfono)'],['inv-coo','Formulario: Coordinador'],['inv-adm','Formulario: Administrador'],['inv-err','Formulario: errores'],['inv-full','Formulario: mesa llena'],['inv-denied','Permiso denegado (Miembro)'],['inv-off','Formulario sin conexión'],['share','Compartir invitación']]],
+ ['Administrar invitaciones',[['list-fac','Lista: Facilitador'],['list-adm','Lista: Administrador (escritorio, lote)'],['list-empty','Lista vacía'],['list-load','Lista cargando'],['list-flt','Filtro sin resultados'],['list-off','Lista sin conexión']]]];
+function scenario(k){
+ clearTM();const keep={vp:R.vp};S=fresh();R.online=true;R.outcome='ok';R.persona='ana';
+ const code=(c)=>{S.inv=Object.assign({code:c},CODES[c])};
+ const signed=(pk,cid,tab)=>{const p=PERSONA[pk];R.persona=pk;S.ident={provider:'google',mail:p.email};S.user={name:p.name,email:p.email,provider:'google'};S.base=p.ctx.slice();enterApp(cid,tab||'home')};
+ switch(k){
+ case'gate':break;
+ case'gate-cancel':R.outcome='cancel';S.gateMsg={t:'Cancelaste el inicio con Google',s:'No se hizo ningún cambio. Puedes intentarlo de nuevo.'};break;
+ case'offline-first':R.online=false;S.pendProv='google';S.result={k:'offline'};S.screen='result';break;
+ case'code-empty':S.screen='code';break;
+ case'code-typo':S.screen='code';S.codeVal='MESA4Z';S.attempts=2;S.codeErr='No encontramos ese código. Revisa letras y números (3 intentos restantes).';break;
+ case'code-lock':S.screen='code';S.codeVal='XXXXXX';S.attempts=5;S.codeErr='No encontramos ese código.';break;
+ case'expired':code('VENCE3');S.result={k:'expired'};S.screen='result';break;
+ case'used':code('USADO9');S.result={k:'used'};S.screen='result';break;
+ case'revoked':code('REVOC1');S.result={k:'revoked'};S.screen='result';break;
+ case'full':code('LLENA9');S.result={k:'full'};S.screen='result';break;
+ case'preview':code('MESA42');S.screen='preview';break;
+ case'preview-coo':code('COORD7');S.screen='preview';break;
+ case'linked':code('MESA42');R.outcome='linked';S.result={k:'linked'};S.screen='result';break;
+ case'apple-hidden':code('MESA42');R.outcome='hide';S.ident={provider:'apple',mail:'xk3q9a7@privaterelay.appleid.com'};S.apple=true;S.user={name:'Valeria Cordero',provider:'apple'};initProf();S.screen='profile';break;
+ case'profile-err':code('MESA42');S.ident={provider:'google',mail:'valeria.cordero@gmail.com'};S.user={name:'Valeria Cordero',provider:'google'};initProf();S.prof.last='';S.prof.email='valeria.c@';S.prof.tel='30';S.profSub=true;S.screen='profile';break;
+ case'welcome':code('MESA42');S.ident={provider:'google',mail:'valeria.cordero@gmail.com'};initProf();S.extra=[newCtx(S.inv)];S.ctxId='n1';S.user={name:'Valeria Cordero',email:S.prof.email,provider:'google'};S.screen='welcome';break;
+ case'qr-ask':S.screen='qr';S.cam='ask';break;
+ case'qr-on':S.screen='qr';S.cam='on';break;
+ case'qr-denied':S.screen='qr';S.cam='denied';break;
+ case'qr-bad':S.result={k:'qrbad'};S.screen='result';break;
+ case'picker':{const p=PERSONA.ana;S.ident={provider:'google',mail:p.email};S.user={name:p.name,email:p.email,provider:'google'};S.base=p.ctx.slice();S.screen='picker';break}
+ case'single':signed('single','mie');break;
+ case'norole':{const p=PERSONA.norole;R.persona='norole';S.ident={provider:'google',mail:p.email};S.user={name:p.name,provider:'google'};S.result={k:'norole'};S.screen='result';break}
+ case'deact':R.persona='deact';S.ident={provider:'google',mail:'ivan.m@ejemplo.org'};S.user={name:'Iván Mora',provider:'google'};S.result={k:'deact'};S.screen='result';break;
+ case'unknown':R.persona='unknown';S.ident={provider:'google',mail:'cuenta@ejemplo.com'};S.user={name:'Cuenta nueva',provider:'google'};S.result={k:'unknown'};S.screen='result';break;
+ case'ctx-sheet':signed('ana','coo');S.sheet={t:'ctx'};break;
+ case'signout':signed('ana','mie');S.unsynced=3;S.sheet={t:'signout'};break;
+ case'signout-ok':signed('ana','coo');S.sheet={t:'signout'};break;
+ case'home-coo':signed('ana','coo');break;
+ case'home-fac':signed('ana','fac');break;
+ case'home-mie':signed('ana','mie');S.unsynced=3;break;
+ case'inv-fac':signed('ana','fac','invite');initIv();break;
+ case'inv-coo':signed('ana','coo','invite');initIv();R.vp='t';break;
+ case'inv-adm':signed('admin','adm','invite');initIv();R.vp='d';break;
+ case'inv-err':signed('ana','fac','invite');initIv();S.iv.email='valeria.c@ejemplo.com';S.iv.tel='12';S.ivSub=true;break;
+ case'inv-full':signed('ana','fac','invite');S.tables[0].used=9;S.tables[0].pend=1;initIv();break;
+ case'inv-denied':signed('ana','mie','invite');break;
+ case'inv-off':signed('ana','coo','invite');initIv();R.online=false;break;
+ case'share':signed('ana','coo','share');S.last=S.invites[0];break;
+ case'list-fac':signed('ana','fac','invites');break;
+ case'list-adm':signed('admin','adm','invites');R.vp='d';S.sel=[1,2];break;
+ case'list-empty':signed('ana','coo','invites');S.invites=[];break;
+ case'list-load':signed('ana','coo','invites');load(3500);break;
+ case'list-flt':signed('ana','fac','invites');S.flt='revocada';break;
+ case'list-off':signed('ana','coo','invites');R.online=false;break;
+ }
+ applyFrame();render();syncRv();
+ if(S.screen==='code'&&!S.codeVal)afterRender(()=>{const e=$('codeIn');e&&e.focus()})}
+function applyFrame(){const f=$('frame');f.className='frame'+(R.vp==='t'?' t':R.vp==='d'?' d':'');
+ const h=document.documentElement;if(R.theme==='auto')h.removeAttribute('data-theme');else h.dataset.theme=R.theme}
+const REFS=[['Uxcel Go · botones Google/Apple/Facebook','https://mobbin.com/screens/a09c01c5-cae2-4bd6-92e5-005872ef4b59'],['adidas Running · Apple + Facebook/Google','https://mobbin.com/screens/7463b189-3529-4735-b976-018e27af12f5'],['Family · código segmentado','https://mobbin.com/screens/59fd34e5-991d-48ee-9203-6a2a20e1c4ad'],['Shop · casillas de código','https://mobbin.com/screens/142a882e-7085-4f19-97c3-1f2fa7043268'],['WHOOP · código de invitación a equipo','https://mobbin.com/screens/a156925b-fe88-43a5-b8df-fd97806e0f42'],['Once · escanear QR o pegar enlace','https://mobbin.com/screens/49d67ecd-f653-478f-ae06-6e1f1fbbf07f'],['Luma · visor de escaneo','https://mobbin.com/screens/07fa77cb-8f6f-40e1-aba9-1eafb60954bf'],['Twenty · invitaciones con reenviar/borrar','https://mobbin.com/screens/bd2533f4-9816-4f27-8dc2-20500e5a4b90'],['Midday · invitaciones pendientes','https://mobbin.com/screens/478a5a79-2f93-4be7-b3aa-71b0bbff3473'],['Calendly · usuarios pendientes en tabla','https://mobbin.com/screens/3cd7e903-497a-4087-aa32-e4efd0ba2810'],['Trainline · cambiar de cuenta','https://mobbin.com/screens/4cdf9eb3-9261-4aff-b6f6-089ef3aeb68d']];
+function buildRv(){
+ $('rv').innerHTML='<div class="rv-top"><h1><b>L2</b> · Puerta única</h1><span class="concept">Una sola pantalla de entrada para todos (Google · Apple · Facebook + código + QR). Canjear una invitación ocurre dentro de la puerta: código o QR, vista previa, confirmar. Invitar = formulario estructurado + gestor de invitaciones; contexto = pantalla completa al primer acceso y chip compacto después.</span></div>'+
+ '<div class="ctl"><span class="seg2" role="group" aria-label="Ventana"><button data-rv="vp:p">Teléfono 390</button><button data-rv="vp:t">Tablet 820</button><button data-rv="vp:d">Escritorio 1280</button></span>'+
+ '<span class="seg2" role="group" aria-label="Conexión"><button data-rv="on:1">En línea</button><button class="offb" data-rv="on:0">Sin conexión</button></span>'+
+ '<span class="seg2" role="group" aria-label="Tema"><button data-rv="th:auto">Auto</button><button data-rv="th:light">Claro</button><button data-rv="th:dark">Oscuro</button></span>'+
+ '<label>Saltar a <select class="sel" id="rvScen" aria-label="Saltar a"><option value="">Elegir escenario…</option>'+SCEN.map(g=>'<optgroup label="'+g[0]+'">'+g[1].map(s=>'<option value="'+s[0]+'">'+s[1]+'</option>').join('')+'</optgroup>').join('')+'</select></label>'+
+ '<label>Resultado del proveedor <select class="sel" id="rvOut" aria-label="Resultado del proveedor"><option value="ok">Éxito</option><option value="cancel">Cancelado por el usuario</option><option value="linked">Cuenta ya vinculada a otro (al canjear)</option><option value="hide">Apple: ocultar correo</option></select></label>'+
+ '<label>Cuenta que entra sin invitación <select class="sel" id="rvPer" aria-label="Cuenta que entra">'+Object.keys(PERSONA).map(k=>'<option value="'+k+'">'+PERSONA[k].label+'</option>').join('')+'</select></label>'+
+ '<button class="rbtn" data-rv="reset">Reiniciar</button></div>'+
+ '<div class="refs"><b>Referencias (Mobbin):</b> '+REFS.map(r=>'<a href="'+r[1]+'" target="_blank" rel="noopener">'+r[0]+'</a>').join('')+'</div>'}
+function syncRv(){
+ document.querySelectorAll('[data-rv]').forEach(b=>{const [k,v]=b.dataset.rv.split(':');let p=null;if(k==='vp')p=R.vp===v;if(k==='on')p=(R.online?'1':'0')===v;if(k==='th')p=R.theme===v;if(p!==null)b.setAttribute('aria-pressed',p)});
+ $('rvOut').value=R.outcome;$('rvPer').value=R.persona}
+function renderRv(){syncRv()}
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-rv]');if(!b)return;const [k,v]=b.dataset.rv.split(':');
+ if(k==='vp'){R.vp=v;applyFrame();render()}
+ if(k==='on'){R.online=v==='1';render();if(!R.online)toast('Sin conexión')}
+ if(k==='th'){R.theme=v;applyFrame();syncRv()}
+ if(b.dataset.rv==='reset'){scenario('gate')}});
+document.addEventListener('change',ev=>{const t=ev.target;
+ if(t.id==='rvScen'&&t.value){scenario(t.value);t.value=''}
+ if(t.id==='rvOut'){R.outcome=t.value}
+ if(t.id==='rvPer'){R.persona=t.value}});
+buildRv();scenario('gate');
+</script></body></html>

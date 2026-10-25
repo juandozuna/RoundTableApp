@@ -19,6 +19,7 @@ Source requirements: the RoundTables Obsidian vault (notes 00–07).
 | [0012](0012-client-architecture.md) | Feature-first layered client architecture (see AGENTS.md) | Accepted |
 | [0013](0013-session-flow-design-direction.md) | Session flow design direction: "Mesa en vivo" | Accepted |
 | [0014](0014-facilitator-is-participant.md) | The facilitator is also a participant (counts toward 9) | Accepted |
+| [0015](0015-login-and-admin-design-directions.md) | Login "Puerta única" and admin "Explorador de mesas" design directions | Accepted |
 
 Constraints that shaped every decision: one part-time developer, NGO budget under ~US$100/month,
 multiple countries from the pilot, thousands of users across 6+ organizations.
