@@ -302,8 +302,7 @@ Place each DI annotation directly above the class it configures; never insert an
 between an annotation and its class.
 
 After modifying annotated classes or generated models:
-1. Run the code-generation script (``tool/codegen.sh` (build_runner; the --delete-conflicting-outputs flag no longer exists),
-   extended for other required steps).
+1. Run the code-generation script `tool/codegen.sh` (build_runner; the old --delete-conflicting-outputs flag no longer exists).
 2. Inspect generated DI registration for changed or added classes.
 3. Confirm startup resolves the dependency graph.
 
