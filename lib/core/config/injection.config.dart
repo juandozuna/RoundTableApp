@@ -17,6 +17,58 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 import '../../app/app_module.dart' as _i431;
+import '../../features/session/data/client/session_control_client.dart'
+    as _i625;
+import '../../features/session/data/client/session_sync_client.dart' as _i946;
+import '../../features/session/data/datasources/session_local_data_source.dart'
+    as _i751;
+import '../../features/session/data/datasources/session_remote_data_source.dart'
+    as _i215;
+import '../../features/session/data/local/session_drift_database.dart' as _i4;
+import '../../features/session/data/services/attendance_service_impl.dart'
+    as _i1058;
+import '../../features/session/data/services/live_session_service_impl.dart'
+    as _i635;
+import '../../features/session/data/services/responses_service_impl.dart'
+    as _i716;
+import '../../features/session/data/services/session_control_service_impl.dart'
+    as _i260;
+import '../../features/session/data/services/session_sync_service_impl.dart'
+    as _i1002;
+import '../../features/session/data/services/session_sync_uploader.dart'
+    as _i194;
+import '../../features/session/data/session_data_module.dart' as _i129;
+import '../../features/session/domain/services/attendance_service.dart'
+    as _i620;
+import '../../features/session/domain/services/live_session_service.dart'
+    as _i530;
+import '../../features/session/domain/services/responses_service.dart' as _i307;
+import '../../features/session/domain/services/session_control_service.dart'
+    as _i728;
+import '../../features/session/domain/services/session_sync_service.dart'
+    as _i468;
+import '../../features/session/domain/use_cases/attendance/mark_attendance_use_case.dart'
+    as _i307;
+import '../../features/session/domain/use_cases/attendance/mark_everyone_present_use_case.dart'
+    as _i23;
+import '../../features/session/domain/use_cases/control/close_answers_use_case.dart'
+    as _i126;
+import '../../features/session/domain/use_cases/control/close_session_use_case.dart'
+    as _i995;
+import '../../features/session/domain/use_cases/control/open_session_use_case.dart'
+    as _i545;
+import '../../features/session/domain/use_cases/control/set_session_stage_use_case.dart'
+    as _i736;
+import '../../features/session/domain/use_cases/live/watch_live_session_use_case.dart'
+    as _i975;
+import '../../features/session/domain/use_cases/responses/submit_commitment_use_case.dart'
+    as _i1002;
+import '../../features/session/domain/use_cases/responses/submit_follow_up_use_case.dart'
+    as _i833;
+import '../../features/session/domain/use_cases/responses/submit_reflection_use_case.dart'
+    as _i58;
+import '../../features/session/domain/use_cases/sync/request_sync_use_case.dart'
+    as _i659;
 import '../../features/shell/presentation/pages/home/cubit/home_cubit.dart'
     as _i1048;
 import '../network/auth_token_provider.dart' as _i84;
@@ -49,7 +101,6 @@ import '../services/share/share_service_impl.dart' as _i827;
 import '../sync/data/pending_since_tracker.dart' as _i383;
 import '../sync/data/powersync_sync_database.dart' as _i405;
 import '../sync/data/powersync_sync_status_service.dart' as _i858;
-import '../sync/data/queue_only_sync_uploader.dart' as _i495;
 import '../sync/data/sync_database.dart' as _i924;
 import '../sync/data/sync_lifecycle.dart' as _i863;
 import '../sync/data/sync_schema.dart' as _i915;
@@ -69,6 +120,7 @@ extension GetItInjectableX on _i174.GetIt {
     final appCompositionModule = _$AppCompositionModule();
     final authSessionModule = _$AuthSessionModule();
     final networkModule = _$NetworkModule();
+    final sessionDataModule = _$SessionDataModule();
     gh.singleton<_i609.AppConfig>(() => servicesModule.appConfig);
     gh.lazySingleton<_i915.SyncSchemaRegistry>(
       () => appCompositionModule.syncSchemaRegistry,
@@ -79,7 +131,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1068.FirebaseBootstrap>(
       () => _i326.FirebaseBootstrapImpl(gh<_i609.AppConfig>()),
     );
-    gh.lazySingleton<_i529.SyncUploader>(() => _i495.QueueOnlySyncUploader());
     gh.lazySingleton<_i162.ExternalLinkService>(
       () => _i146.ExternalLinkServiceImpl(),
     );
@@ -119,14 +170,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i17.WatchConnectivityUseCase>(
       () => _i17.WatchConnectivityUseCase(gh<_i1015.ConnectivityService>()),
     );
-    gh.lazySingleton<_i924.SyncDatabase>(
-      () => _i405.PowerSyncSyncDatabase(
-        gh<_i609.AppConfig>(),
-        gh<_i915.SyncSchemaRegistry>(),
-        gh<_i84.AuthTokenProvider>(),
-        gh<_i529.SyncUploader>(),
-      ),
-    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.edgeFunctionsDio(
         gh<_i609.AppConfig>(),
@@ -143,12 +186,45 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1002.AppShellCubit>(
       () => _i1002.AppShellCubit(gh<_i434.WatchSessionContextUseCase>()),
     );
+    gh.lazySingleton<_i625.SessionControlClient>(
+      () => _i625.SessionControlClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
+    );
+    gh.lazySingleton<_i946.SessionSyncClient>(
+      () => _i946.SessionSyncClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
+    );
+    gh.lazySingleton<_i215.SessionRemoteDataSource>(
+      () => _i215.SessionRemoteDataSource(
+        gh<_i946.SessionSyncClient>(),
+        gh<_i625.SessionControlClient>(),
+      ),
+    );
+    gh.lazySingleton<_i529.SyncUploader>(
+      () => _i194.SessionSyncUploader(gh<_i215.SessionRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i924.SyncDatabase>(
+      () => _i405.PowerSyncSyncDatabase(
+        gh<_i609.AppConfig>(),
+        gh<_i915.SyncSchemaRegistry>(),
+        gh<_i84.AuthTokenProvider>(),
+        gh<_i529.SyncUploader>(),
+      ),
+    );
+    gh.lazySingleton<_i468.SessionSyncService>(
+      () => _i1002.SessionSyncServiceImpl(gh<_i924.SyncDatabase>()),
+    );
     gh.lazySingleton<_i1020.SyncStatusService>(
       () => _i858.PowerSyncSyncStatusService(
         gh<_i924.SyncDatabase>(),
         gh<_i609.AppConfig>(),
         gh<_i508.ClockService>(),
       ),
+    );
+    gh.factory<_i659.RequestSyncUseCase>(
+      () => _i659.RequestSyncUseCase(gh<_i468.SessionSyncService>()),
     );
     gh.lazySingleton<_i383.PendingSinceTracker>(
       () => _i383.PendingSinceTracker(
@@ -160,10 +236,39 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i318.WatchSyncStatusUseCase>(
       () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
     );
+    gh.lazySingleton<_i4.SessionDriftDatabase>(
+      () => sessionDataModule.sessionDriftDatabase(gh<_i924.SyncDatabase>()),
+    );
+    gh.lazySingleton<_i751.SessionLocalDataSource>(
+      () => _i751.SessionLocalDataSource(
+        gh<_i4.SessionDriftDatabase>(),
+        gh<_i924.SyncDatabase>(),
+      ),
+    );
+    gh.lazySingleton<_i620.AttendanceService>(
+      () => _i1058.AttendanceServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i508.ClockService>(),
+        gh<_i246.IdGenerator>(),
+      ),
+    );
     gh.factory<_i1048.HomeCubit>(
       () => _i1048.HomeCubit(
         gh<_i17.WatchConnectivityUseCase>(),
         gh<_i318.WatchSyncStatusUseCase>(),
+      ),
+    );
+    gh.factory<_i307.MarkAttendanceUseCase>(
+      () => _i307.MarkAttendanceUseCase(gh<_i620.AttendanceService>()),
+    );
+    gh.factory<_i23.MarkEveryonePresentUseCase>(
+      () => _i23.MarkEveryonePresentUseCase(gh<_i620.AttendanceService>()),
+    );
+    gh.lazySingleton<_i307.ResponsesService>(
+      () => _i716.ResponsesServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i508.ClockService>(),
+        gh<_i246.IdGenerator>(),
       ),
     );
     gh.lazySingleton<_i863.SyncLifecycle>(
@@ -173,6 +278,45 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i997.AuthStateSource>(),
       ),
       dispose: (i) => i.stop(),
+    );
+    gh.lazySingleton<_i530.LiveSessionService>(
+      () => _i635.LiveSessionServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i1020.SyncStatusService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.lazySingleton<_i728.SessionControlService>(
+      () => _i260.SessionControlServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i215.SessionRemoteDataSource>(),
+        gh<_i1015.ConnectivityService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i975.WatchLiveSessionUseCase>(
+      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
+    );
+    gh.factory<_i1002.SubmitCommitmentUseCase>(
+      () => _i1002.SubmitCommitmentUseCase(gh<_i307.ResponsesService>()),
+    );
+    gh.factory<_i833.SubmitFollowUpUseCase>(
+      () => _i833.SubmitFollowUpUseCase(gh<_i307.ResponsesService>()),
+    );
+    gh.factory<_i58.SubmitReflectionUseCase>(
+      () => _i58.SubmitReflectionUseCase(gh<_i307.ResponsesService>()),
+    );
+    gh.factory<_i126.CloseAnswersUseCase>(
+      () => _i126.CloseAnswersUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i995.CloseSessionUseCase>(
+      () => _i995.CloseSessionUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i545.OpenSessionUseCase>(
+      () => _i545.OpenSessionUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i736.SetSessionStageUseCase>(
+      () => _i736.SetSessionStageUseCase(gh<_i728.SessionControlService>()),
     );
     return this;
   }
@@ -185,3 +329,5 @@ class _$AppCompositionModule extends _i431.AppCompositionModule {}
 class _$AuthSessionModule extends _i139.AuthSessionModule {}
 
 class _$NetworkModule extends _i200.NetworkModule {}
+
+class _$SessionDataModule extends _i129.SessionDataModule {}

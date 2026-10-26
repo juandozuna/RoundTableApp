@@ -28,3 +28,22 @@ class SyncUploadBatch {
   final List<SyncOperation> operations;
   final int? transactionId;
 }
+
+/// One change the server refused permanently.
+class SyncRejection {
+  const SyncRejection({
+    required this.table,
+    required this.id,
+    this.code,
+    this.message,
+  });
+
+  final String table;
+  final String id;
+
+  /// Stable machine code, e.g. `session_closed`.
+  final String? code;
+
+  /// Spanish message safe to show to the person.
+  final String? message;
+}

@@ -1,6 +1,7 @@
 import '../core/config/app_config.dart';
 import '../core/routing/feature_router.dart';
 import '../core/sync/data/sync_schema.dart';
+import '../features/session/data/local/session_sync_schema.dart';
 import '../features/shell/shell_router.dart';
 import '../features/shell/shell_routes.dart';
 
@@ -16,4 +17,6 @@ List<FeatureRouter> buildFeatureRouters(AppConfig config) => [
 ];
 
 /// PowerSync tables of every offline-first feature (session).
-const List<SyncSchemaContribution> syncSchemaContributions = [];
+const List<SyncSchemaContribution> syncSchemaContributions = [
+  SessionSyncSchema(),
+];
