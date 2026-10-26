@@ -72,8 +72,6 @@ class ExplorerPage extends StatelessWidget {
       );
     }
     final scope = access.scope!;
-    final desktop = context.layout.isDesktop;
-    final main = _buildMain(context, state, access);
     final panel = SelectionKpiPanel(
       state: state,
       online: access.online,
@@ -82,48 +80,67 @@ class ExplorerPage extends StatelessWidget {
       onClear: cubit.clearSelection,
       onRemove: cubit.toggleSelected,
     );
-    if (desktop) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: main),
-          Container(
-            width: 320,
-            decoration: BoxDecoration(
-              border: Border(left: BorderSide(color: context.colors.line)),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              children: [panel],
-            ),
-          ),
-        ],
-      );
-    }
-    return Stack(
-      children: [
-        main,
-        if (state.hasSelection)
-          Positioned(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            bottom: AppSpacing.md,
-            child: _buildSelectionBar(
-              context,
-              state,
-              panel,
-              scope.isAdministrator,
-            ),
-          ),
-      ],
+    // The shell's navigation rail takes space, so decide by the room this
+    // page really has, not by the window width.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final showPanel = constraints.maxWidth >= _panelBreakpoint;
+        final gridWidth = constraints.maxWidth - (showPanel ? _panelWidth : 0);
+        final main = _buildMain(
+          context,
+          state,
+          access,
+          wide: gridWidth >= _wideGridBreakpoint,
+        );
+        if (showPanel) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: main),
+              Container(
+                width: _panelWidth,
+                decoration: BoxDecoration(
+                  border: Border(left: BorderSide(color: context.colors.line)),
+                ),
+                child: ListView(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  children: [panel],
+                ),
+              ),
+            ],
+          );
+        }
+        return Stack(
+          children: [
+            main,
+            if (state.hasSelection)
+              Positioned(
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                bottom: AppSpacing.md,
+                child: _buildSelectionBar(
+                  context,
+                  state,
+                  panel,
+                  scope.isAdministrator,
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
+
+  static const double _panelWidth = 320;
+  static const double _panelBreakpoint = 1180;
+  static const double _wideGridBreakpoint = 960;
 
   Widget _buildMain(
     BuildContext context,
     ExplorerState state,
-    AdminAccessState access,
-  ) {
+    AdminAccessState access, {
+    required bool wide,
+  }) {
     final cubit = context.read<ExplorerCubit>();
     final l10n = context.l10n;
     final scope = access.scope!;
@@ -186,7 +203,7 @@ class ExplorerPage extends StatelessWidget {
             onClear: cubit.clearFilters,
           ),
           const SizedBox(height: AppSpacing.md),
-          _buildGrid(context, state, access),
+          _buildGrid(context, state, access, wide: wide),
           const SizedBox(height: AppSpacing.sm),
           _buildFooter(context, state, access.online),
         ],
@@ -197,8 +214,9 @@ class ExplorerPage extends StatelessWidget {
   Widget _buildGrid(
     BuildContext context,
     ExplorerState state,
-    AdminAccessState access,
-  ) {
+    AdminAccessState access, {
+    required bool wide,
+  }) {
     final cubit = context.read<ExplorerCubit>();
     final l10n = context.l10n;
     if (state.visibleCount == 0) {
@@ -220,6 +238,7 @@ class ExplorerPage extends StatelessWidget {
       case ExplorerEntity.tables:
         return ExplorerTablesGrid(
           state: state,
+          wide: wide,
           onOpen: (t) => context.push(AdminRoutes.tablePath(t.id)),
           onToggle: toggle,
           onSelectAll: cubit.selectAllVisible,
@@ -228,6 +247,7 @@ class ExplorerPage extends StatelessWidget {
       case ExplorerEntity.organizations:
         return ExplorerOrganizationsGrid(
           state: state,
+          wide: wide,
           onOpen: (o) => context.push(AdminRoutes.organizationPath(o.id)),
           onToggle: toggle,
           onSelectAll: cubit.selectAllVisible,
@@ -236,6 +256,7 @@ class ExplorerPage extends StatelessWidget {
       case ExplorerEntity.people:
         return ExplorerPeopleGrid(
           state: state,
+          wide: wide,
           organizationNames: {
             for (final o in state.data.organizations) o.id: o.organization.name,
           },

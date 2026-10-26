@@ -15,6 +15,7 @@ class ExplorerPeopleGrid extends StatelessWidget {
   const ExplorerPeopleGrid({
     super.key,
     required this.state,
+    required this.wide,
     required this.organizationNames,
     required this.onOpen,
     required this.onToggle,
@@ -23,6 +24,9 @@ class ExplorerPeopleGrid extends StatelessWidget {
   });
 
   final ExplorerState state;
+
+  /// Room for the extra columns (organization, facilitator…).
+  final bool wide;
   final Map<String?, String> organizationNames;
   final ValueChanged<AdminPerson> onOpen;
   final void Function(String id, bool selected) onToggle;
@@ -53,7 +57,7 @@ class ExplorerPeopleGrid extends StatelessWidget {
           ),
         ),
       ),
-      if (context.layout.isDesktop)
+      if (wide)
         (
           key: 'organization',
           column: AppDataColumn(

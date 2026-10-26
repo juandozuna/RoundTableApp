@@ -17,6 +17,7 @@ class ExplorerOrganizationsGrid extends StatelessWidget {
   const ExplorerOrganizationsGrid({
     super.key,
     required this.state,
+    required this.wide,
     required this.onOpen,
     required this.onToggle,
     required this.onSelectAll,
@@ -24,6 +25,9 @@ class ExplorerOrganizationsGrid extends StatelessWidget {
   });
 
   final ExplorerState state;
+
+  /// Room for the extra columns (organization, facilitator…).
+  final bool wide;
   final ValueChanged<ExplorerOrganization> onOpen;
   final void Function(String id, bool selected) onToggle;
   final ValueChanged<bool> onSelectAll;
@@ -32,7 +36,6 @@ class ExplorerOrganizationsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final wide = context.layout.isDesktop;
     final specs = <({String key, AppDataColumn<ExplorerOrganization> column})>[
       (
         key: 'name',

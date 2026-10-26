@@ -18,6 +18,7 @@ class ExplorerTablesGrid extends StatelessWidget {
   const ExplorerTablesGrid({
     super.key,
     required this.state,
+    required this.wide,
     required this.onOpen,
     required this.onToggle,
     required this.onSelectAll,
@@ -25,6 +26,9 @@ class ExplorerTablesGrid extends StatelessWidget {
   });
 
   final ExplorerState state;
+
+  /// Room for the extra columns (organization, facilitator…).
+  final bool wide;
   final ValueChanged<ExplorerTable> onOpen;
   final void Function(String id, bool selected) onToggle;
   final ValueChanged<bool> onSelectAll;
@@ -33,7 +37,6 @@ class ExplorerTablesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final wide = context.layout.isDesktop;
     final specs = <({String key, AppDataColumn<ExplorerTable> column})>[
       (
         key: 'code',
