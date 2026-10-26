@@ -4,6 +4,7 @@ import 'package:powersync/powersync.dart';
 
 import '../../network/auth_token_provider.dart';
 import '../../services/logging/app_log.dart';
+import 'sync_schema.dart';
 import 'sync_upload_batch.dart';
 import 'sync_uploader.dart';
 
@@ -58,11 +59,27 @@ class SupabasePowerSyncConnector extends PowerSyncBackendConnector {
     } on SyncUploadRejected catch (rejection) {
       AppLog.error(
         'sync',
-        'Server rejected transaction ${transaction.transactionId}; dropping it.',
+        'Server rejected part of transaction ${transaction.transactionId}; '
+            'dropping it.',
         rejection,
       );
+      await _recordRejections(database, rejection.rejections);
     }
     await transaction.complete();
+  }
+
+  Future<void> _recordRejections(
+    PowerSyncDatabase database,
+    List<SyncRejection> rejections,
+  ) async {
+    for (final rejection in rejections) {
+      await database.execute(
+        'INSERT INTO ${CoreSyncTables.uploadRejections} '
+        '(id, table_name, row_id, code, message, rejected_at) '
+        "VALUES (uuid(), ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))",
+        [rejection.table, rejection.id, rejection.code, rejection.message],
+      );
+    }
   }
 
   static SyncOperation _toOperation(CrudEntry entry) => SyncOperation(

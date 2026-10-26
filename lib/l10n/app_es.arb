@@ -1,7 +1,6 @@
 {
   "@@locale": "es",
   "appTitle": "Gold Roundtables",
-
   "actionContinue": "Continuar",
   "actionCancel": "Cancelar",
   "actionConfirm": "Confirmar",
@@ -17,18 +16,15 @@
   "actionShare": "Compartir",
   "actionSearch": "Buscar",
   "actionGoHome": "Ir al inicio",
-
   "tooltipBack": "Volver",
   "tooltipClose": "Cerrar",
   "tooltipMenu": "Menú",
   "tooltipIncrease": "Aumentar",
   "tooltipDecrease": "Disminuir",
   "tooltipShowPassword": "Mostrar",
-
   "loading": "Cargando…",
   "confirmDialogDefaultTitle": "¿Quieres continuar?",
   "toastSaved": "Guardado",
-
   "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
   "errorNetwork": "No hay conexión con el servidor. Revisa tu internet.",
   "errorTimeout": "El servidor tardó demasiado en responder. Inténtalo de nuevo.",
@@ -38,21 +34,22 @@
   "errorConflict": "Estos datos cambiaron mientras tanto. Actualiza e inténtalo otra vez.",
   "errorValidation": "Revisa los datos e inténtalo otra vez.",
   "errorServer": "El servidor tuvo un problema. Inténtalo más tarde.",
-
   "errorStateTitle": "No pudimos cargar esto",
   "emptyStateTitle": "Todavía no hay nada aquí",
   "notFoundTitle": "Esta página no existe",
   "notFoundMessage": "Puede que el enlace esté incompleto o que la página se haya movido.",
-
   "connectivityOnline": "En línea",
   "connectivityOffline": "Sin conexión",
   "offlineBanner": "Sin conexión · {detail}",
   "@offlineBanner": {
-    "placeholders": { "detail": { "type": "String" } }
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
   },
   "offlineDetailOnlineOnly": "esta sección necesita internet",
   "offlineDetailSavedLocally": "lo que respondas se guarda en este teléfono",
-
   "syncPending": "Pendiente",
   "syncSyncing": "Sincronizando",
   "syncSynced": "Sincronizado",
@@ -61,39 +58,41 @@
   "syncNever": "Aún no se ha sincronizado",
   "syncPendingCount": "{count, plural, =0{Nada pendiente} =1{1 cambio pendiente} other{{count} cambios pendientes}}",
   "@syncPendingCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "syncLastSynced": "Última sincronización: {time}",
   "@syncLastSynced": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "syncStaleWarning": "Hay respuestas sin sincronizar desde hace más de 24 horas. Conéctate a internet.",
-
   "roleAdministrator": "Administrador",
   "roleCoordinator": "Coordinador",
   "roleFacilitator": "Facilitador",
   "roleMember": "Miembro",
-
   "stageOpen": "Abrir",
   "stageAttendance": "Lista",
   "stageFollowUp": "Seguimiento",
   "stageCurrentValue": "Valor",
   "stageCommitment": "Compromiso",
   "stageClosing": "Cierre",
-
   "attendancePresent": "Presente",
   "attendanceLate": "Tarde",
   "attendanceExcused": "Justificado",
   "attendanceAbsent": "Ausente",
-
   "assessmentFollowUp": "Seguimiento",
   "assessmentCurrentValue": "Valor actual",
-
   "healthOnTrack": "Al día",
   "healthAtRisk": "En riesgo",
   "healthOffTrack": "Retrasada",
   "healthUnknown": "Sin datos",
-
   "scoreLabel": "Puntaje",
   "scoreHint": "Elige un número del 1 al 10. El 5 no se permite.",
   "scoreLow": "Bajo",
@@ -102,29 +101,52 @@
   "scoreFiveExplanation": "El 5 no se permite: elige un poco más arriba o un poco más abajo.",
   "scorePicked": "Elegiste {score}",
   "@scorePicked": {
-    "placeholders": { "score": { "type": "int" } }
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
   },
   "scoreSemantics": "Puntaje {score}",
   "@scoreSemantics": {
-    "placeholders": { "score": { "type": "int" } }
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
   },
-
   "seatsCount": "{count}/{max} lugares",
   "@seatsCount": {
-    "placeholders": { "count": { "type": "int" }, "max": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
   },
   "seatsOverCapacity": "La mesa tiene más de {max} lugares",
   "@seatsOverCapacity": {
-    "placeholders": { "max": { "type": "int" } }
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   },
-
   "contextChipLabel": "Estás como",
   "counterSemantics": "{label}: {value}",
   "@counterSemantics": {
-    "placeholders": { "label": { "type": "String" }, "value": { "type": "int" } }
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      }
+    }
   },
   "dropdownHint": "Elige una opción",
-
   "validationRequired": "Este campo es obligatorio.",
   "validationEmail": "Escribe un correo válido, por ejemplo nombre@correo.com.",
   "validationPhone": "Escribe el número con el código de país, por ejemplo +52 55 1234 5678.",
@@ -133,14 +155,16 @@
   "validationScoreFive": "El 5 no se permite.",
   "validationTooShort": "Escribe al menos {min} caracteres.",
   "@validationTooShort": {
-    "placeholders": { "min": { "type": "int" } }
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
   },
   "validationInviteCode": "El código tiene 6 letras o números.",
-
   "navHome": "Inicio",
   "homeTitle": "Inicio",
   "homeOpenGallery": "Ver galería de componentes",
-
   "galleryTitle": "Galería de componentes",
   "galleryThemeLight": "Claro",
   "galleryThemeDark": "Oscuro",
@@ -172,7 +196,6 @@
   "galleryColumnStatus": "Estado",
   "galleryInfoMessage": "La mesa está en: Seguimiento",
   "galleryWarningMessage": "Rodrigo lleva 31 horas sin sincronizar.",
-
   "adminNavExplorer": "Mesas",
   "adminAppBarTitle": "Administración",
   "auditStateScheduled": "programada",
@@ -220,16 +243,28 @@
   "adminSaveViewName": "Nombre de la vista",
   "adminViewSaved": "Vista «{name}» guardada",
   "@adminViewSaved": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminDeleteViewTitle": "Eliminar vista",
   "adminDeleteViewMessage": "¿Eliminar la vista «{name}»? Solo se borra en este dispositivo.",
   "@adminDeleteViewMessage": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminDeleteViewTooltip": "Eliminar la vista {name}",
   "@adminDeleteViewTooltip": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminViewAll": "Todas",
   "adminViewDelayed": "Mesas retrasadas",
@@ -245,12 +280,20 @@
   "adminViewInactive": "Inactivos",
   "adminSearchHint": "Buscar {entity}…",
   "@adminSearchHint": {
-    "placeholders": { "entity": { "type": "String" } }
+    "placeholders": {
+      "entity": {
+        "type": "String"
+      }
+    }
   },
   "adminFilters": "Filtros",
   "adminFiltersCount": "Filtros ({count})",
   "@adminFiltersCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminFilterAll": "Todos",
   "adminFilterCountry": "País",
@@ -264,33 +307,57 @@
   "adminClearFiltersAndView": "Limpiar filtros y vista",
   "adminShowResults": "Ver {count, plural, =1{1 resultado} other{{count} resultados}}",
   "@adminShowResults": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminOrganizationLock": "Organización: {name}",
   "@adminOrganizationLock": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminRemoveFilterTooltip": "Quitar el filtro {filter}",
   "@adminRemoveFilterTooltip": {
-    "placeholders": { "filter": { "type": "String" } }
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
   },
   "adminSelectRow": "Seleccionar {name}",
   "@adminSelectRow": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminSelection": "Selección",
   "adminCurrentView": "Vista actual",
   "adminSelected": "Seleccionadas",
   "adminSelectedCount": "{count, plural, =1{1 seleccionada} other{{count} seleccionadas}}",
   "@adminSelectedCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminSelectionHint": "Marca filas para sumar sus KPIs aquí. Sin selección se resume la vista filtrada.",
   "adminSelectionKpis": "KPIs de la selección",
   "adminSeeKpis": "Ver KPIs",
   "adminRemoveFromSelection": "Quitar {name} de la selección",
   "@adminRemoveFromSelection": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminClearSelection": "Limpiar selección",
   "adminOpenInReports": "Abrir en Informes",
@@ -299,39 +366,83 @@
   "adminNoTablesToAggregate": "Sin mesas para sumar",
   "adminLowAttendanceTables": "{count, plural, =1{1 mesa con asistencia menor al 70 %} other{{count} mesas con asistencia menor al 70 %}}",
   "@adminLowAttendanceTables": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminLowAttendanceThreshold": "Umbral de alerta definido por la iglesia.",
   "adminTablesCount": "{count, plural, =0{Sin mesas} =1{1 mesa} other{{count} mesas}}",
   "@adminTablesCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminPeopleCount": "{count, plural, =0{Sin personas} =1{1 persona} other{{count} personas}}",
   "@adminPeopleCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminOrganizationsCount": "{count, plural, =1{1 organización} other{{count} organizaciones}}",
   "@adminOrganizationsCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminTablesStatusBreakdown": "{active} activas · {delayed} retrasadas · {inactive} inactivas",
   "@adminTablesStatusBreakdown": {
-    "placeholders": { "active": { "type": "int" }, "delayed": { "type": "int" }, "inactive": { "type": "int" } }
+    "placeholders": {
+      "active": {
+        "type": "int"
+      },
+      "delayed": {
+        "type": "int"
+      },
+      "inactive": {
+        "type": "int"
+      }
+    }
   },
   "adminEmptyTitle": "Aún no hay {entity}",
   "@adminEmptyTitle": {
-    "placeholders": { "entity": { "type": "String" } }
+    "placeholders": {
+      "entity": {
+        "type": "String"
+      }
+    }
   },
   "adminEmptyMessage": "Crea la primera con el botón Crear para empezar a ver KPIs.",
   "adminNoResultsTitle": "Sin resultados",
   "adminNoResultsMessage": "Ningún elemento coincide con esta vista y estos filtros.",
   "adminRowsOfTotal": "{visible} de {total} · {selected, plural, =0{0 seleccionadas} =1{1 seleccionada} other{{selected} seleccionadas}}",
   "@adminRowsOfTotal": {
-    "placeholders": { "visible": { "type": "int" }, "total": { "type": "int" }, "selected": { "type": "int" } }
+    "placeholders": {
+      "visible": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "selected": {
+        "type": "int"
+      }
+    }
   },
   "adminDataUpdated": "Datos actualizados {time} · en línea",
   "@adminDataUpdated": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "adminDataSavedReadOnly": "Datos guardados · solo lectura",
   "adminColTable": "Mesa",
@@ -361,7 +472,11 @@
   "adminPersonKindUnassigned": "Sin asignar",
   "adminLateCount": "Tarde {count}",
   "@adminLateCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminAttendanceLow": "por debajo del umbral",
   "adminHealthActive": "Al día",
@@ -398,19 +513,35 @@
   "adminPaletteTables": "Mesas",
   "adminPaletteOpenView": "Abrir vista · {name}",
   "@adminPaletteOpenView": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminPaletteGoToOrganization": "Ir a {name}",
   "@adminPaletteGoToOrganization": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminPaletteGoToTable": "Ir a mesa {name}",
   "@adminPaletteGoToTable": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminPaletteNoResults": "Sin resultados para «{query}»",
   "@adminPaletteNoResults": {
-    "placeholders": { "query": { "type": "String" } }
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
   },
   "adminPaletteFooter": "↑ ↓ navegar · Enter ejecutar · Esc cerrar",
   "adminOrganizationTitle": "Organización",
@@ -420,25 +551,41 @@
   "adminDeactivate": "Desactivar",
   "adminPauseTitle": "Pausar {name}",
   "@adminPauseTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminPauseMessage": "Se detienen las sesiones y las nuevas invitaciones. Los datos y el historial se conservan y puedes reanudar cuando quieras.",
   "adminPauseConfirm": "Pausar organización",
   "adminResumeTitle": "Reanudar {name}",
   "@adminResumeTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminResumeMessage": "La organización vuelve a estar activa: las sesiones y las invitaciones se reanudan.",
   "adminDeactivateTitle": "Desactivar {name}",
   "@adminDeactivateTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminDeactivateWarningTitle": "Acción difícil de revertir",
   "adminDeactivateWarningDetail": "Nadie de esta organización podrá iniciar sesión. El historial y los informes se conservan.",
   "adminDeactivateConfirm": "Desactivar organización",
   "adminTypeNameToConfirm": "Escribe «{name}» para confirmar",
   "@adminTypeNameToConfirm": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminOrgPausedBannerTitle": "Organización pausada",
   "adminOrgPausedBannerDetail": "Las sesiones y las nuevas invitaciones están detenidas. Datos e historial se conservan. Se puede reanudar.",
@@ -446,15 +593,27 @@
   "adminOrgInactiveBannerDetail": "Nadie puede iniciar sesión en este espacio. El historial se conserva para auditoría.",
   "adminToastOrganizationPaused": "{name} pausada",
   "@adminToastOrganizationPaused": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastOrganizationResumed": "{name} reanudada",
   "@adminToastOrganizationResumed": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastOrganizationDeactivated": "{name} desactivada",
   "@adminToastOrganizationDeactivated": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastOrganizationCreated": "Organización creada",
   "adminToastOrganizationCreatedInvited": "Organización creada · invitación lista para compartir",
@@ -508,11 +667,19 @@
   "adminTableDelayedTitle": "Mesa retrasada",
   "adminTableDelayedDetail": "Última sesión el {date}; se espera una por semana.",
   "@adminTableDelayedDetail": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "adminTableNeedsPeople": "{count, plural, =1{Falta 1 persona} other{Faltan {count} personas}}",
   "@adminTableNeedsPeople": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminTableNeedsPeopleDetail": "Una mesa necesita de 3 a 9 personas incluyendo al facilitador.",
   "adminTableFullTitle": "Mesa llena (9/9)",
@@ -528,7 +695,11 @@
   "adminFieldDuration": "Duración",
   "adminMinutes": "{minutes} min",
   "@adminMinutes": {
-    "placeholders": { "minutes": { "type": "int" } }
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   },
   "adminScheduleCentral": "El horario lo controla la coordinación: el facilitador lo ve pero no lo puede cambiar.",
   "adminFacilitatorAndHistory": "Facilitador e historial",
@@ -538,7 +709,14 @@
   "adminNoHistory": "Aún no hay cambios en el historial.",
   "adminHistoryLeft": "{name} salió de la mesa ({reason})",
   "@adminHistoryLeft": {
-    "placeholders": { "name": { "type": "String" }, "reason": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
   },
   "adminLeftMoved": "movido a otra mesa",
   "adminLeftDeactivated": "desactivado",
@@ -551,63 +729,111 @@
   "adminNoMembersMessage": "Invita a la primera persona con el botón Agregar miembro.",
   "adminMemberSince": "Desde {date}",
   "@adminMemberSince": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "adminSeeAnswersOf": "Ver respuestas de {name}",
   "@adminSeeAnswersOf": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminChangeFacilitator": "Cambiar facilitador",
   "adminAssignFacilitator": "Asignar facilitador",
   "adminChangeFacilitatorConfirm": "Confirmar",
   "adminChangeFacilitatorCurrent": "Actual: {name}. El historial se conserva.",
   "@adminChangeFacilitatorCurrent": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminNewFacilitator": "Nuevo facilitador",
   "adminAlreadyInTable": "ya en la mesa",
   "adminKeepPreviousAsMember": "Dejar a {name} como miembro de la mesa",
   "@adminKeepPreviousAsMember": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminHistoryKept": "Nada se borra: el cambio queda en el historial.",
   "adminNoFacilitatorCandidates": "No hay personas disponibles",
   "adminNoFacilitatorCandidatesDetail": "Invita a una persona nueva como facilitador desde el formulario de la mesa.",
   "adminMoveTitle": "Mover a {name}",
   "@adminMoveTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminMoveMessage": "Sale de {code}. El historial viaja con la persona.",
   "@adminMoveMessage": {
-    "placeholders": { "code": { "type": "String" } }
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
   },
   "adminMoveDestination": "Mesa de destino",
   "adminMove": "Mover",
   "adminMoveNoTargets": "No hay otras mesas activas en esta organización.",
   "adminDeactivateMemberTitle": "Desactivar a {name}",
   "@adminDeactivateMemberTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminDeactivateMemberMessage": "Deja de contar en {code} y no podrá responder. No se borra nada: respuestas e historial se conservan.",
   "@adminDeactivateMemberMessage": {
-    "placeholders": { "code": { "type": "String" } }
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
   },
   "adminDeactivateMemberBelowMinimum": "La mesa quedará con {remaining, plural, =1{1 persona} other{{remaining} personas}}. El mínimo es 3 incluyendo al facilitador.",
   "@adminDeactivateMemberBelowMinimum": {
-    "placeholders": { "remaining": { "type": "int" } }
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
   },
   "adminToastFacilitatorChanged": "Facilitador actualizado",
   "adminToastMemberAdded": "{name} agregado a la mesa",
   "@adminToastMemberAdded": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastMemberMoved": "{name} movido de mesa",
   "@adminToastMemberMoved": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastMemberDeactivated": "{name} desactivado",
   "@adminToastMemberDeactivated": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastTableCreated": "Mesa creada",
   "adminToastTableUpdated": "Mesa actualizada",
@@ -646,16 +872,28 @@
   "adminReactivate": "Reactivar",
   "adminDeactivatePersonTitle": "Desactivar a {name}",
   "@adminDeactivatePersonTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminDeactivatePersonMessage": "Termina sus lugares en mesas, sus roles y sus invitaciones pendientes. No se borra nada: el historial se conserva.",
   "adminToastPersonDeactivated": "{name} desactivado",
   "@adminToastPersonDeactivated": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminToastPersonReactivated": "{name} reactivado",
   "@adminToastPersonReactivated": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminSectionRoleScope": "Rol y alcance",
   "adminSectionPerson": "Datos de la persona",
@@ -663,15 +901,27 @@
   "adminNoTablesForInvite": "No hay mesas disponibles para este rol",
   "adminSeatsOf": "Plazas de {code}",
   "@adminSeatsOf": {
-    "placeholders": { "code": { "type": "String" } }
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
   },
   "adminSeatsLeft": "{count, plural, =1{Queda 1 plaza} other{Quedan {count} plazas}}",
   "@adminSeatsLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "adminInviteCreatedTitle": "Invitación creada para {name}",
   "@adminInviteCreatedTitle": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "adminInviteCreatedDetail": "Comparte el enlace o el código. Al iniciar sesión con Google, Apple o Facebook se vincula su identidad.",
   "adminShareInvite": "Compartir invitación",
@@ -679,7 +929,11 @@
   "adminInviteQrLabel": "Código QR de la invitación",
   "adminInviteExpires": "Vence el {date}",
   "@adminInviteExpires": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "adminCopyLink": "Copiar enlace",
   "adminCopyCode": "Copiar código",
@@ -688,7 +942,17 @@
   "adminInviteAnother": "Invitar a otra persona",
   "adminInviteShareMessage": "Hola {name}, te invito a Gold Roundtables. Código: {code}. Entra aquí: {url}",
   "@adminInviteShareMessage": {
-    "placeholders": { "name": { "type": "String" }, "code": { "type": "String" }, "url": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
   },
   "adminErrorTableFull": "La mesa ya tiene 9 personas (incluido el facilitador). No se puede agregar otra.",
   "adminErrorDuplicateTableCode": "Ya existe una mesa con ese código en la organización. Usa otro.",
@@ -716,25 +980,45 @@
   "kpiTablesLegend": "activas · retrasadas · inactivas",
   "kpiTablesActive": "{count, plural, =1{1 activa} other{{count} activas}}",
   "@kpiTablesActive": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiTablesDelayed": "{count, plural, =1{1 retrasada} other{{count} retrasadas}}",
   "@kpiTablesDelayed": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiTablesInactive": "{count, plural, =1{1 inactiva} other{{count} inactivas}}",
   "@kpiTablesInactive": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiAllOrganizationsScope": "Todas las organizaciones",
   "kpiPeriodOf": "períodos de {weeks} semanas",
   "@kpiPeriodOf": {
-    "placeholders": { "weeks": { "type": "int" } }
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
   },
   "kpiPeriod": "Período",
   "kpiWeeks": "{weeks} semanas",
   "@kpiWeeks": {
-    "placeholders": { "weeks": { "type": "int" } }
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
   },
   "kpiModuleValue": "Módulo / valor",
   "kpiReportFilters": "Filtros del informe",
@@ -747,7 +1031,11 @@
   "kpiImprovementDetail": "seguimiento − inicial",
   "kpiLowTablesDetail": "{count, plural, =0{Ninguna mesa bajo 70 %} =1{1 mesa bajo 70 %} other{{count} mesas bajo 70 %}}",
   "@kpiLowTablesDetail": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiSyncedLateDetail": "respuestas cargadas tras la sesión",
   "kpiSeeDelayed": "Ver retrasadas",
@@ -756,28 +1044,51 @@
   "kpiTableView": "Tabla",
   "kpiExportCsvOf": "Exportar CSV de {title}",
   "@kpiExportCsvOf": {
-    "placeholders": { "title": { "type": "String" } }
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
   "kpiExported": "Archivo CSV listo",
   "kpiChartValuesPerWeek": "Valores completados por semana",
   "kpiInPeriod": "{count} en el período",
   "@kpiInPeriod": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiAttendanceSubtitle": "Promedio {average} · umbral {threshold} %",
   "@kpiAttendanceSubtitle": {
-    "placeholders": { "average": { "type": "String" }, "threshold": { "type": "int" } }
+    "placeholders": {
+      "average": {
+        "type": "String"
+      },
+      "threshold": {
+        "type": "int"
+      }
+    }
   },
   "kpiThreshold": "umbral {percent} %",
   "@kpiThreshold": {
-    "placeholders": { "percent": { "type": "int" } }
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   },
   "kpiChartImprovementByModule": "Mejora estimada por módulo",
   "kpiChartImprovementSubtitle": "Puntaje inicial → seguimiento (1–10, el 5 está bloqueado)",
   "kpiTablesByStatusSubtitle": "Por organización · activa / retrasada / inactiva",
   "kpiSyncedLateChartSubtitle": "Respuestas cargadas fuera de la ventana · {count} en total",
   "@kpiSyncedLateChartSubtitle": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiNoDataInScope": "Sin datos en este alcance.",
   "kpiNoSyncedLate": "Ninguna mesa tuvo sincronización tardía en este alcance.",
@@ -793,31 +1104,86 @@
   "kpiColSyncedLate": "Sincronizado tarde",
   "kpiTipWeekValues": "Semana del {week}: {count, plural, =1{1 valor} other{{count} valores}}",
   "@kpiTipWeekValues": {
-    "placeholders": { "week": { "type": "String" }, "count": { "type": "int" } }
+    "placeholders": {
+      "week": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiTipWeekAttendance": "Semana del {week}: {value}{low, plural, =1{ (bajo el umbral)} other{}}",
   "@kpiTipWeekAttendance": {
-    "placeholders": { "week": { "type": "String" }, "value": { "type": "String" }, "low": { "type": "int" } }
+    "placeholders": {
+      "week": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "low": {
+        "type": "int"
+      }
+    }
   },
   "kpiTipInitial": "{label} · inicial {value}",
   "@kpiTipInitial": {
-    "placeholders": { "label": { "type": "String" }, "value": { "type": "String" } }
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "kpiTipFollowUp": "{label} · seguimiento {value} ({delta} pts)",
   "@kpiTipFollowUp": {
-    "placeholders": { "label": { "type": "String" }, "value": { "type": "String" }, "delta": { "type": "String" } }
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
   },
   "kpiTipStatus": "{org} · {status}: {count}",
   "@kpiTipStatus": {
-    "placeholders": { "org": { "type": "String" }, "status": { "type": "String" }, "count": { "type": "int" } }
+    "placeholders": {
+      "org": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiTipLate": "{code}: {count, plural, =1{1 respuesta tarde} other{{count} respuestas tarde}}",
   "@kpiTipLate": {
-    "placeholders": { "code": { "type": "String" }, "count": { "type": "int" } }
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "kpiDrillTitle": "Desglose · {level}",
   "@kpiDrillTitle": {
-    "placeholders": { "level": { "type": "String" } }
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
   },
   "kpiDrillSubtitle": "Agregado → organización → mesa → miembro. Pulsa una fila para bajar un nivel.",
   "kpiDrillCountry": "País",
@@ -839,7 +1205,14 @@
   "kpiMemberDeniedMessage": "Tu rol no puede ver a esta persona. El intento quedó registrado.",
   "kpiSessionsOf": "{present} de {expected} sesiones",
   "@kpiSessionsOf": {
-    "placeholders": { "present": { "type": "int" }, "expected": { "type": "int" } }
+    "placeholders": {
+      "present": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
   },
   "kpiIndividualAnswers": "Respuestas individuales",
   "kpiRevealAnswers": "Mostrar respuestas (se registra)",
@@ -856,7 +1229,11 @@
   "auditEmptyMessage": "No hay registros con estos filtros.",
   "auditFooter": "{count, plural, =1{1 evento} other{{count} eventos}} · el registro no se puede editar ni borrar",
   "@auditFooter": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "auditLoadMore": "Cargar más eventos",
   "auditSystemActor": "Sistema",
@@ -903,12 +1280,9 @@
   "auditEntityInvite": "Invitación",
   "auditEntitySession": "Sesión",
   "auditEntityRole": "Rol",
-  "galleryErrorMessage": "No se pudo guardar. Tus respuestas siguen en este teléfono."
-  ,
-
+  "galleryErrorMessage": "No se pudo guardar. Tus respuestas siguen en este teléfono.",
   "navSettings": "Ajustes",
   "contextChipPlatform": "Plataforma",
-
   "homeNoContextTitle": "Elige cómo quieres entrar",
   "homeNoContextMessage": "Todavía no tienes una mesa u organización activa. Cuando entres con una invitación, aparecerá aquí.",
   "homeNoSessionTitle": "No hay una sesión programada",
@@ -917,19 +1291,43 @@
   "homeSessionOpenNow": "En curso",
   "homeSessionDay": "{date}",
   "@homeSessionDay": {
-    "placeholders": { "date": { "type": "DateTime", "format": "EEEE d 'de' MMMM", "isCustomDateFormat": "true" } }
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "EEEE d 'de' MMMM",
+        "isCustomDateFormat": "true"
+      }
+    }
   },
   "homeSessionWhen": "{day} · {time}",
   "@homeSessionWhen": {
-    "placeholders": { "day": { "type": "String" }, "time": { "type": "String" } }
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "homeValueLine": "Valor {number} · {name}",
   "@homeValueLine": {
-    "placeholders": { "number": { "type": "int" }, "name": { "type": "String" } }
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeFollowUpLine": "Seguimiento de: {name}",
   "@homeFollowUpLine": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeOpenSession": "Abrir sesión",
   "homeContinueSession": "Continuar sesión",
@@ -946,11 +1344,25 @@
   "homeProgressEmpty": "Aún no hay valores completados.",
   "homeProgressValues": "{done} de {total} valores",
   "@homeProgressValues": {
-    "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "homeModuleLabel": "Módulo {number} · {name}",
   "@homeModuleLabel": {
-    "placeholders": { "number": { "type": "int" }, "name": { "type": "String" } }
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeKpiKicker": "Resumen de tus mesas",
   "homeKpiEmpty": "Todavía no hay datos para mostrar.",
@@ -962,9 +1374,12 @@
   "homeKpiViewAll": "Ver el tablero completo",
   "homeInvitesPending": "{count, plural, =0{No hay invitaciones pendientes} =1{1 invitación pendiente} other{{count} invitaciones pendientes}}",
   "@homeInvitesPending": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "notificationsSessionReminder": "Tu sesión de la mesa es pronto.",
   "notificationsCommitmentNudge": "Recuerda tu compromiso de esta semana.",
   "notificationsStageOpened": "El facilitador abrió una nueva etapa.",
@@ -972,7 +1387,11 @@
   "notificationsUnsyncedTitle": "Tienes respuestas sin sincronizar",
   "notificationsUnsyncedDetail": "{count, plural, =1{1 cambio lleva más de 24 horas sin enviarse} other{{count} cambios llevan más de 24 horas sin enviarse}}. Conéctate a internet para enviarlos.",
   "@notificationsUnsyncedDetail": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "notificationsTitle": "Notificaciones",
   "notificationsIntro": "Elige qué avisos quieres recibir en este dispositivo.",
@@ -989,7 +1408,6 @@
   "notificationsAskTitle": "Activa los avisos",
   "notificationsAskDetail": "Así te recordamos la sesión y tu compromiso a tiempo.",
   "notificationsAllow": "Permitir avisos",
-
   "settingsTitle": "Ajustes",
   "settingsOfflineDetail": "tu perfil se puede editar con internet",
   "settingsProfileUnavailable": "Perfil no disponible",
@@ -999,19 +1417,29 @@
   "settingsAboutKicker": "Acerca de",
   "settingsVersion": "Versión {version} ({build})",
   "@settingsVersion": {
-    "placeholders": { "version": { "type": "String" }, "build": { "type": "String" } }
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
   },
   "settingsSignOut": "Cerrar sesión",
   "settingsSignOutFailed": "No pudimos cerrar tu sesión. Inténtalo de nuevo.",
   "settingsSignOutPendingTitle": "Tienes cambios sin enviar",
   "settingsSignOutPendingDetail": "{count, plural, =1{1 cambio se enviará} other{{count} cambios se enviarán}} cuando vuelvas a entrar con tu cuenta y tengas internet.",
   "@settingsSignOutPendingDetail": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "settingsSignOutConfirmTitle": "¿Cerrar sesión?",
   "settingsSignOutConfirmMessage": "Tendrás que volver a entrar para ver tus mesas.",
   "settingsSignOutConfirmPending": "Tus cambios sin enviar se guardan en este dispositivo y se enviarán cuando vuelvas a entrar con la misma cuenta.",
-
   "profileEditTitle": "Mis datos",
   "profileEditIntro": "Estos datos los ve tu facilitador o coordinador. No los verificamos.",
   "profileEditFirstName": "Nombre",
@@ -1021,6 +1449,711 @@
   "profileEditPhoneHelper": "Con el código de país, por ejemplo +52 55 1234 5678",
   "profileEditEmailNote": "Correo: {email}. Para cambiarlo, pídeselo a tu coordinador.",
   "@profileEditEmailNote": {
-    "placeholders": { "email": { "type": "String" } }
-  }
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWelcome": "Te damos la bienvenida a Gold Roundtables",
+  "homeFoundationReady": "La base de la aplicación está lista. Aquí aparecerán tus mesas y sesiones.",
+  "sessionSharedNavLabel": "Sesión",
+  "sessionSharedLoading": "Preparando tu mesa…",
+  "sessionSharedPillLive": "En vivo",
+  "sessionSharedPillOnline": "En línea",
+  "sessionSharedPillOffline": "Sin internet",
+  "sessionSharedPillSyncing": "Sincronizando",
+  "sessionSharedPillPending": "Por sincronizar",
+  "sessionSharedTimerCaption": "Tiempo · informativo",
+  "sessionSharedTimerOver": "Pasó de {minutes} min · solo informativo",
+  "@sessionSharedTimerOver": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSharedTimerLimit": "/ {limit}",
+  "@sessionSharedTimerLimit": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionSharedUnavailableTitle": "Aún no hay una sesión en este teléfono",
+  "sessionSharedUnavailableMessage": "Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.",
+  "sessionSharedNotTodayTitle": "Hoy no hay sesión",
+  "sessionSharedNotTodayMessage": "Tu próxima sesión es {when}.",
+  "@sessionSharedNotTodayMessage": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionSharedCancelledTitle": "Sesión cancelada",
+  "sessionSharedCancelledMessage": "Esta sesión se canceló. Tu facilitador te avisará la nueva fecha.",
+  "sessionSharedValueLabel": "Valor {number} · {name}",
+  "@sessionSharedValueLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionSharedNoticeSavedOnDevice": "Guardado en este teléfono · pendiente de sincronizar",
+  "sessionSharedNoticeReconnected": "Conexión restablecida · sincronizando…",
+  "sessionSharedStaleWarning": "Llevas {hours} h sin sincronizar. Tu teléfono puede estar hasta 7 días sin conexión. Conéctate pronto para no perder tus respuestas.",
+  "@sessionSharedStaleWarning": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSharedRejectedTitle": "Algunas respuestas no se pudieron enviar",
+  "sessionSharedSyncNow": "Sincronizar ahora",
+  "sessionSharedAttendanceAuto": "Asistencia automática",
+  "sessionBoardFacilitatorLabel": "Facilitador",
+  "sessionBoardTabBoard": "Dirigir la mesa",
+  "sessionBoardTabMyAnswers": "Mis respuestas",
+  "sessionBoardTabMissing": "{count, plural, =1{1 paso pendiente} other{{count} pasos pendientes}}",
+  "@sessionBoardTabMissing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardStageFollowUpShort": "Seguim.",
+  "sessionBoardStageOpenTitle": "Apertura",
+  "sessionBoardStageAttendanceTitle": "Asistencia",
+  "sessionBoardStageValueTitle": "Valor actual",
+  "sessionBoardStageNotYet": "Aún no: usa el botón de abajo para abrir esa etapa.",
+  "sessionBoardStageSemantics": "Etapa {number}: {name} ({state})",
+  "@sessionBoardStageSemantics": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardStateCurrent": "actual",
+  "sessionBoardStateDone": "completada",
+  "sessionBoardStatePending": "pendiente",
+  "sessionBoardKickerTableIsAt": "La mesa está en",
+  "sessionBoardKickerSession": "Sesión",
+  "sessionBoardClosedTitle": "Cerrada",
+  "sessionBoardViewingPrefix": "Viendo: {stage} · {detail}",
+  "@sessionBoardViewingPrefix": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardBackToCurrent": "Viendo {stage} · volver a la etapa actual",
+  "@sessionBoardBackToCurrent": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardSubtitleOpen": "{taken} de {max} lugares (facilitador incluido)",
+  "@sessionBoardSubtitleOpen": {
+    "placeholders": {
+      "taken": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSubtitleAttendance": "{done} de {total} con asistencia marcada",
+  "@sessionBoardSubtitleAttendance": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSubtitleFollowUp": "{done} de {total} respondieron{noPrevious, plural, =0{} =1{ · 1 sin compromiso previo} other{ · {noPrevious} sin compromiso previo}}",
+  "@sessionBoardSubtitleFollowUp": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "noPrevious": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSubtitleValue": "{done} de {total} completaron Valor actual{pending, plural, =0{} =1{ · 1 con compromiso pendiente} other{ · {pending} con compromiso pendiente}}",
+  "@sessionBoardSubtitleValue": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "pending": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSubtitleAnswersClosed": "Respuestas cerradas · falta cerrar la sesión · {done} de {total}",
+  "@sessionBoardSubtitleAnswersClosed": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSubtitleClosed": "Sesión cerrada · {done} de {total} respuestas recibidas",
+  "@sessionBoardSubtitleClosed": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardOfflineSubtitle": "Sin internet: ves lo tuyo; el resto llega al sincronizar",
+  "sessionBoardNoLiveData": "Sin datos en vivo",
+  "sessionBoardCaptionSeats": "lugares",
+  "sessionBoardCaptionWithList": "con lista",
+  "sessionBoardCaptionAnswered": "respondieron",
+  "sessionBoardCaptionCompleted": "completaron",
+  "sessionBoardCaptionResponses": "respuestas",
+  "sessionBoardTableSemantics": "Mesa redonda: {count} de {max} lugares",
+  "@sessionBoardTableSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSeatUnmarked": "Sin marcar",
+  "sessionBoardSeatAutoChip": "AUTO",
+  "sessionBoardSeatAnswered": "Respondió",
+  "sessionBoardSeatPending": "Pendiente",
+  "sessionBoardSeatOffline": "Sin red",
+  "sessionBoardSeatSyncing": "Sincroniz.",
+  "sessionBoardSeatSaved": "Guardado",
+  "sessionBoardSeatSyncedLate": "Llegó tarde",
+  "sessionBoardSeatSkipped": "Omitido",
+  "sessionBoardSeatMissed": "No respondió",
+  "sessionBoardSeatProgress": "{done}/{total}",
+  "@sessionBoardSeatProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardLegendTitle": "Leyenda de la mesa",
+  "sessionBoardLegendOffline": "Sin red / guardado en su teléfono",
+  "sessionBoardLegendSyncedLate": "Sincronizó tarde",
+  "sessionBoardLegendNote": "Corona = facilitador (también responde) · ●● = reflexión y compromiso dentro de Valor",
+  "sessionBoardDockOpen": "Abrir sesión",
+  "sessionBoardDockFollowUp": "Abrir seguimiento",
+  "sessionBoardDockValue": "Abrir valor actual",
+  "sessionBoardDockCloseAnswers": "Cerrar respuestas",
+  "sessionBoardDockCloseSession": "Cerrar sesión",
+  "sessionBoardDockAnnounceOpen": "Anunciar: abrir sesión",
+  "sessionBoardDockAnnounceFollowUp": "Anunciar: seguimiento",
+  "sessionBoardDockAnnounceValue": "Anunciar: valor actual",
+  "sessionBoardDockAnnounceCloseAnswers": "Anunciar: cerrar respuestas",
+  "sessionBoardSessionClosed": "Sesión cerrada",
+  "sessionBoardMarkEveryonePresent": "Marcar a todos Presente",
+  "sessionBoardAnswerMyself": "{count, plural, =1{Responder yo · falta 1 paso} other{Responder yo · faltan {count} pasos}}",
+  "@sessionBoardAnswerMyself": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardHintOpen": "Al abrir, los miembros ven la sesión en vivo.",
+  "sessionBoardHintAttendance": "Marca a cada persona tocando su asiento.",
+  "sessionBoardHintFollowUp": "Los miembros esperan hasta que abras la etapa.",
+  "sessionBoardHintValue": "Valor actual incluye el compromiso. Al cerrar respuestas, los teléfonos en línea dejan de enviar.",
+  "sessionBoardHintClosing": "Respuestas cerradas. Cierra la sesión para enviar el resumen.",
+  "sessionBoardHintVerbal": "Sin internet: los botones son guía verbal; cada teléfono avanza a su ritmo.",
+  "sessionBoardHintClosedPending": "Cerrada en este teléfono · pendiente de sincronizar",
+  "sessionBoardHintClosedSynced": "Cierre sincronizado · los teléfonos que lleguen después se marcan “tarde”.",
+  "sessionBoardHintNotYet": "La sesión se puede abrir desde 12 horas antes: {when}.",
+  "@sessionBoardHintNotYet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardVerbalTitle": "Guía verbal",
+  "sessionBoardVerbalOpen": "Abrimos la mesa. Abran la app y esperen mis indicaciones.",
+  "sessionBoardVerbalAttendance": "Yo marco la asistencia en mi teléfono. Digan “presente” cuando los nombre.",
+  "sessionBoardVerbalFollowUp": "Abran Seguimiento: cuenten qué hicieron con su compromiso y califíquense en {previous}.",
+  "@sessionBoardVerbalFollowUp": {
+    "placeholders": {
+      "previous": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardVerbalValue": "Abran Valor actual: {current}. Respondan, pónganse un puntaje (sin 5) y escriban su compromiso: qué, cuándo y cómo lo medirán.",
+  "@sessionBoardVerbalValue": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardVerbalClosing": "Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.",
+  "sessionBoardAttendanceMissing": "Falta marcar asistencia: {names}.",
+  "@sessionBoardAttendanceMissing": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardAttendanceTitle": "Asistencia · {name}",
+  "@sessionBoardAttendanceTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardAttendanceHint": "Toca una opción. Puedes cambiarla después.",
+  "sessionBoardAttendanceUnmarked": "Asistencia sin marcar",
+  "sessionBoardAttendanceAutoNote": "asistencia automática",
+  "sessionBoardNoPreviousNote": "sin compromiso previo",
+  "sessionBoardGoToMyAnswers": "Ir a Mis respuestas",
+  "sessionBoardGoToTable": "Ir a la mesa",
+  "sessionBoardMiniStage": "La mesa está en: {stage}",
+  "@sessionBoardMiniStage": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardMiniStageWithCount": "La mesa está en: {stage} · {done}/{total}",
+  "@sessionBoardMiniStageWithCount": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardConfirmCloseAnswersTitle": "¿Cerrar respuestas ya?",
+  "sessionBoardConfirmOpenValueTitle": "¿Abrir valor actual ya?",
+  "sessionBoardConfirmCloseTitle": "¿Cerrar la sesión?",
+  "sessionBoardConfirmMineTitle": "Tus propias respuestas están incompletas",
+  "sessionBoardConfirmMineBody": "Falta: {steps}. Si cierras ahora, ya no podrás enviarlas.",
+  "@sessionBoardConfirmMineBody": {
+    "placeholders": {
+      "steps": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardConfirmEveryoneAnswered": "Todos los demás ya respondieron.",
+  "sessionBoardConfirmPending": "Aún no responden: {names}.{mode, select, close{} other{ Podrán volver a la etapa anterior hasta que cierres respuestas.}}",
+  "@sessionBoardConfirmPending": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardConfirmCloseBody": "Se envía el resumen a la organización. Si algún teléfono sin red responde después, sus respuestas se aceptan y quedan marcadas “Sincronizado tarde”.",
+  "sessionBoardConfirmCloseIncomplete": "{count, plural, =1{Hay 1 persona con respuestas incompletas.} other{Hay {count} personas con respuestas incompletas.}}",
+  "@sessionBoardConfirmCloseIncomplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardAnswerNow": "Responder yo ahora",
+  "sessionBoardWait": "Esperar",
+  "sessionBoardCloseAnyway": "Cerrar de todos modos",
+  "sessionBoardOpenNow": "Abrir ahora",
+  "sessionBoardChipCurrent": "Actual",
+  "sessionBoardChipPrevious": "Anterior",
+  "sessionBoardInfoTitle": "Sesión de hoy",
+  "sessionBoardInfoTable": "Mesa",
+  "sessionBoardInfoOrganization": "Organización",
+  "sessionBoardInfoScheduled": "Programada",
+  "sessionBoardInfoMaxMinutes": "{minutes} min máx.",
+  "@sessionBoardInfoMaxMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardInfoCurrentValue": "Valor actual",
+  "sessionBoardInfoPreviousValue": "Valor anterior",
+  "sessionBoardInfoSeats": "Lugares",
+  "sessionBoardInfoSeatsValue": "{taken} de {max} (facilitador incluido)",
+  "@sessionBoardInfoSeatsValue": {
+    "placeholders": {
+      "taken": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardActivityTitle": "En vivo · actividad",
+  "sessionBoardActivityEmpty": "Aún no hay actividad. Abre la sesión para empezar.",
+  "sessionBoardActivityAnswered": "{name} respondió {step}",
+  "@sessionBoardActivityAnswered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardActivityAttendance": "Asistencia de {name} marcada",
+  "@sessionBoardActivityAttendance": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardActivityAutoAttendance": "{name} pasó a Presente (asistencia automática)",
+  "@sessionBoardActivityAutoAttendance": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardActivityLate": "sincronizado tarde",
+  "sessionBoardSummaryPresent": "Presentes (incluye facilitador)",
+  "sessionBoardSummaryPresentWithAbsent": "{count, plural, =1{Presentes · 1 ausente} other{Presentes · {count} ausentes}}",
+  "@sessionBoardSummaryPresentWithAbsent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSummaryDuration": "Duración (meta {minutes}:00)",
+  "@sessionBoardSummaryDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSummaryFollowUp": "Seguimiento · prom. {average}",
+  "@sessionBoardSummaryFollowUp": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardSummaryValue": "Valor actual · prom. {average}",
+  "@sessionBoardSummaryValue": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionBoardSummaryCommitments": "Compromisos recibidos (parte de Valor actual)",
+  "sessionBoardSummaryAutoTitle": "Asistencia automática",
+  "sessionBoardSummaryAutoBody": "{count, plural, =1{1 persona estaba Ausente, respondió y pasó a Presente.} other{{count} personas estaban Ausente, respondieron y pasaron a Presente.}}",
+  "@sessionBoardSummaryAutoBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSummaryLateBody": "{count, plural, =1{1 respuesta llegó después del cierre. Se aceptó y quedó marcada.} other{{count} respuestas llegaron después del cierre. Se aceptaron y quedaron marcadas.}}",
+  "@sessionBoardSummaryLateBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSummaryUnsyncedTitle": "{count, plural, =1{Falta 1 respuesta por sincronizar} other{Faltan {count} respuestas por sincronizar}}",
+  "@sessionBoardSummaryUnsyncedTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionBoardSummaryUnsyncedBody": "Están en teléfonos sin conexión; el resumen se actualizará cuando lleguen.",
+  "sessionBoardErrorTransition": "Ese cambio de etapa no es posible ahora. Revisa el estado de la sesión.",
+  "sessionBoardErrorFinalized": "La sesión ya está cerrada.",
+  "sessionBoardErrorNotFacilitator": "Solo el facilitador de esta mesa puede controlar la sesión.",
+  "sessionMemberTableIs": "La mesa está en:",
+  "sessionMemberPaceOwn": "A tu ritmo",
+  "sessionMemberPeersLabel": "La mesa",
+  "sessionMemberYouMark": "TÚ",
+  "sessionMemberFacilitatorSuffix": "facilitador",
+  "sessionMemberPeerPresent": "{name}, presente",
+  "sessionMemberPeerLate": "{name}, llegó tarde",
+  "sessionMemberPeerExcused": "{name}, justificado",
+  "sessionMemberPeerAbsent": "{name}, ausente",
+  "sessionMemberPeerUnmarked": "{name}, sin marcar",
+  "@sessionMemberPeerPresent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@sessionMemberPeerLate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@sessionMemberPeerExcused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@sessionMemberPeerAbsent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@sessionMemberPeerUnmarked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberUnmarked": "Sin marcar",
+  "sessionMemberLobbyTitle": "Esperando a tu facilitador",
+  "sessionMemberLobbyMessage": "La mesa todavía no está abierta. Cuando se abra, verás aquí a tu mesa en vivo.",
+  "sessionMemberLobbyFacilitatorTitle": "Aún no abres la sesión",
+  "sessionMemberLobbyFacilitatorMessage": "Abre la sesión en “Dirigir la mesa”. Luego podrás responder como un miembro más.",
+  "sessionMemberAttendanceKicker": "Asistencia",
+  "sessionMemberAttendanceTitle": "Tu facilitador está pasando lista",
+  "sessionMemberAttendanceFacilitatorTitle": "Estás pasando lista",
+  "sessionMemberAttendanceUnmarked": "Aún sin marcar",
+  "sessionMemberAttendanceWait": "Espera a que te nombren.",
+  "sessionMemberAttendanceAbsentHint": "Si respondes igualmente, pasarás a Presente al sincronizar.",
+  "sessionMemberAttendanceOkHint": "Perfecto. El seguimiento se abre en un momento.",
+  "sessionMemberAttendanceFacilitatorHint": "Como facilitador quedas Presente. Marca a los demás en “Dirigir la mesa”.",
+  "sessionMemberStepFollowUp": "Seguim.",
+  "sessionMemberStepValue": "Valor",
+  "sessionMemberStepCommitment": "Compromiso",
+  "sessionMemberChipDone": "Listo",
+  "sessionMemberChipNow": "Ahora",
+  "sessionMemberChipMissing": "Falta",
+  "sessionMemberChipClosed": "Cerrado",
+  "sessionMemberChipNotYet": "Aún no",
+  "sessionMemberChipSkipped": "Omitido",
+  "sessionMemberChipSemantics": "{step}: {state}",
+  "@sessionMemberChipSemantics": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberStepsLabel": "Tus etapas",
+  "sessionMemberValueIncludesCommitment": "Valor actual incluye tu compromiso (no es una etapa aparte).",
+  "sessionMemberFollowUpKicker": "Seguimiento · Valor {number}",
+  "@sessionMemberFollowUpKicker": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionMemberPreviousCommitmentKicker": "Tu compromiso de la semana pasada",
+  "sessionMemberHowItWent": "¿Cómo te fue?",
+  "sessionMemberStatusKept": "Lo cumplí",
+  "sessionMemberStatusPartial": "Cumplí una parte",
+  "sessionMemberStatusNotKept": "No pude cumplirlo",
+  "sessionMemberFollowUpNoteLabel": "Cuéntanos en una frase (opcional)",
+  "sessionMemberFollowUpScoreLabel": "¿Cómo te calificas hoy en {value}?",
+  "@sessionMemberFollowUpScoreLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberFollowUpSend": "Enviar seguimiento",
+  "sessionMemberNoPreviousTitle": "No tienes compromiso previo",
+  "sessionMemberNoPreviousMessage": "La semana pasada no estuviste en la mesa, así que no hay nada que revisar. ¡Qué bueno verte hoy!",
+  "sessionMemberFirstSessionTitle": "Es la primera sesión de tu mesa",
+  "sessionMemberFirstSessionMessage": "Todavía no hay un compromiso que revisar. ¡Empecemos!",
+  "sessionMemberReflectionKicker": "Valor actual · Valor {number} · parte 1 de 2",
+  "@sessionMemberReflectionKicker": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionMemberReflectionHelper": "El contenido está en tu folleto; aquí solo anotas tus respuestas.",
+  "sessionMemberReflectionScoreLabel": "Tu puntaje inicial en {value}",
+  "@sessionMemberReflectionScoreLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberReflectionSend": "Enviar y seguir al compromiso",
+  "sessionMemberCommitmentKicker": "Valor actual · parte 2 de 2",
+  "sessionMemberCommitmentTitle": "Tu compromiso de esta semana",
+  "sessionMemberCommitmentHelper": "Una sola acción concreta y medible: qué haré, cuándo y cómo lo mediré.",
+  "sessionMemberWhatLabel": "Qué haré",
+  "sessionMemberWhatHint": "Ej.: Llamar a mi abuela 2 veces",
+  "sessionMemberWhatExamplesKicker": "¿Sin ideas? Toca un ejemplo",
+  "sessionMemberWhatExample1": "Llamar a mi abuela 2 veces",
+  "sessionMemberWhatExample2": "Ordenar mi cuarto cada noche",
+  "sessionMemberWhatExample3": "Terminar mi tarea con 30 minutos diarios",
+  "sessionMemberWhenLabel": "Cuándo",
+  "sessionMemberWhenEveryDay": "Todos los días",
+  "sessionMemberWhenMondayThursday": "Lunes y jueves",
+  "sessionMemberWhenThisWeek": "Esta semana",
+  "sessionMemberWhenBeforeFriday": "Antes del viernes",
+  "sessionMemberHowLabel": "Cómo lo mediré",
+  "sessionMemberHowCount": "Cuántas veces lo hice",
+  "sessionMemberHowYesNo": "Sí o no cada día",
+  "sessionMemberHowSunday": "Lo reviso el domingo",
+  "sessionMemberHowTell": "Se lo cuento a la mesa",
+  "sessionMemberCommitmentSend": "Enviar mi compromiso",
+  "sessionMemberErrorAnswer": "Escribe una respuesta corta.",
+  "sessionMemberErrorTooShort": "Muy corta. Cuenta un poco más.",
+  "sessionMemberErrorScore": "Elige tu puntaje de 1 a 10 (el 5 no se puede).",
+  "sessionMemberErrorStatus": "Elige cómo te fue con tu compromiso.",
+  "sessionMemberErrorWhat": "Escribe una acción concreta para esta semana.",
+  "sessionMemberErrorWhatShort": "Muy corta. Cuenta qué harás y cuánto.",
+  "sessionMemberErrorWhen": "Elige cuándo lo harás.",
+  "sessionMemberErrorHow": "Elige cómo lo vas a medir.",
+  "sessionMemberLockedTitle": "Etapa cerrada",
+  "sessionMemberLockedMemberMessage": "Tu facilitador ya cerró las respuestas.",
+  "sessionMemberLockedFacilitatorMessage": "Cerraste las respuestas.",
+  "sessionMemberDockSend": "Enviar",
+  "sessionMemberDockContinue": "Seguir",
+  "sessionMemberDockSaved": "Guardado",
+  "sessionMemberDockSentWaiting": "Enviado · esperando a la mesa",
+  "sessionMemberDockReadyWaiting": "Listo · esperando a la mesa",
+  "sessionMemberDockClosed": "Cerrado",
+  "sessionMemberSentLive": "Enviado.",
+  "sessionMemberSentWaitingFacilitator": "Enviado. Falta que el facilitador cierre las respuestas.",
+  "sessionMemberSavedOffline": "Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.",
+  "sessionMemberRecapKickerFinished": "Terminaste",
+  "sessionMemberRecapKickerPending": "Resumen",
+  "sessionMemberRecapTitleFacilitator": "Tus respuestas están completas",
+  "sessionMemberRecapTitleLive": "Esperando el cierre de la mesa",
+  "sessionMemberRecapTitleOffline": "Todo guardado en tu teléfono",
+  "sessionMemberRecapTitlePending": "Tienes etapas pendientes",
+  "sessionMemberRecapOfflineInfo": "Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.",
+  "sessionMemberRecapAnswersClosed": "Tu facilitador cerró las respuestas. Falta que cierre la sesión.",
+  "sessionMemberResultFollowUp": "Seguimiento · {value}",
+  "@sessionMemberResultFollowUp": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberResultFollowUpSkipped": "Sin compromiso previo (omitido)",
+  "sessionMemberResultInitialScore": "Valor actual · puntaje inicial",
+  "sessionMemberResultCommitment": "Mi compromiso",
+  "sessionMemberResultsEmpty": "Aún no hay respuestas guardadas.",
+  "sessionMemberSummaryKicker": "Sesión cerrada",
+  "sessionMemberSummaryThanks": "Gracias, {name}",
+  "@sessionMemberSummaryThanks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionMemberSummaryAttendance": "Tu asistencia",
+  "sessionMemberSummaryAutomatic": "automática",
+  "sessionMemberSummaryUnanswered": "Quedaron etapas sin responder. Ya no se pueden enviar desde la mesa en vivo.",
+  "sessionMemberSyncPendingDetailOffline": "Se enviará cuando tengas internet.",
+  "sessionMemberSyncSyncedDetail": "Tus respuestas ya están en la mesa.",
+  "sessionMemberSyncLateDetail": "Llegó después del cierre de la sesión: se aceptó y quedó marcado.",
+  "sessionMemberSyncOfflineTitle": "Sin internet · todo se guarda en este teléfono",
+  "sessionMemberSyncOfflineFacilitator": "Tus respuestas se sincronizan igual que las de un miembro.",
+  "sessionMemberSyncOfflineMember": "Tu facilitador te guía de palabra. Sigue a tu ritmo.",
+  "sessionMemberAutoPendingTitle": "Te marcaron Ausente.",
+  "sessionMemberAutoPendingDetail": "Como respondiste, tu asistencia pasará a Presente al sincronizar.",
+  "sessionMemberAutoDoneTitle": "Asistencia automática",
+  "sessionMemberAutoDoneDetail": "Pasaste de Ausente a Presente porque respondiste.",
+  "sessionMemberAbsentInfo": "Estás marcado como Ausente. Si respondes, pasarás a Presente al sincronizar.",
+  "sessionMemberToastSent": "Enviado",
+  "sessionMemberToastFailed": "No se pudo guardar. Inténtalo de nuevo.",
+  "sessionMemberOfflineBannerDetail": "todo se guarda en este teléfono"
 }

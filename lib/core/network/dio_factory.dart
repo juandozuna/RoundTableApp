@@ -9,6 +9,12 @@ abstract final class DioFactory {
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 30);
 
+  /// Used when `SUPABASE_URL` is not configured, so the dependency graph
+  /// (the sync uploader needs a client at startup) still builds; calls then
+  /// fail as network errors.
+  static const String unconfiguredBaseUrl =
+      'http://supabase.unconfigured.invalid';
+
   static Dio create({
     required String baseUrl,
     required String apiKey,
@@ -16,7 +22,9 @@ abstract final class DioFactory {
   }) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: Uri.tryParse(baseUrl)?.hasScheme ?? false
+            ? baseUrl
+            : unconfiguredBaseUrl,
         connectTimeout: connectTimeout,
         receiveTimeout: receiveTimeout,
         contentType: Headers.jsonContentType,

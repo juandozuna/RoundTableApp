@@ -7,6 +7,8 @@ import '../features/home/home_router.dart';
 import '../features/home/home_routes.dart';
 import '../features/kpis/kpis_router.dart';
 import '../features/notifications/notifications_router.dart';
+import '../features/session/data/local/session_sync_schema.dart';
+import '../features/session/session_router.dart';
 import '../features/settings/settings_router.dart';
 import '../features/shell/shell_router.dart';
 
@@ -25,7 +27,10 @@ List<FeatureRouter> buildFeatureRouters(AppConfig config) => [
   HomeFeatureRouter(includeComponentGallery: !config.isProduction),
   const NotificationsFeatureRouter(),
   const SettingsFeatureRouter(),
+  const SessionFeatureRouter(),
 ];
 
 /// PowerSync tables of every offline-first feature (session).
-const List<SyncSchemaContribution> syncSchemaContributions = [];
+const List<SyncSchemaContribution> syncSchemaContributions = [
+  SessionSyncSchema(),
+];
