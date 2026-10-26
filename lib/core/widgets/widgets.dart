@@ -9,6 +9,7 @@ export 'app_icon_button.dart';
 export 'app_message.dart';
 export 'app_navigation.dart';
 export 'app_scaffold.dart';
+export 'app_switch_tile.dart';
 export 'app_text_button.dart';
 export 'app_toast.dart';
 export 'context_chip.dart';

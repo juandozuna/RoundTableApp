@@ -10,7 +10,7 @@ import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../shell_routes.dart';
+import '../../../../home/home_routes.dart';
 
 /// Dev-only catalogue of every shared widget, in light and dark, for design
 /// review. Demo state is ephemeral widget state; no business logic here.
@@ -62,7 +62,7 @@ class _ComponentGalleryPageState extends State<ComponentGalleryPage> {
       child: Builder(
         builder: (context) => AppScaffold(
           title: context.l10n.galleryTitle,
-          backFallbackLocation: ShellRoutes.home,
+          backFallbackLocation: HomeRoutes.home,
           actions: [_buildThemeToggle(context, dark)],
           body: ListView(
             padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
