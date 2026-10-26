@@ -255,17 +255,56 @@ export class App {
     return path;
   }
 
+  /**
+   * Cuts (or restores) the browser's network for this context: the page and the PowerSync worker.
+   * CDP's emulation is per target, and the sync stream lives in a worker, so both are covered.
+   */
   async setOffline(offline) {
-    const client = await this.page.createCDPSession();
-    await client.send('Network.enable');
-    await client.send('Network.emulateNetworkConditions', {
-      offline,
-      latency: 0,
-      downloadThroughput: -1,
-      uploadThroughput: -1,
-    });
-    this._cdp = client;
-    await sleep(500);
+    this.offline = offline;
+    this._cdp ??= new Map();
+    const apply = async (key, create) => {
+      try {
+        let client = this._cdp.get(key);
+        if (!client) {
+          client = await create();
+          await client.send('Network.enable');
+          this._cdp.set(key, client);
+        }
+        await client.send('Network.emulateNetworkConditions', {
+          offline,
+          latency: 0,
+          downloadThroughput: -1,
+          uploadThroughput: -1,
+        });
+      } catch {
+        this._cdp.delete(key); // target went away
+      }
+    };
+    await apply('page', () => this.page.createCDPSession());
+    for (const target of this.context.targets()) {
+      if (!['worker', 'shared_worker', 'service_worker'].includes(target.type())) continue;
+      await apply(target, async () => {
+        const worker = await target.worker();
+        return worker ? worker.client : target.createCDPSession();
+      });
+    }
+    await sleep(800);
+  }
+
+  /** Aborts requests whose URL contains `fragment` while the returned function has not been called. */
+  async blockRequests(fragment) {
+    await this.page.setRequestInterception(true);
+    let blocked = true;
+    const handler = (request) => {
+      if (blocked && request.url().includes(fragment)) request.abort('failed');
+      else request.continue();
+    };
+    this.page.on('request', handler);
+    return async () => {
+      blocked = false;
+      this.page.off('request', handler);
+      await this.page.setRequestInterception(false);
+    };
   }
 
   async devSignIn(account) {

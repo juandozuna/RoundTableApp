@@ -2,8 +2,9 @@
 //   node run.mjs [scenario ...]      e.g. node run.mjs live-session
 import { launch, summarize } from './lib.mjs';
 import { liveSession } from './scenarios/live-session.mjs';
+import { offline } from './scenarios/offline.mjs';
 
-const all = { 'live-session': liveSession };
+const all = { 'live-session': liveSession, offline };
 const selected = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(all);
 const browser = await launch();
 try {
