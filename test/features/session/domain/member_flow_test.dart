@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gold_roundtables/features/session/domain/models/step_progress.dart';
 import 'package:gold_roundtables/core/models/session_stage.dart';
 import 'package:gold_roundtables/features/session/domain/models/member_flow.dart';
 import 'package:gold_roundtables/features/session/domain/models/member_step.dart';
 import 'package:gold_roundtables/features/session/domain/models/session_status.dart';
+import 'package:gold_roundtables/features/session/domain/models/step_progress.dart';
 
 import '../support/live_session_builder.dart';
 

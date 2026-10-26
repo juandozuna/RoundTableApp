@@ -24,6 +24,8 @@ import '../../features/session/data/datasources/session_local_data_source.dart'
     as _i751;
 import '../../features/session/data/datasources/session_remote_data_source.dart'
     as _i215;
+import '../../features/session/data/dev/dev_sync_fallback.dart' as _i171;
+import '../../features/session/data/dev/dev_sync_fallback_impl.dart' as _i989;
 import '../../features/session/data/local/session_drift_database.dart' as _i4;
 import '../../features/session/data/services/attendance_service_impl.dart'
     as _i1058;
@@ -229,6 +231,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
+    gh.lazySingleton<_i171.DevSyncFallback>(
+      () => _i989.DevSyncFallbackImpl(
+        gh<_i609.AppConfig>(),
+        gh<_i924.SyncDatabase>(),
+        gh<_i84.AuthTokenProvider>(),
+        gh<_i529.SyncUploader>(),
+        gh<_i361.Dio>(instanceName: 'postgrestDio'),
+      ),
+    );
     gh.factory<_i659.RequestSyncUseCase>(
       () => _i659.RequestSyncUseCase(gh<_i468.SessionSyncService>()),
     );
@@ -258,6 +269,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i246.IdGenerator>(),
       ),
     );
+    gh.lazySingleton<_i530.LiveSessionService>(
+      () => _i635.LiveSessionServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i1020.SyncStatusService>(),
+        gh<_i508.ClockService>(),
+        gh<_i171.DevSyncFallback>(),
+      ),
+    );
+    gh.factory<_i975.WatchLiveSessionUseCase>(
+      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
+    );
     gh.factory<_i1048.HomeCubit>(
       () => _i1048.HomeCubit(
         gh<_i17.WatchConnectivityUseCase>(),
@@ -285,13 +307,6 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.stop(),
     );
-    gh.lazySingleton<_i530.LiveSessionService>(
-      () => _i635.LiveSessionServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i1020.SyncStatusService>(),
-        gh<_i508.ClockService>(),
-      ),
-    );
     gh.lazySingleton<_i728.SessionControlService>(
       () => _i260.SessionControlServiceImpl(
         gh<_i751.SessionLocalDataSource>(),
@@ -305,9 +320,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i307.MarkAttendanceUseCase>(),
         gh<_i23.MarkEveryonePresentUseCase>(),
       ),
-    );
-    gh.factory<_i975.WatchLiveSessionUseCase>(
-      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
     );
     gh.factory<_i1002.SubmitCommitmentUseCase>(
       () => _i1002.SubmitCommitmentUseCase(gh<_i307.ResponsesService>()),

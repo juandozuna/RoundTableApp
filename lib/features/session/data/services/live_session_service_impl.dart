@@ -7,11 +7,17 @@ import '../../../../core/sync/domain/sync_status_service.dart';
 import '../../domain/models/live_session.dart';
 import '../../domain/services/live_session_service.dart';
 import '../datasources/session_local_data_source.dart';
+import '../dev/dev_sync_fallback.dart';
 import '../local/live_session_assembler.dart';
 
 @LazySingleton(as: LiveSessionService)
 class LiveSessionServiceImpl implements LiveSessionService {
-  LiveSessionServiceImpl(this._local, this._status, this._clock);
+  LiveSessionServiceImpl(
+    this._local,
+    this._status,
+    this._clock,
+    this._devFallback,
+  );
 
   /// "Today" depends on the clock, so re-evaluate even without data changes.
   static const Duration clockCheckInterval = Duration(minutes: 1);
@@ -19,6 +25,7 @@ class LiveSessionServiceImpl implements LiveSessionService {
   final SessionLocalDataSource _local;
   final SyncStatusService _status;
   final ClockService _clock;
+  final DevSyncFallback _devFallback;
 
   @override
   Stream<LiveSession?> watch({String? tableId}) {
@@ -66,6 +73,7 @@ class LiveSessionServiceImpl implements LiveSessionService {
 
     controller = StreamController<LiveSession?>(
       onListen: () {
+        _devFallback.ensureRunning();
         changes = _local.watchChanges().listen((_) => unawaited(refresh()));
         status = _status.watch().listen((snapshot) {
           if (snapshot.uploading == uploading) return;

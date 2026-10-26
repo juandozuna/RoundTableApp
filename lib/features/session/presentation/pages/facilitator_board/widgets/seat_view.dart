@@ -43,8 +43,9 @@ class SeatView extends StatelessWidget {
   StatusTone get _ringTone => highlighted ? StatusTone.error : status.tone;
 
   String? _attendanceChipText(BuildContext context) {
-    if (participant.attendanceAuto)
+    if (participant.attendanceAuto) {
       return context.l10n.sessionSharedAttendanceAuto;
+    }
     if (!showAttendanceChip) return null;
     return switch (participant.attendance) {
       AttendanceStatus.absent => 'A',

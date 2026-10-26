@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../../../core/config/app_config.dart';
 import '../../../../../../core/models/session_stage.dart';
 import '../../../../../../core/sync/domain/sync_snapshot.dart';
 import '../../../../domain/models/facilitator_stage.dart';
@@ -38,7 +39,14 @@ abstract class SessionView with _$SessionView {
 
   /// Online and replicating: the facilitator's stage reaches every phone
   /// live. Otherwise the room runs self-paced (ADR 0003).
-  bool get isLive => isOnline && sync.connection == SyncConnection.connected;
+  bool get isLive => isOnline && _replicates;
+
+  /// Dev builds without the PowerSync service mirror data through
+  /// `DevSyncFallback`, which behaves as a live connection.
+  bool get _replicates =>
+      sync.connection == SyncConnection.connected ||
+      (AppConfig.devAuthCompiledIn &&
+          sync.connection == SyncConnection.unavailable);
 
   FacilitatorStage get stage => FacilitatorStage.of(session.session);
 }
