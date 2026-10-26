@@ -21,6 +21,8 @@ require_supabase_running
 info "Resetting Mesa Esperanza 03's session to scheduled/lobby (now)"
 docker exec -i "$(supabase_db_container)" psql -U postgres -v ON_ERROR_STOP=1 -q <<'SQL'
 begin;
+-- Session rules (state machine, "closed is final") would reject a rewind: bypass triggers.
+set local session_replication_role = replica;
 set local app.seeding = 'on';
 
 create temp table demo on commit drop as
@@ -30,6 +32,7 @@ create temp table demo on commit drop as
 do $$
 declare
   v_session uuid; v_table uuid; v_value uuid;
+  v_now timestamptz := date_trunc('minute', now());
 begin
   select session_id, table_id into v_session, v_table from demo;
   select value_id into v_value from public.sessions where id = v_session;
@@ -50,13 +53,18 @@ begin
   delete from public.session_attendance where session_id in (select id from extra union select v_session);
   delete from public.sessions where id in (select id from extra);
 
-  update public.round_tables set current_value_id = v_value, status = 'active' where id = v_table;
-  update public.sessions set status = 'scheduled', stage = 'lobby', scheduled_at = now(),
+  -- The table's weekly slot moves to "now" too, so closing the session schedules the next one a
+  -- week from now (a slot still ahead today would take over the summary screen immediately).
+  update public.round_tables set current_value_id = v_value, status = 'active',
+    weekday = extract(isodow from (v_now at time zone timezone))::smallint,
+    start_time = (v_now at time zone timezone)::time where id = v_table;
+  update public.sessions set status = 'scheduled', stage = 'lobby', scheduled_at = v_now,
     started_at = null, ended_at = null, answers_closed_at = null, cancelled_reason = null,
     device_modified_at = null, archived_at = null where id = v_session;
 end $$;
 
-select kpi.mark_dirty();
+reset session_replication_role;
+select kpi.mark_dirty() \gset
 commit;
 SQL
 ok "Mesa Esperanza 03: session scheduled for now (lobby). Sign in as facil@dev.local → Sesión → Abrir sesión."

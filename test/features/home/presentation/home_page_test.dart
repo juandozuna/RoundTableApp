@@ -97,7 +97,7 @@ void main() {
           ),
         ),
         GoRoute(
-          path: '/mesas/:tableId/sesion/:sessionId',
+          path: '/mesas/:tableId/sesion',
           builder: (_, routeState) {
             pushed = routeState.uri.toString();
             return const Scaffold(body: Text('session'));
@@ -136,7 +136,7 @@ void main() {
 
     await tester.tap(find.text('Abrir sesión'));
     await tester.pumpAndSettle();
-    expect(pushed, '/mesas/t1/sesion/s4');
+    expect(pushed, '/mesas/t1/sesion');
   });
 
   testWidgets('an open session offers to continue it', (tester) async {

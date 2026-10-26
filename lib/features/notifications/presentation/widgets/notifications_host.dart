@@ -60,8 +60,9 @@ class NotificationsHost extends StatelessWidget {
   }
 
   String _locationFor(NotificationTarget target) => switch (target) {
-    NotificationTargetSession(:final roundTableId, :final sessionId) =>
-      HomeRoutes.session(tableId: roundTableId, sessionId: sessionId),
+    NotificationTargetSession(:final roundTableId) => HomeRoutes.session(
+      tableId: roundTableId,
+    ),
     NotificationTargetHome() => HomeRoutes.home,
   };
 }
