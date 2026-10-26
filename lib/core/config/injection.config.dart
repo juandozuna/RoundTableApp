@@ -18,6 +18,112 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 import '../../app/app_module.dart' as _i431;
+import '../../features/admin/data/client/admin_invites_client.dart' as _i1010;
+import '../../features/admin/data/client/admin_read_client.dart' as _i349;
+import '../../features/admin/data/client/admin_write_client.dart' as _i78;
+import '../../features/admin/data/datasources/admin_remote_data_source.dart'
+    as _i517;
+import '../../features/admin/data/services/admin_directory_service_impl.dart'
+    as _i882;
+import '../../features/admin/data/services/admin_invite_service_impl.dart'
+    as _i984;
+import '../../features/admin/data/services/admin_management_service_impl.dart'
+    as _i392;
+import '../../features/admin/data/services/admin_scope_service_impl.dart'
+    as _i531;
+import '../../features/admin/data/services/saved_views_service_impl.dart'
+    as _i512;
+import '../../features/admin/domain/services/admin_directory_service.dart'
+    as _i680;
+import '../../features/admin/domain/services/admin_invite_service.dart'
+    as _i429;
+import '../../features/admin/domain/services/admin_management_service.dart'
+    as _i1045;
+import '../../features/admin/domain/services/admin_scope_service.dart' as _i705;
+import '../../features/admin/domain/services/saved_views_service.dart' as _i298;
+import '../../features/admin/domain/use_cases/directory/load_explorer_data_use_case.dart'
+    as _i1038;
+import '../../features/admin/domain/use_cases/directory/load_location_use_case.dart'
+    as _i256;
+import '../../features/admin/domain/use_cases/directory/load_organization_detail_use_case.dart'
+    as _i739;
+import '../../features/admin/domain/use_cases/directory/load_organization_use_case.dart'
+    as _i592;
+import '../../features/admin/domain/use_cases/directory/load_organizations_use_case.dart'
+    as _i108;
+import '../../features/admin/domain/use_cases/directory/load_person_detail_use_case.dart'
+    as _i985;
+import '../../features/admin/domain/use_cases/directory/load_table_detail_use_case.dart'
+    as _i1005;
+import '../../features/admin/domain/use_cases/directory/load_table_form_data_use_case.dart'
+    as _i239;
+import '../../features/admin/domain/use_cases/directory/load_tables_use_case.dart'
+    as _i543;
+import '../../features/admin/domain/use_cases/invites/invite_person_use_case.dart'
+    as _i850;
+import '../../features/admin/domain/use_cases/invites/share_invite_use_case.dart'
+    as _i464;
+import '../../features/admin/domain/use_cases/locations/create_location_use_case.dart'
+    as _i673;
+import '../../features/admin/domain/use_cases/locations/update_location_use_case.dart'
+    as _i759;
+import '../../features/admin/domain/use_cases/organizations/create_organization_use_case.dart'
+    as _i465;
+import '../../features/admin/domain/use_cases/organizations/set_organization_status_use_case.dart'
+    as _i529;
+import '../../features/admin/domain/use_cases/organizations/update_organization_use_case.dart'
+    as _i558;
+import '../../features/admin/domain/use_cases/people/update_person_use_case.dart'
+    as _i479;
+import '../../features/admin/domain/use_cases/scope/watch_admin_scope_use_case.dart'
+    as _i615;
+import '../../features/admin/domain/use_cases/tables/add_member_to_table_use_case.dart'
+    as _i508;
+import '../../features/admin/domain/use_cases/tables/change_facilitator_use_case.dart'
+    as _i882;
+import '../../features/admin/domain/use_cases/tables/create_table_use_case.dart'
+    as _i756;
+import '../../features/admin/domain/use_cases/tables/deactivate_member_use_case.dart'
+    as _i230;
+import '../../features/admin/domain/use_cases/tables/move_member_use_case.dart'
+    as _i20;
+import '../../features/admin/domain/use_cases/tables/update_table_use_case.dart'
+    as _i610;
+import '../../features/admin/domain/use_cases/views/delete_explorer_view_use_case.dart'
+    as _i497;
+import '../../features/admin/domain/use_cases/views/load_saved_views_use_case.dart'
+    as _i242;
+import '../../features/admin/domain/use_cases/views/save_explorer_view_use_case.dart'
+    as _i596;
+import '../../features/admin/presentation/cubit/admin_access_cubit.dart'
+    as _i475;
+import '../../features/admin/presentation/pages/command_palette/cubit/command_palette_cubit.dart'
+    as _i911;
+import '../../features/admin/presentation/pages/explorer/cubit/explorer_cubit.dart'
+    as _i640;
+import '../../features/admin/presentation/pages/invite_person/cubit/invite_person_cubit.dart'
+    as _i933;
+import '../../features/admin/presentation/pages/location_form/cubit/location_form_cubit.dart'
+    as _i353;
+import '../../features/admin/presentation/pages/organization_detail/cubit/organization_detail_cubit.dart'
+    as _i81;
+import '../../features/admin/presentation/pages/organization_form/cubit/organization_form_cubit.dart'
+    as _i760;
+import '../../features/admin/presentation/pages/person_detail/cubit/person_detail_cubit.dart'
+    as _i422;
+import '../../features/admin/presentation/pages/table_detail/cubit/table_detail_cubit.dart'
+    as _i844;
+import '../../features/admin/presentation/pages/table_form/cubit/table_form_cubit.dart'
+    as _i710;
+import '../../features/audit/data/client/audit_client.dart' as _i800;
+import '../../features/audit/data/datasources/audit_remote_data_source.dart'
+    as _i625;
+import '../../features/audit/data/services/audit_service_impl.dart' as _i1007;
+import '../../features/audit/domain/services/audit_service.dart' as _i542;
+import '../../features/audit/domain/use_cases/load_audit_events_use_case.dart'
+    as _i936;
+import '../../features/audit/presentation/pages/audit/cubit/audit_cubit.dart'
+    as _i659;
 import '../../features/home/data/client/home_client.dart' as _i564;
 import '../../features/home/data/datasources/home_local_data_source.dart'
     as _i299;
@@ -29,6 +135,30 @@ import '../../features/home/domain/use_cases/overview/watch_home_overview_use_ca
     as _i246;
 import '../../features/home/presentation/pages/home/cubit/home_cubit.dart'
     as _i275;
+import '../../features/kpis/data/client/answers_reveal_client.dart' as _i559;
+import '../../features/kpis/data/client/kpi_client.dart' as _i772;
+import '../../features/kpis/data/datasources/kpi_remote_data_source.dart'
+    as _i460;
+import '../../features/kpis/data/services/csv_export_service_impl.dart' as _i58;
+import '../../features/kpis/data/services/kpi_service_impl.dart' as _i970;
+import '../../features/kpis/domain/services/csv_export_service.dart' as _i309;
+import '../../features/kpis/domain/services/kpi_service.dart' as _i585;
+import '../../features/kpis/domain/use_cases/export/export_csv_use_case.dart'
+    as _i228;
+import '../../features/kpis/domain/use_cases/members/load_member_detail_use_case.dart'
+    as _i2;
+import '../../features/kpis/domain/use_cases/members/reveal_member_answers_use_case.dart'
+    as _i303;
+import '../../features/kpis/domain/use_cases/report/load_drill_level_use_case.dart'
+    as _i84;
+import '../../features/kpis/domain/use_cases/report/load_report_options_use_case.dart'
+    as _i354;
+import '../../features/kpis/domain/use_cases/report/load_report_use_case.dart'
+    as _i289;
+import '../../features/kpis/presentation/pages/member_detail/cubit/member_detail_cubit.dart'
+    as _i131;
+import '../../features/kpis/presentation/pages/reports/cubit/reports_cubit.dart'
+    as _i578;
 import '../../features/notifications/data/client/notifications_client.dart'
     as _i70;
 import '../../features/notifications/data/datasources/notifications_local_data_source.dart'
@@ -161,6 +291,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i460.SharedPreferencesAsync>(),
       ),
     );
+    gh.lazySingleton<_i309.CsvExportService>(() => _i58.CsvExportServiceImpl());
     gh.lazySingleton<_i508.ClockService>(() => _i799.SystemClockService());
     gh.lazySingleton<_i245.ShareService>(() => _i827.ShareServiceImpl());
     gh.lazySingleton<_i483.AppInfoService>(() => _i90.AppInfoServiceImpl());
@@ -181,6 +312,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i523.SessionContextService>(
       () => _i1004.InMemorySessionContextService(),
+    );
+    gh.factory<_i228.ExportCsvUseCase>(
+      () => _i228.ExportCsvUseCase(gh<_i309.CsvExportService>()),
     );
     gh.factory<_i752.LoadAppInfoUseCase>(
       () => _i752.LoadAppInfoUseCase(gh<_i483.AppInfoService>()),
@@ -214,6 +348,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1015.ConnectivityService>(
       () => _i916.ConnectivityServiceImpl(gh<_i895.Connectivity>()),
     );
+    gh.factory<_i464.ShareInviteUseCase>(
+      () => _i464.ShareInviteUseCase(gh<_i245.ShareService>()),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.postgrestDio(
         gh<_i609.AppConfig>(),
@@ -221,8 +358,17 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'postgrestDio',
     );
+    gh.lazySingleton<_i349.AdminReadClient>(
+      () => _i349.AdminReadClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
+    gh.lazySingleton<_i800.AuditClient>(
+      () => _i800.AuditClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
     gh.lazySingleton<_i564.HomeClient>(
       () => _i564.HomeClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
+    gh.lazySingleton<_i772.KpiClient>(
+      () => _i772.KpiClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
     gh.factory<_i939.ContextChipCubit>(
       () => _i939.ContextChipCubit(gh<_i434.WatchSessionContextUseCase>()),
@@ -251,6 +397,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i878.FeatureRouterRegistry>(),
       ),
     );
+    gh.lazySingleton<_i298.SavedViewsService>(
+      () => _i512.SavedViewsServiceImpl(gh<_i924.SyncDatabase>()),
+    );
     gh.factory<_i1002.AppShellCubit>(
       () => _i1002.AppShellCubit(gh<_i434.WatchSessionContextUseCase>()),
     );
@@ -277,8 +426,32 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.stop(),
     );
+    gh.lazySingleton<_i625.AuditRemoteDataSource>(
+      () => _i625.AuditRemoteDataSource(gh<_i800.AuditClient>()),
+    );
+    gh.factory<_i596.SaveExplorerViewUseCase>(
+      () => _i596.SaveExplorerViewUseCase(
+        gh<_i298.SavedViewsService>(),
+        gh<_i246.IdGenerator>(),
+      ),
+    );
     gh.factory<_i318.WatchSyncStatusUseCase>(
       () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
+    );
+    gh.lazySingleton<_i1010.AdminInvitesClient>(
+      () => _i1010.AdminInvitesClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
+    );
+    gh.lazySingleton<_i78.AdminWriteClient>(
+      () => _i78.AdminWriteClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
+    );
+    gh.lazySingleton<_i559.AnswersRevealClient>(
+      () => _i559.AnswersRevealClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
     );
     gh.lazySingleton<_i70.NotificationsClient>(
       () => _i70.NotificationsClient(
@@ -296,6 +469,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
+    gh.factory<_i497.DeleteExplorerViewUseCase>(
+      () => _i497.DeleteExplorerViewUseCase(gh<_i298.SavedViewsService>()),
+    );
+    gh.factory<_i242.LoadSavedViewsUseCase>(
+      () => _i242.LoadSavedViewsUseCase(gh<_i298.SavedViewsService>()),
+    );
+    gh.lazySingleton<_i517.AdminRemoteDataSource>(
+      () => _i517.AdminRemoteDataSource(
+        gh<_i349.AdminReadClient>(),
+        gh<_i78.AdminWriteClient>(),
+        gh<_i1010.AdminInvitesClient>(),
+      ),
+    );
     gh.lazySingleton<_i951.NotificationsRemoteDataSource>(
       () => _i951.NotificationsRemoteDataSource(gh<_i70.NotificationsClient>()),
     );
@@ -305,8 +491,66 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i795.NotificationPreferencesService>(),
       ),
     );
+    gh.lazySingleton<_i460.KpiRemoteDataSource>(
+      () => _i460.KpiRemoteDataSource(
+        gh<_i772.KpiClient>(),
+        gh<_i559.AnswersRevealClient>(),
+      ),
+    );
     gh.factory<_i246.UnsyncedAlertCubit>(
       () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
+    );
+    gh.lazySingleton<_i1045.AdminManagementService>(
+      () => _i392.AdminManagementServiceImpl(gh<_i517.AdminRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i429.AdminInviteService>(
+      () => _i984.AdminInviteServiceImpl(gh<_i517.AdminRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i680.AdminDirectoryService>(
+      () => _i882.AdminDirectoryServiceImpl(gh<_i517.AdminRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i542.AuditService>(
+      () => _i1007.AuditServiceImpl(gh<_i625.AuditRemoteDataSource>()),
+    );
+    gh.factory<_i673.CreateLocationUseCase>(
+      () => _i673.CreateLocationUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i759.UpdateLocationUseCase>(
+      () => _i759.UpdateLocationUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i465.CreateOrganizationUseCase>(
+      () =>
+          _i465.CreateOrganizationUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i529.SetOrganizationStatusUseCase>(
+      () => _i529.SetOrganizationStatusUseCase(
+        gh<_i1045.AdminManagementService>(),
+      ),
+    );
+    gh.factory<_i558.UpdateOrganizationUseCase>(
+      () =>
+          _i558.UpdateOrganizationUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i479.UpdatePersonUseCase>(
+      () => _i479.UpdatePersonUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i508.AddMemberToTableUseCase>(
+      () => _i508.AddMemberToTableUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i882.ChangeFacilitatorUseCase>(
+      () => _i882.ChangeFacilitatorUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i756.CreateTableUseCase>(
+      () => _i756.CreateTableUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i230.DeactivateMemberUseCase>(
+      () => _i230.DeactivateMemberUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i20.MoveMemberUseCase>(
+      () => _i20.MoveMemberUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i610.UpdateTableUseCase>(
+      () => _i610.UpdateTableUseCase(gh<_i1045.AdminManagementService>()),
     );
     gh.lazySingleton<_i569.NotificationService>(
       () => _i566.NotificationServiceImpl(
@@ -328,11 +572,38 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i188.SettingsRemoteDataSource>(
       () => _i188.SettingsRemoteDataSource(gh<_i47.SettingsClient>()),
     );
+    gh.factory<_i936.LoadAuditEventsUseCase>(
+      () => _i936.LoadAuditEventsUseCase(gh<_i542.AuditService>()),
+    );
     gh.factory<_i246.WatchHomeOverviewUseCase>(
       () => _i246.WatchHomeOverviewUseCase(
         gh<_i434.WatchSessionContextUseCase>(),
         gh<_i677.HomeService>(),
       ),
+    );
+    gh.lazySingleton<_i705.AdminScopeService>(
+      () => _i531.AdminScopeServiceImpl(
+        gh<_i523.SessionContextService>(),
+        gh<_i517.AdminRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i256.LoadLocationUseCase>(
+      () => _i256.LoadLocationUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.factory<_i592.LoadOrganizationUseCase>(
+      () => _i592.LoadOrganizationUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.factory<_i108.LoadOrganizationsUseCase>(
+      () => _i108.LoadOrganizationsUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.factory<_i985.LoadPersonDetailUseCase>(
+      () => _i985.LoadPersonDetailUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.factory<_i239.LoadTableFormDataUseCase>(
+      () => _i239.LoadTableFormDataUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.factory<_i543.LoadTablesUseCase>(
+      () => _i543.LoadTablesUseCase(gh<_i680.AdminDirectoryService>()),
     );
     gh.factory<_i808.RequestNotificationPermissionUseCase>(
       () => _i808.RequestNotificationPermissionUseCase(
@@ -350,8 +621,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i569.NotificationService>(),
       ),
     );
+    gh.lazySingleton<_i585.KpiService>(
+      () => _i970.KpiServiceImpl(gh<_i460.KpiRemoteDataSource>()),
+    );
     gh.lazySingleton<_i895.ProfileService>(
       () => _i945.ProfileServiceImpl(gh<_i188.SettingsRemoteDataSource>()),
+    );
+    gh.factory<_i850.InvitePersonUseCase>(
+      () => _i850.InvitePersonUseCase(gh<_i429.AdminInviteService>()),
+    );
+    gh.factory<_i422.PersonDetailCubit>(
+      () => _i422.PersonDetailCubit(
+        gh<_i985.LoadPersonDetailUseCase>(),
+        gh<_i479.UpdatePersonUseCase>(),
+      ),
+    );
+    gh.factory<_i710.TableFormCubit>(
+      () => _i710.TableFormCubit(
+        gh<_i239.LoadTableFormDataUseCase>(),
+        gh<_i756.CreateTableUseCase>(),
+        gh<_i610.UpdateTableUseCase>(),
+      ),
     );
     gh.factory<_i98.WatchForegroundNotificationsUseCase>(
       () => _i98.WatchForegroundNotificationsUseCase(
@@ -371,11 +661,60 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i795.NotificationPreferencesService>(),
       ),
     );
+    gh.factory<_i1038.LoadExplorerDataUseCase>(
+      () => _i1038.LoadExplorerDataUseCase(
+        gh<_i680.AdminDirectoryService>(),
+        gh<_i585.KpiService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i1005.LoadTableDetailUseCase>(
+      () => _i1005.LoadTableDetailUseCase(
+        gh<_i680.AdminDirectoryService>(),
+        gh<_i585.KpiService>(),
+      ),
+    );
+    gh.factory<_i911.CommandPaletteCubit>(
+      () => _i911.CommandPaletteCubit(
+        gh<_i108.LoadOrganizationsUseCase>(),
+        gh<_i543.LoadTablesUseCase>(),
+        gh<_i242.LoadSavedViewsUseCase>(),
+      ),
+    );
     gh.factory<_i744.NotificationPreferencesCubit>(
       () => _i744.NotificationPreferencesCubit(
         gh<_i727.WatchNotificationSettingsUseCase>(),
         gh<_i553.UpdateNotificationPreferencesUseCase>(),
         gh<_i808.RequestNotificationPermissionUseCase>(),
+      ),
+    );
+    gh.factory<_i353.LocationFormCubit>(
+      () => _i353.LocationFormCubit(
+        gh<_i256.LoadLocationUseCase>(),
+        gh<_i673.CreateLocationUseCase>(),
+        gh<_i759.UpdateLocationUseCase>(),
+      ),
+    );
+    gh.factory<_i2.LoadMemberDetailUseCase>(
+      () => _i2.LoadMemberDetailUseCase(gh<_i585.KpiService>()),
+    );
+    gh.factory<_i303.RevealMemberAnswersUseCase>(
+      () => _i303.RevealMemberAnswersUseCase(gh<_i585.KpiService>()),
+    );
+    gh.factory<_i354.LoadReportOptionsUseCase>(
+      () => _i354.LoadReportOptionsUseCase(gh<_i585.KpiService>()),
+    );
+    gh.factory<_i739.LoadOrganizationDetailUseCase>(
+      () => _i739.LoadOrganizationDetailUseCase(
+        gh<_i680.AdminDirectoryService>(),
+        gh<_i585.KpiService>(),
+        gh<_i542.AuditService>(),
+      ),
+    );
+    gh.factory<_i131.MemberDetailCubit>(
+      () => _i131.MemberDetailCubit(
+        gh<_i2.LoadMemberDetailUseCase>(),
+        gh<_i303.RevealMemberAnswersUseCase>(),
       ),
     );
     gh.factory<_i275.HomeCubit>(
@@ -385,16 +724,71 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i318.WatchSyncStatusUseCase>(),
       ),
     );
+    gh.factory<_i615.WatchAdminScopeUseCase>(
+      () => _i615.WatchAdminScopeUseCase(gh<_i705.AdminScopeService>()),
+    );
+    gh.factory<_i84.LoadDrillLevelUseCase>(
+      () => _i84.LoadDrillLevelUseCase(
+        gh<_i585.KpiService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i289.LoadReportUseCase>(
+      () => _i289.LoadReportUseCase(
+        gh<_i585.KpiService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i640.ExplorerCubit>(
+      () => _i640.ExplorerCubit(
+        gh<_i1038.LoadExplorerDataUseCase>(),
+        gh<_i242.LoadSavedViewsUseCase>(),
+        gh<_i596.SaveExplorerViewUseCase>(),
+        gh<_i497.DeleteExplorerViewUseCase>(),
+        gh<_i228.ExportCsvUseCase>(),
+      ),
+    );
     gh.factory<_i869.LoadProfileUseCase>(
       () => _i869.LoadProfileUseCase(gh<_i895.ProfileService>()),
     );
     gh.factory<_i325.UpdateProfileUseCase>(
       () => _i325.UpdateProfileUseCase(gh<_i895.ProfileService>()),
     );
+    gh.factory<_i475.AdminAccessCubit>(
+      () => _i475.AdminAccessCubit(
+        gh<_i615.WatchAdminScopeUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
+    );
+    gh.factory<_i760.OrganizationFormCubit>(
+      () => _i760.OrganizationFormCubit(
+        gh<_i592.LoadOrganizationUseCase>(),
+        gh<_i465.CreateOrganizationUseCase>(),
+        gh<_i558.UpdateOrganizationUseCase>(),
+        gh<_i850.InvitePersonUseCase>(),
+      ),
+    );
+    gh.factory<_i933.InvitePersonCubit>(
+      () => _i933.InvitePersonCubit(
+        gh<_i108.LoadOrganizationsUseCase>(),
+        gh<_i543.LoadTablesUseCase>(),
+        gh<_i850.InvitePersonUseCase>(),
+        gh<_i464.ShareInviteUseCase>(),
+      ),
+    );
     gh.factory<_i177.ProfileEditCubit>(
       () => _i177.ProfileEditCubit(
         gh<_i869.LoadProfileUseCase>(),
         gh<_i325.UpdateProfileUseCase>(),
+      ),
+    );
+    gh.factory<_i578.ReportsCubit>(
+      () => _i578.ReportsCubit(
+        gh<_i289.LoadReportUseCase>(),
+        gh<_i354.LoadReportOptionsUseCase>(),
+        gh<_i84.LoadDrillLevelUseCase>(),
+        gh<_i228.ExportCsvUseCase>(),
+        gh<_i615.WatchAdminScopeUseCase>(),
       ),
     );
     gh.factory<_i185.SignOutUseCase>(
@@ -404,11 +798,33 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i428.SignOutService>(),
       ),
     );
+    gh.factory<_i659.AuditCubit>(
+      () => _i659.AuditCubit(
+        gh<_i936.LoadAuditEventsUseCase>(),
+        gh<_i108.LoadOrganizationsUseCase>(),
+        gh<_i228.ExportCsvUseCase>(),
+      ),
+    );
+    gh.factory<_i81.OrganizationDetailCubit>(
+      () => _i81.OrganizationDetailCubit(
+        gh<_i739.LoadOrganizationDetailUseCase>(),
+        gh<_i529.SetOrganizationStatusUseCase>(),
+      ),
+    );
     gh.factory<_i467.NotificationsHostCubit>(
       () => _i467.NotificationsHostCubit(
         gh<_i500.StartNotificationsUseCase>(),
         gh<_i98.WatchForegroundNotificationsUseCase>(),
         gh<_i654.WatchNotificationTargetsUseCase>(),
+      ),
+    );
+    gh.factory<_i844.TableDetailCubit>(
+      () => _i844.TableDetailCubit(
+        gh<_i1005.LoadTableDetailUseCase>(),
+        gh<_i882.ChangeFacilitatorUseCase>(),
+        gh<_i508.AddMemberToTableUseCase>(),
+        gh<_i20.MoveMemberUseCase>(),
+        gh<_i230.DeactivateMemberUseCase>(),
       ),
     );
     gh.factory<_i152.SettingsCubit>(
