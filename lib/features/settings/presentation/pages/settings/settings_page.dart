@@ -15,9 +15,9 @@ import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/offline_banner.dart';
 import '../../../../../core/widgets/role_chip.dart';
 import '../../../../../core/widgets/sync_pill.dart';
+import '../../../../auth/presentation/widgets/context_switcher.dart';
 import '../../../../home/home_routes.dart';
 import '../../../../notifications/notifications_routes.dart';
-import '../../../../shell/presentation/widgets/context_chip_slot.dart';
 import '../../../settings_routes.dart';
 import 'cubit/settings_cubit.dart';
 import 'cubit/settings_state.dart';
@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
       listener: _onSignOutChanged,
       builder: (context, state) => AppScaffold(
         title: context.l10n.settingsTitle,
-        actions: const [ContextChipSlot()],
+        actions: const [ContextSwitcher()],
         maxContentWidth: AppSpacing.contentMaxWidth,
         banner: state.online
             ? null

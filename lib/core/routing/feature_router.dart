@@ -52,6 +52,14 @@ abstract class FeatureRouter {
   /// Where signed-out users are sent. Exactly one feature (auth) sets it;
   /// until then the guard lets every location through.
   String? get signInLocation => null;
+
+  /// Extra redirect applied after the sign-in guard, e.g. the auth feature
+  /// sends signed-in users without an active context to the picker. Return
+  /// `null` to leave [uri] untouched.
+  String? redirect(Uri uri) => null;
+
+  /// Streams that should re-run [redirect] when they emit.
+  List<Stream<Object?>> get redirectRefreshStreams => const [];
 }
 
 /// All feature routers plus the home location, provided by the composition
@@ -79,6 +87,19 @@ class FeatureRouterRegistry {
 
   List<String> get publicLocations => [
     for (final router in routers) ...router.publicLocations,
+  ];
+
+  /// First non-null feature redirect for [uri].
+  String? redirect(Uri uri) {
+    for (final router in routers) {
+      final target = router.redirect(uri);
+      if (target != null) return target;
+    }
+    return null;
+  }
+
+  List<Stream<Object?>> get redirectRefreshStreams => [
+    for (final router in routers) ...router.redirectRefreshStreams,
   ];
 
   String? get signInLocation {

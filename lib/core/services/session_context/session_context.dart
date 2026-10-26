@@ -11,6 +11,10 @@ part 'session_context.g.dart';
 abstract class SessionContext with _$SessionContext {
   const factory SessionContext({
     required UserRole role,
+
+    /// The person row this context acts as (`people.id`). Writes in the
+    /// session domain use it as `person_id`.
+    String? personId,
     String? organizationId,
     String? organizationName,
     String? tableId,

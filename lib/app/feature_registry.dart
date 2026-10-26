@@ -3,8 +3,10 @@ import '../core/routing/feature_router.dart';
 import '../core/sync/data/sync_schema.dart';
 import '../features/admin/admin_router.dart';
 import '../features/audit/audit_router.dart';
+import '../features/auth/auth_router.dart';
 import '../features/home/home_router.dart';
 import '../features/home/home_routes.dart';
+import '../features/invites/invites_router.dart';
 import '../features/kpis/kpis_router.dart';
 import '../features/notifications/notifications_router.dart';
 import '../features/session/data/local/session_sync_schema.dart';
@@ -21,6 +23,8 @@ const String appHomeLocation = HomeRoutes.home;
 /// Routes, destinations and public locations of every feature.
 List<FeatureRouter> buildFeatureRouters(AppConfig config) => [
   ShellFeatureRouter(includeComponentGallery: !config.isProduction),
+  const AuthFeatureRouter(homeLocation: appHomeLocation),
+  const InvitesFeatureRouter(),
   const AdminFeatureRouter(),
   const KpisFeatureRouter(),
   const AuditFeatureRouter(),

@@ -18,8 +18,8 @@ import '../../../../../core/widgets/seat_pips.dart';
 import '../../../../../core/widgets/skeleton.dart';
 import '../../../../../core/widgets/status_pill.dart';
 import '../../../../../core/widgets/sync_pill.dart';
+import '../../../../auth/presentation/widgets/context_switcher.dart';
 import '../../../../notifications/presentation/widgets/unsynced_data_banner.dart';
-import '../../../../shell/presentation/widgets/context_chip_slot.dart';
 import '../../../domain/models/home_commitment.dart';
 import '../../../domain/models/home_kpi_summary.dart';
 import '../../../domain/models/home_overview.dart';
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) => AppScaffold(
         title: context.l10n.homeTitle,
-        actions: const [ContextChipSlot()],
+        actions: const [ContextSwitcher()],
         maxContentWidth: AppSpacing.contentMaxWidth,
         banner: _buildBanner(context, state),
         body: switch (state.status) {

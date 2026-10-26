@@ -495,3 +495,40 @@ single files. Extend a shared widget instead of forking it into a feature.
 - **QR scanning.** `qr_flutter` renders codes everywhere. `mobile_scanner` 7 is installed for
   camera scanning; it also has a web implementation. The invites feature should still offer the
   code-entry path on web and desktop, where cameras are unreliable, and handle permission denial.
+
+## 11. Auth & context (auth + invites features)
+
+**Reading the active context (all tracks).** `SessionContextService` (core) is the one contract:
+`current` / `watch()` / `WatchSessionContextUseCase`. `SessionContext` carries `role`, `personId`
+(the `people.id` to use as `person_id` in session writes), `organizationId/Name`, `tableId/Name`.
+The app registers `PersistedSessionContextService` (auth feature, SharedPreferences): the choice
+survives restarts and works offline (the account is cached per user). Never write to it from other
+features; the auth feature sets it on sign-in and clears it on sign-out. `AuthTokenProvider.userId`
+is the auth user id. Prefer `watch()`: `current` is `null` for a moment right after launch.
+
+**Sign-in redirect.** The auth feature declares `signInLocation = /ingresar`. After the core guard,
+`AuthFeatureRouter.redirect` (new `FeatureRouter.redirect` / `redirectRefreshStreams` hook) sends a
+signed-in identity by `AccessState`: loading or blocked (no role, deactivated, unknown account,
+offline first sign-in) → `/acceso`; several roles and no remembered choice → `/contexto`;
+`ready` → the wanted location (`?from=`) or `appHomeLocation`. `/invitacion/**` and `/dev/**` are
+exempt so the invite flow can finish. Do not add your own sign-in checks.
+
+**Routes owned here.** `/ingresar`, `/acceso`, `/contexto`, `/cuenta` (no nav entry; settings has
+the sign-out), `/invitacion` (code), `/invitacion/escanear`, `/invitacion/<code>` (deep link;
+`/invite/<code>` redirects), `/invitaciones` (manager, destination for admin/coordinator/facilitator),
+`/invitaciones/nueva`, `/invitaciones/<id>/compartir`. Prefer `context.go` over `push` when leaving
+the sign-in area: pushed pages do not move the redirect guard's base location.
+
+**Widgets.** `ContextSwitcher` (auth/presentation/widgets) is the header chip: bottom sheet on
+phones, anchored menu on tablet/desktop, static with one context. Put it in `AppScaffold.actions`.
+`showSignOutSheet(context)` runs the unsynced-data warning (sync first / keep / erase); settings'
+`SignOutService` delegates to `AuthService.signOut`.
+
+**Dev sign-in.** With `--dart-define=DEV_AUTH=true` the gate shows chips for the seeded users and
+"Crear cuenta de prueba nueva" (a fresh email/password account that stands in for a new provider
+identity when redeeming invites locally). Real provider buttons use `signInWithOAuth`; they need the
+credentials listed in api-contract.md §1 and these redirect URLs allowed in Supabase:
+`<app origin>/**` (web) and `io.goldroundtables.app://login-callback` (mobile).
+
+**Testing.** Tests that build the DI graph must set
+`SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty()`.

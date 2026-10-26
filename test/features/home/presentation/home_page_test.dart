@@ -9,6 +9,8 @@ import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/core/services/session_context/session_context.dart';
 import 'package:gold_roundtables/core/theme/app_theme.dart';
+import 'package:gold_roundtables/features/auth/presentation/cubit/access_cubit.dart';
+import 'package:gold_roundtables/features/auth/presentation/cubit/access_cubit_state.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_commitment.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_kpi_summary.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_overview.dart';
@@ -28,6 +30,8 @@ class _MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
 
 class _MockUnsynced extends MockCubit<UnsyncedAlert?>
     implements UnsyncedAlertCubit {}
+
+class _MockAccess extends MockCubit<AccessCubitState> implements AccessCubit {}
 
 class _MockChip extends MockCubit<ContextChipState>
     implements ContextChipCubit {}
@@ -62,6 +66,11 @@ void main() {
       ..registerFactory<UnsyncedAlertCubit>(() {
         final mock = _MockUnsynced();
         when(() => mock.state).thenReturn(null);
+        return mock;
+      })
+      ..registerFactory<AccessCubit>(() {
+        final mock = _MockAccess();
+        when(() => mock.state).thenReturn(const AccessCubitState());
         return mock;
       })
       ..registerFactory<ContextChipCubit>(() {

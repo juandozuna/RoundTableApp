@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionContext {
   UserRole get role;
+
+  /// The person row this context acts as (`people.id`). Writes in the
+  /// session domain use it as `person_id`.
+  String? get personId;
   String? get organizationId;
   String? get organizationName;
   String? get tableId;
@@ -38,6 +42,8 @@ mixin _$SessionContext {
         (other.runtimeType == runtimeType &&
             other is SessionContext &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.personId, personId) ||
+                other.personId == personId) &&
             (identical(other.organizationId, organizationId) ||
                 other.organizationId == organizationId) &&
             (identical(other.organizationName, organizationName) ||
@@ -52,6 +58,7 @@ mixin _$SessionContext {
   int get hashCode => Object.hash(
     runtimeType,
     role,
+    personId,
     organizationId,
     organizationName,
     tableId,
@@ -60,7 +67,7 @@ mixin _$SessionContext {
 
   @override
   String toString() {
-    return 'SessionContext(role: $role, organizationId: $organizationId, organizationName: $organizationName, tableId: $tableId, tableName: $tableName)';
+    return 'SessionContext(role: $role, personId: $personId, organizationId: $organizationId, organizationName: $organizationName, tableId: $tableId, tableName: $tableName)';
   }
 }
 
@@ -73,6 +80,7 @@ abstract mixin class $SessionContextCopyWith<$Res> {
   @useResult
   $Res call({
     UserRole role,
+    String? personId,
     String? organizationId,
     String? organizationName,
     String? tableId,
@@ -94,6 +102,7 @@ class _$SessionContextCopyWithImpl<$Res>
   @override
   $Res call({
     Object? role = null,
+    Object? personId = freezed,
     Object? organizationId = freezed,
     Object? organizationName = freezed,
     Object? tableId = freezed,
@@ -105,6 +114,10 @@ class _$SessionContextCopyWithImpl<$Res>
             ? _self.role
             : role // ignore: cast_nullable_to_non_nullable
                   as UserRole,
+        personId: freezed == personId
+            ? _self.personId
+            : personId // ignore: cast_nullable_to_non_nullable
+                  as String?,
         organizationId: freezed == organizationId
             ? _self.organizationId
             : organizationId // ignore: cast_nullable_to_non_nullable
@@ -221,6 +234,7 @@ extension SessionContextPatterns on SessionContext {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
       UserRole role,
+      String? personId,
       String? organizationId,
       String? organizationName,
       String? tableId,
@@ -234,6 +248,7 @@ extension SessionContextPatterns on SessionContext {
       case _SessionContext() when $default != null:
         return $default(
           _that.role,
+          _that.personId,
           _that.organizationId,
           _that.organizationName,
           _that.tableId,
@@ -261,6 +276,7 @@ extension SessionContextPatterns on SessionContext {
   TResult when<TResult extends Object?>(
     TResult Function(
       UserRole role,
+      String? personId,
       String? organizationId,
       String? organizationName,
       String? tableId,
@@ -273,6 +289,7 @@ extension SessionContextPatterns on SessionContext {
       case _SessionContext():
         return $default(
           _that.role,
+          _that.personId,
           _that.organizationId,
           _that.organizationName,
           _that.tableId,
@@ -299,6 +316,7 @@ extension SessionContextPatterns on SessionContext {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
       UserRole role,
+      String? personId,
       String? organizationId,
       String? organizationName,
       String? tableId,
@@ -311,6 +329,7 @@ extension SessionContextPatterns on SessionContext {
       case _SessionContext() when $default != null:
         return $default(
           _that.role,
+          _that.personId,
           _that.organizationId,
           _that.organizationName,
           _that.tableId,
@@ -327,6 +346,7 @@ extension SessionContextPatterns on SessionContext {
 class _SessionContext implements SessionContext {
   const _SessionContext({
     required this.role,
+    this.personId,
     this.organizationId,
     this.organizationName,
     this.tableId,
@@ -337,6 +357,11 @@ class _SessionContext implements SessionContext {
 
   @override
   final UserRole role;
+
+  /// The person row this context acts as (`people.id`). Writes in the
+  /// session domain use it as `person_id`.
+  @override
+  final String? personId;
   @override
   final String? organizationId;
   @override
@@ -365,6 +390,8 @@ class _SessionContext implements SessionContext {
         (other.runtimeType == runtimeType &&
             other is _SessionContext &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.personId, personId) ||
+                other.personId == personId) &&
             (identical(other.organizationId, organizationId) ||
                 other.organizationId == organizationId) &&
             (identical(other.organizationName, organizationName) ||
@@ -379,6 +406,7 @@ class _SessionContext implements SessionContext {
   int get hashCode => Object.hash(
     runtimeType,
     role,
+    personId,
     organizationId,
     organizationName,
     tableId,
@@ -387,7 +415,7 @@ class _SessionContext implements SessionContext {
 
   @override
   String toString() {
-    return 'SessionContext(role: $role, organizationId: $organizationId, organizationName: $organizationName, tableId: $tableId, tableName: $tableName)';
+    return 'SessionContext(role: $role, personId: $personId, organizationId: $organizationId, organizationName: $organizationName, tableId: $tableId, tableName: $tableName)';
   }
 }
 
@@ -402,6 +430,7 @@ abstract mixin class _$SessionContextCopyWith<$Res>
   @useResult
   $Res call({
     UserRole role,
+    String? personId,
     String? organizationId,
     String? organizationName,
     String? tableId,
@@ -423,6 +452,7 @@ class __$SessionContextCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? role = null,
+    Object? personId = freezed,
     Object? organizationId = freezed,
     Object? organizationName = freezed,
     Object? tableId = freezed,
@@ -434,6 +464,10 @@ class __$SessionContextCopyWithImpl<$Res>
             ? _self.role
             : role // ignore: cast_nullable_to_non_nullable
                   as UserRole,
+        personId: freezed == personId
+            ? _self.personId
+            : personId // ignore: cast_nullable_to_non_nullable
+                  as String?,
         organizationId: freezed == organizationId
             ? _self.organizationId
             : organizationId // ignore: cast_nullable_to_non_nullable
