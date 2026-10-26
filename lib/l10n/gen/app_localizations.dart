@@ -1773,6 +1773,750 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Solo el facilitador de esta mesa puede controlar la sesión.'**
   String get sessionBoardErrorNotFacilitator;
+
+  /// No description provided for @sessionMemberTableIs.
+  ///
+  /// In es, this message translates to:
+  /// **'La mesa está en:'**
+  String get sessionMemberTableIs;
+
+  /// No description provided for @sessionMemberPaceOwn.
+  ///
+  /// In es, this message translates to:
+  /// **'A tu ritmo'**
+  String get sessionMemberPaceOwn;
+
+  /// No description provided for @sessionMemberPeersLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'La mesa'**
+  String get sessionMemberPeersLabel;
+
+  /// No description provided for @sessionMemberYouMark.
+  ///
+  /// In es, this message translates to:
+  /// **'TÚ'**
+  String get sessionMemberYouMark;
+
+  /// No description provided for @sessionMemberFacilitatorSuffix.
+  ///
+  /// In es, this message translates to:
+  /// **'facilitador'**
+  String get sessionMemberFacilitatorSuffix;
+
+  /// No description provided for @sessionMemberPeerPresent.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}, presente'**
+  String sessionMemberPeerPresent(String name);
+
+  /// No description provided for @sessionMemberPeerLate.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}, llegó tarde'**
+  String sessionMemberPeerLate(String name);
+
+  /// No description provided for @sessionMemberPeerExcused.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}, justificado'**
+  String sessionMemberPeerExcused(String name);
+
+  /// No description provided for @sessionMemberPeerAbsent.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}, ausente'**
+  String sessionMemberPeerAbsent(String name);
+
+  /// No description provided for @sessionMemberPeerUnmarked.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}, sin marcar'**
+  String sessionMemberPeerUnmarked(String name);
+
+  /// No description provided for @sessionMemberUnmarked.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin marcar'**
+  String get sessionMemberUnmarked;
+
+  /// No description provided for @sessionMemberLobbyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando a tu facilitador'**
+  String get sessionMemberLobbyTitle;
+
+  /// No description provided for @sessionMemberLobbyMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'La mesa todavía no está abierta. Cuando se abra, verás aquí a tu mesa en vivo.'**
+  String get sessionMemberLobbyMessage;
+
+  /// No description provided for @sessionMemberLobbyFacilitatorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no abres la sesión'**
+  String get sessionMemberLobbyFacilitatorTitle;
+
+  /// No description provided for @sessionMemberLobbyFacilitatorMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre la sesión en “Dirigir la mesa”. Luego podrás responder como un miembro más.'**
+  String get sessionMemberLobbyFacilitatorMessage;
+
+  /// No description provided for @sessionMemberAttendanceKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia'**
+  String get sessionMemberAttendanceKicker;
+
+  /// No description provided for @sessionMemberAttendanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu facilitador está pasando lista'**
+  String get sessionMemberAttendanceTitle;
+
+  /// No description provided for @sessionMemberAttendanceFacilitatorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estás pasando lista'**
+  String get sessionMemberAttendanceFacilitatorTitle;
+
+  /// No description provided for @sessionMemberAttendanceUnmarked.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún sin marcar'**
+  String get sessionMemberAttendanceUnmarked;
+
+  /// No description provided for @sessionMemberAttendanceWait.
+  ///
+  /// In es, this message translates to:
+  /// **'Espera a que te nombren.'**
+  String get sessionMemberAttendanceWait;
+
+  /// No description provided for @sessionMemberAttendanceAbsentHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Si respondes igualmente, pasarás a Presente al sincronizar.'**
+  String get sessionMemberAttendanceAbsentHint;
+
+  /// No description provided for @sessionMemberAttendanceOkHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfecto. El seguimiento se abre en un momento.'**
+  String get sessionMemberAttendanceOkHint;
+
+  /// No description provided for @sessionMemberAttendanceFacilitatorHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Como facilitador quedas Presente. Marca a los demás en “Dirigir la mesa”.'**
+  String get sessionMemberAttendanceFacilitatorHint;
+
+  /// No description provided for @sessionMemberStepFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguim.'**
+  String get sessionMemberStepFollowUp;
+
+  /// No description provided for @sessionMemberStepValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor'**
+  String get sessionMemberStepValue;
+
+  /// No description provided for @sessionMemberStepCommitment.
+  ///
+  /// In es, this message translates to:
+  /// **'Compromiso'**
+  String get sessionMemberStepCommitment;
+
+  /// No description provided for @sessionMemberChipDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get sessionMemberChipDone;
+
+  /// No description provided for @sessionMemberChipNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get sessionMemberChipNow;
+
+  /// No description provided for @sessionMemberChipMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta'**
+  String get sessionMemberChipMissing;
+
+  /// No description provided for @sessionMemberChipClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrado'**
+  String get sessionMemberChipClosed;
+
+  /// No description provided for @sessionMemberChipNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no'**
+  String get sessionMemberChipNotYet;
+
+  /// No description provided for @sessionMemberChipSkipped.
+  ///
+  /// In es, this message translates to:
+  /// **'Omitido'**
+  String get sessionMemberChipSkipped;
+
+  /// No description provided for @sessionMemberChipSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'{step}: {state}'**
+  String sessionMemberChipSemantics(String step, String state);
+
+  /// No description provided for @sessionMemberStepsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus etapas'**
+  String get sessionMemberStepsLabel;
+
+  /// No description provided for @sessionMemberValueIncludesCommitment.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor actual incluye tu compromiso (no es una etapa aparte).'**
+  String get sessionMemberValueIncludesCommitment;
+
+  /// No description provided for @sessionMemberFollowUpKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento · Valor {number}'**
+  String sessionMemberFollowUpKicker(int number);
+
+  /// No description provided for @sessionMemberPreviousCommitmentKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compromiso de la semana pasada'**
+  String get sessionMemberPreviousCommitmentKicker;
+
+  /// No description provided for @sessionMemberHowItWent.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo te fue?'**
+  String get sessionMemberHowItWent;
+
+  /// No description provided for @sessionMemberStatusKept.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo cumplí'**
+  String get sessionMemberStatusKept;
+
+  /// No description provided for @sessionMemberStatusPartial.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumplí una parte'**
+  String get sessionMemberStatusPartial;
+
+  /// No description provided for @sessionMemberStatusNotKept.
+  ///
+  /// In es, this message translates to:
+  /// **'No pude cumplirlo'**
+  String get sessionMemberStatusNotKept;
+
+  /// No description provided for @sessionMemberFollowUpNoteLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuéntanos en una frase (opcional)'**
+  String get sessionMemberFollowUpNoteLabel;
+
+  /// No description provided for @sessionMemberFollowUpScoreLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo te calificas hoy en {value}?'**
+  String sessionMemberFollowUpScoreLabel(String value);
+
+  /// No description provided for @sessionMemberFollowUpSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar seguimiento'**
+  String get sessionMemberFollowUpSend;
+
+  /// No description provided for @sessionMemberNoPreviousTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes compromiso previo'**
+  String get sessionMemberNoPreviousTitle;
+
+  /// No description provided for @sessionMemberNoPreviousMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'La semana pasada no estuviste en la mesa, así que no hay nada que revisar. ¡Qué bueno verte hoy!'**
+  String get sessionMemberNoPreviousMessage;
+
+  /// No description provided for @sessionMemberFirstSessionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Es la primera sesión de tu mesa'**
+  String get sessionMemberFirstSessionTitle;
+
+  /// No description provided for @sessionMemberFirstSessionMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay un compromiso que revisar. ¡Empecemos!'**
+  String get sessionMemberFirstSessionMessage;
+
+  /// No description provided for @sessionMemberReflectionKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor actual · Valor {number} · parte 1 de 2'**
+  String sessionMemberReflectionKicker(int number);
+
+  /// No description provided for @sessionMemberReflectionHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'El contenido está en tu folleto; aquí solo anotas tus respuestas.'**
+  String get sessionMemberReflectionHelper;
+
+  /// No description provided for @sessionMemberReflectionScoreLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu puntaje inicial en {value}'**
+  String sessionMemberReflectionScoreLabel(String value);
+
+  /// No description provided for @sessionMemberReflectionSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar y seguir al compromiso'**
+  String get sessionMemberReflectionSend;
+
+  /// No description provided for @sessionMemberCommitmentKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor actual · parte 2 de 2'**
+  String get sessionMemberCommitmentKicker;
+
+  /// No description provided for @sessionMemberCommitmentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compromiso de esta semana'**
+  String get sessionMemberCommitmentTitle;
+
+  /// No description provided for @sessionMemberCommitmentHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'Una sola acción concreta y medible: qué haré, cuándo y cómo lo mediré.'**
+  String get sessionMemberCommitmentHelper;
+
+  /// No description provided for @sessionMemberWhatLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué haré'**
+  String get sessionMemberWhatLabel;
+
+  /// No description provided for @sessionMemberWhatHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej.: Llamar a mi abuela 2 veces'**
+  String get sessionMemberWhatHint;
+
+  /// No description provided for @sessionMemberWhatExamplesKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Sin ideas? Toca un ejemplo'**
+  String get sessionMemberWhatExamplesKicker;
+
+  /// No description provided for @sessionMemberWhatExample1.
+  ///
+  /// In es, this message translates to:
+  /// **'Llamar a mi abuela 2 veces'**
+  String get sessionMemberWhatExample1;
+
+  /// No description provided for @sessionMemberWhatExample2.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar mi cuarto cada noche'**
+  String get sessionMemberWhatExample2;
+
+  /// No description provided for @sessionMemberWhatExample3.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminar mi tarea con 30 minutos diarios'**
+  String get sessionMemberWhatExample3;
+
+  /// No description provided for @sessionMemberWhenLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuándo'**
+  String get sessionMemberWhenLabel;
+
+  /// No description provided for @sessionMemberWhenEveryDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los días'**
+  String get sessionMemberWhenEveryDay;
+
+  /// No description provided for @sessionMemberWhenMondayThursday.
+  ///
+  /// In es, this message translates to:
+  /// **'Lunes y jueves'**
+  String get sessionMemberWhenMondayThursday;
+
+  /// No description provided for @sessionMemberWhenThisWeek.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta semana'**
+  String get sessionMemberWhenThisWeek;
+
+  /// No description provided for @sessionMemberWhenBeforeFriday.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes del viernes'**
+  String get sessionMemberWhenBeforeFriday;
+
+  /// No description provided for @sessionMemberHowLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo lo mediré'**
+  String get sessionMemberHowLabel;
+
+  /// No description provided for @sessionMemberHowCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuántas veces lo hice'**
+  String get sessionMemberHowCount;
+
+  /// No description provided for @sessionMemberHowYesNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí o no cada día'**
+  String get sessionMemberHowYesNo;
+
+  /// No description provided for @sessionMemberHowSunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo reviso el domingo'**
+  String get sessionMemberHowSunday;
+
+  /// No description provided for @sessionMemberHowTell.
+  ///
+  /// In es, this message translates to:
+  /// **'Se lo cuento a la mesa'**
+  String get sessionMemberHowTell;
+
+  /// No description provided for @sessionMemberCommitmentSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar mi compromiso'**
+  String get sessionMemberCommitmentSend;
+
+  /// No description provided for @sessionMemberErrorAnswer.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una respuesta corta.'**
+  String get sessionMemberErrorAnswer;
+
+  /// No description provided for @sessionMemberErrorTooShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy corta. Cuenta un poco más.'**
+  String get sessionMemberErrorTooShort;
+
+  /// No description provided for @sessionMemberErrorScore.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige tu puntaje de 1 a 10 (el 5 no se puede).'**
+  String get sessionMemberErrorScore;
+
+  /// No description provided for @sessionMemberErrorStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo te fue con tu compromiso.'**
+  String get sessionMemberErrorStatus;
+
+  /// No description provided for @sessionMemberErrorWhat.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una acción concreta para esta semana.'**
+  String get sessionMemberErrorWhat;
+
+  /// No description provided for @sessionMemberErrorWhatShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy corta. Cuenta qué harás y cuánto.'**
+  String get sessionMemberErrorWhatShort;
+
+  /// No description provided for @sessionMemberErrorWhen.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cuándo lo harás.'**
+  String get sessionMemberErrorWhen;
+
+  /// No description provided for @sessionMemberErrorHow.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo lo vas a medir.'**
+  String get sessionMemberErrorHow;
+
+  /// No description provided for @sessionMemberLockedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Etapa cerrada'**
+  String get sessionMemberLockedTitle;
+
+  /// No description provided for @sessionMemberLockedMemberMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu facilitador ya cerró las respuestas.'**
+  String get sessionMemberLockedMemberMessage;
+
+  /// No description provided for @sessionMemberLockedFacilitatorMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste las respuestas.'**
+  String get sessionMemberLockedFacilitatorMessage;
+
+  /// No description provided for @sessionMemberDockSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get sessionMemberDockSend;
+
+  /// No description provided for @sessionMemberDockContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir'**
+  String get sessionMemberDockContinue;
+
+  /// No description provided for @sessionMemberDockSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado'**
+  String get sessionMemberDockSaved;
+
+  /// No description provided for @sessionMemberDockSentWaiting.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado · esperando a la mesa'**
+  String get sessionMemberDockSentWaiting;
+
+  /// No description provided for @sessionMemberDockReadyWaiting.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo · esperando a la mesa'**
+  String get sessionMemberDockReadyWaiting;
+
+  /// No description provided for @sessionMemberDockClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrado'**
+  String get sessionMemberDockClosed;
+
+  /// No description provided for @sessionMemberSentLive.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado.'**
+  String get sessionMemberSentLive;
+
+  /// No description provided for @sessionMemberSentWaitingFacilitator.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado. Falta que el facilitador cierre las respuestas.'**
+  String get sessionMemberSentWaitingFacilitator;
+
+  /// No description provided for @sessionMemberSavedOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.'**
+  String get sessionMemberSavedOffline;
+
+  /// No description provided for @sessionMemberRecapKickerFinished.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminaste'**
+  String get sessionMemberRecapKickerFinished;
+
+  /// No description provided for @sessionMemberRecapKickerPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen'**
+  String get sessionMemberRecapKickerPending;
+
+  /// No description provided for @sessionMemberRecapTitleFacilitator.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus respuestas están completas'**
+  String get sessionMemberRecapTitleFacilitator;
+
+  /// No description provided for @sessionMemberRecapTitleLive.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando el cierre de la mesa'**
+  String get sessionMemberRecapTitleLive;
+
+  /// No description provided for @sessionMemberRecapTitleOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo guardado en tu teléfono'**
+  String get sessionMemberRecapTitleOffline;
+
+  /// No description provided for @sessionMemberRecapTitlePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes etapas pendientes'**
+  String get sessionMemberRecapTitlePending;
+
+  /// No description provided for @sessionMemberRecapOfflineInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.'**
+  String get sessionMemberRecapOfflineInfo;
+
+  /// No description provided for @sessionMemberRecapAnswersClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu facilitador cerró las respuestas. Falta que cierre la sesión.'**
+  String get sessionMemberRecapAnswersClosed;
+
+  /// No description provided for @sessionMemberResultFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento · {value}'**
+  String sessionMemberResultFollowUp(String value);
+
+  /// No description provided for @sessionMemberResultFollowUpSkipped.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin compromiso previo (omitido)'**
+  String get sessionMemberResultFollowUpSkipped;
+
+  /// No description provided for @sessionMemberResultInitialScore.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor actual · puntaje inicial'**
+  String get sessionMemberResultInitialScore;
+
+  /// No description provided for @sessionMemberResultCommitment.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi compromiso'**
+  String get sessionMemberResultCommitment;
+
+  /// No description provided for @sessionMemberResultsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay respuestas guardadas.'**
+  String get sessionMemberResultsEmpty;
+
+  /// No description provided for @sessionMemberSummaryKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión cerrada'**
+  String get sessionMemberSummaryKicker;
+
+  /// No description provided for @sessionMemberSummaryThanks.
+  ///
+  /// In es, this message translates to:
+  /// **'Gracias, {name}'**
+  String sessionMemberSummaryThanks(String name);
+
+  /// No description provided for @sessionMemberSummaryAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu asistencia'**
+  String get sessionMemberSummaryAttendance;
+
+  /// No description provided for @sessionMemberSummaryAutomatic.
+  ///
+  /// In es, this message translates to:
+  /// **'automática'**
+  String get sessionMemberSummaryAutomatic;
+
+  /// No description provided for @sessionMemberSummaryUnanswered.
+  ///
+  /// In es, this message translates to:
+  /// **'Quedaron etapas sin responder. Ya no se pueden enviar desde la mesa en vivo.'**
+  String get sessionMemberSummaryUnanswered;
+
+  /// No description provided for @sessionMemberSyncPendingDetailOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Se enviará cuando tengas internet.'**
+  String get sessionMemberSyncPendingDetailOffline;
+
+  /// No description provided for @sessionMemberSyncSyncedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus respuestas ya están en la mesa.'**
+  String get sessionMemberSyncSyncedDetail;
+
+  /// No description provided for @sessionMemberSyncLateDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó después del cierre de la sesión: se aceptó y quedó marcado.'**
+  String get sessionMemberSyncLateDetail;
+
+  /// No description provided for @sessionMemberSyncOfflineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin internet · todo se guarda en este teléfono'**
+  String get sessionMemberSyncOfflineTitle;
+
+  /// No description provided for @sessionMemberSyncOfflineFacilitator.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus respuestas se sincronizan igual que las de un miembro.'**
+  String get sessionMemberSyncOfflineFacilitator;
+
+  /// No description provided for @sessionMemberSyncOfflineMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu facilitador te guía de palabra. Sigue a tu ritmo.'**
+  String get sessionMemberSyncOfflineMember;
+
+  /// No description provided for @sessionMemberAutoPendingTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te marcaron Ausente.'**
+  String get sessionMemberAutoPendingTitle;
+
+  /// No description provided for @sessionMemberAutoPendingDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Como respondiste, tu asistencia pasará a Presente al sincronizar.'**
+  String get sessionMemberAutoPendingDetail;
+
+  /// No description provided for @sessionMemberAutoDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia automática'**
+  String get sessionMemberAutoDoneTitle;
+
+  /// No description provided for @sessionMemberAutoDoneDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasaste de Ausente a Presente porque respondiste.'**
+  String get sessionMemberAutoDoneDetail;
+
+  /// No description provided for @sessionMemberAbsentInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Estás marcado como Ausente. Si respondes, pasarás a Presente al sincronizar.'**
+  String get sessionMemberAbsentInfo;
+
+  /// No description provided for @sessionMemberToastSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado'**
+  String get sessionMemberToastSent;
+
+  /// No description provided for @sessionMemberToastFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar. Inténtalo de nuevo.'**
+  String get sessionMemberToastFailed;
+
+  /// No description provided for @sessionMemberOfflineBannerDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'todo se guarda en este teléfono'**
+  String get sessionMemberOfflineBannerDetail;
 }
 
 class _AppLocalizationsDelegate

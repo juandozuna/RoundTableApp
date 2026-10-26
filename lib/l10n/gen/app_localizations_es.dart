@@ -1058,4 +1058,439 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sessionBoardErrorNotFacilitator =>
       'Solo el facilitador de esta mesa puede controlar la sesión.';
+
+  @override
+  String get sessionMemberTableIs => 'La mesa está en:';
+
+  @override
+  String get sessionMemberPaceOwn => 'A tu ritmo';
+
+  @override
+  String get sessionMemberPeersLabel => 'La mesa';
+
+  @override
+  String get sessionMemberYouMark => 'TÚ';
+
+  @override
+  String get sessionMemberFacilitatorSuffix => 'facilitador';
+
+  @override
+  String sessionMemberPeerPresent(String name) {
+    return '$name, presente';
+  }
+
+  @override
+  String sessionMemberPeerLate(String name) {
+    return '$name, llegó tarde';
+  }
+
+  @override
+  String sessionMemberPeerExcused(String name) {
+    return '$name, justificado';
+  }
+
+  @override
+  String sessionMemberPeerAbsent(String name) {
+    return '$name, ausente';
+  }
+
+  @override
+  String sessionMemberPeerUnmarked(String name) {
+    return '$name, sin marcar';
+  }
+
+  @override
+  String get sessionMemberUnmarked => 'Sin marcar';
+
+  @override
+  String get sessionMemberLobbyTitle => 'Esperando a tu facilitador';
+
+  @override
+  String get sessionMemberLobbyMessage =>
+      'La mesa todavía no está abierta. Cuando se abra, verás aquí a tu mesa en vivo.';
+
+  @override
+  String get sessionMemberLobbyFacilitatorTitle => 'Aún no abres la sesión';
+
+  @override
+  String get sessionMemberLobbyFacilitatorMessage =>
+      'Abre la sesión en “Dirigir la mesa”. Luego podrás responder como un miembro más.';
+
+  @override
+  String get sessionMemberAttendanceKicker => 'Asistencia';
+
+  @override
+  String get sessionMemberAttendanceTitle =>
+      'Tu facilitador está pasando lista';
+
+  @override
+  String get sessionMemberAttendanceFacilitatorTitle => 'Estás pasando lista';
+
+  @override
+  String get sessionMemberAttendanceUnmarked => 'Aún sin marcar';
+
+  @override
+  String get sessionMemberAttendanceWait => 'Espera a que te nombren.';
+
+  @override
+  String get sessionMemberAttendanceAbsentHint =>
+      'Si respondes igualmente, pasarás a Presente al sincronizar.';
+
+  @override
+  String get sessionMemberAttendanceOkHint =>
+      'Perfecto. El seguimiento se abre en un momento.';
+
+  @override
+  String get sessionMemberAttendanceFacilitatorHint =>
+      'Como facilitador quedas Presente. Marca a los demás en “Dirigir la mesa”.';
+
+  @override
+  String get sessionMemberStepFollowUp => 'Seguim.';
+
+  @override
+  String get sessionMemberStepValue => 'Valor';
+
+  @override
+  String get sessionMemberStepCommitment => 'Compromiso';
+
+  @override
+  String get sessionMemberChipDone => 'Listo';
+
+  @override
+  String get sessionMemberChipNow => 'Ahora';
+
+  @override
+  String get sessionMemberChipMissing => 'Falta';
+
+  @override
+  String get sessionMemberChipClosed => 'Cerrado';
+
+  @override
+  String get sessionMemberChipNotYet => 'Aún no';
+
+  @override
+  String get sessionMemberChipSkipped => 'Omitido';
+
+  @override
+  String sessionMemberChipSemantics(String step, String state) {
+    return '$step: $state';
+  }
+
+  @override
+  String get sessionMemberStepsLabel => 'Tus etapas';
+
+  @override
+  String get sessionMemberValueIncludesCommitment =>
+      'Valor actual incluye tu compromiso (no es una etapa aparte).';
+
+  @override
+  String sessionMemberFollowUpKicker(int number) {
+    return 'Seguimiento · Valor $number';
+  }
+
+  @override
+  String get sessionMemberPreviousCommitmentKicker =>
+      'Tu compromiso de la semana pasada';
+
+  @override
+  String get sessionMemberHowItWent => '¿Cómo te fue?';
+
+  @override
+  String get sessionMemberStatusKept => 'Lo cumplí';
+
+  @override
+  String get sessionMemberStatusPartial => 'Cumplí una parte';
+
+  @override
+  String get sessionMemberStatusNotKept => 'No pude cumplirlo';
+
+  @override
+  String get sessionMemberFollowUpNoteLabel =>
+      'Cuéntanos en una frase (opcional)';
+
+  @override
+  String sessionMemberFollowUpScoreLabel(String value) {
+    return '¿Cómo te calificas hoy en $value?';
+  }
+
+  @override
+  String get sessionMemberFollowUpSend => 'Enviar seguimiento';
+
+  @override
+  String get sessionMemberNoPreviousTitle => 'No tienes compromiso previo';
+
+  @override
+  String get sessionMemberNoPreviousMessage =>
+      'La semana pasada no estuviste en la mesa, así que no hay nada que revisar. ¡Qué bueno verte hoy!';
+
+  @override
+  String get sessionMemberFirstSessionTitle =>
+      'Es la primera sesión de tu mesa';
+
+  @override
+  String get sessionMemberFirstSessionMessage =>
+      'Todavía no hay un compromiso que revisar. ¡Empecemos!';
+
+  @override
+  String sessionMemberReflectionKicker(int number) {
+    return 'Valor actual · Valor $number · parte 1 de 2';
+  }
+
+  @override
+  String get sessionMemberReflectionHelper =>
+      'El contenido está en tu folleto; aquí solo anotas tus respuestas.';
+
+  @override
+  String sessionMemberReflectionScoreLabel(String value) {
+    return 'Tu puntaje inicial en $value';
+  }
+
+  @override
+  String get sessionMemberReflectionSend => 'Enviar y seguir al compromiso';
+
+  @override
+  String get sessionMemberCommitmentKicker => 'Valor actual · parte 2 de 2';
+
+  @override
+  String get sessionMemberCommitmentTitle => 'Tu compromiso de esta semana';
+
+  @override
+  String get sessionMemberCommitmentHelper =>
+      'Una sola acción concreta y medible: qué haré, cuándo y cómo lo mediré.';
+
+  @override
+  String get sessionMemberWhatLabel => 'Qué haré';
+
+  @override
+  String get sessionMemberWhatHint => 'Ej.: Llamar a mi abuela 2 veces';
+
+  @override
+  String get sessionMemberWhatExamplesKicker => '¿Sin ideas? Toca un ejemplo';
+
+  @override
+  String get sessionMemberWhatExample1 => 'Llamar a mi abuela 2 veces';
+
+  @override
+  String get sessionMemberWhatExample2 => 'Ordenar mi cuarto cada noche';
+
+  @override
+  String get sessionMemberWhatExample3 =>
+      'Terminar mi tarea con 30 minutos diarios';
+
+  @override
+  String get sessionMemberWhenLabel => 'Cuándo';
+
+  @override
+  String get sessionMemberWhenEveryDay => 'Todos los días';
+
+  @override
+  String get sessionMemberWhenMondayThursday => 'Lunes y jueves';
+
+  @override
+  String get sessionMemberWhenThisWeek => 'Esta semana';
+
+  @override
+  String get sessionMemberWhenBeforeFriday => 'Antes del viernes';
+
+  @override
+  String get sessionMemberHowLabel => 'Cómo lo mediré';
+
+  @override
+  String get sessionMemberHowCount => 'Cuántas veces lo hice';
+
+  @override
+  String get sessionMemberHowYesNo => 'Sí o no cada día';
+
+  @override
+  String get sessionMemberHowSunday => 'Lo reviso el domingo';
+
+  @override
+  String get sessionMemberHowTell => 'Se lo cuento a la mesa';
+
+  @override
+  String get sessionMemberCommitmentSend => 'Enviar mi compromiso';
+
+  @override
+  String get sessionMemberErrorAnswer => 'Escribe una respuesta corta.';
+
+  @override
+  String get sessionMemberErrorTooShort => 'Muy corta. Cuenta un poco más.';
+
+  @override
+  String get sessionMemberErrorScore =>
+      'Elige tu puntaje de 1 a 10 (el 5 no se puede).';
+
+  @override
+  String get sessionMemberErrorStatus => 'Elige cómo te fue con tu compromiso.';
+
+  @override
+  String get sessionMemberErrorWhat =>
+      'Escribe una acción concreta para esta semana.';
+
+  @override
+  String get sessionMemberErrorWhatShort =>
+      'Muy corta. Cuenta qué harás y cuánto.';
+
+  @override
+  String get sessionMemberErrorWhen => 'Elige cuándo lo harás.';
+
+  @override
+  String get sessionMemberErrorHow => 'Elige cómo lo vas a medir.';
+
+  @override
+  String get sessionMemberLockedTitle => 'Etapa cerrada';
+
+  @override
+  String get sessionMemberLockedMemberMessage =>
+      'Tu facilitador ya cerró las respuestas.';
+
+  @override
+  String get sessionMemberLockedFacilitatorMessage =>
+      'Cerraste las respuestas.';
+
+  @override
+  String get sessionMemberDockSend => 'Enviar';
+
+  @override
+  String get sessionMemberDockContinue => 'Seguir';
+
+  @override
+  String get sessionMemberDockSaved => 'Guardado';
+
+  @override
+  String get sessionMemberDockSentWaiting => 'Enviado · esperando a la mesa';
+
+  @override
+  String get sessionMemberDockReadyWaiting => 'Listo · esperando a la mesa';
+
+  @override
+  String get sessionMemberDockClosed => 'Cerrado';
+
+  @override
+  String get sessionMemberSentLive => 'Enviado.';
+
+  @override
+  String get sessionMemberSentWaitingFacilitator =>
+      'Enviado. Falta que el facilitador cierre las respuestas.';
+
+  @override
+  String get sessionMemberSavedOffline =>
+      'Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.';
+
+  @override
+  String get sessionMemberRecapKickerFinished => 'Terminaste';
+
+  @override
+  String get sessionMemberRecapKickerPending => 'Resumen';
+
+  @override
+  String get sessionMemberRecapTitleFacilitator =>
+      'Tus respuestas están completas';
+
+  @override
+  String get sessionMemberRecapTitleLive => 'Esperando el cierre de la mesa';
+
+  @override
+  String get sessionMemberRecapTitleOffline => 'Todo guardado en tu teléfono';
+
+  @override
+  String get sessionMemberRecapTitlePending => 'Tienes etapas pendientes';
+
+  @override
+  String get sessionMemberRecapOfflineInfo =>
+      'Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.';
+
+  @override
+  String get sessionMemberRecapAnswersClosed =>
+      'Tu facilitador cerró las respuestas. Falta que cierre la sesión.';
+
+  @override
+  String sessionMemberResultFollowUp(String value) {
+    return 'Seguimiento · $value';
+  }
+
+  @override
+  String get sessionMemberResultFollowUpSkipped =>
+      'Sin compromiso previo (omitido)';
+
+  @override
+  String get sessionMemberResultInitialScore =>
+      'Valor actual · puntaje inicial';
+
+  @override
+  String get sessionMemberResultCommitment => 'Mi compromiso';
+
+  @override
+  String get sessionMemberResultsEmpty => 'Aún no hay respuestas guardadas.';
+
+  @override
+  String get sessionMemberSummaryKicker => 'Sesión cerrada';
+
+  @override
+  String sessionMemberSummaryThanks(String name) {
+    return 'Gracias, $name';
+  }
+
+  @override
+  String get sessionMemberSummaryAttendance => 'Tu asistencia';
+
+  @override
+  String get sessionMemberSummaryAutomatic => 'automática';
+
+  @override
+  String get sessionMemberSummaryUnanswered =>
+      'Quedaron etapas sin responder. Ya no se pueden enviar desde la mesa en vivo.';
+
+  @override
+  String get sessionMemberSyncPendingDetailOffline =>
+      'Se enviará cuando tengas internet.';
+
+  @override
+  String get sessionMemberSyncSyncedDetail =>
+      'Tus respuestas ya están en la mesa.';
+
+  @override
+  String get sessionMemberSyncLateDetail =>
+      'Llegó después del cierre de la sesión: se aceptó y quedó marcado.';
+
+  @override
+  String get sessionMemberSyncOfflineTitle =>
+      'Sin internet · todo se guarda en este teléfono';
+
+  @override
+  String get sessionMemberSyncOfflineFacilitator =>
+      'Tus respuestas se sincronizan igual que las de un miembro.';
+
+  @override
+  String get sessionMemberSyncOfflineMember =>
+      'Tu facilitador te guía de palabra. Sigue a tu ritmo.';
+
+  @override
+  String get sessionMemberAutoPendingTitle => 'Te marcaron Ausente.';
+
+  @override
+  String get sessionMemberAutoPendingDetail =>
+      'Como respondiste, tu asistencia pasará a Presente al sincronizar.';
+
+  @override
+  String get sessionMemberAutoDoneTitle => 'Asistencia automática';
+
+  @override
+  String get sessionMemberAutoDoneDetail =>
+      'Pasaste de Ausente a Presente porque respondiste.';
+
+  @override
+  String get sessionMemberAbsentInfo =>
+      'Estás marcado como Ausente. Si respondes, pasarás a Presente al sincronizar.';
+
+  @override
+  String get sessionMemberToastSent => 'Enviado';
+
+  @override
+  String get sessionMemberToastFailed =>
+      'No se pudo guardar. Inténtalo de nuevo.';
+
+  @override
+  String get sessionMemberOfflineBannerDetail =>
+      'todo se guarda en este teléfono';
 }
