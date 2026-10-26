@@ -204,7 +204,8 @@ class _InviteFormPageState extends State<InviteFormPage> {
           ),
           const SizedBox(height: AppSpacing.xs),
           for (final option in InviteRoleKind.values)
-            _RoleOption(
+            _buildRoleOption(
+              context,
               kind: option,
               selected: state.role == option,
               enabled: state.roles.contains(option),
@@ -233,7 +234,7 @@ class _InviteFormPageState extends State<InviteFormPage> {
           if (state.needsTable) ...[
             const SizedBox(height: AppSpacing.md),
             if (role == UserRole.facilitator)
-              _LockedTable(table: state.selectedTable)
+              _buildLockedTable(context, table: state.selectedTable)
             else
               AppDropdownFormField<String>(
                 key: ValueKey(
@@ -377,15 +378,11 @@ class _InviteFormPageState extends State<InviteFormPage> {
     final table = state.tables.firstOrNull;
     return table?.organizationName ?? '';
   }
-}
 
-class _LockedTable extends StatelessWidget {
-  const _LockedTable({required this.table});
-
-  final InviteTargetTable? table;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildLockedTable(
+    BuildContext context, {
+    required InviteTargetTable? table,
+  }) {
     final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,25 +421,15 @@ class _LockedTable extends StatelessWidget {
       ],
     );
   }
-}
 
-class _RoleOption extends StatelessWidget {
-  const _RoleOption({
-    required this.kind,
-    required this.selected,
-    required this.enabled,
-    required this.onTap,
-    this.note,
-  });
-
-  final InviteRoleKind kind;
-  final bool selected;
-  final bool enabled;
-  final VoidCallback onTap;
-  final String? note;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildRoleOption(
+    BuildContext context, {
+    required InviteRoleKind kind,
+    required bool selected,
+    required bool enabled,
+    required VoidCallback onTap,
+    String? note,
+  }) {
     final l10n = context.l10n;
     final blocked = !enabled || note != null;
     return Padding(

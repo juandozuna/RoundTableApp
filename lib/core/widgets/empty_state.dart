@@ -71,6 +71,7 @@ class ErrorState extends StatelessWidget {
   }
 }
 
+// Shared by EmptyState and ErrorState, so it cannot be a method of either.
 class _StateLayout extends StatelessWidget {
   const _StateLayout({
     required this.icon,

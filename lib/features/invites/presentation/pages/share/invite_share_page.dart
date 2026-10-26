@@ -137,14 +137,18 @@ class InviteSharePage extends StatelessWidget {
     return AppCard(
       child: Column(
         children: [
-          _QrImage(data: invite.shareLink ?? invite.code, size: 168),
+          _buildQrImage(
+            context,
+            data: invite.shareLink ?? invite.code,
+            size: 168,
+          ),
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.invitesCodeKicker.toUpperCase(),
             style: context.textStyles.kicker,
           ),
           const SizedBox(height: AppSpacing.xs),
-          _CodeCells(code: invite.code),
+          _buildCodeCells(context, code: invite.code),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '${InviteLabels.role(context, invite.roleKind)} · ${invite.scopeName}',
@@ -268,7 +272,11 @@ class InviteSharePage extends StatelessWidget {
       builder: (_) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _QrImage(data: invite.shareLink ?? invite.code, size: 260),
+          _buildQrImage(
+            context,
+            data: invite.shareLink ?? invite.code,
+            size: 260,
+          ),
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.invitesBigQrHint,
@@ -279,16 +287,12 @@ class InviteSharePage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _QrImage extends StatelessWidget {
-  const _QrImage({required this.data, required this.size});
-
-  final String data;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildQrImage(
+    BuildContext context, {
+    required String data,
+    required double size,
+  }) {
     return Semantics(
       image: true,
       label: context.l10n.invitesQrSemantics,
@@ -314,15 +318,8 @@ class _QrImage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _CodeCells extends StatelessWidget {
-  const _CodeCells({required this.code});
-
-  final String code;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCodeCells(BuildContext context, {required String code}) {
     final colors = context.colors;
     return Semantics(
       label: code.split('').join(' '),
