@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local stack overrides (docker-compose.yml, scripts/); see .env.example
+.env
+# Some global ignore files list "docker"; the local-stack config lives there and is tracked.
+!/docker/
