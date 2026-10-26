@@ -12,10 +12,10 @@ import 'package:gold_roundtables/features/auth/domain/services/access_session_se
 import 'package:gold_roundtables/features/auth/domain/services/auth_service.dart';
 import 'package:gold_roundtables/features/auth/presentation/cubit/access_cubit.dart';
 import 'package:gold_roundtables/features/auth/presentation/pages/sign_in/cubit/sign_in_cubit.dart';
+import 'package:gold_roundtables/features/home/presentation/pages/home/cubit/home_cubit.dart';
 import 'package:gold_roundtables/features/invites/domain/services/invite_service.dart';
 import 'package:gold_roundtables/features/invites/presentation/pages/manager/cubit/invites_manager_cubit.dart';
 import 'package:gold_roundtables/features/invites/presentation/pages/redeem/cubit/redeem_cubit.dart';
-import 'package:gold_roundtables/features/shell/presentation/pages/home/cubit/home_cubit.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 

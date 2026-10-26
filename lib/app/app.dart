@@ -5,6 +5,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../core/theme/app_breakpoints.dart';
 import '../core/theme/app_theme.dart';
+import '../features/notifications/presentation/widgets/notifications_host.dart';
 import '../l10n/gen/app_localizations.dart';
 
 class GoldRoundtablesApp extends StatelessWidget {
@@ -30,25 +31,28 @@ class GoldRoundtablesApp extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         routerConfig: router,
-        builder: (context, child) => ResponsiveBreakpoints.builder(
-          child: child!,
-          breakpoints: const [
-            Breakpoint(
-              start: 0,
-              end: AppBreakpoints.tablet - 1,
-              name: AppBreakpoints.phoneName,
-            ),
-            Breakpoint(
-              start: AppBreakpoints.tablet,
-              end: AppBreakpoints.desktop,
-              name: AppBreakpoints.tabletName,
-            ),
-            Breakpoint(
-              start: AppBreakpoints.desktop + 1,
-              end: double.infinity,
-              name: AppBreakpoints.desktopName,
-            ),
-          ],
+        builder: (context, child) => NotificationsHost(
+          router: router,
+          child: ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(
+                start: 0,
+                end: AppBreakpoints.tablet - 1,
+                name: AppBreakpoints.phoneName,
+              ),
+              Breakpoint(
+                start: AppBreakpoints.tablet,
+                end: AppBreakpoints.desktop,
+                name: AppBreakpoints.tabletName,
+              ),
+              Breakpoint(
+                start: AppBreakpoints.desktop + 1,
+                end: double.infinity,
+                name: AppBreakpoints.desktopName,
+              ),
+            ],
+          ),
         ),
       ),
     );

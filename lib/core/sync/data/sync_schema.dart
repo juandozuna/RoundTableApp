@@ -13,10 +13,21 @@ abstract final class CoreSyncTables {
   /// Row key holding the id of the user whose data is on this device.
   static const String ownerUserIdKey = 'owner_user_id';
 
+  /// Changes the server refused permanently, kept so the person can be told
+  /// why (for example "La sesión ya se cerró").
+  static const String uploadRejections = 'sync_upload_rejections';
+
   static const List<Table> tables = [
     Table.localOnly(localSyncState, [
       Column.text(keyColumn),
       Column.text(valueColumn),
+    ]),
+    Table.localOnly(uploadRejections, [
+      Column.text('table_name'),
+      Column.text('row_id'),
+      Column.text('code'),
+      Column.text('message'),
+      Column.text('rejected_at'),
     ]),
   ];
 }

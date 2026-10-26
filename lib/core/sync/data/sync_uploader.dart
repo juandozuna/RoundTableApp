@@ -8,8 +8,8 @@ import 'sync_upload_batch.dart';
 /// - Return normally only after the server committed the batch; the batch is
 ///   then removed from the queue. Uploads must be idempotent by UUID.
 /// - Throw [SyncUploadRejected] when the server permanently refuses the
-///   batch (validation); it is logged and dropped so it cannot block the
-///   queue forever.
+///   batch or some of its changes (validation); they are logged, recorded
+///   and dropped so they cannot block the queue forever.
 /// - Throw anything else for transient failures; the batch stays queued and
 ///   PowerSync retries later.
 abstract interface class SyncUploader {
@@ -17,9 +17,13 @@ abstract interface class SyncUploader {
 }
 
 class SyncUploadRejected implements Exception {
-  const SyncUploadRejected(this.reason);
+  const SyncUploadRejected(this.reason, {this.rejections = const []});
 
   final String reason;
+
+  /// The refused changes, kept on the device so the person can be told why
+  /// (`CoreSyncTables.uploadRejections`).
+  final List<SyncRejection> rejections;
 
   @override
   String toString() => 'SyncUploadRejected($reason)';

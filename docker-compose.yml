@@ -1,0 +1,98 @@
+# Gold Roundtables — local stack (everything except Supabase).
+#
+# Supabase local is NOT part of this file: start it with the Supabase CLI (`supabase start`) and
+# run the replication setup once (`scripts/setup-powersync-replication.sh`). `scripts/dev-up.sh`
+# does all of it. This file adds what the Supabase CLI does not provide:
+#
+#   powersync-storage + powersync   PowerSync Service (profiles: core, powersync)
+#   web                             Flutter web release built in Docker + nginx (profiles: core, web)
+#   web-local                       nginx serving ./build/web built on the host
+#                                   (profile: web-local; used by scripts/web-dev-serve.sh)
+#
+# `web` and `web-local` both publish WEB_PORT, so start only one of them.
+# Variables come from .env (see .env.example); defaults target Docker Desktop + Supabase CLI.
+
+name: gold-roundtables-local
+
+x-host-gateway: &host-gateway
+  # host.docker.internal resolves on Docker Desktop; this line also makes it work on Linux.
+  - "host.docker.internal:host-gateway"
+
+services:
+  powersync-storage:
+    profiles: [core, powersync]
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: powersync_storage
+      POSTGRES_PASSWORD: ${POWERSYNC_STORAGE_PASSWORD:-powersync_storage_local_dev}
+      POSTGRES_DB: powersync_storage
+    volumes:
+      - powersync-storage-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U powersync_storage -d powersync_storage"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  powersync:
+    profiles: [core, powersync]
+    image: journeyapps/powersync-service:${POWERSYNC_SERVICE_VERSION:-1.27}
+    restart: unless-stopped
+    command: ["start", "-r", "unified"]
+    depends_on:
+      powersync-storage:
+        condition: service_healthy
+    extra_hosts: *host-gateway
+    environment:
+      POWERSYNC_CONFIG_PATH: /config/powersync.yaml
+      PS_DATA_SOURCE_URI: postgresql://powersync_role:${POWERSYNC_DB_PASSWORD:-powersync_local_dev}@${DOCKER_HOST_ALIAS:-host.docker.internal}:${SUPABASE_DB_PORT:-54322}/postgres
+      PS_STORAGE_URI: postgresql://powersync_storage:${POWERSYNC_STORAGE_PASSWORD:-powersync_storage_local_dev}@powersync-storage:5432/powersync_storage
+      PS_JWKS_URI: ${POWERSYNC_JWKS_URI:-http://host.docker.internal:54321/auth/v1/.well-known/jwks.json}
+      PS_LOG_LEVEL: ${POWERSYNC_LOG_LEVEL:-info}
+    volumes:
+      - ./docker/powersync/powersync.yaml:/config/powersync.yaml:ro
+      - ./powersync/sync-rules.yaml:/config/sync-rules.yaml:ro
+    ports:
+      - "${POWERSYNC_PORT:-8080}:8080"
+    healthcheck:
+      # The image ships node only (no curl/wget).
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/probes/liveness').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 5s
+      timeout: 4s
+      retries: 24
+      start_period: 5s
+
+  web:
+    profiles: [core, web]
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+      args:
+        FLUTTER_VERSION: ${FLUTTER_VERSION:-3.41.1}
+        SUPABASE_URL: ${SUPABASE_URL:-http://127.0.0.1:54321}
+        SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+        POWERSYNC_URL: ${POWERSYNC_URL:-http://127.0.0.1:8080}
+        DEV_AUTH: ${DEV_AUTH:-true}
+        APP_ENV: ${APP_ENV:-local}
+    image: gold-roundtables-web:local
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+  web-local:
+    profiles: [web-local]
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    volumes:
+      - ./docker/web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./build/web:/usr/share/nginx/html:ro
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+volumes:
+  powersync-storage-data:

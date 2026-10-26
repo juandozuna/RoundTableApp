@@ -1,0 +1,44 @@
+# PowerSync Service (self-hosted Open Edition) — local stack.
+# Every value that changes per environment comes from a PS_* variable set in docker-compose.yml
+# (the service only substitutes variables whose name starts with PS_).
+# Reference: https://docs.powersync.com/self-hosting/installation/powersync-service-setup
+# yaml-language-server: $schema=https://unpkg.com/@powersync/service-schema@latest/json-schema/powersync-config.json
+
+# Source database: the Supabase Postgres, read through logical replication (publication
+# `powersync`, role `powersync_role` — created by scripts/setup-powersync-replication.sh).
+replication:
+  connections:
+    - type: postgresql
+      id: default
+      uri: !env PS_DATA_SOURCE_URI
+      sslmode: disable
+
+# Bucket storage: a dedicated Postgres (officially supported alternative to MongoDB; no replica set
+# to bootstrap). It is derived data: wiping its volume only forces a full re-replication.
+storage:
+  type: postgresql
+  uri: !env PS_STORAGE_URI
+  sslmode: disable
+
+port: 8080
+
+# Sync Streams (edition 3). Mounted read-only from the repository.
+sync_config:
+  path: /config/sync-rules.yaml
+
+# Supabase Auth signs user sessions with ES256; the public key set is published as JWKS.
+client_auth:
+  jwks_uri: !env PS_JWKS_URI
+  audience: ['authenticated']
+
+healthcheck:
+  probes:
+    use_http: true
+
+telemetry:
+  disable_telemetry_sharing: true
+
+system:
+  logging:
+    level: info
+    format: text

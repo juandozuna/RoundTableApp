@@ -49,6 +49,7 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.12.0
   mobile_scanner: ^7.4.2
+  package_info_plus: ^10.2.2
   path: ^1.9.1
   path_provider: ^2.1.6
   powersync: ^2.5.0
@@ -82,7 +83,7 @@ dev_dependencies:
   drift_dev: ^2.34.0
   bloc_test: ^10.0.0
   mocktail: ^1.0.5
-  shared_preferences_platform_interface: ^2.4.1
+  shared_preferences_platform_interface: ^2.4.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
