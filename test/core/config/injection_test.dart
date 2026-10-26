@@ -6,7 +6,7 @@ import 'package:gold_roundtables/core/services/auth_session/auth_state_source.da
 import 'package:gold_roundtables/core/services/auth_session/auth_status.dart';
 import 'package:gold_roundtables/core/sync/data/sync_lifecycle.dart';
 import 'package:gold_roundtables/core/sync/domain/sync_status_service.dart';
-import 'package:gold_roundtables/features/shell/presentation/pages/home/cubit/home_cubit.dart';
+import 'package:gold_roundtables/features/home/presentation/pages/home/cubit/home_cubit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

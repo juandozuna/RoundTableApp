@@ -139,8 +139,6 @@
 
   "navHome": "Inicio",
   "homeTitle": "Inicio",
-  "homeWelcome": "Te damos la bienvenida a Gold Roundtables",
-  "homeFoundationReady": "La base de la aplicación está lista. Aquí aparecerán tus mesas y sesiones.",
   "homeOpenGallery": "Ver galería de componentes",
 
   "galleryTitle": "Galería de componentes",
@@ -174,7 +172,6 @@
   "galleryColumnStatus": "Estado",
   "galleryInfoMessage": "La mesa está en: Seguimiento",
   "galleryWarningMessage": "Rodrigo lleva 31 horas sin sincronizar.",
-  "galleryErrorMessage": "No se pudo guardar. Tus respuestas siguen en este teléfono.",
 
   "adminNavExplorer": "Mesas",
   "adminAppBarTitle": "Administración",
@@ -905,5 +902,125 @@
   "auditEntityPerson": "Persona",
   "auditEntityInvite": "Invitación",
   "auditEntitySession": "Sesión",
-  "auditEntityRole": "Rol"
+  "auditEntityRole": "Rol",
+  "galleryErrorMessage": "No se pudo guardar. Tus respuestas siguen en este teléfono."
+  ,
+
+  "navSettings": "Ajustes",
+  "contextChipPlatform": "Plataforma",
+
+  "homeNoContextTitle": "Elige cómo quieres entrar",
+  "homeNoContextMessage": "Todavía no tienes una mesa u organización activa. Cuando entres con una invitación, aparecerá aquí.",
+  "homeNoSessionTitle": "No hay una sesión programada",
+  "homeNoSessionMessage": "Cuando tu mesa tenga una próxima sesión, la verás aquí.",
+  "homeKickerNextSession": "Próxima sesión",
+  "homeSessionOpenNow": "En curso",
+  "homeSessionDay": "{date}",
+  "@homeSessionDay": {
+    "placeholders": { "date": { "type": "DateTime", "format": "EEEE d 'de' MMMM", "isCustomDateFormat": "true" } }
+  },
+  "homeSessionWhen": "{day} · {time}",
+  "@homeSessionWhen": {
+    "placeholders": { "day": { "type": "String" }, "time": { "type": "String" } }
+  },
+  "homeValueLine": "Valor {number} · {name}",
+  "@homeValueLine": {
+    "placeholders": { "number": { "type": "int" }, "name": { "type": "String" } }
+  },
+  "homeFollowUpLine": "Seguimiento de: {name}",
+  "@homeFollowUpLine": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "homeOpenSession": "Abrir sesión",
+  "homeContinueSession": "Continuar sesión",
+  "homeEnterSession": "Entrar a la sesión",
+  "homeHealthInactive": "Inactiva",
+  "homeHealthCompleted": "Completada",
+  "homeLastCommitmentKicker": "Tu último compromiso",
+  "homeNoCommitment": "Aún no tienes un compromiso. Aparecerá aquí después de tu primera sesión.",
+  "homeCommitmentKept": "Lo cumpliste",
+  "homeCommitmentPartial": "Cumplido a medias",
+  "homeCommitmentNotKept": "No se cumplió",
+  "homeCommitmentToReview": "Se revisa en la próxima sesión",
+  "homeProgressKicker": "Tu camino",
+  "homeProgressEmpty": "Aún no hay valores completados.",
+  "homeProgressValues": "{done} de {total} valores",
+  "@homeProgressValues": {
+    "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "homeModuleLabel": "Módulo {number} · {name}",
+  "@homeModuleLabel": {
+    "placeholders": { "number": { "type": "int" }, "name": { "type": "String" } }
+  },
+  "homeKpiKicker": "Resumen de tus mesas",
+  "homeKpiEmpty": "Todavía no hay datos para mostrar.",
+  "homeKpiValues": "Valores completados",
+  "homeKpiImprovement": "Mejora estimada",
+  "homeKpiAttendance": "Asistencia",
+  "homeKpiTablesActive": "Mesas activas",
+  "homeKpiTablesDelayed": "Mesas retrasadas",
+  "homeKpiViewAll": "Ver el tablero completo",
+  "homeInvitesPending": "{count, plural, =0{No hay invitaciones pendientes} =1{1 invitación pendiente} other{{count} invitaciones pendientes}}",
+  "@homeInvitesPending": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "notificationsSessionReminder": "Tu sesión de la mesa es pronto.",
+  "notificationsCommitmentNudge": "Recuerda tu compromiso de esta semana.",
+  "notificationsStageOpened": "El facilitador abrió una nueva etapa.",
+  "notificationsGeneric": "Tienes un aviso nuevo.",
+  "notificationsUnsyncedTitle": "Tienes respuestas sin sincronizar",
+  "notificationsUnsyncedDetail": "{count, plural, =1{1 cambio lleva más de 24 horas sin enviarse} other{{count} cambios llevan más de 24 horas sin enviarse}}. Conéctate a internet para enviarlos.",
+  "@notificationsUnsyncedDetail": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "notificationsTitle": "Notificaciones",
+  "notificationsIntro": "Elige qué avisos quieres recibir en este dispositivo.",
+  "notificationsPushTitle": "Avisos de la mesa",
+  "notificationsPushSubtitle": "Recordatorio de la sesión, recordatorio de tu compromiso y cuando se abre una etapa.",
+  "notificationsForegroundTitle": "Mostrar avisos dentro de la app",
+  "notificationsForegroundSubtitle": "Un mensaje breve cuando llega un aviso mientras usas la app.",
+  "notificationsUnsyncedSwitchTitle": "Alerta de datos sin sincronizar",
+  "notificationsUnsyncedSwitchSubtitle": "Te avisamos si tus respuestas llevan más de 24 horas sin enviarse.",
+  "notificationsUnsupportedTitle": "Los avisos no están disponibles aquí",
+  "notificationsUnsupportedDetail": "Este navegador o esta versión de la app no puede recibir avisos. Las alertas dentro de la app siguen funcionando.",
+  "notificationsDeniedTitle": "Los avisos están bloqueados",
+  "notificationsDeniedDetail": "Actívalos en los ajustes de tu dispositivo o navegador para recibir recordatorios.",
+  "notificationsAskTitle": "Activa los avisos",
+  "notificationsAskDetail": "Así te recordamos la sesión y tu compromiso a tiempo.",
+  "notificationsAllow": "Permitir avisos",
+
+  "settingsTitle": "Ajustes",
+  "settingsOfflineDetail": "tu perfil se puede editar con internet",
+  "settingsProfileUnavailable": "Perfil no disponible",
+  "settingsEditProfile": "Editar mis datos",
+  "settingsNotifications": "Notificaciones",
+  "settingsSyncKicker": "Sincronización",
+  "settingsAboutKicker": "Acerca de",
+  "settingsVersion": "Versión {version} ({build})",
+  "@settingsVersion": {
+    "placeholders": { "version": { "type": "String" }, "build": { "type": "String" } }
+  },
+  "settingsSignOut": "Cerrar sesión",
+  "settingsSignOutFailed": "No pudimos cerrar tu sesión. Inténtalo de nuevo.",
+  "settingsSignOutPendingTitle": "Tienes cambios sin enviar",
+  "settingsSignOutPendingDetail": "{count, plural, =1{1 cambio se enviará} other{{count} cambios se enviarán}} cuando vuelvas a entrar con tu cuenta y tengas internet.",
+  "@settingsSignOutPendingDetail": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "settingsSignOutConfirmTitle": "¿Cerrar sesión?",
+  "settingsSignOutConfirmMessage": "Tendrás que volver a entrar para ver tus mesas.",
+  "settingsSignOutConfirmPending": "Tus cambios sin enviar se guardan en este dispositivo y se enviarán cuando vuelvas a entrar con la misma cuenta.",
+
+  "profileEditTitle": "Mis datos",
+  "profileEditIntro": "Estos datos los ve tu facilitador o coordinador. No los verificamos.",
+  "profileEditFirstName": "Nombre",
+  "profileEditLastName": "Apellido",
+  "profileEditPosition": "Cargo (opcional)",
+  "profileEditPhone": "Teléfono (opcional)",
+  "profileEditPhoneHelper": "Con el código de país, por ejemplo +52 55 1234 5678",
+  "profileEditEmailNote": "Correo: {email}. Para cambiarlo, pídeselo a tu coordinador.",
+  "@profileEditEmailNote": {
+    "placeholders": { "email": { "type": "String" } }
+  }
 }

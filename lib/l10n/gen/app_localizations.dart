@@ -664,18 +664,6 @@ abstract class AppLocalizations {
   /// **'Inicio'**
   String get homeTitle;
 
-  /// No description provided for @homeWelcome.
-  ///
-  /// In es, this message translates to:
-  /// **'Te damos la bienvenida a Gold Roundtables'**
-  String get homeWelcome;
-
-  /// No description provided for @homeFoundationReady.
-  ///
-  /// In es, this message translates to:
-  /// **'La base de la aplicación está lista. Aquí aparecerán tus mesas y sesiones.'**
-  String get homeFoundationReady;
-
   /// No description provided for @homeOpenGallery.
   ///
   /// In es, this message translates to:
@@ -867,12 +855,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Rodrigo lleva 31 horas sin sincronizar.'**
   String get galleryWarningMessage;
-
-  /// No description provided for @galleryErrorMessage.
-  ///
-  /// In es, this message translates to:
-  /// **'No se pudo guardar. Tus respuestas siguen en este teléfono.'**
-  String get galleryErrorMessage;
 
   /// No description provided for @adminNavExplorer.
   ///
@@ -3903,6 +3885,492 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Rol'**
   String get auditEntityRole;
+
+  /// No description provided for @galleryErrorMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar. Tus respuestas siguen en este teléfono.'**
+  String get galleryErrorMessage;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get navSettings;
+
+  /// No description provided for @contextChipPlatform.
+  ///
+  /// In es, this message translates to:
+  /// **'Plataforma'**
+  String get contextChipPlatform;
+
+  /// No description provided for @homeNoContextTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo quieres entrar'**
+  String get homeNoContextTitle;
+
+  /// No description provided for @homeNoContextMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes una mesa u organización activa. Cuando entres con una invitación, aparecerá aquí.'**
+  String get homeNoContextMessage;
+
+  /// No description provided for @homeNoSessionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay una sesión programada'**
+  String get homeNoSessionTitle;
+
+  /// No description provided for @homeNoSessionMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando tu mesa tenga una próxima sesión, la verás aquí.'**
+  String get homeNoSessionMessage;
+
+  /// No description provided for @homeKickerNextSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Próxima sesión'**
+  String get homeKickerNextSession;
+
+  /// No description provided for @homeSessionOpenNow.
+  ///
+  /// In es, this message translates to:
+  /// **'En curso'**
+  String get homeSessionOpenNow;
+
+  /// No description provided for @homeSessionDay.
+  ///
+  /// In es, this message translates to:
+  /// **'{date}'**
+  String homeSessionDay(DateTime date);
+
+  /// No description provided for @homeSessionWhen.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} · {time}'**
+  String homeSessionWhen(String day, String time);
+
+  /// No description provided for @homeValueLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {number} · {name}'**
+  String homeValueLine(int number, String name);
+
+  /// No description provided for @homeFollowUpLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento de: {name}'**
+  String homeFollowUpLine(String name);
+
+  /// No description provided for @homeOpenSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir sesión'**
+  String get homeOpenSession;
+
+  /// No description provided for @homeContinueSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar sesión'**
+  String get homeContinueSession;
+
+  /// No description provided for @homeEnterSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar a la sesión'**
+  String get homeEnterSession;
+
+  /// No description provided for @homeHealthInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Inactiva'**
+  String get homeHealthInactive;
+
+  /// No description provided for @homeHealthCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get homeHealthCompleted;
+
+  /// No description provided for @homeLastCommitmentKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu último compromiso'**
+  String get homeLastCommitmentKicker;
+
+  /// No description provided for @homeNoCommitment.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no tienes un compromiso. Aparecerá aquí después de tu primera sesión.'**
+  String get homeNoCommitment;
+
+  /// No description provided for @homeCommitmentKept.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo cumpliste'**
+  String get homeCommitmentKept;
+
+  /// No description provided for @homeCommitmentPartial.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumplido a medias'**
+  String get homeCommitmentPartial;
+
+  /// No description provided for @homeCommitmentNotKept.
+  ///
+  /// In es, this message translates to:
+  /// **'No se cumplió'**
+  String get homeCommitmentNotKept;
+
+  /// No description provided for @homeCommitmentToReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Se revisa en la próxima sesión'**
+  String get homeCommitmentToReview;
+
+  /// No description provided for @homeProgressKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu camino'**
+  String get homeProgressKicker;
+
+  /// No description provided for @homeProgressEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay valores completados.'**
+  String get homeProgressEmpty;
+
+  /// No description provided for @homeProgressValues.
+  ///
+  /// In es, this message translates to:
+  /// **'{done} de {total} valores'**
+  String homeProgressValues(int done, int total);
+
+  /// No description provided for @homeModuleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo {number} · {name}'**
+  String homeModuleLabel(int number, String name);
+
+  /// No description provided for @homeKpiKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen de tus mesas'**
+  String get homeKpiKicker;
+
+  /// No description provided for @homeKpiEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay datos para mostrar.'**
+  String get homeKpiEmpty;
+
+  /// No description provided for @homeKpiValues.
+  ///
+  /// In es, this message translates to:
+  /// **'Valores completados'**
+  String get homeKpiValues;
+
+  /// No description provided for @homeKpiImprovement.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejora estimada'**
+  String get homeKpiImprovement;
+
+  /// No description provided for @homeKpiAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia'**
+  String get homeKpiAttendance;
+
+  /// No description provided for @homeKpiTablesActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas activas'**
+  String get homeKpiTablesActive;
+
+  /// No description provided for @homeKpiTablesDelayed.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas retrasadas'**
+  String get homeKpiTablesDelayed;
+
+  /// No description provided for @homeKpiViewAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el tablero completo'**
+  String get homeKpiViewAll;
+
+  /// No description provided for @homeInvitesPending.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{No hay invitaciones pendientes} =1{1 invitación pendiente} other{{count} invitaciones pendientes}}'**
+  String homeInvitesPending(int count);
+
+  /// No description provided for @notificationsSessionReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión de la mesa es pronto.'**
+  String get notificationsSessionReminder;
+
+  /// No description provided for @notificationsCommitmentNudge.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuerda tu compromiso de esta semana.'**
+  String get notificationsCommitmentNudge;
+
+  /// No description provided for @notificationsStageOpened.
+  ///
+  /// In es, this message translates to:
+  /// **'El facilitador abrió una nueva etapa.'**
+  String get notificationsStageOpened;
+
+  /// No description provided for @notificationsGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes un aviso nuevo.'**
+  String get notificationsGeneric;
+
+  /// No description provided for @notificationsUnsyncedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes respuestas sin sincronizar'**
+  String get notificationsUnsyncedTitle;
+
+  /// No description provided for @notificationsUnsyncedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 cambio lleva más de 24 horas sin enviarse} other{{count} cambios llevan más de 24 horas sin enviarse}}. Conéctate a internet para enviarlos.'**
+  String notificationsUnsyncedDetail(int count);
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué avisos quieres recibir en este dispositivo.'**
+  String get notificationsIntro;
+
+  /// No description provided for @notificationsPushTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de la mesa'**
+  String get notificationsPushTitle;
+
+  /// No description provided for @notificationsPushSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio de la sesión, recordatorio de tu compromiso y cuando se abre una etapa.'**
+  String get notificationsPushSubtitle;
+
+  /// No description provided for @notificationsForegroundTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar avisos dentro de la app'**
+  String get notificationsForegroundTitle;
+
+  /// No description provided for @notificationsForegroundSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un mensaje breve cuando llega un aviso mientras usas la app.'**
+  String get notificationsForegroundSubtitle;
+
+  /// No description provided for @notificationsUnsyncedSwitchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Alerta de datos sin sincronizar'**
+  String get notificationsUnsyncedSwitchTitle;
+
+  /// No description provided for @notificationsUnsyncedSwitchSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos si tus respuestas llevan más de 24 horas sin enviarse.'**
+  String get notificationsUnsyncedSwitchSubtitle;
+
+  /// No description provided for @notificationsUnsupportedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Los avisos no están disponibles aquí'**
+  String get notificationsUnsupportedTitle;
+
+  /// No description provided for @notificationsUnsupportedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Este navegador o esta versión de la app no puede recibir avisos. Las alertas dentro de la app siguen funcionando.'**
+  String get notificationsUnsupportedDetail;
+
+  /// No description provided for @notificationsDeniedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Los avisos están bloqueados'**
+  String get notificationsDeniedTitle;
+
+  /// No description provided for @notificationsDeniedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Actívalos en los ajustes de tu dispositivo o navegador para recibir recordatorios.'**
+  String get notificationsDeniedDetail;
+
+  /// No description provided for @notificationsAskTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa los avisos'**
+  String get notificationsAskTitle;
+
+  /// No description provided for @notificationsAskDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Así te recordamos la sesión y tu compromiso a tiempo.'**
+  String get notificationsAskDetail;
+
+  /// No description provided for @notificationsAllow.
+  ///
+  /// In es, this message translates to:
+  /// **'Permitir avisos'**
+  String get notificationsAllow;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsOfflineDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'tu perfil se puede editar con internet'**
+  String get settingsOfflineDetail;
+
+  /// No description provided for @settingsProfileUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil no disponible'**
+  String get settingsProfileUnavailable;
+
+  /// No description provided for @settingsEditProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar mis datos'**
+  String get settingsEditProfile;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsSyncKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización'**
+  String get settingsSyncKicker;
+
+  /// No description provided for @settingsAboutKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get settingsAboutKicker;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión {version} ({build})'**
+  String settingsVersion(String version, String build);
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get settingsSignOut;
+
+  /// No description provided for @settingsSignOutFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cerrar tu sesión. Inténtalo de nuevo.'**
+  String get settingsSignOutFailed;
+
+  /// No description provided for @settingsSignOutPendingTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes cambios sin enviar'**
+  String get settingsSignOutPendingTitle;
+
+  /// No description provided for @settingsSignOutPendingDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 cambio se enviará} other{{count} cambios se enviarán}} cuando vuelvas a entrar con tu cuenta y tengas internet.'**
+  String settingsSignOutPendingDetail(int count);
+
+  /// No description provided for @settingsSignOutConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get settingsSignOutConfirmTitle;
+
+  /// No description provided for @settingsSignOutConfirmMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tendrás que volver a entrar para ver tus mesas.'**
+  String get settingsSignOutConfirmMessage;
+
+  /// No description provided for @settingsSignOutConfirmPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus cambios sin enviar se guardan en este dispositivo y se enviarán cuando vuelvas a entrar con la misma cuenta.'**
+  String get settingsSignOutConfirmPending;
+
+  /// No description provided for @profileEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis datos'**
+  String get profileEditTitle;
+
+  /// No description provided for @profileEditIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Estos datos los ve tu facilitador o coordinador. No los verificamos.'**
+  String get profileEditIntro;
+
+  /// No description provided for @profileEditFirstName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get profileEditFirstName;
+
+  /// No description provided for @profileEditLastName.
+  ///
+  /// In es, this message translates to:
+  /// **'Apellido'**
+  String get profileEditLastName;
+
+  /// No description provided for @profileEditPosition.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargo (opcional)'**
+  String get profileEditPosition;
+
+  /// No description provided for @profileEditPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono (opcional)'**
+  String get profileEditPhone;
+
+  /// No description provided for @profileEditPhoneHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'Con el código de país, por ejemplo +52 55 1234 5678'**
+  String get profileEditPhoneHelper;
+
+  /// No description provided for @profileEditEmailNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo: {email}. Para cambiarlo, pídeselo a tu coordinador.'**
+  String profileEditEmailNote(String email);
 }
 
 class _AppLocalizationsDelegate

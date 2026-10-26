@@ -1,0 +1,22 @@
+# Build context for docker/web/Dockerfile: keep it small and deterministic.
+.git
+.github
+.dart_tool
+.idea
+.vscode
+build
+coverage
+node_modules
+android
+ios
+macos
+linux
+windows
+supabase
+powersync
+docs
+graphify-out
+.env
+.env.*
+!.env.example
+*.log
