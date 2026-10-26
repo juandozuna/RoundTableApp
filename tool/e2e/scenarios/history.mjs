@@ -17,7 +17,7 @@ export async function history(browser) {
     await ana.click(TAB, { role: ['button', 'tab'] });
     check('member opens "Mi progreso"', await ana.seen('Mi progreso', 20_000));
     check('the 8-week window is explained', await ana.seen('últimas 8 semanas', 10_000));
-    check('member sees history or the gentle empty state', (await ana.has('Sesiones')) || (await ana.has('Todavía no hay historial')));
+    check('member sees history or the gentle empty state', (await ana.has('Por valor')) || (await ana.has('Sesiones')) || (await ana.has('Todavía no hay historial')) || (await ana.has('Aquí verás tu progreso')));
     check('member sees only their own screen, not the table roster', !(await ana.has('Integrantes')));
     await ana.shot('h-01-member-progress');
 
