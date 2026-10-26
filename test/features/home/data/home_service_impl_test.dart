@@ -22,6 +22,8 @@ class _FixedClock implements ClockService {
 }
 
 void main() {
+  kpiJsonTests();
+
   const facilitator = SessionContext(
     role: UserRole.facilitator,
     tableId: 'table-1',
@@ -173,5 +175,30 @@ void main() {
       service.watchOverview(coordinator).first,
       throwsA(isA<ApiException>()),
     );
+  });
+}
+
+void kpiJsonTests() {
+  test('parses a real kpi_summary payload', () {
+    final summary = HomeKpiSummary.fromJson({
+      'tables': {
+        'total': 8,
+        'active': 6,
+        'delayed': 1,
+        'inactive': 1,
+        'completed': 0,
+      },
+      'computed_at': '2026-10-26T00:09:44.769351+00:00',
+      'initial_avg': 4.65,
+      'attendance_pct': 85.8,
+      'improvement_avg': 0.74,
+      'sessions_closed': 45,
+      'synced_late_rows': 17,
+      'values_completed': 45,
+    });
+    expect(summary.valuesCompleted, 45);
+    expect(summary.attendancePct, 85.8);
+    expect(summary.tables.delayed, 1);
+    expect(summary.computedAt, isNotNull);
   });
 }
