@@ -30,8 +30,7 @@ enum FacilitatorStage {
   }
 
   /// Next stage the dock button opens, or null when only closing remains.
-  FacilitatorStage? get next =>
-      index + 1 < FacilitatorStage.values.length
+  FacilitatorStage? get next => index + 1 < FacilitatorStage.values.length
       ? FacilitatorStage.values[index + 1]
       : null;
 

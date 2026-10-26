@@ -69,6 +69,12 @@ import '../../features/session/domain/use_cases/responses/submit_reflection_use_
     as _i58;
 import '../../features/session/domain/use_cases/sync/request_sync_use_case.dart'
     as _i659;
+import '../../features/session/presentation/pages/facilitator_board/cubit/facilitator_board_cubit.dart'
+    as _i1059;
+import '../../features/session/presentation/pages/member_flow/cubit/member_flow_cubit.dart'
+    as _i174;
+import '../../features/session/presentation/pages/session/cubit/session_cubit.dart'
+    as _i817;
 import '../../features/shell/presentation/pages/home/cubit/home_cubit.dart'
     as _i1048;
 import '../network/auth_token_provider.dart' as _i84;
@@ -294,6 +300,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
+    gh.factory<_i1059.FacilitatorBoardCubit>(
+      () => _i1059.FacilitatorBoardCubit(
+        gh<_i307.MarkAttendanceUseCase>(),
+        gh<_i23.MarkEveryonePresentUseCase>(),
+      ),
+    );
     gh.factory<_i975.WatchLiveSessionUseCase>(
       () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
     );
@@ -306,6 +318,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i58.SubmitReflectionUseCase>(
       () => _i58.SubmitReflectionUseCase(gh<_i307.ResponsesService>()),
     );
+    gh.factory<_i174.MemberFlowCubit>(
+      () => _i174.MemberFlowCubit(
+        gh<_i833.SubmitFollowUpUseCase>(),
+        gh<_i58.SubmitReflectionUseCase>(),
+        gh<_i1002.SubmitCommitmentUseCase>(),
+      ),
+    );
     gh.factory<_i126.CloseAnswersUseCase>(
       () => _i126.CloseAnswersUseCase(gh<_i728.SessionControlService>()),
     );
@@ -317,6 +336,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i736.SetSessionStageUseCase>(
       () => _i736.SetSessionStageUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i817.SessionCubit>(
+      () => _i817.SessionCubit(
+        gh<_i975.WatchLiveSessionUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i545.OpenSessionUseCase>(),
+        gh<_i736.SetSessionStageUseCase>(),
+        gh<_i126.CloseAnswersUseCase>(),
+        gh<_i995.CloseSessionUseCase>(),
+        gh<_i659.RequestSyncUseCase>(),
+      ),
     );
     return this;
   }

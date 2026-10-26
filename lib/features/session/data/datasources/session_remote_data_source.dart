@@ -35,8 +35,6 @@ class SessionRemoteDataSource {
   );
 
   Future<void> close(String sessionId, DateTime at) => guardApiCall(
-    () => _control.close(sessionId, {
-      'ended_at': at.toUtc().toIso8601String(),
-    }),
+    () => _control.close(sessionId, {'ended_at': at.toUtc().toIso8601String()}),
   );
 }

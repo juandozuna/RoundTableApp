@@ -873,6 +873,144 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo guardar. Tus respuestas siguen en este teléfono.'**
   String get galleryErrorMessage;
+
+  /// No description provided for @sessionSharedNavLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión'**
+  String get sessionSharedNavLabel;
+
+  /// No description provided for @sessionSharedLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando tu mesa…'**
+  String get sessionSharedLoading;
+
+  /// No description provided for @sessionSharedPillLive.
+  ///
+  /// In es, this message translates to:
+  /// **'En vivo'**
+  String get sessionSharedPillLive;
+
+  /// No description provided for @sessionSharedPillOnline.
+  ///
+  /// In es, this message translates to:
+  /// **'En línea'**
+  String get sessionSharedPillOnline;
+
+  /// No description provided for @sessionSharedPillOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin internet'**
+  String get sessionSharedPillOffline;
+
+  /// No description provided for @sessionSharedPillSyncing.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando'**
+  String get sessionSharedPillSyncing;
+
+  /// No description provided for @sessionSharedPillPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Por sincronizar'**
+  String get sessionSharedPillPending;
+
+  /// No description provided for @sessionSharedTimerCaption.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo · informativo'**
+  String get sessionSharedTimerCaption;
+
+  /// No description provided for @sessionSharedTimerOver.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasó de {minutes} min · solo informativo'**
+  String sessionSharedTimerOver(int minutes);
+
+  /// No description provided for @sessionSharedTimerLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'/ {limit}'**
+  String sessionSharedTimerLimit(String limit);
+
+  /// No description provided for @sessionSharedUnavailableTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay una sesión en este teléfono'**
+  String get sessionSharedUnavailableTitle;
+
+  /// No description provided for @sessionSharedUnavailableMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.'**
+  String get sessionSharedUnavailableMessage;
+
+  /// No description provided for @sessionSharedNotTodayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy no hay sesión'**
+  String get sessionSharedNotTodayTitle;
+
+  /// No description provided for @sessionSharedNotTodayMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu próxima sesión es {when}.'**
+  String sessionSharedNotTodayMessage(String when);
+
+  /// No description provided for @sessionSharedCancelledTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión cancelada'**
+  String get sessionSharedCancelledTitle;
+
+  /// No description provided for @sessionSharedCancelledMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta sesión se canceló. Tu facilitador te avisará la nueva fecha.'**
+  String get sessionSharedCancelledMessage;
+
+  /// No description provided for @sessionSharedValueLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {number} · {name}'**
+  String sessionSharedValueLabel(int number, String name);
+
+  /// No description provided for @sessionSharedNoticeSavedOnDevice.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado en este teléfono · pendiente de sincronizar'**
+  String get sessionSharedNoticeSavedOnDevice;
+
+  /// No description provided for @sessionSharedNoticeReconnected.
+  ///
+  /// In es, this message translates to:
+  /// **'Conexión restablecida · sincronizando…'**
+  String get sessionSharedNoticeReconnected;
+
+  /// No description provided for @sessionSharedStaleWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Llevas {hours} h sin sincronizar. Tu teléfono puede estar hasta 7 días sin conexión. Conéctate pronto para no perder tus respuestas.'**
+  String sessionSharedStaleWarning(int hours);
+
+  /// No description provided for @sessionSharedRejectedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Algunas respuestas no se pudieron enviar'**
+  String get sessionSharedRejectedTitle;
+
+  /// No description provided for @sessionSharedSyncNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizar ahora'**
+  String get sessionSharedSyncNow;
+
+  /// No description provided for @sessionSharedAttendanceAuto.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia automática'**
+  String get sessionSharedAttendanceAuto;
 }
 
 class _AppLocalizationsDelegate

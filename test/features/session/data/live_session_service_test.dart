@@ -55,21 +55,24 @@ void main() {
   group('as a member', () {
     setUp(() => SessionFixture.seed(db));
 
-    test('assembles the table, value, roster and previous commitment', () async {
-      final session = await current();
+    test(
+      'assembles the table, value, roster and previous commitment',
+      () async {
+        final session = await current();
 
-      expect(session.table.name, 'Mesa Esperanza 03');
-      expect(session.table.organizationName, 'Fundación Luz');
-      expect(session.value.name, 'Responsabilidad');
-      expect(session.followUpValue?.name, 'Honestidad');
-      expect(session.questions.map((q) => q.id), [Ids.q1, Ids.q2]);
-      expect(session.participants.first.isFacilitator, isTrue);
-      expect(session.seatCount, 4);
-      expect(session.me.personId, Ids.ana);
-      expect(session.isToday, isTrue);
-      expect(session.previousCommitment?.id, Ids.anaPrevious);
-      expect(session.iAmFacilitator, isFalse);
-    });
+        expect(session.table.name, 'Mesa Esperanza 03');
+        expect(session.table.organizationName, 'Fundación Luz');
+        expect(session.value.name, 'Responsabilidad');
+        expect(session.followUpValue?.name, 'Honestidad');
+        expect(session.questions.map((q) => q.id), [Ids.q1, Ids.q2]);
+        expect(session.participants.first.isFacilitator, isTrue);
+        expect(session.seatCount, 4);
+        expect(session.me.personId, Ids.ana);
+        expect(session.isToday, isTrue);
+        expect(session.previousCommitment?.id, Ids.anaPrevious);
+        expect(session.iAmFacilitator, isFalse);
+      },
+    );
 
     test('a session days away is not today', () async {
       clock.now = DateTime.utc(2026, 10, 25, 12);
@@ -92,7 +95,10 @@ void main() {
       expect(session.me.followUp.isDone, isTrue);
       expect(session.me.followUp.syncState, SyncState.pending);
       expect(session.myResponses.followUp?.score, 7);
-      expect(session.myResponses.followUp?.status, CommitmentFollowUpStatus.partial);
+      expect(
+        session.myResponses.followUp?.status,
+        CommitmentFollowUpStatus.partial,
+      );
 
       final queued = await db.queuedEntries();
       expect(queued.map((e) => '${e['op']} ${e['type']}'), [
@@ -141,51 +147,57 @@ void main() {
       expect(await db.rowCount('member_answers'), 2);
     });
 
-    test('submitting twice edits the same rows instead of duplicating', () async {
-      final service = ResponsesServiceImpl(local, clock, ids);
-      const first = ReflectionSubmission(
-        sessionId: Ids.session,
-        answers: {Ids.q1: 'Mi abuelo', Ids.q2: 'Cumplo'},
-        score: 8,
-      );
-      await service.submitReflection(first);
-      await service.submitReflection(first.copyWith(score: 9));
-
-      expect(await db.rowCount('member_answers'), 2);
-      expect(await db.rowCount('member_assessments'), 1);
-      expect((await current()).myResponses.reflection?.score, 9);
-    });
-
-    test('a pending row turns synced after upload and synced late when flagged', () async {
-      final service = ResponsesServiceImpl(local, clock, ids);
-      await service.submitCommitment(
-        const CommitmentSubmission(
+    test(
+      'submitting twice edits the same rows instead of duplicating',
+      () async {
+        final service = ResponsesServiceImpl(local, clock, ids);
+        const first = ReflectionSubmission(
           sessionId: Ids.session,
-          what: 'Entregar mis tareas',
-          when: 'Cada viernes',
-          how: 'Cuántas veces',
-        ),
-      );
-      final id = (await db.queuedEntries()).single['id'] as String;
+          answers: {Ids.q1: 'Mi abuelo', Ids.q2: 'Cumplo'},
+          score: 8,
+        );
+        await service.submitReflection(first);
+        await service.submitReflection(first.copyWith(score: 9));
 
-      // Upload completes: the queue empties, the server copy syncs down.
-      await db.sync.powerSync.execute('DELETE FROM ps_crud');
-      expect((await current()).me.commitment.syncState, SyncState.synced);
+        expect(await db.rowCount('member_answers'), 2);
+        expect(await db.rowCount('member_assessments'), 1);
+        expect((await current()).myResponses.reflection?.score, 9);
+      },
+    );
 
-      await db.seedSynced('member_commitments', id, {
-        'organization_id': Ids.org,
-        'round_table_id': Ids.table,
-        'session_id': Ids.session,
-        'person_id': Ids.ana,
-        'value_id': Ids.value4,
-        'action_text': 'Entregar mis tareas · Cada viernes',
-        'synced_late': 1,
-      });
-      final late = await live
-          .watch()
-          .firstWhere((s) => s?.me.commitment.syncState == SyncState.syncedLate);
-      expect(late, isNotNull);
-    });
+    test(
+      'a pending row turns synced after upload and synced late when flagged',
+      () async {
+        final service = ResponsesServiceImpl(local, clock, ids);
+        await service.submitCommitment(
+          const CommitmentSubmission(
+            sessionId: Ids.session,
+            what: 'Entregar mis tareas',
+            when: 'Cada viernes',
+            how: 'Cuántas veces',
+          ),
+        );
+        final id = (await db.queuedEntries()).single['id'] as String;
+
+        // Upload completes: the queue empties, the server copy syncs down.
+        await db.sync.powerSync.execute('DELETE FROM ps_crud');
+        expect((await current()).me.commitment.syncState, SyncState.synced);
+
+        await db.seedSynced('member_commitments', id, {
+          'organization_id': Ids.org,
+          'round_table_id': Ids.table,
+          'session_id': Ids.session,
+          'person_id': Ids.ana,
+          'value_id': Ids.value4,
+          'action_text': 'Entregar mis tareas · Cada viernes',
+          'synced_late': 1,
+        });
+        final late = await live.watch().firstWhere(
+          (s) => s?.me.commitment.syncState == SyncState.syncedLate,
+        );
+        expect(late, isNotNull);
+      },
+    );
 
     test('shows syncing while a batch uploads', () async {
       final status = _StaticStatus()
@@ -202,48 +214,56 @@ void main() {
           how: 'Cuántas veces',
         ),
       );
-      final session = await LiveSessionServiceImpl(local, status, clock)
-          .watch()
-          .firstWhere((s) => s != null);
+      final session = await LiveSessionServiceImpl(
+        local,
+        status,
+        clock,
+      ).watch().firstWhere((s) => s != null);
       expect(session!.me.commitment.syncState, SyncState.syncing);
     });
 
-    test('a server copy under another id does not duplicate attendance', () async {
-      await db.seedSynced('session_attendance', 'att-server', {
-        'session_id': Ids.session,
-        'person_id': Ids.ana,
-        'status': 'absent',
-        'source': 'facilitator',
-      });
-      await db.seedSynced('session_attendance', 'att-server-2', {
-        'session_id': Ids.session,
-        'person_id': Ids.ana,
-        'status': 'present',
-        'source': 'auto_submission',
-        'device_created_at': '2026-10-29T23:40:00Z',
-      });
-      final session = await current();
-      expect(session.me.attendance, AttendanceStatus.present);
-      expect(session.me.attendanceAuto, isTrue);
-    });
+    test(
+      'a server copy under another id does not duplicate attendance',
+      () async {
+        await db.seedSynced('session_attendance', 'att-server', {
+          'session_id': Ids.session,
+          'person_id': Ids.ana,
+          'status': 'absent',
+          'source': 'facilitator',
+        });
+        await db.seedSynced('session_attendance', 'att-server-2', {
+          'session_id': Ids.session,
+          'person_id': Ids.ana,
+          'status': 'present',
+          'source': 'auto_submission',
+          'device_created_at': '2026-10-29T23:40:00Z',
+        });
+        final session = await current();
+        expect(session.me.attendance, AttendanceStatus.present);
+        expect(session.me.attendanceAuto, isTrue);
+      },
+    );
 
-    test('marks the auto-attendance as pending when absent but answered', () async {
-      await db.seedSynced('session_attendance', 'att-1', {
-        'session_id': Ids.session,
-        'person_id': Ids.ana,
-        'status': 'absent',
-        'source': 'facilitator',
-      });
-      await ResponsesServiceImpl(local, clock, ids).submitCommitment(
-        const CommitmentSubmission(
-          sessionId: Ids.session,
-          what: 'Entregar mis tareas',
-          when: 'Cada viernes',
-          how: 'Cuántas veces',
-        ),
-      );
-      expect((await current()).me.autoAttendancePending, isTrue);
-    });
+    test(
+      'marks the auto-attendance as pending when absent but answered',
+      () async {
+        await db.seedSynced('session_attendance', 'att-1', {
+          'session_id': Ids.session,
+          'person_id': Ids.ana,
+          'status': 'absent',
+          'source': 'facilitator',
+        });
+        await ResponsesServiceImpl(local, clock, ids).submitCommitment(
+          const CommitmentSubmission(
+            sessionId: Ids.session,
+            what: 'Entregar mis tareas',
+            when: 'Cada viernes',
+            how: 'Cuántas veces',
+          ),
+        );
+        expect((await current()).me.autoAttendancePending, isTrue);
+      },
+    );
 
     test('hides upload rejections after 48 hours', () async {
       await db.sync.powerSync.execute(
@@ -285,7 +305,9 @@ void main() {
       expect(session.iAmFacilitator, isTrue);
       expect(session.me.attendance, AttendanceStatus.present);
       expect(
-        session.participants.firstWhere((p) => p.personId == Ids.ana).attendance,
+        session.participants
+            .firstWhere((p) => p.personId == Ids.ana)
+            .attendance,
         AttendanceStatus.late,
       );
       expect(session.unmarkedParticipants.map((p) => p.personId), [Ids.marta]);
@@ -294,30 +316,37 @@ void main() {
       expect(ops, ['PUT', 'PUT', 'PUT', 'PATCH']);
     });
 
-    test('sees every participant progress and who has nothing to review', () async {
-      for (final (id, person, kind) in [
-        ('a1', Ids.luis, 'follow_up'),
-        ('a2', Ids.luis, 'initial'),
-      ]) {
-        await db.seedSynced('member_assessments', id, {
-          'round_table_id': Ids.table,
-          'session_id': Ids.session,
-          'person_id': person,
-          'kind': kind,
-          'score': 7,
-          'synced_late': kind == 'initial' ? 1 : 0,
-          'device_created_at': '2026-10-29T23:10:00Z',
-        });
-      }
-      final session = await current();
-      final luis = session.participants.firstWhere((p) => p.personId == Ids.luis);
-      final marta = session.participants.firstWhere((p) => p.personId == Ids.marta);
+    test(
+      'sees every participant progress and who has nothing to review',
+      () async {
+        for (final (id, person, kind) in [
+          ('a1', Ids.luis, 'follow_up'),
+          ('a2', Ids.luis, 'initial'),
+        ]) {
+          await db.seedSynced('member_assessments', id, {
+            'round_table_id': Ids.table,
+            'session_id': Ids.session,
+            'person_id': person,
+            'kind': kind,
+            'score': 7,
+            'synced_late': kind == 'initial' ? 1 : 0,
+            'device_created_at': '2026-10-29T23:10:00Z',
+          });
+        }
+        final session = await current();
+        final luis = session.participants.firstWhere(
+          (p) => p.personId == Ids.luis,
+        );
+        final marta = session.participants.firstWhere(
+          (p) => p.personId == Ids.marta,
+        );
 
-      expect(luis.followUp.syncState, SyncState.synced);
-      expect(luis.reflection.syncState, SyncState.syncedLate);
-      expect(luis.hasPreviousCommitment, isTrue);
-      expect(marta.hasPreviousCommitment, isFalse);
-      expect(session.activity, hasLength(2));
-    });
+        expect(luis.followUp.syncState, SyncState.synced);
+        expect(luis.reflection.syncState, SyncState.syncedLate);
+        expect(luis.hasPreviousCommitment, isTrue);
+        expect(marta.hasPreviousCommitment, isFalse);
+        expect(session.activity, hasLength(2));
+      },
+    );
   });
 }

@@ -67,7 +67,9 @@ class ResponsesServiceImpl implements ResponsesService {
   Future<String> _me(SessionRow session) async {
     final personId = await _local.myPersonIdAt(session.roundTableId!);
     if (personId == null) {
-      throw StateError('No participant of this device at ${session.roundTableId}');
+      throw StateError(
+        'No participant of this device at ${session.roundTableId}',
+      );
     }
     return personId;
   }

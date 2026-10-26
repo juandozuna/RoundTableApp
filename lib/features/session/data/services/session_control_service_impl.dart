@@ -52,11 +52,8 @@ class SessionControlServiceImpl implements SessionControlService {
   @override
   Future<ControlDelivery> closeAnswers(String sessionId) => _deliver(
     online: () => _remote.closeAnswers(sessionId, _clock.nowUtc()),
-    offline: (nowIso) => _local.patchSession(
-      sessionId,
-      nowIso: nowIso,
-      answersClosedAt: nowIso,
-    ),
+    offline: (nowIso) =>
+        _local.patchSession(sessionId, nowIso: nowIso, answersClosedAt: nowIso),
   );
 
   @override

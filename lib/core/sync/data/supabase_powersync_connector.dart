@@ -77,12 +77,7 @@ class SupabasePowerSyncConnector extends PowerSyncBackendConnector {
         'INSERT INTO ${CoreSyncTables.uploadRejections} '
         '(id, table_name, row_id, code, message, rejected_at) '
         "VALUES (uuid(), ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))",
-        [
-          rejection.table,
-          rejection.id,
-          rejection.code,
-          rejection.message,
-        ],
+        [rejection.table, rejection.id, rejection.code, rejection.message],
       );
     }
   }

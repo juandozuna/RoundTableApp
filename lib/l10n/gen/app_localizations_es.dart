@@ -435,4 +435,89 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get galleryErrorMessage =>
       'No se pudo guardar. Tus respuestas siguen en este teléfono.';
+
+  @override
+  String get sessionSharedNavLabel => 'Sesión';
+
+  @override
+  String get sessionSharedLoading => 'Preparando tu mesa…';
+
+  @override
+  String get sessionSharedPillLive => 'En vivo';
+
+  @override
+  String get sessionSharedPillOnline => 'En línea';
+
+  @override
+  String get sessionSharedPillOffline => 'Sin internet';
+
+  @override
+  String get sessionSharedPillSyncing => 'Sincronizando';
+
+  @override
+  String get sessionSharedPillPending => 'Por sincronizar';
+
+  @override
+  String get sessionSharedTimerCaption => 'Tiempo · informativo';
+
+  @override
+  String sessionSharedTimerOver(int minutes) {
+    return 'Pasó de $minutes min · solo informativo';
+  }
+
+  @override
+  String sessionSharedTimerLimit(String limit) {
+    return '/ $limit';
+  }
+
+  @override
+  String get sessionSharedUnavailableTitle =>
+      'Aún no hay una sesión en este teléfono';
+
+  @override
+  String get sessionSharedUnavailableMessage =>
+      'Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.';
+
+  @override
+  String get sessionSharedNotTodayTitle => 'Hoy no hay sesión';
+
+  @override
+  String sessionSharedNotTodayMessage(String when) {
+    return 'Tu próxima sesión es $when.';
+  }
+
+  @override
+  String get sessionSharedCancelledTitle => 'Sesión cancelada';
+
+  @override
+  String get sessionSharedCancelledMessage =>
+      'Esta sesión se canceló. Tu facilitador te avisará la nueva fecha.';
+
+  @override
+  String sessionSharedValueLabel(int number, String name) {
+    return 'Valor $number · $name';
+  }
+
+  @override
+  String get sessionSharedNoticeSavedOnDevice =>
+      'Guardado en este teléfono · pendiente de sincronizar';
+
+  @override
+  String get sessionSharedNoticeReconnected =>
+      'Conexión restablecida · sincronizando…';
+
+  @override
+  String sessionSharedStaleWarning(int hours) {
+    return 'Llevas $hours h sin sincronizar. Tu teléfono puede estar hasta 7 días sin conexión. Conéctate pronto para no perder tus respuestas.';
+  }
+
+  @override
+  String get sessionSharedRejectedTitle =>
+      'Algunas respuestas no se pudieron enviar';
+
+  @override
+  String get sessionSharedSyncNow => 'Sincronizar ahora';
+
+  @override
+  String get sessionSharedAttendanceAuto => 'Asistencia automática';
 }

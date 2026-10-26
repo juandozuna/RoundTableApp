@@ -131,8 +131,7 @@ class MemberFlow {
     };
   }
 
-  MemberScreen _valueScreen() =>
-      isDone(MemberStep.reflection)
+  MemberScreen _valueScreen() => isDone(MemberStep.reflection)
       ? MemberScreen.commitment
       : MemberScreen.reflection;
 
@@ -154,7 +153,6 @@ class MemberFlow {
   };
 
   /// Every step the person owes today is captured.
-  bool get isFinished => MemberStep.values.every(
-    (step) => !applies(step) || isDone(step),
-  );
+  bool get isFinished =>
+      MemberStep.values.every((step) => !applies(step) || isDone(step));
 }

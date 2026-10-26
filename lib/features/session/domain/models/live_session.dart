@@ -73,10 +73,12 @@ abstract class LiveSession with _$LiveSession {
       step != MemberStep.followUp ||
       (session.hasFollowUp && participant.hasPreviousCommitment);
 
-  static StepProgress progressOf(SessionParticipant participant, MemberStep step) =>
-      switch (step) {
-        MemberStep.followUp => participant.followUp,
-        MemberStep.reflection => participant.reflection,
-        MemberStep.commitment => participant.commitment,
-      };
+  static StepProgress progressOf(
+    SessionParticipant participant,
+    MemberStep step,
+  ) => switch (step) {
+    MemberStep.followUp => participant.followUp,
+    MemberStep.reflection => participant.reflection,
+    MemberStep.commitment => participant.commitment,
+  };
 }

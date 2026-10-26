@@ -166,16 +166,15 @@ class SessionLocalDataSource {
             ))
             .get();
     final infos = rows.map((r) => r.toInfo()).nonNulls.toList();
-    final pending =
-        infos.where((s) => !s.isFinal).toList()..sort((a, b) {
-          if (a.isOpen != b.isOpen) return a.isOpen ? -1 : 1;
-          return a.scheduledAt.compareTo(b.scheduledAt);
-        });
+    final pending = infos.where((s) => !s.isFinal).toList()
+      ..sort((a, b) {
+        if (a.isOpen != b.isOpen) return a.isOpen ? -1 : 1;
+        return a.scheduledAt.compareTo(b.scheduledAt);
+      });
     final closed = infos.where((s) => s.status == SessionStatus.closed).toList()
       ..sort(
-        (a, b) => (b.endedAt ?? b.scheduledAt).compareTo(
-          a.endedAt ?? a.scheduledAt,
-        ),
+        (a, b) =>
+            (b.endedAt ?? b.scheduledAt).compareTo(a.endedAt ?? a.scheduledAt),
       );
     return TodaySessionSelector.select(
       pending: pending.firstOrNull,
@@ -227,7 +226,9 @@ class SessionLocalDataSource {
     for (final personId in personIds) {
       final existing =
           await (_db.select(_db.sessionAttendance)..where(
-                (r) => r.sessionId.equals(session.id) & r.personId.equals(personId),
+                (r) =>
+                    r.sessionId.equals(session.id) &
+                    r.personId.equals(personId),
               ))
               .getSingleOrNull();
       if (existing == null) {
@@ -246,15 +247,15 @@ class SessionLocalDataSource {
               ),
             );
       } else if (existing.status != status) {
-        await (_db.update(_db.sessionAttendance)
-              ..where((r) => r.id.equals(existing.id)))
-            .write(
-              SessionAttendanceCompanion(
-                status: Value(status),
-                source: const Value('facilitator'),
-                deviceModifiedAt: Value(nowIso),
-              ),
-            );
+        await (_db.update(
+          _db.sessionAttendance,
+        )..where((r) => r.id.equals(existing.id))).write(
+          SessionAttendanceCompanion(
+            status: Value(status),
+            source: const Value('facilitator'),
+            deviceModifiedAt: Value(nowIso),
+          ),
+        );
       }
     }
   });
@@ -270,17 +271,17 @@ class SessionLocalDataSource {
     required String nowIso,
     required String Function() newId,
   }) => _db.transaction(() async {
-    await (_db.update(_db.memberCommitments)
-          ..where((c) => c.id.equals(previousCommitmentId)))
-        .write(
-          MemberCommitmentsCompanion(
-            followUpSessionId: Value(session.id),
-            followUpStatus: Value(status),
-            followUpNote: Value(note),
-            followUpDeviceAt: Value(nowIso),
-            deviceModifiedAt: Value(nowIso),
-          ),
-        );
+    await (_db.update(
+      _db.memberCommitments,
+    )..where((c) => c.id.equals(previousCommitmentId))).write(
+      MemberCommitmentsCompanion(
+        followUpSessionId: Value(session.id),
+        followUpStatus: Value(status),
+        followUpNote: Value(note),
+        followUpDeviceAt: Value(nowIso),
+        deviceModifiedAt: Value(nowIso),
+      ),
+    );
     await _upsertAssessment(
       session: session,
       personId: personId,
@@ -327,14 +328,14 @@ class SessionLocalDataSource {
               ),
             );
       } else {
-        await (_db.update(_db.memberAnswers)
-              ..where((a) => a.id.equals(existing.id)))
-            .write(
-              MemberAnswersCompanion(
-                answerText: Value(entry.value.trim()),
-                deviceModifiedAt: Value(nowIso),
-              ),
-            );
+        await (_db.update(
+          _db.memberAnswers,
+        )..where((a) => a.id.equals(existing.id))).write(
+          MemberAnswersCompanion(
+            answerText: Value(entry.value.trim()),
+            deviceModifiedAt: Value(nowIso),
+          ),
+        );
       }
     }
     await _upsertAssessment(
@@ -382,14 +383,14 @@ class SessionLocalDataSource {
             ),
           );
     } else {
-      await (_db.update(_db.memberAssessments)
-            ..where((a) => a.id.equals(existing.id)))
-          .write(
-            MemberAssessmentsCompanion(
-              score: Value(score),
-              deviceModifiedAt: Value(nowIso),
-            ),
-          );
+      await (_db.update(
+        _db.memberAssessments,
+      )..where((a) => a.id.equals(existing.id))).write(
+        MemberAssessmentsCompanion(
+          score: Value(score),
+          deviceModifiedAt: Value(nowIso),
+        ),
+      );
     }
   }
 
@@ -424,15 +425,15 @@ class SessionLocalDataSource {
             ),
           );
     } else {
-      await (_db.update(_db.memberCommitments)
-            ..where((c) => c.id.equals(existing.id)))
-          .write(
-            MemberCommitmentsCompanion(
-              actionText: Value(actionText),
-              measureText: Value(measureText),
-              deviceModifiedAt: Value(nowIso),
-            ),
-          );
+      await (_db.update(
+        _db.memberCommitments,
+      )..where((c) => c.id.equals(existing.id))).write(
+        MemberCommitmentsCompanion(
+          actionText: Value(actionText),
+          measureText: Value(measureText),
+          deviceModifiedAt: Value(nowIso),
+        ),
+      );
     }
   });
 

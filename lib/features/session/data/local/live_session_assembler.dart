@@ -187,9 +187,7 @@ abstract final class LiveSessionAssembler {
   ) => _latest(
     data.assessments.where(
       (a) =>
-          a.personId == personId &&
-          a.kind == kind.wireValue &&
-          a.score != null,
+          a.personId == personId && a.kind == kind.wireValue && a.score != null,
     ),
     (a) => a.deviceModifiedAt ?? a.deviceCreatedAt,
   );
