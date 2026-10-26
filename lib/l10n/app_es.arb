@@ -249,6 +249,7 @@
   "sessionBoardTableSemantics": "Mesa redonda: {count} de {max} lugares",
   "@sessionBoardTableSemantics": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
   "sessionBoardSeatUnmarked": "Sin marcar",
+  "sessionBoardSeatAutoChip": "AUTO",
   "sessionBoardSeatAnswered": "Respondió",
   "sessionBoardSeatPending": "Pendiente",
   "sessionBoardSeatOffline": "Sin red",

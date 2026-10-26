@@ -665,6 +665,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionBoardSeatUnmarked => 'Sin marcar';
 
   @override
+  String get sessionBoardSeatAutoChip => 'AUTO';
+
+  @override
   String get sessionBoardSeatAnswered => 'Respondió';
 
   @override

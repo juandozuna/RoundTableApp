@@ -44,7 +44,7 @@ class SeatView extends StatelessWidget {
 
   String? _attendanceChipText(BuildContext context) {
     if (participant.attendanceAuto) {
-      return context.l10n.sessionSharedAttendanceAuto;
+      return context.l10n.sessionBoardSeatAutoChip;
     }
     if (!showAttendanceChip) return null;
     return switch (participant.attendance) {
@@ -87,12 +87,14 @@ class SeatView extends StatelessWidget {
                 style: context.textTheme.labelMedium,
               ),
               if (caption.isNotEmpty)
-                Text(
-                  caption,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.labelSmall!.copyWith(
-                    color: context.statusColors.of(_ringTone),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    caption,
+                    maxLines: 1,
+                    style: context.textTheme.labelSmall!.copyWith(
+                      color: context.statusColors.of(_ringTone),
+                    ),
                   ),
                 ),
             ],

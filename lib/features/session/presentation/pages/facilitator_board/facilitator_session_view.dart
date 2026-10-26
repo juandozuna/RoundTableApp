@@ -413,7 +413,13 @@ class FacilitatorSessionView extends StatelessWidget {
               children: [
                 const Icon(Icons.workspace_premium_rounded),
                 const SizedBox(width: AppSpacing.xs + 2),
-                Text(l10n.sessionBoardTabBoard),
+                Flexible(
+                  child: Text(
+                    l10n.sessionBoardTabBoard,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ),
@@ -422,7 +428,13 @@ class FacilitatorSessionView extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(l10n.sessionBoardTabMyAnswers),
+                Flexible(
+                  child: Text(
+                    l10n.sessionBoardTabMyAnswers,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 if (missing > 0) ...[
                   const SizedBox(width: AppSpacing.xs + 2),
                   Semantics(
@@ -515,10 +527,13 @@ class FacilitatorSessionView extends StatelessWidget {
             ],
           ),
         ),
-        SessionTimer(
-          startedAt: info.startedAt,
-          endedAt: info.endedAt,
-          limitMinutes: _session.table.durationMinutes,
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 150),
+          child: SessionTimer(
+            startedAt: info.startedAt,
+            endedAt: info.endedAt,
+            limitMinutes: _session.table.durationMinutes,
+          ),
         ),
       ],
     );

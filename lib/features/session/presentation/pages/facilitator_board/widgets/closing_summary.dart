@@ -181,7 +181,13 @@ class _Tile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(value, style: context.textStyles.numberLarge),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 84),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(value, style: context.textStyles.numberLarge),
+            ),
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(child: Text(caption, style: context.textTheme.bodySmall)),
         ],

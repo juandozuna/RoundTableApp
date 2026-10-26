@@ -63,19 +63,23 @@ class _SessionTimerState extends State<SessionTimer> {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: SessionTimerFormat.format(elapsed),
-                  style: context.textStyles.number.copyWith(color: accent),
-                ),
-                TextSpan(
-                  text:
-                      ' ${l10n.sessionSharedTimerLimit(SessionTimerFormat.format(limit))}',
-                  style: context.textTheme.bodySmall,
-                ),
-              ],
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: SessionTimerFormat.format(elapsed),
+                    style: context.textStyles.number.copyWith(color: accent),
+                  ),
+                  TextSpan(
+                    text:
+                        ' ${l10n.sessionSharedTimerLimit(SessionTimerFormat.format(limit))}',
+                    style: context.textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xxs),

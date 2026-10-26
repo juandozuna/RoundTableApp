@@ -1210,6 +1210,12 @@ abstract class AppLocalizations {
   /// **'Sin marcar'**
   String get sessionBoardSeatUnmarked;
 
+  /// No description provided for @sessionBoardSeatAutoChip.
+  ///
+  /// In es, this message translates to:
+  /// **'AUTO'**
+  String get sessionBoardSeatAutoChip;
+
   /// No description provided for @sessionBoardSeatAnswered.
   ///
   /// In es, this message translates to:

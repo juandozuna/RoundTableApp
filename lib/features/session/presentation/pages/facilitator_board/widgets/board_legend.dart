@@ -68,7 +68,9 @@ class BoardLegend extends StatelessWidget {
                       child: const SizedBox(width: 18, height: 18),
                     ),
                     const SizedBox(width: AppSpacing.xs + 2),
-                    Text(label, style: context.textTheme.labelSmall),
+                    Flexible(
+                      child: Text(label, style: context.textTheme.labelSmall),
+                    ),
                   ],
                 ),
               ),

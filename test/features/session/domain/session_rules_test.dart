@@ -65,6 +65,27 @@ void main() {
       );
     });
 
+    test('the next session takes over once it is within its window', () {
+      final closed = info(
+        id: 'closed',
+        status: SessionStatus.closed,
+        scheduledAt: now.subtract(const Duration(hours: 3)),
+        endedAt: now.subtract(const Duration(hours: 2)),
+      );
+      final next = info(
+        id: 'next',
+        scheduledAt: now.add(const Duration(hours: 1)),
+      );
+      expect(
+        TodaySessionSelector.select(
+          pending: next,
+          lastClosed: closed,
+          now: now,
+        )!.info.id,
+        'next',
+      );
+    });
+
     test('a week later the pending session is shown but is not today', () {
       final closed = info(
         id: 'closed',

@@ -13,7 +13,7 @@ class SelectedSession {
 /// The server always keeps one pending session per table, and creates the
 /// next one right after a close. So right after closing, the pending session
 /// is next week's and the one that just closed is still worth showing as the
-/// summary.
+/// summary; once the next one is within its window it takes over.
 abstract final class TodaySessionSelector {
   /// How long before the scheduled time a session counts as "today", and
   /// how long a closed session stays on screen as the summary.
@@ -27,6 +27,12 @@ abstract final class TodaySessionSelector {
     if (pending != null && pending.isOpen) {
       return SelectedSession(info: pending, isToday: true);
     }
+    // Overdue sessions stay runnable; only far-future ones wait.
+    final startsSoon =
+        pending != null && pending.scheduledAt.difference(now) <= window;
+    if (pending != null && startsSoon) {
+      return SelectedSession(info: pending, isToday: true);
+    }
     final closedAt = lastClosed?.endedAt;
     if (lastClosed != null &&
         closedAt != null &&
@@ -34,9 +40,7 @@ abstract final class TodaySessionSelector {
       return SelectedSession(info: lastClosed, isToday: true);
     }
     if (pending != null) {
-      // Overdue sessions stay runnable; only far-future ones wait.
-      final startsSoon = pending.scheduledAt.difference(now) <= window;
-      return SelectedSession(info: pending, isToday: startsSoon);
+      return SelectedSession(info: pending, isToday: false);
     }
     if (lastClosed != null) {
       return SelectedSession(info: lastClosed, isToday: false);
