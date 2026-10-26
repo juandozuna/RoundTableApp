@@ -43,4 +43,10 @@ void main() {
     expect(AppFieldKind.email.keyboardType, TextInputType.emailAddress);
     expect(AppFieldKind.phone.keyboardType, TextInputType.phone);
   });
+
+  test('search kind is a free filter: never invalid, trimmed, no capitals', () {
+    expect(AppFieldKind.search.validate('  '), isNull);
+    expect(AppFieldKind.search.transform('  luz '), 'luz');
+    expect(AppFieldKind.search.textCapitalization, TextCapitalization.none);
+  });
 }

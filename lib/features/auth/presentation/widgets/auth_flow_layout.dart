@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/extensions/build_context_x.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_back_button.dart';
+import '../../../../core/widgets/app_icon_button.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import 'auth_brand_mark.dart';
 
 /// Layout of every pre-app screen (sign-in, invitations, context picker,
@@ -40,24 +42,18 @@ class AuthFlowLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= 700;
     final column = _buildColumn(context, showBrand: !wide);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            ?banner,
-            Expanded(
-              child: wide
-                  ? Row(
-                      children: [
-                        Expanded(flex: 42, child: _buildBrandPane(context)),
-                        Expanded(flex: 58, child: column),
-                      ],
-                    )
-                  : column,
-            ),
-          ],
-        ),
-      ),
+    return AppScaffold(
+      showAppBar: false,
+      padBody: false,
+      banner: banner,
+      body: wide
+          ? Row(
+              children: [
+                Expanded(flex: 42, child: _buildBrandPane(context)),
+                Expanded(flex: 58, child: column),
+              ],
+            )
+          : column,
     );
   }
 
@@ -103,7 +99,11 @@ class AuthFlowLayout extends StatelessWidget {
       child: Row(
         children: [
           if (onBack != null)
-            _BackAction(onPressed: onBack!)
+            AppIconButton(
+              icon: Icons.arrow_back_rounded,
+              tooltip: context.l10n.tooltipBack,
+              onPressed: onBack,
+            )
           else
             AppBackButton(fallbackLocation: backFallbackLocation!),
           const SizedBox(width: AppSpacing.sm),
@@ -156,21 +156,6 @@ class AuthFlowLayout extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _BackAction extends StatelessWidget {
-  const _BackAction({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: context.l10n.tooltipBack,
-      onPressed: onPressed,
-      icon: const Icon(Icons.arrow_back_rounded),
     );
   }
 }

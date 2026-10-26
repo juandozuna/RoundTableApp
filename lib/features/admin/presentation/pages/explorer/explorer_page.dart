@@ -9,6 +9,7 @@ import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_dialogs.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
+import '../../../../../core/widgets/form_fields/app_text_form_field.dart';
 import '../../../../../core/widgets/skeleton.dart';
 import '../../../../kpis/kpis_routes.dart';
 import '../../../admin_routes.dart';
@@ -422,6 +423,7 @@ class ExplorerPage extends StatelessWidget {
   }
 }
 
+// Stays a widget: it owns the TextEditingController's lifecycle (State).
 class _SaveViewDialog extends StatefulWidget {
   const _SaveViewDialog();
 
@@ -443,10 +445,11 @@ class _SaveViewDialogState extends State<_SaveViewDialog> {
     final l10n = context.l10n;
     return AlertDialog(
       title: Text(l10n.adminSaveViewTitle),
-      content: TextField(
+      content: AppTextFormField(
+        name: 'viewName',
+        label: l10n.adminSaveViewName,
         controller: _controller,
         autofocus: true,
-        decoration: InputDecoration(labelText: l10n.adminSaveViewName),
         onSubmitted: (value) => Navigator.of(context).pop(value),
       ),
       actions: [

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/features/admin/presentation/admin_error_messages.dart';
 import 'package:gold_roundtables/features/admin/presentation/admin_format.dart';
+import 'package:gold_roundtables/features/admin/presentation/widgets/admin_search_field.dart';
 import 'package:gold_roundtables/features/admin/presentation/widgets/attendance_meter.dart';
 import 'package:gold_roundtables/features/admin/presentation/widgets/confirm_by_typing_dialog.dart';
 import 'package:gold_roundtables/l10n/gen/app_localizations.dart';
@@ -10,6 +11,26 @@ import 'package:gold_roundtables/l10n/gen/app_localizations.dart';
 import '../../../core/helpers/pump_app.dart';
 
 void main() {
+  group('AdminSearchField', () {
+    testWidgets('reports every edit and clears when the caller resets it', (
+      tester,
+    ) async {
+      final edits = <String>[];
+      Widget field(String initial) => AdminSearchField(
+        hint: 'Buscar',
+        initialText: initial,
+        onChanged: edits.add,
+      );
+      await tester.pumpApp(field(''));
+      await tester.enterText(find.byType(TextField), 'luz');
+      expect(edits, ['luz']);
+
+      await tester.pumpApp(field(''));
+      await tester.pump();
+      expect(find.text('luz'), findsNothing);
+    });
+  });
+
   group('AttendanceMeter', () {
     testWidgets('flags attendance under 70 % with an icon, not only colour', (
       tester,

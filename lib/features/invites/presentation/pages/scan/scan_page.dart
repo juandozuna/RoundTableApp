@@ -8,6 +8,7 @@ import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_message.dart';
+import '../../../../../core/widgets/app_text_button.dart';
 import '../../../../auth/auth_routes.dart';
 import '../../../../auth/presentation/widgets/auth_flow_layout.dart';
 import '../../../../auth/presentation/widgets/auth_steps.dart';
@@ -132,17 +133,17 @@ class ScanPage extends StatelessWidget {
         icon: Icons.qr_code_2_rounded,
         title: l10n.invitesQrNotInviteTitle,
         detail: l10n.invitesQrNotInviteBody,
-        action: TextButton(
+        action: AppTextButton(
+          label: l10n.actionRetry,
           onPressed: context.read<ScanCubit>().resume,
-          child: Text(l10n.actionRetry),
         ),
       ),
       ScanFailed(:final problem) => AppMessage(
         tone: StatusTone.error,
         title: problem.message(context),
-        action: TextButton(
+        action: AppTextButton(
+          label: l10n.actionRetry,
           onPressed: context.read<ScanCubit>().resume,
-          child: Text(l10n.actionRetry),
         ),
       ),
       _ => const SizedBox.shrink(),

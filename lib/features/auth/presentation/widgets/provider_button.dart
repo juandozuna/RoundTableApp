@@ -80,7 +80,7 @@ class ProviderButton extends StatelessWidget {
                       ),
                     )
                   else
-                    _Glyph(provider: provider, color: foreground),
+                    _buildGlyph(context, provider: provider, color: foreground),
                   const SizedBox(width: AppSpacing.md),
                   Flexible(
                     child: Text(
@@ -100,16 +100,12 @@ class ProviderButton extends StatelessWidget {
       ),
     );
   }
-}
 
-class _Glyph extends StatelessWidget {
-  const _Glyph({required this.provider, required this.color});
-
-  final AuthProvider provider;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildGlyph(
+    BuildContext context, {
+    required AuthProvider provider,
+    required Color color,
+  }) {
     return switch (provider) {
       AuthProvider.google => Text(
         'G',

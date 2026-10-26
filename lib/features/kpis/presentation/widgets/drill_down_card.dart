@@ -7,6 +7,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/status_tone.dart';
 import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/app_message.dart';
+import '../../../../core/widgets/app_text_button.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../admin/presentation/admin_format.dart';
 import '../../../admin/presentation/widgets/attendance_meter.dart';
@@ -162,15 +163,15 @@ class DrillDownCard extends StatelessWidget {
         else if (path.isEmpty)
           Text(rootLabel, style: context.textTheme.labelLarge)
         else
-          TextButton(onPressed: () => onCrumb(0), child: Text(rootLabel)),
+          AppTextButton(label: rootLabel, onPressed: () => onCrumb(0)),
         for (var i = locked ? 1 : 0; i < path.length; i++) ...[
           const Icon(Icons.chevron_right_rounded, size: 18),
           if (i == path.length - 1)
             Text(path[i].label, style: context.textTheme.labelLarge)
           else
-            TextButton(
+            AppTextButton(
+              label: path[i].label,
               onPressed: () => onCrumb(i + 1),
-              child: Text(path[i].label),
             ),
         ],
       ],

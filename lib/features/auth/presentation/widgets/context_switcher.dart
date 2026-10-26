@@ -23,16 +23,11 @@ class ContextSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<AccessCubit>(),
-      child: const _ContextSwitcherView(),
+      child: _buildContextSwitcherView(context),
     );
   }
-}
 
-class _ContextSwitcherView extends StatelessWidget {
-  const _ContextSwitcherView();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildContextSwitcherView(BuildContext context) {
     return BlocBuilder<AccessCubit, AccessCubitState>(
       buildWhen: (a, b) => a.access != b.access,
       builder: (context, state) {

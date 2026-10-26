@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/extensions/build_context_x.dart';
 import '../../../../../core/network/api_error_messages.dart';
 import '../../../../../core/theme/app_spacing.dart';
+import '../../../../../core/widgets/app_text_button.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
 import '../../../../../core/widgets/skeleton.dart';
@@ -228,20 +229,20 @@ class ReportsPage extends StatelessWidget {
         value: '${summary.tables.active}',
         unit: '· ${summary.tables.delayed} · ${summary.tables.inactive}',
         detail: l10n.kpiTablesLegend,
-        trailing: TextButton(
+        trailing: AppTextButton(
+          label: l10n.kpiSeeDelayed,
           onPressed: () =>
               context.go(AdminRoutes.explorerPath(viewId: 'delayed')),
-          child: Text(l10n.kpiSeeDelayed),
         ),
       ),
       KpiTile(
         label: l10n.kpiSyncedLate,
         value: '${summary.syncedLateRows}',
         detail: l10n.kpiSyncedLateDetail,
-        trailing: TextButton(
+        trailing: AppTextButton(
+          label: l10n.kpiSeeTables,
           onPressed: () =>
               context.go(AdminRoutes.explorerPath(viewId: 'syncedLate')),
-          child: Text(l10n.kpiSeeTables),
         ),
       ),
     ];

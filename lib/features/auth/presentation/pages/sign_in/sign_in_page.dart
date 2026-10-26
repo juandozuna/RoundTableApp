@@ -43,7 +43,8 @@ class SignInPage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: context.textTheme.bodySmall,
             ),
-            if (AppConfig.devAuthCompiledIn) _DevPanel(state: state),
+            if (AppConfig.devAuthCompiledIn)
+              _buildDevPanel(context, state: state),
           ],
         ),
       ),
@@ -182,17 +183,8 @@ class SignInPage extends StatelessWidget {
       ],
     );
   }
-}
 
-/// Email/password shortcuts for the seeded users. Compiled in only with
-/// `--dart-define=DEV_AUTH=true`.
-class _DevPanel extends StatelessWidget {
-  const _DevPanel({required this.state});
-
-  final SignInState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildDevPanel(BuildContext context, {required SignInState state}) {
     final cubit = context.read<SignInCubit>();
     final l10n = context.l10n;
     return Padding(

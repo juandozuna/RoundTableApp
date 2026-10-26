@@ -9,6 +9,7 @@ import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_message.dart';
+import '../../../../../core/widgets/app_text_button.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
 import '../../../../../core/widgets/form_fields/app_dropdown_form_field.dart';
@@ -166,7 +167,7 @@ class _TableFormPageState extends State<TableFormPage> {
             label: l10n.adminFieldTableCode,
             required: true,
             initialValue: table?.code,
-            hint: 'LUZ-07',
+            hint: l10n.adminFieldTableCodeHint,
             helper: l10n.adminFieldTableCodeHelper,
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -180,10 +181,10 @@ class _TableFormPageState extends State<TableFormPage> {
               tone: StatusTone.pending,
               title: l10n.adminOrgWithoutLocations,
               detail: l10n.adminOrgWithoutLocationsDetail,
-              action: TextButton(
+              action: AppTextButton(
+                label: l10n.adminNewLocation,
                 onPressed: () =>
                     context.push(AdminRoutes.locationNewPath(organizationId)),
-                child: Text(l10n.adminNewLocation),
               ),
             )
           else

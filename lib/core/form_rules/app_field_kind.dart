@@ -17,7 +17,10 @@ enum AppFieldKind {
   phone,
   personName,
   shortText,
-  inviteCode;
+  inviteCode,
+
+  /// Free-text filter boxes: no capitalization, no validation.
+  search;
 
   TextInputType get keyboardType => switch (this) {
     AppFieldKind.email => TextInputType.emailAddress,
@@ -25,14 +28,16 @@ enum AppFieldKind {
     AppFieldKind.personName => TextInputType.name,
     AppFieldKind.shortText => TextInputType.multiline,
     AppFieldKind.inviteCode => TextInputType.visiblePassword,
-    AppFieldKind.text => TextInputType.text,
+    AppFieldKind.text || AppFieldKind.search => TextInputType.text,
   };
 
   TextCapitalization get textCapitalization => switch (this) {
     AppFieldKind.personName => TextCapitalization.words,
     AppFieldKind.shortText || AppFieldKind.text => TextCapitalization.sentences,
     AppFieldKind.inviteCode => TextCapitalization.characters,
-    AppFieldKind.email || AppFieldKind.phone => TextCapitalization.none,
+    AppFieldKind.email ||
+    AppFieldKind.phone ||
+    AppFieldKind.search => TextCapitalization.none,
   };
 
   Iterable<String>? get autofillHints => switch (this) {
@@ -57,7 +62,8 @@ enum AppFieldKind {
     AppFieldKind.personName => FieldTransformers.personName(raw),
     AppFieldKind.inviteCode => FieldTransformers.inviteCode(raw),
     AppFieldKind.shortText ||
-    AppFieldKind.text => FieldTransformers.trimmed(raw),
+    AppFieldKind.text ||
+    AppFieldKind.search => FieldTransformers.trimmed(raw),
   };
 
   FieldError? validate(
@@ -78,7 +84,7 @@ enum AppFieldKind {
         raw,
         minLength: minLength,
       ),
-      AppFieldKind.text => null,
+      AppFieldKind.text || AppFieldKind.search => null,
     };
   }
 

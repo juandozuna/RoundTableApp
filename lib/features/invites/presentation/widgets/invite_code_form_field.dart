@@ -72,7 +72,8 @@ class _InviteCodeFormFieldState extends State<InviteCodeFormField> {
                       children: [
                         for (var i = 0; i < InviteCode.length; i++)
                           Flexible(
-                            child: _Cell(
+                            child: _buildCell(
+                              context,
                               char: i < text.length ? text[i] : '',
                               active:
                                   _focus.hasFocus &&
@@ -86,6 +87,9 @@ class _InviteCodeFormFieldState extends State<InviteCodeFormField> {
                     Positioned.fill(
                       // Invisible but present: an Opacity(0) subtree would
                       // be dropped from the semantics tree.
+                      // Deliberately a bare TextField: it has no visible chrome
+                      // (the cells above are the UI), so AppTextFormField's
+                      // decoration does not apply.
                       child: TextField(
                         controller: _controller,
                         focusNode: _focus,
@@ -145,17 +149,13 @@ class _InviteCodeFormFieldState extends State<InviteCodeFormField> {
       },
     );
   }
-}
 
-class _Cell extends StatelessWidget {
-  const _Cell({required this.char, required this.active, required this.error});
-
-  final String char;
-  final bool active;
-  final bool error;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCell(
+    BuildContext context, {
+    required String char,
+    required bool active,
+    required bool error,
+  }) {
     final colors = context.colors;
     final border = error
         ? context.statusColors.error

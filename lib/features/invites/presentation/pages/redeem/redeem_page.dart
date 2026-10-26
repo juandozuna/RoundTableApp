@@ -129,7 +129,7 @@ class RedeemPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        _InvitationCard(preview: preview),
+        _buildInvitationCard(context, preview: preview),
         if (state.authNotice != null) ...[
           const SizedBox(height: AppSpacing.md),
           _buildAuthNotice(context, state.authNotice!),
@@ -392,15 +392,11 @@ class RedeemPage extends StatelessWidget {
       ),
     };
   }
-}
 
-class _InvitationCard extends StatelessWidget {
-  const _InvitationCard({required this.preview});
-
-  final InvitePreview preview;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildInvitationCard(
+    BuildContext context, {
+    required InvitePreview preview,
+  }) {
     final l10n = context.l10n;
     final inviter = preview.invitedByName;
     return AppCard(
@@ -484,6 +480,7 @@ class _InvitationCard extends StatelessWidget {
   }
 }
 
+// Stays a widget: it owns the form key and controllers (State).
 class _ProfileForm extends StatefulWidget {
   const _ProfileForm({required this.state});
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/extensions/build_context_x.dart';
-import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/form_rules/app_field_kind.dart';
+import '../../../../core/widgets/form_fields/app_text_form_field.dart';
 
 /// Search box of the toolbars (explorer, audit). Reports every edit; the
 /// caller owns the text so it survives rebuilds.
@@ -45,20 +45,15 @@ class _AdminSearchFieldState extends State<AdminSearchField> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 340, minHeight: 44),
-      child: TextField(
+      child: AppTextFormField(
+        name: 'search',
+        kind: AppFieldKind.search,
         controller: _controller,
-        onChanged: widget.onChanged,
-        style: context.textTheme.bodyLarge,
+        hint: widget.hint,
+        prefixIcon: Icons.search_rounded,
+        dense: true,
         textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: widget.hint,
-          prefixIcon: const Icon(Icons.search_rounded),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.md,
-          ),
-        ),
+        onChanged: (value) => widget.onChanged(value ?? ''),
       ),
     );
   }

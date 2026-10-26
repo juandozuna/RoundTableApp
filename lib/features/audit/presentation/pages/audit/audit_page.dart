@@ -8,6 +8,7 @@ import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_avatar.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_chip.dart';
+import '../../../../../core/widgets/app_text_button.dart';
 import '../../../../../core/widgets/empty_state.dart';
 import '../../../../../core/widgets/skeleton.dart';
 import '../../../../../core/widgets/status_pill.dart';
@@ -170,9 +171,9 @@ class AuditPage extends StatelessWidget {
                 label: Text(l10n.adminOrganizationLock(organizationName)),
               ),
             if (refined)
-              TextButton(
+              AppTextButton(
+                label: l10n.adminClearFilters,
                 onPressed: cubit.clearFilters,
-                child: Text(l10n.adminClearFilters),
               ),
           ],
         ),

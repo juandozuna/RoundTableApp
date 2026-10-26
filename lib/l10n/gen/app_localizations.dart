@@ -2668,6 +2668,12 @@ abstract class AppLocalizations {
   /// **'Código'**
   String get adminFieldTableCode;
 
+  /// No description provided for @adminFieldTableCodeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. LUZ-07'**
+  String get adminFieldTableCodeHint;
+
   /// No description provided for @adminFieldTableCodeHelper.
   ///
   /// In es, this message translates to:

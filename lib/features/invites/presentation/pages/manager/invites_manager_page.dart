@@ -199,7 +199,7 @@ class InvitesManagerPage extends StatelessWidget {
             rows: rows,
             columns: _columns(context, state),
             phoneCardBuilder: (context, invite) =>
-                _InviteCard(invite: invite, state: state),
+                _buildInviteCard(context, invite, state),
             isSelected: (invite) => state.selectedIds.contains(invite.id),
             onSelectChanged: (invite, _) => cubit.toggleSelected(invite.id),
           ),
@@ -220,7 +220,7 @@ class InvitesManagerPage extends StatelessWidget {
           children: [
             AppAvatar(name: invite.person.fullName, size: 34),
             const SizedBox(width: AppSpacing.sm),
-            Expanded(child: _PersonText(invite: invite)),
+            Expanded(child: _buildPersonText(context, invite)),
           ],
         ),
       ),
@@ -252,7 +252,7 @@ class InvitesManagerPage extends StatelessWidget {
         flex: 4,
         cellBuilder: (context, invite) => Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-          child: _InviteActions(invite: invite, state: state),
+          child: _buildInviteActions(context, invite, state),
         ),
       ),
     ];
@@ -341,31 +341,8 @@ class InvitesManagerPage extends StatelessWidget {
       InviteStatus.revoked => l10n.invitesDetailRevoked(date(invite.revokedAt)),
     };
   }
-}
 
-/// Asks before revoking; revoking frees the seat a pending invite holds.
-Future<void> confirmRevoke(BuildContext context, List<Invite> invites) async {
-  final l10n = context.l10n;
-  final cubit = context.read<InvitesManagerCubit>();
-  final confirmed = await AppDialogs.confirm(
-    context,
-    title: invites.length == 1
-        ? l10n.invitesRevokeConfirmTitleOne(invites.first.person.firstName)
-        : l10n.invitesRevokeConfirmTitleMany(invites.length),
-    message: l10n.invitesRevokeConfirmBody,
-    confirmLabel: l10n.invitesRevokeConfirmAction,
-    destructive: true,
-  );
-  if (confirmed) await cubit.revoke([for (final invite in invites) invite.id]);
-}
-
-class _PersonText extends StatelessWidget {
-  const _PersonText({required this.invite});
-
-  final Invite invite;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildPersonText(BuildContext context, Invite invite) {
     final struck = invite.status == InviteStatus.revoked;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -387,16 +364,12 @@ class _PersonText extends StatelessWidget {
       ],
     );
   }
-}
 
-class _InviteCard extends StatelessWidget {
-  const _InviteCard({required this.invite, required this.state});
-
-  final Invite invite;
-  final InvitesManagerState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildInviteCard(
+    BuildContext context,
+    Invite invite,
+    InvitesManagerState state,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,35 +379,31 @@ class _InviteCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _PersonText(invite: invite),
+              _buildPersonText(context, invite),
               Text(
                 '${InviteLabels.role(context, invite.roleKind)} · ${invite.scopeName}',
                 style: context.textTheme.bodySmall,
               ),
               Text(
-                InvitesManagerPage._detail(context, invite),
+                _detail(context, invite),
                 style: context.textTheme.bodySmall,
               ),
               const SizedBox(height: AppSpacing.sm),
               InviteStatusPill(status: invite.status),
               const SizedBox(height: AppSpacing.sm),
-              _InviteActions(invite: invite, state: state),
+              _buildInviteActions(context, invite, state),
             ],
           ),
         ),
       ],
     );
   }
-}
 
-class _InviteActions extends StatelessWidget {
-  const _InviteActions({required this.invite, required this.state});
-
-  final Invite invite;
-  final InvitesManagerState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildInviteActions(
+    BuildContext context,
+    Invite invite,
+    InvitesManagerState state,
+  ) {
     final l10n = context.l10n;
     final cubit = context.read<InvitesManagerCubit>();
     final enabled = state.online && !state.busy;
@@ -486,4 +455,20 @@ class _InviteActions extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Asks before revoking; revoking frees the seat a pending invite holds.
+Future<void> confirmRevoke(BuildContext context, List<Invite> invites) async {
+  final l10n = context.l10n;
+  final cubit = context.read<InvitesManagerCubit>();
+  final confirmed = await AppDialogs.confirm(
+    context,
+    title: invites.length == 1
+        ? l10n.invitesRevokeConfirmTitleOne(invites.first.person.firstName)
+        : l10n.invitesRevokeConfirmTitleMany(invites.length),
+    message: l10n.invitesRevokeConfirmBody,
+    confirmLabel: l10n.invitesRevokeConfirmAction,
+    destructive: true,
+  );
+  if (confirmed) await cubit.revoke([for (final invite in invites) invite.id]);
 }
