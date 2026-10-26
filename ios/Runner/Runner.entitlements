@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Release/Profile builds only (see docs/implementation/mobile.md). Needs a paid
+	     Apple Developer team with the "Sign in with Apple" and "Push Notifications"
+	     capabilities enabled for the bundle id. Debug builds do not use this file. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>
