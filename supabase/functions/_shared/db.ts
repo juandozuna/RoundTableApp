@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
+import { clientAddressFrom } from "./client_address.ts";
 import { ApiError, fromPostgrestError } from "./errors.ts";
 
 let serviceClient: SupabaseClient | null = null;
@@ -22,11 +23,8 @@ export async function callApi<T = unknown>(fn: string, args: Record<string, unkn
   return data as T;
 }
 
-/** Best-effort client address behind the Supabase gateway; used only to bucket anonymous calls. */
-export function clientAddress(req: Request): string {
-  const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return forwarded || req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "unknown";
-}
+/** Address bucket for rate limits; see client_address.ts for the trust order. */
+export const clientAddress = (req: Request): string => clientAddressFrom(req.headers);
 
 /**
  * Counts one hit against `bucket` and throws ApiError("rate_limited") (HTTP 429, Retry-After)

@@ -492,3 +492,15 @@ insert into public.audit_events (organization_id, actor_auth_user_id, actor_pers
 
 select set_config('app.seeding', 'off', false);
 select public.refresh_kpis();
+
+-- Local cron → dispatcher wiring (app.dispatch_notifications_http reads these Vault secrets; with
+-- no FCM credentials the dispatcher logs and marks messages skipped). Dev values only: hosted
+-- projects create their own secrets, see docs/implementation/api-contract.md §8.
+do $vault$
+begin
+  perform vault.create_secret('http://host.docker.internal:54321/functions/v1', 'functions_base_url');
+  perform vault.create_secret('change-me-local-cron-secret', 'cron_secret');
+exception when others then
+  raise notice 'Vault unavailable (%); cron dispatch stays manual', sqlerrm;
+end;
+$vault$;

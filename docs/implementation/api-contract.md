@@ -187,7 +187,7 @@ rollups (private `kpi` schema, read via RPCs).
 | Role | Stored in | Scope |
 |---|---|---|
 | Platform admin | `role_assignments(role='platform_admin', organization_id NULL)` on a staff person (`people.organization_id NULL`) | everything |
-| Coordinator | `role_assignments(role='coordinator', organization_id)` | the organization (location_id is informational in v1) |
+| Coordinator | `role_assignments(role='coordinator', organization_id)` | the **whole organization**. `location_id` is informational in v1: it is stored (and must belong to the same organization, else `validation_failed`) but does **not** narrow RLS, sync rules, KPIs or admin functions; enforcing it would touch every policy and PowerSync bucket and is deferred |
 | Facilitator | `table_members(role='facilitator', status='active')` | the table |
 | Member | `table_members(role='member', status='active')` | the table; own answers only |
 
@@ -196,7 +196,9 @@ rollups (private `kpi` schema, read via RPCs).
 - **Score**: integer 1–10, **5 is rejected** (`score_five_not_allowed`), others outside 1–10 →
   `score_out_of_range`.
 - **Seats**: at most **9 active `table_members` per table including the facilitator** (`table_full`).
-  Pending invites hold a seat. Minimum 3 is a health signal, not enforced.
+  Pending invites hold a seat (inviting creates the active `table_members` row). Seat counts shown to
+  users (`admin_tables.active_people/seats_free`, `kpi_tables.active_people/seats_free`) are counted
+  live from `table_members`, never from the KPI rollups. Minimum 3 is a health signal, not enforced.
 - **One active facilitator per table**; one active membership per person per table. Changing
   facilitator or moving members ends the old row (`left_at`, `left_reason`) and creates a new one.
 - **Sessions are created by the server**: every active table always has exactly one pending session
@@ -364,8 +366,8 @@ Errors: `forbidden` (not the facilitator), `invalid_session_transition`, `sessio
 | `GET /invites?organization_id=&round_table_id=&status=` | coordinator/admin; facilitator with `round_table_id` | — | `200 { invites: [invite] }` (newest first; without filters: platform admin only) |
 | `POST /invites/{id}/revoke` | same as create | — | `200 { invite }` — frees the reserved seat/role if the person never signed in |
 | `POST /invites/{id}/renew` | same as create | `{ "expires_in_days"? }` | `200 { invite }` — new code, new expiry |
-| `GET /invites/preview?code=MESA34` | **anonymous** | — | `200 { invite: { code, status, role_kind, organization_name, round_table_name, person_first_name, invited_by_name, expires_at } }`. Rate limited per client address (20/min) and globally (300/min): `429 rate_limited` (`api.rate_limit_hit`, table `app.rate_limit_hits`) |
-| `POST /invites/redeem` | any signed-in user | `{ "code": "MESA34", "profile"?: { first_name?, last_name?, position?, phone? } }` | `200 { already_redeemed, person, invite, contexts }` |
+| `GET /invites/preview?code=MESA34` | **anonymous** | — | `200 { invite: { code, status, role_kind, organization_name, round_table_name, person_first_name, invited_by_name, expires_at } }`. Rate limited per client address (20/min) and globally (300/min): `429 rate_limited` (`api.rate_limit_hit`, table `app.rate_limit_hits`). The address is `cf-connecting-ip`, else `x-real-ip`, else the **last** `x-forwarded-for` entry (the first is client-controlled) |
+| `POST /invites/redeem` | any signed-in user | `{ "code": "MESA34", "profile"?: { first_name?, last_name?, position?, phone? } }` | `200 { already_redeemed, person, invite, contexts }`. Rate limited (`429 rate_limited`, `Retry-After`): 30/min per address, 15 per 10 min per account, 10/min per code, 300/min overall |
 
 `invite` object: `{ id, code, role_kind, status, organization_id, organization_name, round_table_id,
 round_table_name, round_table_code, person: {id, organization_id, first_name, last_name, position,
@@ -384,6 +386,14 @@ organization), `organization_inactive`, `person_inactive`; create `table_full`,
 Re-redeeming with the same account is idempotent (`already_redeemed: true`). Codes are normalized
 (case, spaces, dashes). Apple "hide my email" works: binding uses the auth user id, the relay email
 is stored only if the person had none.
+
+Enumeration: a code is a bearer secret of 32^6 ≈ 1.07·10⁹ values. Preview and redeem answer
+`invite_not_found` vs `invite_expired|revoked|already_used` because the welcome screens need to tell
+people what to do (ask for a new code, sign in instead); that only confirms that a *dead* code once
+existed and reveals nothing about people. Only a live code returns data (first name, organization,
+table, inviter) — the rate limits above cap guessing at 300 tries/min overall (≈0.04 expected hits
+per day against ~100 live codes) and per address/account/code. Do not add finer-grained error
+codes to these endpoints.
 
 ### admin (online-only)
 
@@ -404,7 +414,7 @@ is stored only if the person had none.
 | `POST /admin/members/{table_member_id}/move` | coordinator/admin | `{ to_round_table_id }` | `{ member }` (the new membership) |
 | `POST /admin/members/{table_member_id}/deactivate` | coordinator/admin; facilitator for members of own table | — | `{ member }` |
 | `PATCH /admin/people/{id}` | coordinator/admin | `{ first_name?, last_name?, position?, email?, phone?, status?: active\|inactive }` | `{ person }` — `inactive` ends memberships, roles and pending invites |
-| `POST /admin/roles` | coordinator/admin (coordinator); platform admin (platform_admin, staff people only) | `{ person_id, role, location_id? }` | `201 { role_assignment }` |
+| `POST /admin/roles` | coordinator/admin (coordinator); platform admin (platform_admin, staff people only) | `{ person_id, role, location_id? }` (`location_id` only for `coordinator`, same organization; informational, §3) | `201 { role_assignment }` |
 | `POST /admin/roles/{id}/revoke` | same | — | `{ role_assignment }` (`last_platform_admin` protects the last admin) |
 
 `table` object: the `round_tables` row plus `location_name`, `active_people`,
@@ -477,15 +487,23 @@ Views (security invoker — the caller's RLS applies):
 
 | View | Columns |
 |---|---|
-| `admin_tables` | `id, organization_id, organization_name, location_id, location_name, name, code, weekday, start_time, timezone, duration_minutes, status, current_value_id, current_value_sequence, current_value_name, facilitator_person_id, facilitator_name, active_people, max_people (9), pending_session_id, pending_session_status, pending_session_at, created_at, updated_at` |
+| `admin_tables` | `id, organization_id, organization_name, location_id, location_name, name, code, weekday, start_time, timezone, duration_minutes, status, current_value_id, current_value_sequence, current_value_name, facilitator_person_id, facilitator_name, active_people, max_people (9), pending_session_id, pending_session_status, pending_session_at, created_at, updated_at, seats_free, pending_invites` (`active_people`, `seats_free` and `pending_invites` are live counts) |
 | `admin_people` | `id, organization_id, first_name, last_name, position, email, phone, status, linked, roles [{id, role, organization_id}], tables [{table_member_id, round_table_id, round_table_name, role}], created_at, updated_at` |
 | `admin_invites` | `id, organization_id, person_id, first_name, last_name, email, phone, code, role_kind, round_table_id, round_table_name, status (effective), invited_by_person_id, expires_at, accepted_at, revoked_at, created_at` |
 | `audit_log` | `id, organization_id, organization_name, actor_person_id, actor_name, event_type, entity_type, entity_id, payload, created_at` |
 
 Audit `event_type` values: `organization.created|updated|status_changed`, `location.created|updated`,
 `table.created|updated|facilitator_changed`, `member.added|moved|deactivated`,
-`invite.created|revoked|renewed|accepted`, `person.updated|deactivated`, `role.granted|revoked`,
-`session.opened|closed|cancelled`, `answers.revealed`.
+`invite.created|revoked|renewed|accepted`, `person.updated|deactivated` (`person.updated` with
+`payload.self = true` is a self-service profile edit), `role.granted|revoked`,
+`session.opened|closed|cancelled`, `answers.revealed`. `audit_events` is append-only: update, delete and
+truncate raise `42501` for every role. The `member.moved` payload carries `invites_moved` (a pending
+member invite follows the person to the new table).
+
+Privileges: `api.*` is executable by `service_role` only (Edge Functions); the `app` and `kpi` helper
+functions are not executable by `anon`/`authenticated` except the six scope helpers RLS evaluates
+(`app.my_person_ids`, `is_platform_admin`, `coordinator_orgs`, `facilitator_tables`, `member_tables`,
+`my_orgs`). New `app`/`kpi` functions need the same explicit `revoke execute … from public`.
 
 RPC: `POST /rest/v1/rpc/my_contexts` `{}` → `[ { kind: platform_admin|coordinator|facilitator|member,
 person_id, organization_id, organization_name?, round_table_id?, round_table_name?, round_table_code?,
@@ -495,9 +513,27 @@ label } ]` (label e.g. `"Coordinador · Fundación Luz"`, `"Miembro · Mesa Espe
 
 ## 7. KPIs
 
-Rollups (ADR 0010) are materialized views refreshed every 5 minutes when dirty (any upload, close or
-admin change) and hourly; `computed_at` tells the freshness. KPI reads never touch transactional
-tables. Call with `POST /rest/v1/rpc/<name>` and a JSON body of named parameters (all optional
+Rollups (ADR 0010) are materialized views in the private `kpi` schema; `computed_at` tells the
+freshness. KPI reads never touch transactional tables (except live seat counts, below). Freshness:
+
+- Every write that can change a rollup (organizations, round_tables, table_members, sessions,
+  session_attendance, member_assessments, member_answers, member_commitments — any path: Edge Function,
+  sync-upload, admin, SQL) marks the rollups dirty through a statement-level trigger.
+- Every `kpi_*` RPC first calls `kpi.ensure_fresh()`: if dirty and the last refresh is older than 2 s,
+  or the last refresh is older than 5 min (health depends on `now()`), the caller refreshes the
+  rollups (advisory-lock guarded; concurrent readers use the previous snapshot instead of queuing).
+  So a KPI read right after a session closes / a table, member or invite changes includes it
+  (read-your-writes), apart from the 2 s debounce.
+- pg_cron is the safety net: `kpi.refresh_if_dirty()` every 30 s, `public.refresh_kpis()` hourly.
+- Cost (seed: 130 sessions, 1 260 assessments, local Docker Postgres): a full refresh of the four
+  rollups takes **≈ 22 ms** (21–26 ms over repeated runs); a read that finds fresh rollups pays
+  ≈ 0.5 ms for the check. Refreshes are bounded to one per 2 s however many users read.
+- Because the RPCs may refresh, they are **volatile**: call them with `POST` (as the app does), never `GET`.
+- Seat counts are not rollup data: `kpi_tables.active_people` is counted live from `table_members`
+  (`seats_free` and `max_people = 9` are added), like `admin_tables`. `kpi_summary.people_active` and the
+  `tables` health counts come from the rollup (fresh per the rules above).
+
+Call with `POST /rest/v1/rpc/<name>` and a JSON body of named parameters (all optional
 unless noted):
 
 Common filters: `p_from` (date), `p_to` (date), `p_country` (ISO-2), `p_organization_id`,
@@ -518,7 +554,7 @@ rows flagged `synced_late`; **health**: `completed`; `inactive` (paused/closed, 
 | `kpi_summary` | filters | object (below) |
 | `kpi_breakdown` | `p_dimension` (required): `country` \| `organization` \| `location` \| `round_table` \| `facilitator` \| `module` \| `value`; filters | rows `{ key, label, sessions_closed, values_completed, member_values_completed, attendance_pct, initial_avg, follow_up_avg, improvement_avg, improvement_pairs, synced_late_rows, tables_total, tables_active, tables_delayed, tables_inactive }` (table counts null for module/value) |
 | `kpi_weekly_series` | filters | rows `{ week_start, sessions_closed, values_completed, attendance_pct, initial_avg, improvement_avg, synced_late_rows }` ordered by week |
-| `kpi_tables` | `p_country, p_organization_id, p_location_id, p_round_table_id, p_facilitator_person_id, p_health` | grid rows `{ round_table_id, code, name, organization_id, organization_name, country_code, location_id, location_name, facilitator_person_id, facilitator_name, status, health, active_people, values_completed, current_value_id, current_value_label, attendance_pct, improvement_avg, synced_late_rows, last_session_at, pending_session_at }` |
+| `kpi_tables` | `p_country, p_organization_id, p_location_id, p_round_table_id, p_facilitator_person_id, p_health` | grid rows `{ round_table_id, code, name, organization_id, organization_name, country_code, location_id, location_name, facilitator_person_id, facilitator_name, status, health, active_people (live), values_completed, current_value_id, current_value_label, attendance_pct, improvement_avg, synced_late_rows, last_session_at, pending_session_at, max_people (9), seats_free (live) }` |
 | `kpi_member_detail` | `p_round_table_id` (required) | member drill-down (sensitive, scores only) `{ person_id, first_name, last_name, role, membership_status, sessions_expected, sessions_present, attendance_pct, values_completed, improvement_avg, synced_late_sessions, scores: [{ value_id, value_label, sequence, initial_score, follow_up_score, delta, synced_late }] }`; members → `P0001 forbidden` |
 
 `kpi_summary` example (admin, seed):
@@ -547,14 +583,27 @@ function delivers through a `PushSender` (FCM HTTP v1; no-op without credentials
 |---|---|---|
 | `gr-session-reminders` | every 15 min | reminders for sessions in the next 24 h, then dispatch via pg_net (if configured) |
 | `gr-commitment-nudges` | hourly | mid-week nudge 3 days after a closed session while the follow-up is pending |
-| `gr-kpi-refresh-dirty` / `gr-kpi-refresh-hourly` | */5 min / hourly | `kpi.refresh_if_dirty()` / `public.refresh_kpis()` |
+| `gr-kpi-refresh-dirty` / `gr-kpi-refresh-hourly` | every 30 s / hourly | `kpi.refresh_if_dirty()` / `public.refresh_kpis()` (safety net; KPI reads refresh too, §7) |
 | `gr-invites-expire` | hourly | pending → expired |
 | `gr-pending-sessions` | hourly | every active table has its pending session |
 | `gr-archive-sessions` | daily 03:30 UTC | sync-window archiving |
 
 pg_net dispatch needs Vault secrets `functions_base_url` (e.g. `http://host.docker.internal:54321/functions/v1`)
-and `cron_secret`; without them the outbox waits for an external `POST /notifications/dispatch`.
+and `cron_secret` (= the function's `CRON_SECRET`); without them `app.dispatch_notifications_http()` is a
+silent no-op and the outbox waits for an external `POST /notifications/dispatch`. `supabase/seed.sql`
+creates both secrets for the local stack, so locally the whole path cron → pg_net → `notifications`
+→ no-op sender (`sender: "noop"`, messages marked `skipped`, a warning logged) runs without FCM.
 `stage_opened` is sent immediately by the `sessions` function.
+
+Scheduling rules (pgTAP `060_notification_schedule`):
+- **Session reminder**: sessions in status `scheduled` of `active` tables starting within the next 24 h
+  (absolute time, so independent of timezone); one per participant (facilitator included) and slot —
+  the dedupe key contains `scheduled_at`, so a rescheduled session reminds again while a re-run does
+  not duplicate. The body shows the time in the **table's** timezone (`DD/MM HH24:MI`). Slots are
+  computed in the table's IANA timezone, so DST changes keep the local wall-clock time.
+- **Commitment nudge**: commitments with no follow-up yet, 3–4 days after the session closed (hourly
+  job, one per commitment).
+- `stage_opened`: members only (not the facilitator), only while the session is `open`.
 
 ---
 
@@ -588,9 +637,10 @@ and `cron_secret`; without them the outbox waits for an external `POST /notifica
 ```bash
 supabase start                      # applies migrations + seed on first start
 supabase db reset                   # re-apply migrations + seed
-supabase test db                    # pgTAP: RLS scope, invariants, sync, invites/admin, rate limits (111 tests)
+supabase test db                    # pgTAP: RLS scope, invariants, sync, invites/admin, rate limits,
+                                    # KPI freshness, notification scheduling, hardening (167 tests)
 docker run --rm -v "$PWD/supabase/functions":/app -w /app denoland/deno:2.1.4 \
-  deno test --allow-env _shared/    # pure logic: validation, state machine, late sync, batches
+  deno test --allow-env _shared/    # pure logic: validation, state machine, late sync, batches, client address
 cp supabase/functions/.env.example supabase/functions/.env
 supabase functions serve --env-file supabase/functions/.env &
 bash supabase/tests/functions/smoke.sh   # curl flows with the dev users (run after a reset)

@@ -193,7 +193,7 @@ check "coordinator reveals answers (sensitive, logged)" 200 .sensitive true
 call POST "$FN/answers-reveal" "$T_HOR" "{\"round_table_id\":\"$(id table:luz-03)\"}"
 check "other organization cannot reveal → 403" 403 .error.code forbidden
 call POST "$API/rest/v1/rpc/kpi_summary" "$T_ADMIN" '{}'
-check "admin KPI summary (global; rollup may lag ≤5 min)" 200 '.tables.total>=17' true
+check "admin KPI summary (global)" 200 '.tables.total>=17' true
 call POST "$API/rest/v1/rpc/kpi_summary" "$T_COORD" '{"p_country":"DO"}'
 check "coordinator KPI summary (own org only)" 200 '.tables.total>=7 and .tables.total<=8' true
 call POST "$API/rest/v1/rpc/kpi_breakdown" "$T_ADMIN" '{"p_dimension":"country"}'
@@ -201,9 +201,29 @@ check "breakdown by country" 200 '[.[].label]|join(",")' "Colombia,República Do
 call POST "$API/rest/v1/rpc/kpi_member_detail" "$T_FACIL" "{\"p_round_table_id\":\"$(id table:luz-03)\"}"
 check "facilitator drill-down to members" 200 'map(select(.first_name=="Ana Lucía"))|.[0].scores|length' 3
 
+# The rollups were dirtied by the close above; the read itself refreshes them (no 5-minute lag).
+call POST "$API/rest/v1/rpc/kpi_tables" "$T_COORD" "{\"p_round_table_id\":\"$(id table:luz-03)\"}"
+check "KPIs include the session closed seconds ago (value 4 done)" 200 '.[0].values_completed' 4
+check "seat counts are live: taken + free = 9" 200 '.[0].active_people + .[0].seats_free' 9
+
 echo "── Notifications (remove token)"
 call DELETE "$FN/notifications/device-tokens" "$T_ANA" '{"token":"fake-fcm-token-ana-0001"}'
 check "member removes the token on sign-out" 200 .removed 1
+
+echo "── Rate limits (run last: they exhaust this address's allowance for the current minute)"
+N429=0
+for i in $(seq 1 25); do
+  CODE_STATUS=$(curl -s -o /dev/null -w '%{http_code}' "$FN/invites/preview?code=ZZZZZZ" -H "apikey: $ANON_KEY" \
+    -H "X-Forwarded-For: 10.9.8.$i")
+  [[ $CODE_STATUS == 429 ]] && N429=$((N429 + 1))
+done
+if [[ $N429 -ge 1 ]]; then
+  PASS=$((PASS + 1)); echo "  ok   preview: a spoofed X-Forwarded-For does not dodge the per-address limit"
+else
+  FAIL=$((FAIL + 1)); echo "  FAIL preview: 25 calls with rotating X-Forwarded-For were never throttled"
+fi
+for i in $(seq 1 12); do call POST "$FN/invites/redeem" "$T_NEW" '{"code":"QQQQQQ"}'; done
+check "redeem: guessing the same code is throttled per code → 429" 429 .error.code rate_limited
 
 echo
 echo "passed: $PASS  failed: $FAIL"
