@@ -132,6 +132,7 @@ switcher.
 | 409 | `table_full`, `table_has_facilitator`, `table_not_active`, `already_member`, `membership_inactive`, `cannot_move_facilitator`, `cannot_remove_facilitator`, `person_inactive`, `person_already_linked`, `duplicate_id`, `duplicate_assessment`, `duplicate_follow_up`, `duplicate_answer`, `duplicate_commitment`, `duplicate_attendance`, `duplicate_table_code`, `duplicate_organization`, `duplicate_location`, `duplicate_token`, `conflict`, `session_closed`, `session_cancelled`, `session_finalized`, `session_pending_exists`, `invalid_session_transition`, `follow_up_already_recorded`, `value_change_blocked`, `organization_inactive`, `last_platform_admin`, `invite_already_used`, `invite_pending_exists`, `person_linked_elsewhere`, `identity_linked_elsewhere`, `no_person`, `operation_not_allowed` |
 | 410 | `invite_expired`, `invite_revoked` |
 | 422 | `validation_failed`, `invalid_reference`, `immutable_field`, `invalid_timezone`, `unsupported_table`, `score_out_of_range`, `score_five_not_allowed`, `question_mismatch`, `follow_up_not_available`, `follow_up_session_mismatch`, `facilitator_required` |
+| 429 | `rate_limited` (anonymous invite preview; `Retry-After` header and `retry_after_seconds`) |
 | 500 | `internal_error` |
 
 The full list with default Spanish messages lives in
@@ -363,7 +364,7 @@ Errors: `forbidden` (not the facilitator), `invalid_session_transition`, `sessio
 | `GET /invites?organization_id=&round_table_id=&status=` | coordinator/admin; facilitator with `round_table_id` | — | `200 { invites: [invite] }` (newest first; without filters: platform admin only) |
 | `POST /invites/{id}/revoke` | same as create | — | `200 { invite }` — frees the reserved seat/role if the person never signed in |
 | `POST /invites/{id}/renew` | same as create | `{ "expires_in_days"? }` | `200 { invite }` — new code, new expiry |
-| `GET /invites/preview?code=MESA34` | **anonymous** | — | `200 { invite: { code, status, role_kind, organization_name, round_table_name, person_first_name, invited_by_name, expires_at } }` |
+| `GET /invites/preview?code=MESA34` | **anonymous** | — | `200 { invite: { code, status, role_kind, organization_name, round_table_name, person_first_name, invited_by_name, expires_at } }`. Rate limited per client address (20/min) and globally (300/min): `429 rate_limited` (`api.rate_limit_hit`, table `app.rate_limit_hits`) |
 | `POST /invites/redeem` | any signed-in user | `{ "code": "MESA34", "profile"?: { first_name?, last_name?, position?, phone? } }` | `200 { already_redeemed, person, invite, contexts }` |
 
 `invite` object: `{ id, code, role_kind, status, organization_id, organization_name, round_table_id,
@@ -587,13 +588,15 @@ and `cron_secret`; without them the outbox waits for an external `POST /notifica
 ```bash
 supabase start                      # applies migrations + seed on first start
 supabase db reset                   # re-apply migrations + seed
-supabase test db                    # pgTAP: RLS scope, invariants, sync, invites/admin (104 tests)
+supabase test db                    # pgTAP: RLS scope, invariants, sync, invites/admin, rate limits (111 tests)
 docker run --rm -v "$PWD/supabase/functions":/app -w /app denoland/deno:2.1.4 \
   deno test --allow-env _shared/    # pure logic: validation, state machine, late sync, batches
 cp supabase/functions/.env.example supabase/functions/.env
 supabase functions serve --env-file supabase/functions/.env &
 bash supabase/tests/functions/smoke.sh   # curl flows with the dev users (run after a reset)
 bash powersync/tools/validate.sh         # sync rules: compile + per-user simulation
+bash scripts/dev-up.sh && bash scripts/smoke.sh   # whole stack incl. PowerSync (see README)
+(cd tool/e2e && npm i && node run.mjs)            # browser end-to-end scenarios (tool/e2e/README.md)
 supabase stop
 ```
 

@@ -6,13 +6,18 @@ reflections and commitments on their own phones, even without internet. Organiza
 and coordinators follow progress through KPI dashboards.
 
 ## Status
-Design and architecture phase. No application code yet.
+The app is implemented end to end (auth and invites, live session with offline sync, administration,
+KPIs, audit, notifications, settings) and verified in the browser against the full local stack
+(Supabase + PowerSync + the Flutter web build). Real social sign-in, push delivery and the Android /
+iOS builds still need provider credentials or devices; see [Deploying](#deploying).
 
 - Architecture decisions: [docs/adr](docs/adr/README.md)
 - Contributor and agent rules: [AGENTS.md](AGENTS.md)
+- Backend contract: [docs/implementation/api-contract.md](docs/implementation/api-contract.md)
 - UI prototypes (open in a browser): [docs/design/prototypes](docs/design/prototypes)
+- End-to-end browser tests: [tool/e2e](tool/e2e/README.md)
 
-## Planned stack
+## Stack
 Flutter (Android, iOS, web) · Supabase (Postgres + RLS, Auth, Edge Functions) · PowerSync + Drift
 for offline session sync · Firebase Cloud Messaging.
 
@@ -74,10 +79,14 @@ Seeded invite codes: `MESA34` (pending member), `VENC22` (expired), `REVK23` (re
 | `bash scripts/dev-reset.sh` | **wipes** the local database (`supabase db reset`), re-seeds, resets PowerSync |
 | `bash scripts/dev-up.sh --local-web` | build the web app with the host Flutter instead of Docker |
 | `bash scripts/web-dev-serve.sh` | rebuild with the host Flutter and re-serve (fastest loop); `--no-build` only restarts nginx |
+| `bash scripts/dev-open-session.sh` | puts **Mesa Esperanza 03**'s demo session back to *scheduled · lobby* at the current time (wipes what a previous run captured), so the live flow can be tried again at any moment, no reset needed |
 | `bash scripts/dev-up.sh --no-web` | backend only, for `flutter run -d chrome --web-port 3000 --dart-define=…` |
 
 Seed times are relative to the last reset (Mesa Esperanza 03's pending session is "today, one hour
-after the reset"), so run `dev-reset.sh` when the demo data feels stale. Variables are documented
+after the reset"), so run `dev-open-session.sh` (or `dev-reset.sh` for all data) when the demo feels
+stale. The explorer and KPI screens read rollups that `pg_cron` refreshes every 5 minutes (shown as
+"Datos actualizados HH:MM"); run `docker exec supabase_db_gold-roundtables psql -U postgres -c
+"select kpi.refresh_if_dirty()"` to see a change right away. Variables are documented
 in [`.env.example`](.env.example); copy it to `.env` only to override defaults.
 
 ### Resetting data
@@ -114,6 +123,69 @@ Then restart Supabase (`supabase stop && supabase start`, after coordinating on 
 Redirect URLs allowed by Auth: `http://127.0.0.1:3000`, `http://localhost:3000`,
 `io.goldroundtables.app://login-callback`. Production values (FCM service account, `APP_PUBLIC_URL`,
 `ALLOWED_ORIGINS`, `CRON_SECRET`) are listed in `.env.example` and are Supabase function secrets.
+
+### Test it in the browser
+
+Open http://127.0.0.1:3000, pick a dev account on the sign-in screen ("Acceso de desarrollo") and try:
+
+| Account | What to try |
+|---|---|
+| **Administrador** (`admin@dev.local`) | *Mesas*: explorer with views ("Mesas retrasadas"), filters, *Guardar vista*, *Crear* → mesa / organización / invitar persona; open a table → *Agregar miembro*, *Cambiar facilitador*, *Ver respuestas de…* (audited); *Informes* (filters, drill-down, CSV); *Auditoría*; the chip shows "Administrador · Plataforma" |
+| **Coordinador · Miembro** (`coord@dev.local`) | Pick a role on first access; the chip switches between "Coordinador · Fundación Luz" and "Miembro · Mesa Fe 01"; sees only Fundación Luz (no other organization anywhere); *Invitaciones* → *Invitar* |
+| **Facilitador** (`facil@dev.local`) | Run `bash scripts/dev-open-session.sh`, then *Inicio* → *Abrir sesión*: pass attendance (*Marcar a todos Presente*), *Abrir seguimiento*, answer yours with *Responder yo*, *Abrir valor actual*, *Cerrar respuestas*, *Cerrar sesión* |
+| **Miembro (Ana / Luis / Marta)** | In a second browser profile or private window: *Sesión* follows the facilitator live; answer follow-up, reflection (score 5 is blocked) and commitment; turn the network off in DevTools (Network → Offline) and keep answering, then go back online: the answers upload and, if the session was already closed, show "Sincronizado tarde" |
+| **Crear cuenta de prueba nueva** | A signed-in account without an invitation: *Tengo un código de invitación* → `MESA34` (member of Esperanza 03; only the first account to use it succeeds). `VENC22` / `REVK23` / `ACEP24` show the expired / revoked / used messages |
+
+Use two different browsers (or one normal and one private window) for facilitator + member: both keep
+their own session. Everything above is also automated in [tool/e2e](tool/e2e/README.md).
+
+### Deploying
+
+What has to exist before a real environment works. Nothing here is committed: values are Supabase
+secrets, build-time `--dart-define`s or provider consoles. [`.env.example`](.env.example) lists the
+variable names.
+
+1. **Supabase project** (hosted). `supabase link --project-ref <ref>` then `supabase db push`
+   (migrations only: `supabase/seed.sql` is development data and must not run in production). Enable
+   `pg_cron` and `pg_net` (the KPI refresh and notification jobs are scheduled by the migrations).
+   Deploy the functions: `supabase functions deploy` (each has `verify_jwt = false` in
+   `supabase/config.toml`; they verify tokens themselves).
+2. **First administrator.** There is no seed in production. Sign in once with the church staff
+   account (it answers "No encontramos tu cuenta"), then in the SQL editor link it as platform admin:
+   ```sql
+   with staff as (
+     insert into public.people (organization_id, auth_user_id, first_name, last_name, email, status)
+     select null, u.id, 'Nombre', 'Apellido', u.email, 'active'
+     from auth.users u where u.email = 'staff@example.org'
+     returning id)
+   insert into public.role_assignments (person_id, role, organization_id)
+   select id, 'platform_admin', null from staff;
+   ```
+3. **Auth providers** (Authentication → Providers): Google, Apple, Facebook with their client ids and
+   secrets (see [Social sign-in credentials](#social-sign-in-credentials)). Site URL = the web app's
+   public URL; additional redirect URLs = the web origin and `io.goldroundtables.app://login-callback`
+   (mobile). Disable "Allow new users to sign up with email" and do not build with `DEV_AUTH=true`.
+4. **PowerSync.** PowerSync Cloud or self-hosted (`docker/powersync/powersync.yaml` is the template):
+   point it at the Supabase **direct** Postgres connection, create the replication role and the
+   `powersync` publication (the migrations create the publication; the role is
+   `scripts/setup-powersync-replication.sh` with a real password), upload `powersync/sync-rules.yaml`,
+   and set the client-auth JWKS to `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`
+   (audience `authenticated`). Its public URL becomes `POWERSYNC_URL` in the web/mobile build.
+5. **Edge Function secrets** (`supabase secrets set …`): `APP_PUBLIC_URL` (invite links),
+   `ALLOWED_ORIGINS` (the web origin, not `*`), `CRON_SECRET` (long random; the cron jobs send it as
+   `x-cron-secret`), `FCM_SERVICE_ACCOUNT_JSON` (one line). The anonymous invite preview is rate
+   limited server-side (20 per address and 300 in total per minute, `429` + `Retry-After`).
+6. **Push (FCM).** A Firebase project: web app config (`FIREBASE_*` defines + VAPID key), Android
+   `google-services.json`, iOS `GoogleService-Info.plist` and APNs key; the service account JSON from
+   step 5. Without it notifications are skipped, the rest works.
+7. **Web hosting.** `flutter build web --release --base-href / --dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=… --dart-define=POWERSYNC_URL=… --dart-define=APP_ENV=production`
+   (the anon key is public; never the service-role key). Serve `build/web` over HTTPS with the
+   headers of `docker/web/nginx.conf` (`application/wasm`, no SPA fallback for assets, no-cache for
+   `index.html` and the service worker). The compose `web` image builds exactly that.
+8. **Mobile.** `flutter build apk|appbundle|ipa` with the same defines, signing keys, and the OAuth
+   native client ids (Google Android/iOS client ids, Apple Sign in capability, Facebook app id).
+9. **Before go-live**: run `scripts/smoke.sh`-style checks against the deployed URLs, create the first
+   organization and coordinator from the admin screens, test an invitation on a real phone.
 
 ### Troubleshooting
 - **PowerSync cannot reach Supabase** (`ECONNREFUSED`, `ENOTFOUND host.docker.internal`): on Docker

@@ -27,6 +27,7 @@ extension InviteProblemText on InviteProblem {
       InviteProblem.forbidden => l10n.errorForbidden,
       InviteProblem.offline => l10n.invitesProblemOffline,
       InviteProblem.lockedOut => l10n.invitesCodeLocked,
+      InviteProblem.rateLimited => l10n.invitesProblemRateLimited,
       InviteProblem.unauthenticated => l10n.errorUnauthorized,
       InviteProblem.validation => l10n.errorValidation,
       InviteProblem.generic => l10n.errorGeneric,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,6 +11,9 @@ import '../../../../domain/models/member_flow.dart';
 import '../../../../domain/models/member_step.dart';
 import '../../../../domain/models/response_submissions.dart';
 import '../../../../domain/models/response_validation.dart';
+import '../../../../domain/models/session_draft.dart';
+import '../../../../domain/use_cases/drafts/load_session_draft_use_case.dart';
+import '../../../../domain/use_cases/drafts/save_session_draft_use_case.dart';
 import '../../../../domain/use_cases/responses/submit_commitment_use_case.dart';
 import '../../../../domain/use_cases/responses/submit_follow_up_use_case.dart';
 import '../../../../domain/use_cases/responses/submit_reflection_use_case.dart';
@@ -23,11 +28,135 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     this._submitFollowUp,
     this._submitReflection,
     this._submitCommitment,
+    this._loadDraft,
+    this._saveDraft,
   ) : super(const MemberFlowState());
+
+  /// Typing is persisted this long after the last keystroke.
+  static const Duration draftSaveDelay = Duration(milliseconds: 600);
 
   final SubmitFollowUpUseCase _submitFollowUp;
   final SubmitReflectionUseCase _submitReflection;
   final SubmitCommitmentUseCase _submitCommitment;
+  final LoadSessionDraftUseCase _loadDraft;
+  final SaveSessionDraftUseCase _saveDraft;
+
+  ({String sessionId, String personId})? _draftOwner;
+  final Set<MemberStep> _sentSteps = {};
+  Timer? _draftTimer;
+
+  // ------------------------------------------------------ draft on device
+
+  /// Brings back what the person typed and did not send before the app was
+  /// closed. Only fills an untouched form, and starts keeping drafts.
+  Future<void> restoreDraft({
+    required String sessionId,
+    required String personId,
+  }) async {
+    final owner = (sessionId: sessionId, personId: personId);
+    if (_draftOwner == owner) return;
+    _draftOwner = owner;
+    _sentSteps.clear();
+    try {
+      final draft = await _loadDraft(sessionId: sessionId, personId: personId);
+      if (isClosed || draft == null || _draftOwner != owner) return;
+      if (_draftOf(state) != const SessionDraft()) return;
+      emit(
+        state.copyWith(
+          followUpStatus: draft.followUpStatus,
+          followUpNote: draft.followUpNote,
+          followUpScore: draft.followUpScore,
+          answers: draft.answers,
+          reflectionScore: draft.reflectionScore,
+          commitmentWhat: draft.commitmentWhat,
+          commitmentWhen: draft.commitmentWhen,
+          commitmentHow: draft.commitmentHow,
+        ),
+      );
+    } on Object catch (error) {
+      AppLog.warning('session', 'Restoring the draft failed', error);
+    }
+  }
+
+  static SessionDraft _draftOf(MemberFlowState state) => SessionDraft(
+    followUpStatus: state.followUpStatus,
+    followUpNote: state.followUpNote,
+    followUpScore: state.followUpScore,
+    answers: state.answers,
+    reflectionScore: state.reflectionScore,
+    commitmentWhat: state.commitmentWhat,
+    commitmentWhen: state.commitmentWhen,
+    commitmentHow: state.commitmentHow,
+  );
+
+  /// The typed values that still wait to be sent: steps already saved are in
+  /// the local database and must not come back as a draft.
+  SessionDraft _pendingDraft() {
+    final draft = _draftOf(state);
+    return draft.copyWith(
+      followUpStatus: _sentSteps.contains(MemberStep.followUp)
+          ? null
+          : draft.followUpStatus,
+      followUpNote: _sentSteps.contains(MemberStep.followUp)
+          ? ''
+          : draft.followUpNote,
+      followUpScore: _sentSteps.contains(MemberStep.followUp)
+          ? null
+          : draft.followUpScore,
+      answers: _sentSteps.contains(MemberStep.reflection)
+          ? const {}
+          : draft.answers,
+      reflectionScore: _sentSteps.contains(MemberStep.reflection)
+          ? null
+          : draft.reflectionScore,
+      commitmentWhat: _sentSteps.contains(MemberStep.commitment)
+          ? ''
+          : draft.commitmentWhat,
+      commitmentWhen: _sentSteps.contains(MemberStep.commitment)
+          ? null
+          : draft.commitmentWhen,
+      commitmentHow: _sentSteps.contains(MemberStep.commitment)
+          ? null
+          : draft.commitmentHow,
+    );
+  }
+
+  void _scheduleDraftSave() {
+    if (_draftOwner == null) return;
+    _draftTimer?.cancel();
+    _draftTimer = Timer(draftSaveDelay, _writeDraft);
+  }
+
+  Future<void> _writeDraft() async {
+    final owner = _draftOwner;
+    if (owner == null) return;
+    try {
+      await _saveDraft(
+        sessionId: owner.sessionId,
+        personId: owner.personId,
+        draft: _pendingDraft(),
+      );
+    } on Object catch (error) {
+      AppLog.warning('session', 'Saving the draft failed', error);
+    }
+  }
+
+  @override
+  void onChange(Change<MemberFlowState> change) {
+    super.onChange(change);
+    if (_draftOf(change.currentState) != _draftOf(change.nextState)) {
+      _scheduleDraftSave();
+    }
+  }
+
+  @override
+  Future<void> close() {
+    if (_draftTimer?.isActive ?? false) {
+      _draftTimer!.cancel();
+      unawaited(_writeDraft());
+    }
+    return super.close();
+  }
 
   // ---------------------------------------------------------- navigation
 
@@ -168,6 +297,8 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     emit(state.copyWith(submitting: step, failure: null));
     try {
       await save();
+      _sentSteps.add(step);
+      _scheduleDraftSave();
       emit(
         state.copyWith(
           submitting: null,

@@ -4,6 +4,10 @@ import 'package:gold_roundtables/features/session/domain/models/commitment_follo
 import 'package:gold_roundtables/features/session/domain/models/member_flow.dart';
 import 'package:gold_roundtables/features/session/domain/models/member_step.dart';
 import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
+import 'package:gold_roundtables/features/session/domain/models/session_draft.dart';
+import 'package:gold_roundtables/features/session/domain/services/session_draft_service.dart';
+import 'package:gold_roundtables/features/session/domain/use_cases/drafts/load_session_draft_use_case.dart';
+import 'package:gold_roundtables/features/session/domain/use_cases/drafts/save_session_draft_use_case.dart';
 import 'package:gold_roundtables/features/session/domain/use_cases/responses/submit_commitment_use_case.dart';
 import 'package:gold_roundtables/features/session/domain/use_cases/responses/submit_follow_up_use_case.dart';
 import 'package:gold_roundtables/features/session/domain/use_cases/responses/submit_reflection_use_case.dart';
@@ -18,10 +22,34 @@ class _MockReflection extends Mock implements SubmitReflectionUseCase {}
 
 class _MockCommitment extends Mock implements SubmitCommitmentUseCase {}
 
+class _MemoryDrafts implements SessionDraftService {
+  final Map<String, SessionDraft> stored = {};
+
+  @override
+  Future<SessionDraft?> load({
+    required String sessionId,
+    required String personId,
+  }) async => stored['$sessionId/$personId'];
+
+  @override
+  Future<void> save({
+    required String sessionId,
+    required String personId,
+    required SessionDraft draft,
+  }) async {
+    if (draft.isEmpty) {
+      stored.remove('$sessionId/$personId');
+    } else {
+      stored['$sessionId/$personId'] = draft;
+    }
+  }
+}
+
 void main() {
   late _MockFollowUp followUp;
   late _MockReflection reflection;
   late _MockCommitment commitment;
+  late _MemoryDrafts drafts;
   late MemberFlowCubit cubit;
 
   setUpAll(() {
@@ -45,7 +73,14 @@ void main() {
     followUp = _MockFollowUp();
     reflection = _MockReflection();
     commitment = _MockCommitment();
-    cubit = MemberFlowCubit(followUp, reflection, commitment);
+    drafts = _MemoryDrafts();
+    cubit = MemberFlowCubit(
+      followUp,
+      reflection,
+      commitment,
+      LoadSessionDraftUseCase(drafts),
+      SaveSessionDraftUseCase(drafts),
+    );
   });
 
   tearDown(() => cubit.close());
@@ -165,4 +200,64 @@ void main() {
       expect(cubit.state.chosenStep, isNull);
     },
   );
+
+  group('drafts on the device', () {
+    test('typing is saved after a pause and restored by a new cubit', () async {
+      await cubit.restoreDraft(sessionId: 's1', personId: 'ana');
+      cubit
+        ..setCommitmentWhat('Llamar a mi abuela')
+        ..setAnswer('q1', 'Porque cumplo');
+      expect(drafts.stored, isEmpty, reason: 'saving waits for a pause');
+
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 100),
+      );
+      expect(drafts.stored['s1/ana']?.commitmentWhat, 'Llamar a mi abuela');
+
+      final reopened = MemberFlowCubit(
+        followUp,
+        reflection,
+        commitment,
+        LoadSessionDraftUseCase(drafts),
+        SaveSessionDraftUseCase(drafts),
+      );
+      addTearDown(reopened.close);
+      await reopened.restoreDraft(sessionId: 's1', personId: 'ana');
+
+      expect(reopened.state.commitmentWhat, 'Llamar a mi abuela');
+      expect(reopened.state.answers, {'q1': 'Porque cumplo'});
+    });
+
+    test('a draft never overwrites what was already typed', () async {
+      drafts.stored['s1/ana'] = const SessionDraft(commitmentWhat: 'viejo');
+      cubit.setCommitmentWhat('nuevo');
+      await cubit.restoreDraft(sessionId: 's1', personId: 'ana');
+      expect(cubit.state.commitmentWhat, 'nuevo');
+    });
+
+    test('drafts of another person or session are not mixed', () async {
+      drafts.stored['s1/luis'] = const SessionDraft(commitmentWhat: 'de Luis');
+      await cubit.restoreDraft(sessionId: 's1', personId: 'ana');
+      expect(cubit.state.commitmentWhat, isEmpty);
+    });
+
+    test('a step that was sent leaves the draft', () async {
+      when(() => commitment(any())).thenAnswer((_) async {});
+      await cubit.restoreDraft(sessionId: 's1', personId: 'ana');
+      cubit
+        ..setCommitmentWhat('Llamar a mi abuela')
+        ..setCommitmentWhen('Todos los días')
+        ..setCommitmentHow('Sí o no cada día');
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 100),
+      );
+      expect(drafts.stored['s1/ana'], isNotNull);
+
+      await cubit.submitCommitment(flow(stage: SessionStage.value));
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 100),
+      );
+      expect(drafts.stored['s1/ana'], isNull);
+    });
+  });
 }

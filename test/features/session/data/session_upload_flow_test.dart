@@ -13,7 +13,6 @@ import 'package:gold_roundtables/features/session/domain/models/live_session.dar
 import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
 
 import '../support/counter_id_generator.dart';
-import '../support/no_dev_sync_fallback.dart';
 import '../support/session_fixture.dart';
 import '../support/session_test_database.dart';
 
@@ -55,7 +54,6 @@ void main() {
       local,
       _Idle(),
       clock,
-      const NoDevSyncFallback(),
     );
     responses = ResponsesServiceImpl(local, clock, CounterIdGenerator());
   });

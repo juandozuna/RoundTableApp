@@ -11,9 +11,14 @@ export function json(req: Request, body: unknown, status = 200): Response {
 export function errorResponse(req: Request, error: unknown): Response {
   if (error instanceof ApiError) {
     if (error.status >= 500) console.error(`[${error.code}]`, error.extra ?? "");
-    return json(req, {
+    const response = json(req, {
       error: { code: error.code, message: error.userMessage, ...(error.extra ?? {}) },
     }, error.status);
+    const retryAfter = error.extra?.retry_after_seconds;
+    if (error.status === 429 && typeof retryAfter === "number") {
+      response.headers.set("Retry-After", String(retryAfter));
+    }
+    return response;
   }
   console.error("unhandled error", error);
   const internal = new ApiError("internal_error");

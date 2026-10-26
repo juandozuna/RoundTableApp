@@ -158,7 +158,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get syncSyncedLate => 'Sincronizado tarde';
 
   @override
-  String get syncUnavailable => 'Sincronización no disponible';
+  String get syncUnavailable => 'Sincronización no configurada';
 
   @override
   String get syncNever => 'Aún no se ha sincronizado';
@@ -463,6 +463,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminDeniedAction => 'Ir al explorador';
+
+  @override
+  String get adminDeniedHomeAction => 'Ir al inicio';
 
   @override
   String get adminDeniedRoleMessage =>
@@ -4280,6 +4283,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get invitesProblemPersonAlreadyLinked =>
       'Esta persona ya tiene una cuenta vinculada. Agrégala directamente a la mesa.';
+
+  @override
+  String get invitesProblemRateLimited =>
+      'Hubo demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.';
 
   @override
   String get invitesProblemOffline =>

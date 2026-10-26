@@ -379,7 +379,7 @@ abstract class AppLocalizations {
   /// No description provided for @syncUnavailable.
   ///
   /// In es, this message translates to:
-  /// **'Sincronización no disponible'**
+  /// **'Sincronización no configurada'**
   String get syncUnavailable;
 
   /// No description provided for @syncNever.
@@ -933,6 +933,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ir al explorador'**
   String get adminDeniedAction;
+
+  /// No description provided for @adminDeniedHomeAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir al inicio'**
+  String get adminDeniedHomeAction;
 
   /// No description provided for @adminDeniedRoleMessage.
   ///
@@ -7077,6 +7083,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Esta persona ya tiene una cuenta vinculada. Agrégala directamente a la mesa.'**
   String get invitesProblemPersonAlreadyLinked;
+
+  /// No description provided for @invitesProblemRateLimited.
+  ///
+  /// In es, this message translates to:
+  /// **'Hubo demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.'**
+  String get invitesProblemRateLimited;
 
   /// No description provided for @invitesProblemOffline.
   ///

@@ -33,6 +33,12 @@ void main() {
 
   setUp(() {
     flowCubit = MockMemberFlowCubit();
+    when(
+      () => flowCubit.restoreDraft(
+        sessionId: any(named: 'sessionId'),
+        personId: any(named: 'personId'),
+      ),
+    ).thenAnswer((_) async {});
     when(() => flowCubit.submitFollowUp(any())).thenAnswer((_) async {});
     when(() => flowCubit.submitReflection(any())).thenAnswer((_) async {});
     when(() => flowCubit.submitCommitment(any())).thenAnswer((_) async {});

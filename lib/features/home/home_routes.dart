@@ -2,13 +2,12 @@
 abstract final class HomeRoutes {
   static const String home = '/';
 
-  /// Where the live session of a table opens. Owned by the session feature;
-  /// keep in sync with its router.
+  /// Where the live session of a table opens. Owned by the session feature
+  /// (`SessionRoutes.liveFor`); keep in sync with its router. The session
+  /// screen picks the table's current session itself, so no session id.
   static const String sessionParamTableId = 'tableId';
-  static const String sessionParamSessionId = 'sessionId';
 
-  static String session({required String tableId, required String sessionId}) =>
-      '/mesas/$tableId/sesion/$sessionId';
+  static String session({required String tableId}) => '/mesas/$tableId/sesion';
 
   /// KPI dashboard of the admin feature (coordinators and administrators).
   static const String adminDashboard = '/admin';

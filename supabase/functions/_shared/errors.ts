@@ -9,6 +9,7 @@ export const ERRORS = {
   not_found: [404, "No encontramos lo que buscas."],
   route_not_found: [404, "Esta ruta no existe."],
   method_not_allowed: [405, "Método no permitido."],
+  rate_limited: [429, "Demasiados intentos. Espera un momento e inténtalo de nuevo."],
   validation_failed: [422, "Revisa los datos e inténtalo de nuevo."],
   invalid_json: [400, "El cuerpo de la solicitud no es JSON válido."],
   invalid_reference: [422, "Uno de los datos hace referencia a algo que no existe."],

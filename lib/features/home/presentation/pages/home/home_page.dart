@@ -200,12 +200,8 @@ class HomePage extends StatelessWidget {
           AppButton(
             label: actionLabel,
             icon: Icons.play_arrow_rounded,
-            onPressed: () => context.push(
-              HomeRoutes.session(
-                tableId: session.roundTableId,
-                sessionId: session.id,
-              ),
-            ),
+            onPressed: () =>
+                context.push(HomeRoutes.session(tableId: session.roundTableId)),
           ),
         ],
       ),

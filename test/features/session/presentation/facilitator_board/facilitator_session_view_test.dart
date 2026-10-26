@@ -93,6 +93,12 @@ void main() {
     boardCubit = FacilitatorBoardCubit(_MockMark(), _MockMarkAll());
     when(() => flowCubit.state).thenReturn(const MemberFlowState());
     when(
+      () => flowCubit.restoreDraft(
+        sessionId: any(named: 'sessionId'),
+        personId: any(named: 'personId'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
       () => sessionCubit.advance(force: any(named: 'force')),
     ).thenAnswer((_) async {});
     when(() => sessionCubit.syncNow()).thenAnswer((_) async {});

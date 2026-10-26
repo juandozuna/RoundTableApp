@@ -42,18 +42,28 @@ Widget → Cubit → Use case → Service contract → Service impl → SessionL
 destination for facilitators and members. The home feature should link to
 `SessionRoutes.liveFor(tableId)`.
 
-## Running without the PowerSync service
+## Drafts
 
-PowerSync arrives with the Docker phase. Until then a **development-only** stand-in,
-`DevSyncFallback`, is compiled in with `--dart-define=DEV_AUTH=true` and active only while
-`POWERSYNC_URL` is empty. Every 2 s it mirrors the user's rows from PostgREST into the local tables
-(skipping rows with a queued change) and drains the upload queue through the real connector and
-uploader. With it, `SessionView.isLive` treats the missing service as connected. Nothing of this
-runs in production builds, or when `POWERSYNC_URL` is set.
+What a person typed and did not send (follow-up note and score, reflection answers and score,
+commitment) is kept on the device by `SessionDraftService` (shared preferences, one entry per session
+and person) and restored when the screen opens again. `MemberFlowCubit` writes it 600 ms after the
+last keystroke and leaves out the steps that were already saved. Text controls are the shared
+`AppTextFormField` (which also shows the Cubit-driven validation error).
+
+## Sync configuration
+
+Replication and uploads are always PowerSync's. Without `POWERSYNC_URL` the build has no sync
+service: `SyncConnection.unavailable` is reported, the home screen shows "sync not configured" and
+the live session runs self-paced from whatever is on the device (nothing replicates or uploads).
+There is no development stand-in. Run the stack with `bash scripts/dev-up.sh` (README).
 
 ## Verified
 
 - Unit/widget/real-database tests in `test/features/session`.
+- Browser end-to-end (`tool/e2e`, scenarios `live-session` and `offline`) with the real PowerSync
+  service: stages follow live between two browsers, rows upload and replicate, offline capture is
+  flagged "Sincronizado tarde" after the close, and a download never overwrites rows still waiting to
+  upload.
 - Against the local stack (seeded users): open/stage/close-answers/close through the Edge Function,
   `sync-upload` batches from the Flutter uploader (accepted, idempotent re-send, `duplicate_follow_up`,
   `score_five_not_allowed`), auto-attendance, offline capture then "Sincronizado tarde" after the
@@ -61,6 +71,4 @@ runs in production builds, or when `POWERSYNC_URL` is set.
 
 ## Not verified
 
-- PowerSync replication itself (service not running), including that downloads never overwrite
-  rows with a queued change (guaranteed by PowerSync; the dev stand-in skips such rows).
 - Android/iOS builds, push (`stage_opened`) delivery, the local ">24 h unsynced" notification.

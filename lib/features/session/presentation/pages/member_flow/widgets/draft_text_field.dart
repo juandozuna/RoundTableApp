@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../core/extensions/build_context_x.dart';
+import '../../../../../../core/form_rules/app_field_kind.dart';
+import '../../../../../../core/widgets/form_fields/app_text_form_field.dart';
 
 /// Text control for an answer that lives in the Cubit's draft. Validation is
 /// the domain's `ResponseValidator`, so the error comes from the Cubit state
@@ -55,23 +56,16 @@ class _DraftTextFieldState extends State<DraftTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AppTextFormField(
+      name: 'draft',
+      label: widget.label,
       controller: _controller,
-      onChanged: widget.onChanged,
+      onChanged: (text) => widget.onChanged(text ?? ''),
+      hint: widget.hint,
       maxLength: widget.maxLength,
       maxLines: widget.maxLines,
-      minLines: widget.maxLines > 1 ? 2 : null,
-      keyboardType: widget.maxLines > 1
-          ? TextInputType.multiline
-          : TextInputType.text,
-      textCapitalization: TextCapitalization.sentences,
-      style: context.textTheme.bodyLarge,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        errorText: widget.errorText,
-        errorMaxLines: 3,
-      ),
+      kind: AppFieldKind.text,
+      errorText: widget.errorText,
     );
   }
 }

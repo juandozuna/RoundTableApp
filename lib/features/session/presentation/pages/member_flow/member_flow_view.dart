@@ -32,7 +32,7 @@ import 'widgets/reflection_panel.dart';
 /// The member experience for every stage of the session. The facilitator also
 /// lives here for their own answers ("Mis respuestas", ADR 0014), with
 /// [embedded] set so the host supplies the page chrome.
-class MemberFlowView extends StatelessWidget {
+class MemberFlowView extends StatefulWidget {
   const MemberFlowView({super.key, required this.view, this.embedded = false});
 
   final SessionView view;
@@ -44,6 +44,35 @@ class MemberFlowView extends StatelessWidget {
   static const double maxContentWidth = 560;
 
   @override
+  State<MemberFlowView> createState() => _MemberFlowViewState();
+}
+
+class _MemberFlowViewState extends State<MemberFlowView> {
+  @override
+  void initState() {
+    super.initState();
+    _restoreDraft();
+  }
+
+  @override
+  void didUpdateWidget(MemberFlowView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.view.session.session.id != widget.view.session.session.id) {
+      _restoreDraft();
+    }
+  }
+
+  /// Brings back what this person had typed (and not yet sent) in this
+  /// session before the app was closed.
+  void _restoreDraft() {
+    final session = widget.view.session;
+    context.read<MemberFlowCubit>().restoreDraft(
+      sessionId: session.session.id,
+      personId: session.myPersonId,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<MemberFlowCubit, MemberFlowState>(
       listenWhen: (previous, current) =>
@@ -53,14 +82,14 @@ class MemberFlowView extends StatelessWidget {
       listener: _onStateChanged,
       builder: (context, state) {
         final flow = MemberFlow(
-          view.session,
-          live: view.isLive,
+          widget.view.session,
+          live: widget.view.isLive,
           noPreviousAcknowledged: state.noPreviousAcknowledged,
         );
         final screen = flow.screen(chosen: state.chosenStep);
         final content = _buildContent(context, flow, screen, state);
         final dock = _buildDock(context, flow, screen, state);
-        return embedded
+        return widget.embedded
             ? _buildEmbedded(content, dock)
             : _buildPage(context, content, dock);
       },
@@ -79,7 +108,7 @@ class MemberFlowView extends StatelessWidget {
     } else if (state.justSaved != null) {
       AppToast.show(
         context,
-        view.isLive
+        widget.view.isLive
             ? l10n.sessionMemberToastSent
             : l10n.sessionSharedNoticeSavedOnDevice,
         kind: AppToastKind.success,
@@ -91,7 +120,7 @@ class MemberFlowView extends StatelessWidget {
   // ------------------------------------------------------------- layout
 
   Widget _buildPage(BuildContext context, Widget content, Widget? dock) {
-    final table = view.session.table;
+    final table = widget.view.session.table;
     return BlocListener<SessionCubit, SessionState>(
       listenWhen: (previous, current) =>
           current is SessionReady && current.view.notice != null,
@@ -99,8 +128,8 @@ class MemberFlowView extends StatelessWidget {
       child: AppScaffold(
         title: table.name,
         backFallbackLocation: SessionRoutes.backFallback,
-        maxContentWidth: maxContentWidth,
-        banner: view.isOnline
+        maxContentWidth: MemberFlowView.maxContentWidth,
+        banner: widget.view.isOnline
             ? null
             : OfflineBanner(
                 detail: context.l10n.sessionMemberOfflineBannerDetail,
@@ -111,7 +140,7 @@ class MemberFlowView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: MemberRoomHeader(view: view),
+              child: MemberRoomHeader(view: widget.view),
             ),
             const SizedBox(height: AppSpacing.sm),
             Expanded(child: SingleChildScrollView(child: content)),
@@ -128,7 +157,7 @@ class MemberFlowView extends StatelessWidget {
           child: SingleChildScrollView(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: maxContentWidth),
+                constraints: const BoxConstraints(maxWidth: MemberFlowView.maxContentWidth),
                 child: content,
               ),
             ),
@@ -142,7 +171,7 @@ class MemberFlowView extends StatelessWidget {
   Widget _constrain(Widget dock) => Center(
     heightFactor: 1,
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: maxContentWidth),
+      constraints: const BoxConstraints(maxWidth: MemberFlowView.maxContentWidth),
       child: dock,
     ),
   );
@@ -169,13 +198,13 @@ class MemberFlowView extends StatelessWidget {
       MemberScreen.recap,
     }.contains(screen);
     final stageReached =
-        !view.isLive && !view.session.iAmFacilitator ||
-        view.stage.index >= FacilitatorStage.followUp.index;
+        !widget.view.isLive && !widget.view.session.iAmFacilitator ||
+        widget.view.stage.index >= FacilitatorStage.followUp.index;
     return isStepScreen && stageReached;
   }
 
   bool _showsAutoAttendance(MemberScreen screen) =>
-      AutoAttendanceNote.appliesTo(view.session.me) &&
+      AutoAttendanceNote.appliesTo(widget.view.session.me) &&
       const {
         MemberScreen.followUp,
         MemberScreen.reflection,
@@ -199,10 +228,10 @@ class MemberFlowView extends StatelessWidget {
     final cubit = context.read<MemberFlowCubit>();
     return Padding(
       padding: EdgeInsets.only(
-        top: embedded ? AppSpacing.sm : 0,
+        top: widget.embedded ? AppSpacing.sm : 0,
         bottom: AppSpacing.xl,
-        left: embedded ? AppSpacing.pagePhone : 0,
-        right: embedded ? AppSpacing.pagePhone : 0,
+        left: widget.embedded ? AppSpacing.pagePhone : 0,
+        right: widget.embedded ? AppSpacing.pagePhone : 0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -213,11 +242,11 @@ class MemberFlowView extends StatelessWidget {
               currentStep: _stepOf(screen),
               onSelected: cubit.chooseStep,
             ),
-          MemberSyncBlock(view: view, onSyncNow: _syncNow(context)),
+          MemberSyncBlock(view: widget.view, onSyncNow: _syncNow(context)),
           if (_showsAutoAttendance(screen))
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.md),
-              child: AutoAttendanceNote(me: view.session.me),
+              child: AutoAttendanceNote(me: widget.view.session.me),
             ),
           _buildPanel(context, flow, screen, state),
         ],
@@ -234,7 +263,7 @@ class MemberFlowView extends StatelessWidget {
     MemberScreen screen,
     MemberFlowState state,
   ) {
-    final session = view.session;
+    final session = widget.view.session;
     final l10n = context.l10n;
     return switch (screen) {
       MemberScreen.lobby => MemberLobbyPanel(me: session.me),
@@ -274,7 +303,7 @@ class MemberFlowView extends StatelessWidget {
     if (step == null) return null;
     final l10n = context.l10n;
     final cubit = context.read<MemberFlowCubit>();
-    final session = view.session;
+    final session = widget.view.session;
 
     String? disabledLabel;
     VoidCallback? onPressed;

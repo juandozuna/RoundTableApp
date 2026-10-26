@@ -189,8 +189,12 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         indicatorColor: p.surf2,
         height: 72,
+        // Six destinations on a 390 px phone: no side padding, so "Invitaciones" stays on one line.
+        labelPadding: EdgeInsets.zero,
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => textTheme.labelMedium?.copyWith(
+          (states) => textTheme.labelSmall?.copyWith(
+            letterSpacing: 0,
+            fontWeight: FontWeight.w700,
             color: states.contains(WidgetState.selected) ? p.ink : p.mut,
           ),
         ),
