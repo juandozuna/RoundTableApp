@@ -51,3 +51,20 @@ export async function memberCommitment(app, { what, when = 'Todos los días', ho
   await app.click('Enviar mi compromiso', { role: 'button' });
   await sleep(1500);
 }
+
+/** Frees the seats taken by people the E2E scenarios invited (emails ending in @e2e.local). */
+export function releaseE2eSeats() {
+  sql(`begin;
+    set local session_replication_role = replica;
+    delete from invites where person_id in (select id from people where email like '%@e2e.local');
+    delete from table_members where person_id in (select id from people where email like '%@e2e.local');
+    commit;`);
+}
+
+/** From the admin explorer (Mesas tab): searches and opens a table's detail. */
+export async function openTableFromExplorer(app, search, rowText = search) {
+  await app.fillNth(0, search); // the explorer keeps its previous search text, so no label to look for
+  await sleep(1200);
+  await app.click(rowText);
+  await app.waitFor('Agregar miembro', { timeout: 20_000 });
+}

@@ -15,6 +15,7 @@ mkdirSync(SHOTS, { recursive: true });
 // ---------------------------------------------------------------------------------- runner
 
 const results = [];
+const liveApps = new Set();
 let current = null;
 
 export async function scenario(name, fn) {
@@ -88,6 +89,7 @@ export class App {
     await page.setViewport({ width, height });
     await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: dark ? 'dark' : 'light' }]);
     const app = new App(context, page, name);
+    liveApps.add(app);
     await app.goto('/');
     return app;
   }
@@ -144,6 +146,16 @@ export class App {
     return (await this.nodes()).map((n) => n.text).join('\n');
   }
 
+  /** Picks the n-th entry of the open dropdown menu; returns its text. */
+  async pickMenuItem(index = 0, { skip } = {}) {
+    await this.waitFor(/./, { role: 'menuitem' });
+    const items = (await this.nodes()).filter((n) => n.role === 'menuitem' && !(skip && skip.test(n.text)));
+    const item = items[index];
+    await this.page.mouse.click(item.x + item.w / 2, item.y + item.h / 2);
+    await sleep(500);
+    return item.text.split(' · ')[0];
+  }
+
   /** Debug helper: prints the semantic tree. */
   async dump() {
     const rows = (await this.nodes()).filter((n) => n.text || n.hasInput);
@@ -171,6 +183,7 @@ export class App {
       if (node) return node;
       await sleep(250);
     }
+    await this.shot(`FAIL-${this.name}`).catch(() => {});
     throw new Error(`[${this.name}] timed out waiting for ${String(matcher)}\n--- visible ---\n${(await this.text()).slice(0, 1500)}`);
   }
 
@@ -225,6 +238,7 @@ export class App {
 
   /** Focuses a text field by its label and types. */
   async fill(label, value) {
+    await this.waitFor(label, { timeout: 15_000 });
     const test = toTest(label);
     const nodes = await this.nodes();
     const field = nodes.find((n) => n.hasInput && test(n.text));
@@ -235,10 +249,11 @@ export class App {
   async typeInto(field, value) {
     await this.page.mouse.click(field.x + field.w / 2, field.y + field.h / 2);
     await sleep(300);
-    const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
-    await this.page.keyboard.down(modifier);
-    await this.page.keyboard.press('KeyA');
-    await this.page.keyboard.up(modifier);
+    // Select the whole line (select-all shortcuts are not reliable on a canvas text field).
+    await this.page.keyboard.press('End');
+    await this.page.keyboard.down('Shift');
+    await this.page.keyboard.press('Home');
+    await this.page.keyboard.up('Shift');
     await this.page.keyboard.press('Backspace');
     await this.page.keyboard.type(value, { delay: 12 });
     await sleep(250);
@@ -313,6 +328,7 @@ export class App {
   }
 
   async close() {
+    liveApps.delete(this);
     await this.context.close();
   }
 }
