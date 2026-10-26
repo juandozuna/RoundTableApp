@@ -137,7 +137,12 @@ class SessionCubit extends Cubit<SessionState> {
           ),
         );
       case FacilitatorStage.attendance:
-        final unmarked = session.unmarkedParticipants;
+        // The facilitator's own mark is saved automatically on entering
+        // the attendance stage.
+        final unmarked = [
+          for (final p in session.unmarkedParticipants)
+            if (!p.isMe) p,
+        ];
         if (unmarked.isNotEmpty) {
           _problem = SessionProblem.attendanceIncomplete([
             for (final p in unmarked) p.personId,

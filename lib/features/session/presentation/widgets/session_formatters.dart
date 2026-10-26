@@ -14,4 +14,10 @@ abstract final class SessionFormatters {
     final locale = Localizations.localeOf(context).toString();
     return DateFormat('EEE h:mm a', locale).format(utc.toLocal());
   }
+
+  /// "7:05 p. m."
+  static String clock(BuildContext context, DateTime utc) {
+    final locale = Localizations.localeOf(context).toString();
+    return DateFormat.jm(locale).format(utc.toLocal());
+  }
 }

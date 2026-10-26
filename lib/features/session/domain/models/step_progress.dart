@@ -12,6 +12,9 @@ abstract class StepProgress with _$StepProgress {
 
     /// Row sync state; null until [isDone].
     SyncState? syncState,
+
+    /// Score given in the step (follow-up and reflection), when visible.
+    int? score,
   }) = _StepProgress;
 
   const StepProgress._();

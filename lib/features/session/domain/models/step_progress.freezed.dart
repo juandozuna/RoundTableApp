@@ -18,6 +18,9 @@ mixin _$StepProgress {
   /// Row sync state; null until [isDone].
   SyncState? get syncState;
 
+  /// Score given in the step (follow-up and reflection), when visible.
+  int? get score;
+
   /// Create a copy of StepProgress
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,15 +38,16 @@ mixin _$StepProgress {
             other is StepProgress &&
             (identical(other.isDone, isDone) || other.isDone == isDone) &&
             (identical(other.syncState, syncState) ||
-                other.syncState == syncState));
+                other.syncState == syncState) &&
+            (identical(other.score, score) || other.score == score));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isDone, syncState);
+  int get hashCode => Object.hash(runtimeType, isDone, syncState, score);
 
   @override
   String toString() {
-    return 'StepProgress(isDone: $isDone, syncState: $syncState)';
+    return 'StepProgress(isDone: $isDone, syncState: $syncState, score: $score)';
   }
 }
 
@@ -54,7 +58,7 @@ abstract mixin class $StepProgressCopyWith<$Res> {
     $Res Function(StepProgress) _then,
   ) = _$StepProgressCopyWithImpl;
   @useResult
-  $Res call({bool isDone, SyncState? syncState});
+  $Res call({bool isDone, SyncState? syncState, int? score});
 }
 
 /// @nodoc
@@ -68,7 +72,11 @@ class _$StepProgressCopyWithImpl<$Res> implements $StepProgressCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? isDone = null, Object? syncState = freezed}) {
+  $Res call({
+    Object? isDone = null,
+    Object? syncState = freezed,
+    Object? score = freezed,
+  }) {
     return _then(
       _self.copyWith(
         isDone: null == isDone
@@ -79,6 +87,10 @@ class _$StepProgressCopyWithImpl<$Res> implements $StepProgressCopyWith<$Res> {
             ? _self.syncState
             : syncState // ignore: cast_nullable_to_non_nullable
                   as SyncState?,
+        score: freezed == score
+            ? _self.score
+            : score // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }
@@ -177,13 +189,13 @@ extension StepProgressPatterns on StepProgress {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(bool isDone, SyncState? syncState)? $default, {
+    TResult Function(bool isDone, SyncState? syncState, int? score)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _StepProgress() when $default != null:
-        return $default(_that.isDone, _that.syncState);
+        return $default(_that.isDone, _that.syncState, _that.score);
       case _:
         return orElse();
     }
@@ -204,12 +216,12 @@ extension StepProgressPatterns on StepProgress {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(bool isDone, SyncState? syncState) $default,
+    TResult Function(bool isDone, SyncState? syncState, int? score) $default,
   ) {
     final _that = this;
     switch (_that) {
       case _StepProgress():
-        return $default(_that.isDone, _that.syncState);
+        return $default(_that.isDone, _that.syncState, _that.score);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -229,12 +241,12 @@ extension StepProgressPatterns on StepProgress {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(bool isDone, SyncState? syncState)? $default,
+    TResult? Function(bool isDone, SyncState? syncState, int? score)? $default,
   ) {
     final _that = this;
     switch (_that) {
       case _StepProgress() when $default != null:
-        return $default(_that.isDone, _that.syncState);
+        return $default(_that.isDone, _that.syncState, _that.score);
       case _:
         return null;
     }
@@ -244,7 +256,8 @@ extension StepProgressPatterns on StepProgress {
 /// @nodoc
 
 class _StepProgress extends StepProgress {
-  const _StepProgress({this.isDone = false, this.syncState}) : super._();
+  const _StepProgress({this.isDone = false, this.syncState, this.score})
+    : super._();
 
   @override
   @JsonKey()
@@ -253,6 +266,10 @@ class _StepProgress extends StepProgress {
   /// Row sync state; null until [isDone].
   @override
   final SyncState? syncState;
+
+  /// Score given in the step (follow-up and reflection), when visible.
+  @override
+  final int? score;
 
   /// Create a copy of StepProgress
   /// with the given fields replaced by the non-null parameter values.
@@ -269,15 +286,16 @@ class _StepProgress extends StepProgress {
             other is _StepProgress &&
             (identical(other.isDone, isDone) || other.isDone == isDone) &&
             (identical(other.syncState, syncState) ||
-                other.syncState == syncState));
+                other.syncState == syncState) &&
+            (identical(other.score, score) || other.score == score));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isDone, syncState);
+  int get hashCode => Object.hash(runtimeType, isDone, syncState, score);
 
   @override
   String toString() {
-    return 'StepProgress(isDone: $isDone, syncState: $syncState)';
+    return 'StepProgress(isDone: $isDone, syncState: $syncState, score: $score)';
   }
 }
 
@@ -290,7 +308,7 @@ abstract mixin class _$StepProgressCopyWith<$Res>
   ) = __$StepProgressCopyWithImpl;
   @override
   @useResult
-  $Res call({bool isDone, SyncState? syncState});
+  $Res call({bool isDone, SyncState? syncState, int? score});
 }
 
 /// @nodoc
@@ -305,7 +323,11 @@ class __$StepProgressCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? isDone = null, Object? syncState = freezed}) {
+  $Res call({
+    Object? isDone = null,
+    Object? syncState = freezed,
+    Object? score = freezed,
+  }) {
     return _then(
       _StepProgress(
         isDone: null == isDone
@@ -316,6 +338,10 @@ class __$StepProgressCopyWithImpl<$Res>
             ? _self.syncState
             : syncState // ignore: cast_nullable_to_non_nullable
                   as SyncState?,
+        score: freezed == score
+            ? _self.score
+            : score // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }

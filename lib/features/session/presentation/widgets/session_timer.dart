@@ -49,11 +49,6 @@ class _SessionTimerState extends State<SessionTimer> {
     return elapsed.isNegative ? Duration.zero : elapsed;
   }
 
-  static String format(Duration duration) {
-    String two(int n) => n.toString().padLeft(2, '0');
-    return '${two(duration.inMinutes)}:${two(duration.inSeconds % 60)}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -63,7 +58,7 @@ class _SessionTimerState extends State<SessionTimer> {
     final accent = over ? context.statusColors.pending : context.colors.ink;
     return Semantics(
       container: true,
-      label: format(elapsed),
+      label: SessionTimerFormat.format(elapsed),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -72,11 +67,12 @@ class _SessionTimerState extends State<SessionTimer> {
             TextSpan(
               children: [
                 TextSpan(
-                  text: format(elapsed),
+                  text: SessionTimerFormat.format(elapsed),
                   style: context.textStyles.number.copyWith(color: accent),
                 ),
                 TextSpan(
-                  text: ' ${l10n.sessionSharedTimerLimit(format(limit))}',
+                  text:
+                      ' ${l10n.sessionSharedTimerLimit(SessionTimerFormat.format(limit))}',
                   style: context.textTheme.bodySmall,
                 ),
               ],
@@ -93,5 +89,13 @@ class _SessionTimerState extends State<SessionTimer> {
         ],
       ),
     );
+  }
+}
+
+/// "mm:ss" for a duration.
+abstract final class SessionTimerFormat {
+  static String format(Duration duration) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(duration.inMinutes)}:${two(duration.inSeconds % 60)}';
   }
 }

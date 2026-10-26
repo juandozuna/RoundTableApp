@@ -117,11 +117,13 @@ abstract final class LiveSessionAssembler {
     StepProgress progress(
       bool done,
       Iterable<String> ids,
-      Iterable<bool?> late,
-    ) {
+      Iterable<bool?> late, [
+      int? score,
+    ]) {
       if (!done) return StepProgress.none;
       return StepProgress(
         isDone: true,
+        score: score,
         syncState: _syncState(
           ids,
           late,
@@ -150,11 +152,13 @@ abstract final class LiveSessionAssembler {
           followUpScore?.syncedLate,
           if (followUpOnPrevious) previous.followUpSyncedLate,
         ],
+        followUpScore?.score,
       ),
       reflection: progress(
         initialScore != null,
         [?initialScore?.id, for (final a in answers) a.id],
         [initialScore?.syncedLate, for (final a in answers) a.syncedLate],
+        initialScore?.score,
       ),
       commitment: progress(
         (commitment?.actionText ?? '').isNotEmpty,

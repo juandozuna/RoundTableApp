@@ -48,6 +48,33 @@ class FacilitatorBoardCubit extends Cubit<FacilitatorBoardState> {
     () => _markEveryonePresent(sessionId: sessionId, personIds: personIds),
   );
 
+  bool _markingSelf = false;
+
+  /// The facilitator sits at the table too: record them present as soon as
+  /// attendance opens, without making them mark themselves (ADR 0014).
+  Future<void> ensureSelfPresent({
+    required String sessionId,
+    required String personId,
+  }) async {
+    if (_markingSelf) return;
+    _markingSelf = true;
+    try {
+      await _markAttendance(
+        sessionId: sessionId,
+        personId: personId,
+        status: AttendanceStatus.present,
+      );
+    } on Object catch (error, stackTrace) {
+      AppLog.error(
+        'session',
+        'Marking the facilitator failed',
+        error,
+        stackTrace,
+      );
+      _markingSelf = false;
+    }
+  }
+
   void consumeFailure() => emit(state.copyWith(failure: null));
 
   Future<void> _save(Future<void> Function() save) async {
