@@ -157,6 +157,15 @@ class FollowUpPanel extends StatelessWidget {
           onChanged: cubit.setFollowUpScore,
           errorText: errors.messageFor(ResponseField.followUpScore.name, l10n),
         ),
+        const SizedBox(height: AppSpacing.lg),
+        DraftTextField(
+          key: const ValueKey('follow-up-justification'),
+          label: l10n.sessionMemberJustificationLabel,
+          hint: l10n.sessionMemberJustificationHint,
+          text: state.followUpJustification,
+          maxLength: 200,
+          onChanged: cubit.setFollowUpJustification,
+        ),
       ],
     );
   }

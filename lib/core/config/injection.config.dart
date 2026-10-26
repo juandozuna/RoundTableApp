@@ -173,6 +173,19 @@ import '../../features/auth/presentation/pages/sign_out/cubit/sign_out_cubit.dar
     as _i327;
 import '../../features/auth/presentation/routing/access_redirect_guard.dart'
     as _i393;
+import '../../features/history/data/datasources/history_local_data_source.dart'
+    as _i437;
+import '../../features/history/data/services/history_service_impl.dart'
+    as _i971;
+import '../../features/history/domain/services/history_service.dart' as _i346;
+import '../../features/history/domain/use_cases/watch/watch_member_history_use_case.dart'
+    as _i747;
+import '../../features/history/domain/use_cases/watch/watch_table_history_use_case.dart'
+    as _i115;
+import '../../features/history/presentation/pages/member_timeline/cubit/member_timeline_cubit.dart'
+    as _i305;
+import '../../features/history/presentation/pages/progress/cubit/progress_cubit.dart'
+    as _i780;
 import '../../features/home/data/client/home_client.dart' as _i564;
 import '../../features/home/data/datasources/home_local_data_source.dart'
     as _i299;
@@ -899,6 +912,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i785.LocalDataService>(
       () => _i375.LocalDataServiceImpl(gh<_i924.SyncDatabase>()),
     );
+    gh.lazySingleton<_i437.HistoryLocalDataSource>(
+      () => _i437.HistoryLocalDataSource(gh<_i924.SyncDatabase>()),
+    );
     gh.lazySingleton<_i299.HomeLocalDataSource>(
       () => _i299.HomeLocalDataSource(gh<_i924.SyncDatabase>()),
     );
@@ -1017,6 +1033,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i354.LoadReportOptionsUseCase>(
       () => _i354.LoadReportOptionsUseCase(gh<_i585.KpiService>()),
+    );
+    gh.lazySingleton<_i346.HistoryService>(
+      () => _i971.HistoryServiceImpl(gh<_i437.HistoryLocalDataSource>()),
     );
     gh.factory<_i739.LoadOrganizationDetailUseCase>(
       () => _i739.LoadOrganizationDetailUseCase(
@@ -1195,6 +1214,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i677.LoadInviteUseCase>(
       () => _i677.LoadInviteUseCase(gh<_i276.ListInvitesUseCase>()),
     );
+    gh.factory<_i747.WatchMemberHistoryUseCase>(
+      () => _i747.WatchMemberHistoryUseCase(gh<_i346.HistoryService>()),
+    );
+    gh.factory<_i115.WatchTableHistoryUseCase>(
+      () => _i115.WatchTableHistoryUseCase(gh<_i346.HistoryService>()),
+    );
     gh.factory<_i169.WatchUnsyncedAlertUseCase>(
       () => _i169.WatchUnsyncedAlertUseCase(
         gh<_i318.WatchSyncStatusUseCase>(),
@@ -1222,6 +1247,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i246.UnsyncedAlertCubit>(
       () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
+    );
+    gh.factory<_i780.ProgressCubit>(
+      () => _i780.ProgressCubit(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i747.WatchMemberHistoryUseCase>(),
+        gh<_i115.WatchTableHistoryUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
     );
     gh.factory<_i844.TableDetailCubit>(
       () => _i844.TableDetailCubit(
@@ -1269,6 +1302,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i997.AuthStateSource>(),
       ),
       dispose: (i) => i.stop(),
+    );
+    gh.factory<_i305.MemberTimelineCubit>(
+      () => _i305.MemberTimelineCubit(
+        gh<_i747.WatchMemberHistoryUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
     );
     gh.factory<_i640.ExplorerCubit>(
       () => _i640.ExplorerCubit(

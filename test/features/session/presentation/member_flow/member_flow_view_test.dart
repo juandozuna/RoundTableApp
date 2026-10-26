@@ -165,6 +165,51 @@ void main() {
       verify(() => flowCubit.submitReflection(any())).called(1);
     });
 
+    testWidgets('the score steps ask "¿Por qué ese puntaje?" (optional)', (
+      tester,
+    ) async {
+      when(() => flowCubit.setReflectionJustification(any())).thenReturn(null);
+      when(() => flowCubit.setFollowUpJustification(any())).thenReturn(null);
+      await pumpMemberFlow(
+        tester,
+        view: buildView(
+          buildSession(stage: SessionStage.value, followUp: doneSynced),
+        ),
+        flowCubit: flowCubit,
+        state: const MemberFlowState(reflectionJustification: 'Me esfuerzo'),
+      );
+
+      expect(find.text('¿Por qué ese puntaje?'), findsOneWidget);
+      expect(find.text('Me esfuerzo'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('reflection-justification')),
+        'Porque cumplo',
+      );
+      verify(
+        () => flowCubit.setReflectionJustification('Porque cumplo'),
+      ).called(1);
+    });
+
+    testWidgets('the follow-up step has the same optional field', (
+      tester,
+    ) async {
+      when(() => flowCubit.setFollowUpJustification(any())).thenReturn(null);
+      await pumpMemberFlow(
+        tester,
+        view: buildView(buildSession()),
+        flowCubit: flowCubit,
+      );
+
+      expect(find.text('¿Por qué ese puntaje?'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('follow-up-justification')),
+        'Casi siempre',
+      );
+      verify(
+        () => flowCubit.setFollowUpJustification('Casi siempre'),
+      ).called(1);
+    });
+
     testWidgets('commitment chips feed qué / cuándo / cómo and submit', (
       tester,
     ) async {

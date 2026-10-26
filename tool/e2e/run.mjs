@@ -8,8 +8,9 @@ import { signIn } from './scenarios/sign-in.mjs';
 import { invites } from './scenarios/invites.mjs';
 import { isolation } from './scenarios/isolation.mjs';
 import { responsive } from './scenarios/responsive.mjs';
+import { history } from './scenarios/history.mjs';
 
-const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin };
+const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin, history };
 const selected = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(all);
 const browser = await launch();
 try {

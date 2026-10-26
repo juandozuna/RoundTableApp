@@ -109,6 +109,15 @@ class ReflectionPanel extends StatelessWidget {
             l10n,
           ),
         ),
+        const SizedBox(height: AppSpacing.lg),
+        DraftTextField(
+          key: const ValueKey('reflection-justification'),
+          label: l10n.sessionMemberJustificationLabel,
+          hint: l10n.sessionMemberJustificationHint,
+          text: state.reflectionJustification,
+          maxLength: 200,
+          onChanged: cubit.setReflectionJustification,
+        ),
       ],
     );
   }

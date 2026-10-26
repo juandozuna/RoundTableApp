@@ -25,6 +25,7 @@ class ResponsesServiceImpl implements ResponsesService {
       status: submission.status.wireValue,
       note: _blankToNull(submission.note),
       score: submission.score,
+      justification: _blankToNull(submission.justification),
       nowIso: _now,
       newId: _ids.newId,
     );
@@ -38,6 +39,7 @@ class ResponsesServiceImpl implements ResponsesService {
       personId: await _me(session),
       answers: submission.answers,
       score: submission.score,
+      justification: _blankToNull(submission.justification),
       nowIso: _now,
       newId: _ids.newId,
     );

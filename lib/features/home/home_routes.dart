@@ -12,6 +12,10 @@ abstract final class HomeRoutes {
   /// KPI dashboard of the admin feature (coordinators and administrators).
   static const String adminDashboard = '/admin';
 
+  /// Progress and history of the history feature (`HistoryRoutes.progress`);
+  /// keep in sync with its router.
+  static const String progress = '/progreso';
+
   /// Pending invites list of the invites feature.
   static const String invites = '/invitaciones';
 }

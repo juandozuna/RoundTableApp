@@ -37,6 +37,7 @@ Run `scripts/dev-reset.sh --yes` again afterwards to remove what they created.
 | `offline` | Member goes offline mid-session and answers everything; facilitator closes the session; member reconnects with uploads held back (the downloaded server state must not overwrite unsynced rows), then uploads → rows flagged `synced_late` and "Sincronizado tarde" |
 | `admin` | Explorer, views, filters, saved view (persisted), create table / organization / location, change facilitator, 9-seat limit, reveal answers (audited), reports + drill-down, audit log |
 | `isolation` | A coordinator never sees another organization (explorer, deep links, reports, audit) and neither does the data API under the same token |
+| `history` | Member sees "Mi progreso" from the local tables (also offline, with the 8-week window note); facilitator sees the table history and opens a member timeline and goes back |
 | `responsive` | Sign-in, admin and member screens at 390 / 820 / 1280 px in light and dark: navigation placement, nothing laid out beyond the viewport, screenshots |
 
 Exit code is non-zero when any check fails.

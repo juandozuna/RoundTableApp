@@ -268,6 +268,7 @@ class SessionLocalDataSource {
     required String status,
     required String? note,
     required int score,
+    String? justification,
     required String nowIso,
     required String Function() newId,
   }) => _db.transaction(() async {
@@ -287,6 +288,7 @@ class SessionLocalDataSource {
       personId: personId,
       kind: AssessmentKind.followUp,
       score: score,
+      justification: justification,
       valueId: session.followUpValueId,
       nowIso: nowIso,
       newId: newId,
@@ -299,6 +301,7 @@ class SessionLocalDataSource {
     required String personId,
     required Map<String, String> answers,
     required int score,
+    String? justification,
     required String nowIso,
     required String Function() newId,
   }) => _db.transaction(() async {
@@ -343,6 +346,7 @@ class SessionLocalDataSource {
       personId: personId,
       kind: AssessmentKind.initial,
       score: score,
+      justification: justification,
       valueId: session.valueId,
       nowIso: nowIso,
       newId: newId,
@@ -354,6 +358,7 @@ class SessionLocalDataSource {
     required String personId,
     required AssessmentKind kind,
     required int score,
+    required String? justification,
     required String? valueId,
     required String nowIso,
     required String Function() newId,
@@ -379,6 +384,7 @@ class SessionLocalDataSource {
               valueId: Value(valueId),
               kind: Value(kind.wireValue),
               score: Value(score),
+              justification: Value(justification),
               deviceCreatedAt: Value(nowIso),
             ),
           );
@@ -388,6 +394,7 @@ class SessionLocalDataSource {
       )..where((a) => a.id.equals(existing.id))).write(
         MemberAssessmentsCompanion(
           score: Value(score),
+          justification: Value(justification),
           deviceModifiedAt: Value(nowIso),
         ),
       );

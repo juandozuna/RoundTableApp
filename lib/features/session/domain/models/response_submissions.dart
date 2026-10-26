@@ -13,6 +13,9 @@ abstract class FollowUpSubmission with _$FollowUpSubmission {
     required CommitmentFollowUpStatus status,
     required int score,
     String? note,
+
+    /// Optional "¿Por qué ese puntaje?" (RF-52).
+    String? justification,
   }) = _FollowUpSubmission;
 }
 
@@ -25,6 +28,9 @@ abstract class ReflectionSubmission with _$ReflectionSubmission {
     /// Answer text by question id.
     required Map<String, String> answers,
     required int score,
+
+    /// Optional "¿Por qué ese puntaje?" (RF-52).
+    String? justification,
   }) = _ReflectionSubmission;
 }
 
