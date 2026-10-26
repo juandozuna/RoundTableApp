@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Deployed Firebase web options for the push service worker
+web/firebase-config.js
