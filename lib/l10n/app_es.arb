@@ -842,6 +842,7 @@
   "adminFieldTableName": "Nombre de la mesa",
   "adminFieldTableNameHint": "Ej. Esperanza",
   "adminFieldTableCode": "Código",
+  "adminFieldTableCodeHint": "Ej. LUZ-07",
   "adminFieldTableCodeHelper": "Formato AAA-00, único dentro de la organización.",
   "adminSectionLocationSchedule": "Ubicación y horario",
   "adminFieldLocation": "Ubicación",

@@ -1517,6 +1517,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminFieldTableCode => 'Código';
 
   @override
+  String get adminFieldTableCodeHint => 'Ej. LUZ-07';
+
+  @override
   String get adminFieldTableCodeHelper =>
       'Formato AAA-00, único dentro de la organización.';
 
