@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/build_context_x.dart';
 import '../../../../../core/form_rules/app_field_kind.dart';
+import '../../../../../core/routing/navigation_x.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_avatar.dart';
@@ -286,7 +287,7 @@ class RedeemPage extends StatelessWidget {
     final tryAnother = AppButton(
       label: l10n.invitesTryAnotherCode,
       variant: AppButtonVariant.secondary,
-      onPressed: () => context.go(InvitesRoutes.redeem),
+      onPressed: () => context.popOrGo(InvitesRoutes.redeem),
     );
     final toGate = AppButton(
       label: l10n.invitesBackToGate,
@@ -351,7 +352,14 @@ class RedeemPage extends StatelessWidget {
         icon: Icons.manage_accounts_rounded,
         title: l10n.invitesIdentityLinkedTitle,
         body: l10n.invitesIdentityLinkedBody,
-        actions: [signInOrHome, anotherAccount],
+        actions: [
+          signInOrHome,
+          AppButton(
+            label: l10n.invitesUseAnotherAccount,
+            variant: AppButtonVariant.secondary,
+            onPressed: cubit.useAnotherAccount,
+          ),
+        ],
       ),
       InviteProblem.personInactive ||
       InviteProblem.organizationInactive => AuthResultView(

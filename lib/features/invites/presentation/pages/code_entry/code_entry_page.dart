@@ -28,6 +28,20 @@ class CodeEntryPage extends StatefulWidget {
 
 class _CodeEntryPageState extends State<CodeEntryPage> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  final TextEditingController _code = TextEditingController();
+
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
+  }
+
+  /// Back from the confirm step or an explanation: start with an empty field.
+  void _clear() {
+    _code.clear();
+    _formKey.currentState?.fields['code']?.reset();
+    context.read<CodeEntryCubit>().reset();
+  }
 
   void _check(String code) {
     final form = _formKey.currentState;
@@ -43,10 +57,14 @@ class _CodeEntryPageState extends State<CodeEntryPage> {
         final preview = state.verified;
         if (preview != null) {
           context.read<CodeEntryCubit>().reset();
-          context.push(InvitesRoutes.redeemFor(preview.code), extra: preview);
+          context
+              .push(InvitesRoutes.redeemFor(preview.code), extra: preview)
+              .whenComplete(_clear);
         } else if (state.isUnusableInvite) {
           context.read<CodeEntryCubit>().reset();
-          context.push(InvitesRoutes.redeemFor(state.code!));
+          context
+              .push(InvitesRoutes.redeemFor(state.code!))
+              .whenComplete(_clear);
         }
       },
       builder: (context, state) {
@@ -81,7 +99,8 @@ class _CodeEntryPageState extends State<CodeEntryPage> {
                 key: _formKey,
                 child: InviteCodeFormField(
                   name: 'code',
-                  enabled: !state.isLocked && !checking,
+                  controller: _code,
+                  enabled: !state.isLocked,
                   hasError: state.status == CodeEntryStatus.failed,
                   onChanged: context.read<CodeEntryCubit>().edited,
                   onComplete: _check,

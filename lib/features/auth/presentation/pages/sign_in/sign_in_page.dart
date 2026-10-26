@@ -168,7 +168,7 @@ class SignInPage extends StatelessWidget {
           variant: AppButtonVariant.secondary,
           onPressed: state.isBusy
               ? null
-              : () => context.push(AuthRoutes.inviteCode),
+              : () => context.go(AuthRoutes.inviteCode),
         ),
         const SizedBox(height: AppSpacing.sm),
         AppButton(
@@ -177,7 +177,7 @@ class SignInPage extends StatelessWidget {
           variant: AppButtonVariant.secondary,
           onPressed: state.isBusy
               ? null
-              : () => context.push(AuthRoutes.inviteScan),
+              : () => context.go(AuthRoutes.inviteScan),
         ),
       ],
     );

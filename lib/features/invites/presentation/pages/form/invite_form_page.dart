@@ -78,7 +78,6 @@ class _InviteFormPageState extends State<InviteFormPage> {
         );
       },
       builder: (context, state) => AppScaffold(
-        title: l10n.invitesFormBar,
         backFallbackLocation: InvitesRoutes.manager,
         actions: const [ContextSwitcher()],
         maxContentWidth: 1080,

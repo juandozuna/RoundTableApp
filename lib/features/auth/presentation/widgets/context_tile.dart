@@ -51,35 +51,39 @@ class ContextTile extends StatelessWidget {
         horizontal: AppSpacing.md + 2,
         vertical: AppSpacing.md,
       ),
-      child: Row(
-        children: [
-          AppAvatar(name: scope, size: 48),
-          const SizedBox(width: AppSpacing.md + 2),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(role.toUpperCase(), style: context.textStyles.kicker),
-                Text(scope, style: context.textTheme.titleMedium),
-                if (showDescription)
-                  Text(
-                    descriptionFor(context, context_.kind),
-                    style: context.textTheme.bodySmall,
-                  )
-                else if (context_.organizationName != null &&
-                    context_.organizationName != scope)
-                  Text(
-                    context_.organizationName!,
-                    style: context.textTheme.bodySmall,
-                  ),
-              ],
+      child: ExcludeSemantics(
+        child: Row(
+          children: [
+            AppAvatar(name: scope, size: 48),
+            const SizedBox(width: AppSpacing.md + 2),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(role.toUpperCase(), style: context.textStyles.kicker),
+                  Text(scope, style: context.textTheme.titleMedium),
+                  if (showDescription)
+                    Text(
+                      descriptionFor(context, context_.kind),
+                      style: context.textTheme.bodySmall,
+                    )
+                  else if (context_.organizationName != null &&
+                      context_.organizationName != scope)
+                    Text(
+                      context_.organizationName!,
+                      style: context.textTheme.bodySmall,
+                    ),
+                ],
+              ),
             ),
-          ),
-          Icon(
-            selected ? Icons.check_circle_rounded : Icons.chevron_right_rounded,
-            color: selected ? context.colors.accent : context.colors.muted,
-          ),
-        ],
+            Icon(
+              selected
+                  ? Icons.check_circle_rounded
+                  : Icons.chevron_right_rounded,
+              color: selected ? context.colors.accent : context.colors.muted,
+            ),
+          ],
+        ),
       ),
     );
   }

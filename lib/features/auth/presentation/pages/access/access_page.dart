@@ -84,7 +84,7 @@ class AccessPage extends StatelessWidget {
       actions: [
         AppButton(
           label: l10n.authHaveInviteCode,
-          onPressed: () => context.push(AuthRoutes.inviteCode),
+          onPressed: () => context.go(AuthRoutes.inviteCode),
         ),
         _refreshButton(context),
         _signOutButton(context),
@@ -113,12 +113,12 @@ class AccessPage extends StatelessWidget {
       actions: [
         AppButton(
           label: l10n.authHaveInviteCode,
-          onPressed: () => context.push(AuthRoutes.inviteCode),
+          onPressed: () => context.go(AuthRoutes.inviteCode),
         ),
         AppButton(
           label: l10n.authScanQr,
           variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AuthRoutes.inviteScan),
+          onPressed: () => context.go(AuthRoutes.inviteScan),
         ),
         _signOutButton(context),
       ],

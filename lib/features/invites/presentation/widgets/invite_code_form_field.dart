@@ -18,6 +18,7 @@ class InviteCodeFormField extends StatefulWidget {
     this.enabled = true,
     this.hasError = false,
     this.autofocus = true,
+    this.controller,
   });
 
   final String name;
@@ -29,17 +30,21 @@ class InviteCodeFormField extends StatefulWidget {
   final bool hasError;
   final bool autofocus;
 
+  /// Lets the page clear the field when the person comes back to try again.
+  final TextEditingController? controller;
+
   @override
   State<InviteCodeFormField> createState() => _InviteCodeFormFieldState();
 }
 
 class _InviteCodeFormFieldState extends State<InviteCodeFormField> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller =
+      widget.controller ?? TextEditingController();
   final FocusNode _focus = FocusNode();
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.controller == null) _controller.dispose();
     _focus.dispose();
     super.dispose();
   }
@@ -60,58 +65,67 @@ class _InviteCodeFormFieldState extends State<InviteCodeFormField> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Semantics(
-                  textField: true,
-                  label: l10n.invitesCodeSemantics,
-                  child: Stack(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (var i = 0; i < InviteCode.length; i++)
-                            Flexible(
-                              child: _Cell(
-                                char: i < text.length ? text[i] : '',
-                                active:
-                                    _focus.hasFocus &&
-                                    i == text.length &&
-                                    text.length < InviteCode.length,
-                                error: widget.hasError || field.hasError,
-                              ),
+                Stack(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (var i = 0; i < InviteCode.length; i++)
+                          Flexible(
+                            child: _Cell(
+                              char: i < text.length ? text[i] : '',
+                              active:
+                                  _focus.hasFocus &&
+                                  i == text.length &&
+                                  text.length < InviteCode.length,
+                              error: widget.hasError || field.hasError,
                             ),
-                        ],
-                      ),
-                      Positioned.fill(
-                        child: Opacity(
-                          opacity: 0,
-                          child: TextField(
-                            controller: _controller,
-                            focusNode: _focus,
-                            autofocus: widget.autofocus,
-                            enabled: widget.enabled,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardType: AppFieldKind.inviteCode.keyboardType,
-                            textCapitalization:
-                                AppFieldKind.inviteCode.textCapitalization,
-                            inputFormatters: [
-                              ...AppFieldKind.inviteCode.inputFormatters,
-                              FilteringTextInputFormatter.allow(
-                                RegExp('[A-Za-z0-9]'),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              field.didChange(value);
-                              widget.onChanged?.call();
-                              if (value.length == InviteCode.length) {
-                                widget.onComplete(value);
-                              }
-                            },
                           ),
+                      ],
+                    ),
+                    Positioned.fill(
+                      // Invisible but present: an Opacity(0) subtree would
+                      // be dropped from the semantics tree.
+                      child: TextField(
+                        controller: _controller,
+                        focusNode: _focus,
+                        autofocus: widget.autofocus,
+                        enabled: widget.enabled,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        showCursor: false,
+                        style: const TextStyle(color: Colors.transparent),
+                        decoration: InputDecoration(
+                          // Spoken label; invisible.
+                          hintText: l10n.invitesCodeSemantics,
+                          hintStyle: const TextStyle(color: Colors.transparent),
+                          isCollapsed: true,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          fillColor: Colors.transparent,
+                          filled: false,
                         ),
+                        keyboardType: AppFieldKind.inviteCode.keyboardType,
+                        textCapitalization:
+                            AppFieldKind.inviteCode.textCapitalization,
+                        inputFormatters: [
+                          ...AppFieldKind.inviteCode.inputFormatters,
+                          FilteringTextInputFormatter.allow(
+                            RegExp('[A-Za-z0-9]'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          field.didChange(value);
+                          widget.onChanged?.call();
+                          if (value.length == InviteCode.length) {
+                            widget.onComplete(value);
+                          }
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 if (field.hasError)
                   Padding(

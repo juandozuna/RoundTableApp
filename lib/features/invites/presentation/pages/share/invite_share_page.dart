@@ -47,7 +47,6 @@ class InviteSharePage extends StatelessWidget {
         );
       },
       builder: (context, state) => AppScaffold(
-        title: l10n.invitesShareBar,
         backFallbackLocation: InvitesRoutes.manager,
         actions: const [ContextSwitcher()],
         maxContentWidth: 1000,

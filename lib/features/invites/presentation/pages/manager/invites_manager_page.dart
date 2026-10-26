@@ -42,7 +42,6 @@ class InvitesManagerPage extends StatelessWidget {
       listenWhen: (a, b) => a.event != b.event && b.event != null,
       listener: _onEvent,
       builder: (context, state) => AppScaffold(
-        title: l10n.invitesManagerTitle,
         actions: const [ContextSwitcher()],
         maxContentWidth: 1180,
         banner: state.online

@@ -23,6 +23,9 @@ class AppRouter {
   late final GoRouter config = _build();
 
   GoRouter _build() {
+    // `context.push` also updates the browser URL, so the address bar, the
+    // back button and `context.go` to the page below always agree.
+    GoRouter.optionURLReflectsImperativeAPIs = true;
     final guard = AuthRedirectGuard(
       auth: _auth,
       signInLocation: _registry.signInLocation,
