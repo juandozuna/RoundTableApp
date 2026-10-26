@@ -94,6 +94,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
     required this.number,
     required this.numberLarge,
     required this.primaryAction,
+    required this.chartLabel,
   });
 
   factory AppTextStyles.from(TextTheme theme) {
@@ -109,6 +110,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
         fontFeatures: tabular,
       ),
       primaryAction: theme.titleMedium!.copyWith(fontWeight: FontWeight.w900),
+      chartLabel: theme.bodySmall!.copyWith(fontSize: 11),
     );
   }
 
@@ -127,6 +129,9 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   /// Label of the main call to action.
   final TextStyle primaryAction;
 
+  /// Axis ticks and annotations inside charts.
+  final TextStyle chartLabel;
+
   @override
   AppTextStyles copyWith({
     TextStyle? kicker,
@@ -134,12 +139,14 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
     TextStyle? number,
     TextStyle? numberLarge,
     TextStyle? primaryAction,
+    TextStyle? chartLabel,
   }) => AppTextStyles(
     kicker: kicker ?? this.kicker,
     pill: pill ?? this.pill,
     number: number ?? this.number,
     numberLarge: numberLarge ?? this.numberLarge,
     primaryAction: primaryAction ?? this.primaryAction,
+    chartLabel: chartLabel ?? this.chartLabel,
   );
 
   @override
@@ -151,6 +158,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
       number: TextStyle.lerp(number, other.number, t)!,
       numberLarge: TextStyle.lerp(numberLarge, other.numberLarge, t)!,
       primaryAction: TextStyle.lerp(primaryAction, other.primaryAction, t)!,
+      chartLabel: TextStyle.lerp(chartLabel, other.chartLabel, t)!,
     );
   }
 }

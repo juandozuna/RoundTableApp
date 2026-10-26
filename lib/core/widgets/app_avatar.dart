@@ -43,6 +43,7 @@ class AppAvatar extends StatelessWidget {
         name.initials,
         style: context.textTheme.labelLarge!.copyWith(
           color: Colors.white,
+          // Initials scale with the avatar diameter; no fixed token fits.
           fontSize: inner * 0.36,
           fontWeight: FontWeight.w900,
           height: 1,

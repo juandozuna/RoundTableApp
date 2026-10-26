@@ -22,7 +22,7 @@ class ChartPalette {
   factory ChartPalette.of(BuildContext context) {
     final colors = context.colors;
     final status = context.statusColors;
-    final base = context.textTheme.bodySmall!;
+    final base = context.textStyles.chartLabel;
     return ChartPalette(
       ink: colors.ink,
       muted: colors.muted,
@@ -33,10 +33,9 @@ class ChartPalette {
       ok: status.ok,
       pending: status.pending,
       offline: status.offline,
-      labelStyle: base.copyWith(color: colors.muted, fontSize: 11),
+      labelStyle: base.copyWith(color: colors.muted),
       strongLabelStyle: base.copyWith(
         color: colors.ink,
-        fontSize: 11,
         fontWeight: FontWeight.w800,
       ),
     );
