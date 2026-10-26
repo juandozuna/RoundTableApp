@@ -1,7 +1,5 @@
-/// Paths and query keys of the placeholder shell feature.
+/// Paths and query keys of the shell feature.
 abstract final class ShellRoutes {
-  static const String home = '/';
-
   /// Dev-only component gallery (not registered in production).
   static const String componentGallery = '/dev/galeria';
 
