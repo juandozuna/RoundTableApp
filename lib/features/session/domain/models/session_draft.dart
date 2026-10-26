@@ -14,8 +14,10 @@ abstract class SessionDraft with _$SessionDraft {
     CommitmentFollowUpStatus? followUpStatus,
     @Default('') String followUpNote,
     int? followUpScore,
+    @Default('') String followUpJustification,
     @Default({}) Map<String, String> answers,
     int? reflectionScore,
+    @Default('') String reflectionJustification,
     @Default('') String commitmentWhat,
     String? commitmentWhen,
     String? commitmentHow,
@@ -30,8 +32,10 @@ abstract class SessionDraft with _$SessionDraft {
       followUpStatus == null &&
       followUpNote.isEmpty &&
       followUpScore == null &&
+      followUpJustification.isEmpty &&
       answers.values.every((text) => text.isEmpty) &&
       reflectionScore == null &&
+      reflectionJustification.isEmpty &&
       commitmentWhat.isEmpty &&
       commitmentWhen == null &&
       commitmentHow == null;

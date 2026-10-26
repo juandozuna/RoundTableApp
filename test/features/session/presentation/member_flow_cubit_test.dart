@@ -260,4 +260,67 @@ void main() {
       expect(drafts.stored['s1/ana'], isNull);
     });
   });
+
+  group('score justification (RF-52)', () {
+    test('goes with the follow-up and the reflection submissions', () async {
+      when(() => followUp(any())).thenAnswer((_) async {});
+      when(() => reflection(any())).thenAnswer((_) async {});
+      cubit
+        ..setFollowUpStatus(CommitmentFollowUpStatus.kept)
+        ..setFollowUpScore(7)
+        ..setFollowUpJustification('Lo hice casi siempre');
+      await cubit.submitFollowUp(flow());
+      cubit
+        ..setAnswer('q1', 'Mi abuelo')
+        ..setAnswer('q2', 'Cumplo')
+        ..setReflectionScore(8)
+        ..setReflectionJustification('Me esfuerzo');
+      await cubit.submitReflection(flow(stage: SessionStage.value));
+
+      final follow =
+          verify(() => followUp(captureAny())).captured.single
+              as FollowUpSubmission;
+      final reflect =
+          verify(() => reflection(captureAny())).captured.single
+              as ReflectionSubmission;
+      expect(follow.justification, 'Lo hice casi siempre');
+      expect(reflect.justification, 'Me esfuerzo');
+    });
+
+    test('is optional: sending without it is accepted', () async {
+      when(() => reflection(any())).thenAnswer((_) async {});
+      cubit
+        ..setAnswer('q1', 'Mi abuelo')
+        ..setAnswer('q2', 'Cumplo')
+        ..setReflectionScore(8);
+
+      await cubit.submitReflection(flow(stage: SessionStage.value));
+
+      expect(cubit.state.errors, isEmpty);
+      final sent =
+          verify(() => reflection(captureAny())).captured.single
+              as ReflectionSubmission;
+      expect(sent.justification, isEmpty);
+    });
+
+    test('is kept in the draft and leaves it once sent', () async {
+      when(() => reflection(any())).thenAnswer((_) async {});
+      await cubit.restoreDraft(sessionId: 's1', personId: 'ana');
+      cubit
+        ..setAnswer('q1', 'Mi abuelo')
+        ..setAnswer('q2', 'Cumplo')
+        ..setReflectionScore(8)
+        ..setReflectionJustification('Me esfuerzo');
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 100),
+      );
+      expect(drafts.stored['s1/ana']!.reflectionJustification, 'Me esfuerzo');
+
+      await cubit.submitReflection(flow(stage: SessionStage.value));
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 100),
+      );
+      expect(drafts.stored['s1/ana'], isNull);
+    });
+  });
 }

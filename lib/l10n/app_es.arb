@@ -2039,6 +2039,8 @@
   "sessionMemberStatusKept": "Lo cumplí",
   "sessionMemberStatusPartial": "Cumplí una parte",
   "sessionMemberStatusNotKept": "No pude cumplirlo",
+  "sessionMemberJustificationLabel": "¿Por qué ese puntaje?",
+  "sessionMemberJustificationHint": "Opcional. Una frase corta.",
   "sessionMemberFollowUpNoteLabel": "Cuéntanos en una frase (opcional)",
   "sessionMemberFollowUpScoreLabel": "¿Cómo te calificas hoy en {value}?",
   "@sessionMemberFollowUpScoreLabel": {
@@ -2680,5 +2682,234 @@
   "invitesBigQrHint": "Muéstralo en persona. Se escanea desde la puerta de entrada.",
   "invitesQrSemantics": "Código QR de la invitación",
   "invitesInviteAnother": "Invitar a otra persona",
-  "invitesViewAll": "Ver todas las invitaciones"
+  "invitesViewAll": "Ver todas las invitaciones",
+  "historyNavLabel": "Progreso",
+  "historyMemberTitle": "Mi progreso",
+  "historyTableTitle": "Progreso de la mesa",
+  "historyTimelineTitle": "Recorrido de {name}",
+  "@historyTimelineTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyHomeLinkMember": "Ver mi progreso",
+  "historyHomeLinkFacilitator": "Ver el progreso de la mesa",
+  "historyWindowNote": "Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.",
+  "historyOfflineDetail": "estás viendo lo guardado en este dispositivo",
+  "historyUnavailableTitle": "Aquí verás tu progreso",
+  "historyUnavailableMessage": "Cuando te unas a una mesa, tus puntajes y compromisos aparecerán aquí.",
+  "historyEmptyTitle": "Todavía no hay historial",
+  "historyEmptyMessage": "Después de la primera sesión verás aquí puntajes, compromisos y asistencia.",
+  "historyStatAttendance": "Asistencia",
+  "historyAttendedOf": "{attended} de {total}",
+  "@historyAttendedOf": {
+    "placeholders": {
+      "attended": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "historyStatInitial": "Puntaje inicial (promedio)",
+  "historyStatFollowUp": "Seguimiento (promedio)",
+  "historyStatImprovement": "Mejora promedio",
+  "historyStatSessions": "Sesiones realizadas",
+  "historyStatAttendanceRate": "Asistencia de la mesa",
+  "historyPercent": "{value}",
+  "@historyPercent": {
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "format": "percentPattern"
+      }
+    }
+  },
+  "historyChartTitle": "Inicial y seguimiento por valor",
+  "historyChartAxisHint": "Cada número es el valor del programa. Puntajes del 1 al 10.",
+  "historyLegendInitial": "Inicial",
+  "historyLegendFollowUp": "Seguimiento",
+  "historyChartSemantics": "Gráfica de puntajes inicial y de seguimiento por valor",
+  "historyChartItemSemantics": "Valor {sequence}, {name}: inicial {initial}, seguimiento {followUp}",
+  "@historyChartItemSemantics": {
+    "placeholders": {
+      "sequence": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      },
+      "initial": {
+        "type": "String"
+      },
+      "followUp": {
+        "type": "String"
+      }
+    }
+  },
+  "historyScoreMissing": "sin dato",
+  "historyImprovementUp": "Mejoró {points}",
+  "@historyImprovementUp": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "historyImprovementDown": "Bajó {points}",
+  "@historyImprovementDown": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "historyImprovementSame": "Sin cambio",
+  "historyImprovementPending": "Se mide en el seguimiento",
+  "historyModuleHeading": "Módulo {number} · {name}",
+  "@historyModuleHeading": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyValueHeading": "Valor {sequence} · {name}",
+  "@historyValueHeading": {
+    "placeholders": {
+      "sequence": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyValuesTitle": "Por valor",
+  "historyScoreInitialLine": "Inicial: {score}",
+  "@historyScoreInitialLine": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "historyScoreFollowUpLine": "Seguimiento: {score}",
+  "@historyScoreFollowUpLine": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "historyWhyKicker": "¿Por qué ese puntaje?",
+  "historyCommitmentKicker": "Compromiso",
+  "historyCommitmentMeasure": "Cómo lo mediré: {measure}",
+  "@historyCommitmentMeasure": {
+    "placeholders": {
+      "measure": {
+        "type": "String"
+      }
+    }
+  },
+  "historyCommitmentPending": "Se revisa en la próxima sesión",
+  "historyCommitmentNote": "“{note}”",
+  "@historyCommitmentNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "historyLateSynced": "Enviado tarde",
+  "historySessionsTitle": "Sesiones",
+  "historySessionOpenNow": "En curso",
+  "historyAttendanceNone": "Sin registro",
+  "historySessionTitle": "{date}",
+  "@historySessionTitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "d 'de' MMMM",
+        "isCustomDateFormat": "true"
+      }
+    }
+  },
+  "historySessionValueLine": "Valor {sequence} · {name}",
+  "@historySessionValueLine": {
+    "placeholders": {
+      "sequence": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historySessionAttendance": "Asistieron {attended} de {total}",
+  "@historySessionAttendance": {
+    "placeholders": {
+      "attended": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "historySessionScores": "Inicial {initial} · Seguimiento {followUp}",
+  "@historySessionScores": {
+    "placeholders": {
+      "initial": {
+        "type": "String"
+      },
+      "followUp": {
+        "type": "String"
+      }
+    }
+  },
+  "historyMembersTitle": "Integrantes",
+  "historyFacilitatorTag": "Facilitador",
+  "historyMemberAverages": "Inicial {initial} · Seguimiento {followUp}",
+  "@historyMemberAverages": {
+    "placeholders": {
+      "initial": {
+        "type": "String"
+      },
+      "followUp": {
+        "type": "String"
+      }
+    }
+  },
+  "historyOpenTimeline": "Ver el recorrido de {name}",
+  "@historyOpenTimeline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTableValuesTitle": "Promedio de la mesa por valor",
+  "historyTableValueLine": "Inicial {initial} · Seguimiento {followUp} · {count} personas",
+  "@historyTableValueLine": {
+    "placeholders": {
+      "initial": {
+        "type": "String"
+      },
+      "followUp": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyNoCommitment": "Sin compromiso",
+  "historyLoadError": "No pudimos leer tu historial en este dispositivo."
 }

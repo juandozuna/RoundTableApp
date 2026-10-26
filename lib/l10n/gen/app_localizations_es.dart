@@ -3360,6 +3360,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionMemberStatusNotKept => 'No pude cumplirlo';
 
   @override
+  String get sessionMemberJustificationLabel => '¿Por qué ese puntaje?';
+
+  @override
+  String get sessionMemberJustificationHint => 'Opcional. Una frase corta.';
+
+  @override
   String get sessionMemberFollowUpNoteLabel =>
       'Cuéntanos en una frase (opcional)';
 
@@ -4618,4 +4624,235 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get invitesViewAll => 'Ver todas las invitaciones';
+
+  @override
+  String get historyNavLabel => 'Progreso';
+
+  @override
+  String get historyMemberTitle => 'Mi progreso';
+
+  @override
+  String get historyTableTitle => 'Progreso de la mesa';
+
+  @override
+  String historyTimelineTitle(String name) {
+    return 'Recorrido de $name';
+  }
+
+  @override
+  String get historyHomeLinkMember => 'Ver mi progreso';
+
+  @override
+  String get historyHomeLinkFacilitator => 'Ver el progreso de la mesa';
+
+  @override
+  String get historyWindowNote =>
+      'Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.';
+
+  @override
+  String get historyOfflineDetail =>
+      'estás viendo lo guardado en este dispositivo';
+
+  @override
+  String get historyUnavailableTitle => 'Aquí verás tu progreso';
+
+  @override
+  String get historyUnavailableMessage =>
+      'Cuando te unas a una mesa, tus puntajes y compromisos aparecerán aquí.';
+
+  @override
+  String get historyEmptyTitle => 'Todavía no hay historial';
+
+  @override
+  String get historyEmptyMessage =>
+      'Después de la primera sesión verás aquí puntajes, compromisos y asistencia.';
+
+  @override
+  String get historyStatAttendance => 'Asistencia';
+
+  @override
+  String historyAttendedOf(int attended, int total) {
+    return '$attended de $total';
+  }
+
+  @override
+  String get historyStatInitial => 'Puntaje inicial (promedio)';
+
+  @override
+  String get historyStatFollowUp => 'Seguimiento (promedio)';
+
+  @override
+  String get historyStatImprovement => 'Mejora promedio';
+
+  @override
+  String get historyStatSessions => 'Sesiones realizadas';
+
+  @override
+  String get historyStatAttendanceRate => 'Asistencia de la mesa';
+
+  @override
+  String historyPercent(double value) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.percentPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+
+    return '$valueString';
+  }
+
+  @override
+  String get historyChartTitle => 'Inicial y seguimiento por valor';
+
+  @override
+  String get historyChartAxisHint =>
+      'Cada número es el valor del programa. Puntajes del 1 al 10.';
+
+  @override
+  String get historyLegendInitial => 'Inicial';
+
+  @override
+  String get historyLegendFollowUp => 'Seguimiento';
+
+  @override
+  String get historyChartSemantics =>
+      'Gráfica de puntajes inicial y de seguimiento por valor';
+
+  @override
+  String historyChartItemSemantics(
+    int sequence,
+    String name,
+    String initial,
+    String followUp,
+  ) {
+    return 'Valor $sequence, $name: inicial $initial, seguimiento $followUp';
+  }
+
+  @override
+  String get historyScoreMissing => 'sin dato';
+
+  @override
+  String historyImprovementUp(int points) {
+    return 'Mejoró $points';
+  }
+
+  @override
+  String historyImprovementDown(int points) {
+    return 'Bajó $points';
+  }
+
+  @override
+  String get historyImprovementSame => 'Sin cambio';
+
+  @override
+  String get historyImprovementPending => 'Se mide en el seguimiento';
+
+  @override
+  String historyModuleHeading(int number, String name) {
+    return 'Módulo $number · $name';
+  }
+
+  @override
+  String historyValueHeading(int sequence, String name) {
+    return 'Valor $sequence · $name';
+  }
+
+  @override
+  String get historyValuesTitle => 'Por valor';
+
+  @override
+  String historyScoreInitialLine(String score) {
+    return 'Inicial: $score';
+  }
+
+  @override
+  String historyScoreFollowUpLine(String score) {
+    return 'Seguimiento: $score';
+  }
+
+  @override
+  String get historyWhyKicker => '¿Por qué ese puntaje?';
+
+  @override
+  String get historyCommitmentKicker => 'Compromiso';
+
+  @override
+  String historyCommitmentMeasure(String measure) {
+    return 'Cómo lo mediré: $measure';
+  }
+
+  @override
+  String get historyCommitmentPending => 'Se revisa en la próxima sesión';
+
+  @override
+  String historyCommitmentNote(String note) {
+    return '“$note”';
+  }
+
+  @override
+  String get historyLateSynced => 'Enviado tarde';
+
+  @override
+  String get historySessionsTitle => 'Sesiones';
+
+  @override
+  String get historySessionOpenNow => 'En curso';
+
+  @override
+  String get historyAttendanceNone => 'Sin registro';
+
+  @override
+  String historySessionTitle(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat(
+      'd \'de\' MMMM',
+      localeName,
+    );
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
+
+  @override
+  String historySessionValueLine(int sequence, String name) {
+    return 'Valor $sequence · $name';
+  }
+
+  @override
+  String historySessionAttendance(int attended, int total) {
+    return 'Asistieron $attended de $total';
+  }
+
+  @override
+  String historySessionScores(String initial, String followUp) {
+    return 'Inicial $initial · Seguimiento $followUp';
+  }
+
+  @override
+  String get historyMembersTitle => 'Integrantes';
+
+  @override
+  String get historyFacilitatorTag => 'Facilitador';
+
+  @override
+  String historyMemberAverages(String initial, String followUp) {
+    return 'Inicial $initial · Seguimiento $followUp';
+  }
+
+  @override
+  String historyOpenTimeline(String name) {
+    return 'Ver el recorrido de $name';
+  }
+
+  @override
+  String get historyTableValuesTitle => 'Promedio de la mesa por valor';
+
+  @override
+  String historyTableValueLine(String initial, String followUp, int count) {
+    return 'Inicial $initial · Seguimiento $followUp · $count personas';
+  }
+
+  @override
+  String get historyNoCommitment => 'Sin compromiso';
+
+  @override
+  String get historyLoadError =>
+      'No pudimos leer tu historial en este dispositivo.';
 }

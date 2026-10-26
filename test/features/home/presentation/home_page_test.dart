@@ -97,6 +97,13 @@ void main() {
           ),
         ),
         GoRoute(
+          path: '/progreso',
+          builder: (_, routeState) {
+            pushed = routeState.uri.toString();
+            return const Scaffold(body: Text('progress'));
+          },
+        ),
+        GoRoute(
           path: '/mesas/:tableId/sesion',
           builder: (_, routeState) {
             pushed = routeState.uri.toString();
@@ -137,6 +144,25 @@ void main() {
     await tester.tap(find.text('Abrir sesión'));
     await tester.pumpAndSettle();
     expect(pushed, '/mesas/t1/sesion');
+  });
+
+  testWidgets('facilitator and member link to their progress', (tester) async {
+    await pumpPage(
+      tester,
+      HomeState(
+        status: HomeStatus.ready,
+        overview: HomeOverview.facilitator(
+          context: facilitatorContext,
+          session: session,
+        ),
+      ),
+    );
+    expect(find.text('Ver el progreso de la mesa'), findsOneWidget);
+    await tester.ensureVisible(find.text('Ver el progreso de la mesa'));
+    await tester.pump();
+    await tester.tap(find.text('Ver el progreso de la mesa'));
+    await tester.pumpAndSettle();
+    expect(pushed, '/progreso');
   });
 
   testWidgets('an open session offers to continue it', (tester) async {

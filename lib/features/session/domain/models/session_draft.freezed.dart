@@ -16,8 +16,10 @@ mixin _$SessionDraft {
   CommitmentFollowUpStatus? get followUpStatus;
   String get followUpNote;
   int? get followUpScore;
+  String get followUpJustification;
   Map<String, String> get answers;
   int? get reflectionScore;
+  String get reflectionJustification;
   String get commitmentWhat;
   String? get commitmentWhen;
   String? get commitmentHow;
@@ -46,9 +48,16 @@ mixin _$SessionDraft {
                 other.followUpNote == followUpNote) &&
             (identical(other.followUpScore, followUpScore) ||
                 other.followUpScore == followUpScore) &&
+            (identical(other.followUpJustification, followUpJustification) ||
+                other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other.answers, answers) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
+            (identical(
+                  other.reflectionJustification,
+                  reflectionJustification,
+                ) ||
+                other.reflectionJustification == reflectionJustification) &&
             (identical(other.commitmentWhat, commitmentWhat) ||
                 other.commitmentWhat == commitmentWhat) &&
             (identical(other.commitmentWhen, commitmentWhen) ||
@@ -64,8 +73,10 @@ mixin _$SessionDraft {
     followUpStatus,
     followUpNote,
     followUpScore,
+    followUpJustification,
     const DeepCollectionEquality().hash(answers),
     reflectionScore,
+    reflectionJustification,
     commitmentWhat,
     commitmentWhen,
     commitmentHow,
@@ -73,7 +84,7 @@ mixin _$SessionDraft {
 
   @override
   String toString() {
-    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, answers: $answers, reflectionScore: $reflectionScore, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
+    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
   }
 }
 
@@ -88,8 +99,10 @@ abstract mixin class $SessionDraftCopyWith<$Res> {
     CommitmentFollowUpStatus? followUpStatus,
     String followUpNote,
     int? followUpScore,
+    String followUpJustification,
     Map<String, String> answers,
     int? reflectionScore,
+    String reflectionJustification,
     String commitmentWhat,
     String? commitmentWhen,
     String? commitmentHow,
@@ -111,8 +124,10 @@ class _$SessionDraftCopyWithImpl<$Res> implements $SessionDraftCopyWith<$Res> {
     Object? followUpStatus = freezed,
     Object? followUpNote = null,
     Object? followUpScore = freezed,
+    Object? followUpJustification = null,
     Object? answers = null,
     Object? reflectionScore = freezed,
+    Object? reflectionJustification = null,
     Object? commitmentWhat = null,
     Object? commitmentWhen = freezed,
     Object? commitmentHow = freezed,
@@ -131,6 +146,10 @@ class _$SessionDraftCopyWithImpl<$Res> implements $SessionDraftCopyWith<$Res> {
             ? _self.followUpScore
             : followUpScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        followUpJustification: null == followUpJustification
+            ? _self.followUpJustification
+            : followUpJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         answers: null == answers
             ? _self.answers
             : answers // ignore: cast_nullable_to_non_nullable
@@ -139,6 +158,10 @@ class _$SessionDraftCopyWithImpl<$Res> implements $SessionDraftCopyWith<$Res> {
             ? _self.reflectionScore
             : reflectionScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        reflectionJustification: null == reflectionJustification
+            ? _self.reflectionJustification
+            : reflectionJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         commitmentWhat: null == commitmentWhat
             ? _self.commitmentWhat
             : commitmentWhat // ignore: cast_nullable_to_non_nullable
@@ -253,8 +276,10 @@ extension SessionDraftPatterns on SessionDraft {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -269,8 +294,10 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -299,8 +326,10 @@ extension SessionDraftPatterns on SessionDraft {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -314,8 +343,10 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -343,8 +374,10 @@ extension SessionDraftPatterns on SessionDraft {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -358,8 +391,10 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -377,8 +412,10 @@ class _SessionDraft extends SessionDraft {
     this.followUpStatus,
     this.followUpNote = '',
     this.followUpScore,
+    this.followUpJustification = '',
     final Map<String, String> answers = const {},
     this.reflectionScore,
+    this.reflectionJustification = '',
     this.commitmentWhat = '',
     this.commitmentWhen,
     this.commitmentHow,
@@ -394,6 +431,9 @@ class _SessionDraft extends SessionDraft {
   final String followUpNote;
   @override
   final int? followUpScore;
+  @override
+  @JsonKey()
+  final String followUpJustification;
   final Map<String, String> _answers;
   @override
   @JsonKey()
@@ -405,6 +445,9 @@ class _SessionDraft extends SessionDraft {
 
   @override
   final int? reflectionScore;
+  @override
+  @JsonKey()
+  final String reflectionJustification;
   @override
   @JsonKey()
   final String commitmentWhat;
@@ -437,9 +480,16 @@ class _SessionDraft extends SessionDraft {
                 other.followUpNote == followUpNote) &&
             (identical(other.followUpScore, followUpScore) ||
                 other.followUpScore == followUpScore) &&
+            (identical(other.followUpJustification, followUpJustification) ||
+                other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other._answers, _answers) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
+            (identical(
+                  other.reflectionJustification,
+                  reflectionJustification,
+                ) ||
+                other.reflectionJustification == reflectionJustification) &&
             (identical(other.commitmentWhat, commitmentWhat) ||
                 other.commitmentWhat == commitmentWhat) &&
             (identical(other.commitmentWhen, commitmentWhen) ||
@@ -455,8 +505,10 @@ class _SessionDraft extends SessionDraft {
     followUpStatus,
     followUpNote,
     followUpScore,
+    followUpJustification,
     const DeepCollectionEquality().hash(_answers),
     reflectionScore,
+    reflectionJustification,
     commitmentWhat,
     commitmentWhen,
     commitmentHow,
@@ -464,7 +516,7 @@ class _SessionDraft extends SessionDraft {
 
   @override
   String toString() {
-    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, answers: $answers, reflectionScore: $reflectionScore, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
+    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
   }
 }
 
@@ -481,8 +533,10 @@ abstract mixin class _$SessionDraftCopyWith<$Res>
     CommitmentFollowUpStatus? followUpStatus,
     String followUpNote,
     int? followUpScore,
+    String followUpJustification,
     Map<String, String> answers,
     int? reflectionScore,
+    String reflectionJustification,
     String commitmentWhat,
     String? commitmentWhen,
     String? commitmentHow,
@@ -505,8 +559,10 @@ class __$SessionDraftCopyWithImpl<$Res>
     Object? followUpStatus = freezed,
     Object? followUpNote = null,
     Object? followUpScore = freezed,
+    Object? followUpJustification = null,
     Object? answers = null,
     Object? reflectionScore = freezed,
+    Object? reflectionJustification = null,
     Object? commitmentWhat = null,
     Object? commitmentWhen = freezed,
     Object? commitmentHow = freezed,
@@ -525,6 +581,10 @@ class __$SessionDraftCopyWithImpl<$Res>
             ? _self.followUpScore
             : followUpScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        followUpJustification: null == followUpJustification
+            ? _self.followUpJustification
+            : followUpJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         answers: null == answers
             ? _self._answers
             : answers // ignore: cast_nullable_to_non_nullable
@@ -533,6 +593,10 @@ class __$SessionDraftCopyWithImpl<$Res>
             ? _self.reflectionScore
             : reflectionScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        reflectionJustification: null == reflectionJustification
+            ? _self.reflectionJustification
+            : reflectionJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         commitmentWhat: null == commitmentWhat
             ? _self.commitmentWhat
             : commitmentWhat // ignore: cast_nullable_to_non_nullable

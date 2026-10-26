@@ -112,6 +112,13 @@ class HomePage extends StatelessWidget {
           card,
           const SizedBox(height: AppSpacing.lg),
         ],
+        if (overview is HomeFacilitator || overview is HomeMember) ...[
+          _buildProgressLink(
+            context,
+            isFacilitator: overview is HomeFacilitator,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
         if (overview is! HomeManager && overview is! HomeNoContext)
           _buildSync(context, state.sync),
         if (showGalleryLink) ...[
@@ -124,6 +131,21 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildProgressLink(
+    BuildContext context, {
+    required bool isFacilitator,
+  }) {
+    final l10n = context.l10n;
+    return AppButton(
+      label: isFacilitator
+          ? l10n.historyHomeLinkFacilitator
+          : l10n.historyHomeLinkMember,
+      icon: Icons.insights_rounded,
+      variant: AppButtonVariant.secondary,
+      onPressed: () => context.go(HomeRoutes.progress),
     );
   }
 

@@ -20,9 +20,11 @@ mixin _$MemberFlowState {
   bool get noPreviousAcknowledged; // Follow-up draft.
   CommitmentFollowUpStatus? get followUpStatus;
   String get followUpNote;
-  int? get followUpScore; // Reflection draft: answers by question id.
+  int? get followUpScore;
+  String get followUpJustification; // Reflection draft: answers by question id.
   Map<String, String> get answers;
-  int? get reflectionScore; // Commitment draft: qué / cuándo / cómo.
+  int? get reflectionScore;
+  String get reflectionJustification; // Commitment draft: qué / cuándo / cómo.
   String get commitmentWhat;
   String? get commitmentWhen;
   String? get commitmentHow;
@@ -64,9 +66,16 @@ mixin _$MemberFlowState {
                 other.followUpNote == followUpNote) &&
             (identical(other.followUpScore, followUpScore) ||
                 other.followUpScore == followUpScore) &&
+            (identical(other.followUpJustification, followUpJustification) ||
+                other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other.answers, answers) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
+            (identical(
+                  other.reflectionJustification,
+                  reflectionJustification,
+                ) ||
+                other.reflectionJustification == reflectionJustification) &&
             (identical(other.commitmentWhat, commitmentWhat) ||
                 other.commitmentWhat == commitmentWhat) &&
             (identical(other.commitmentWhen, commitmentWhen) ||
@@ -89,8 +98,10 @@ mixin _$MemberFlowState {
     followUpStatus,
     followUpNote,
     followUpScore,
+    followUpJustification,
     const DeepCollectionEquality().hash(answers),
     reflectionScore,
+    reflectionJustification,
     commitmentWhat,
     commitmentWhen,
     commitmentHow,
@@ -102,7 +113,7 @@ mixin _$MemberFlowState {
 
   @override
   String toString() {
-    return 'MemberFlowState(chosenStep: $chosenStep, noPreviousAcknowledged: $noPreviousAcknowledged, followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, answers: $answers, reflectionScore: $reflectionScore, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow, errors: $errors, submitting: $submitting, justSaved: $justSaved, failure: $failure)';
+    return 'MemberFlowState(chosenStep: $chosenStep, noPreviousAcknowledged: $noPreviousAcknowledged, followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow, errors: $errors, submitting: $submitting, justSaved: $justSaved, failure: $failure)';
   }
 }
 
@@ -119,8 +130,10 @@ abstract mixin class $MemberFlowStateCopyWith<$Res> {
     CommitmentFollowUpStatus? followUpStatus,
     String followUpNote,
     int? followUpScore,
+    String followUpJustification,
     Map<String, String> answers,
     int? reflectionScore,
+    String reflectionJustification,
     String commitmentWhat,
     String? commitmentWhen,
     String? commitmentHow,
@@ -149,8 +162,10 @@ class _$MemberFlowStateCopyWithImpl<$Res>
     Object? followUpStatus = freezed,
     Object? followUpNote = null,
     Object? followUpScore = freezed,
+    Object? followUpJustification = null,
     Object? answers = null,
     Object? reflectionScore = freezed,
+    Object? reflectionJustification = null,
     Object? commitmentWhat = null,
     Object? commitmentWhen = freezed,
     Object? commitmentHow = freezed,
@@ -181,6 +196,10 @@ class _$MemberFlowStateCopyWithImpl<$Res>
             ? _self.followUpScore
             : followUpScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        followUpJustification: null == followUpJustification
+            ? _self.followUpJustification
+            : followUpJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         answers: null == answers
             ? _self.answers
             : answers // ignore: cast_nullable_to_non_nullable
@@ -189,6 +208,10 @@ class _$MemberFlowStateCopyWithImpl<$Res>
             ? _self.reflectionScore
             : reflectionScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        reflectionJustification: null == reflectionJustification
+            ? _self.reflectionJustification
+            : reflectionJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         commitmentWhat: null == commitmentWhat
             ? _self.commitmentWhat
             : commitmentWhat // ignore: cast_nullable_to_non_nullable
@@ -318,8 +341,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -340,8 +365,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -376,8 +403,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -397,8 +426,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -432,8 +463,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
       CommitmentFollowUpStatus? followUpStatus,
       String followUpNote,
       int? followUpScore,
+      String followUpJustification,
       Map<String, String> answers,
       int? reflectionScore,
+      String reflectionJustification,
       String commitmentWhat,
       String? commitmentWhen,
       String? commitmentHow,
@@ -453,8 +486,10 @@ extension MemberFlowStatePatterns on MemberFlowState {
           _that.followUpStatus,
           _that.followUpNote,
           _that.followUpScore,
+          _that.followUpJustification,
           _that.answers,
           _that.reflectionScore,
+          _that.reflectionJustification,
           _that.commitmentWhat,
           _that.commitmentWhen,
           _that.commitmentHow,
@@ -478,8 +513,10 @@ class _MemberFlowState implements MemberFlowState {
     this.followUpStatus,
     this.followUpNote = '',
     this.followUpScore,
+    this.followUpJustification = '',
     final Map<String, String> answers = const {},
     this.reflectionScore,
+    this.reflectionJustification = '',
     this.commitmentWhat = '',
     this.commitmentWhen,
     this.commitmentHow,
@@ -506,6 +543,9 @@ class _MemberFlowState implements MemberFlowState {
   final String followUpNote;
   @override
   final int? followUpScore;
+  @override
+  @JsonKey()
+  final String followUpJustification;
   // Reflection draft: answers by question id.
   final Map<String, String> _answers;
   // Reflection draft: answers by question id.
@@ -519,6 +559,9 @@ class _MemberFlowState implements MemberFlowState {
 
   @override
   final int? reflectionScore;
+  @override
+  @JsonKey()
+  final String reflectionJustification;
   // Commitment draft: qué / cuándo / cómo.
   @override
   @JsonKey()
@@ -575,9 +618,16 @@ class _MemberFlowState implements MemberFlowState {
                 other.followUpNote == followUpNote) &&
             (identical(other.followUpScore, followUpScore) ||
                 other.followUpScore == followUpScore) &&
+            (identical(other.followUpJustification, followUpJustification) ||
+                other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other._answers, _answers) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
+            (identical(
+                  other.reflectionJustification,
+                  reflectionJustification,
+                ) ||
+                other.reflectionJustification == reflectionJustification) &&
             (identical(other.commitmentWhat, commitmentWhat) ||
                 other.commitmentWhat == commitmentWhat) &&
             (identical(other.commitmentWhen, commitmentWhen) ||
@@ -600,8 +650,10 @@ class _MemberFlowState implements MemberFlowState {
     followUpStatus,
     followUpNote,
     followUpScore,
+    followUpJustification,
     const DeepCollectionEquality().hash(_answers),
     reflectionScore,
+    reflectionJustification,
     commitmentWhat,
     commitmentWhen,
     commitmentHow,
@@ -613,7 +665,7 @@ class _MemberFlowState implements MemberFlowState {
 
   @override
   String toString() {
-    return 'MemberFlowState(chosenStep: $chosenStep, noPreviousAcknowledged: $noPreviousAcknowledged, followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, answers: $answers, reflectionScore: $reflectionScore, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow, errors: $errors, submitting: $submitting, justSaved: $justSaved, failure: $failure)';
+    return 'MemberFlowState(chosenStep: $chosenStep, noPreviousAcknowledged: $noPreviousAcknowledged, followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow, errors: $errors, submitting: $submitting, justSaved: $justSaved, failure: $failure)';
   }
 }
 
@@ -632,8 +684,10 @@ abstract mixin class _$MemberFlowStateCopyWith<$Res>
     CommitmentFollowUpStatus? followUpStatus,
     String followUpNote,
     int? followUpScore,
+    String followUpJustification,
     Map<String, String> answers,
     int? reflectionScore,
+    String reflectionJustification,
     String commitmentWhat,
     String? commitmentWhen,
     String? commitmentHow,
@@ -662,8 +716,10 @@ class __$MemberFlowStateCopyWithImpl<$Res>
     Object? followUpStatus = freezed,
     Object? followUpNote = null,
     Object? followUpScore = freezed,
+    Object? followUpJustification = null,
     Object? answers = null,
     Object? reflectionScore = freezed,
+    Object? reflectionJustification = null,
     Object? commitmentWhat = null,
     Object? commitmentWhen = freezed,
     Object? commitmentHow = freezed,
@@ -694,6 +750,10 @@ class __$MemberFlowStateCopyWithImpl<$Res>
             ? _self.followUpScore
             : followUpScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        followUpJustification: null == followUpJustification
+            ? _self.followUpJustification
+            : followUpJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         answers: null == answers
             ? _self._answers
             : answers // ignore: cast_nullable_to_non_nullable
@@ -702,6 +762,10 @@ class __$MemberFlowStateCopyWithImpl<$Res>
             ? _self.reflectionScore
             : reflectionScore // ignore: cast_nullable_to_non_nullable
                   as int?,
+        reflectionJustification: null == reflectionJustification
+            ? _self.reflectionJustification
+            : reflectionJustification // ignore: cast_nullable_to_non_nullable
+                  as String,
         commitmentWhat: null == commitmentWhat
             ? _self.commitmentWhat
             : commitmentWhat // ignore: cast_nullable_to_non_nullable

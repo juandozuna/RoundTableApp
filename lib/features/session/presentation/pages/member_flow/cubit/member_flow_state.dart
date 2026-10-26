@@ -21,10 +21,12 @@ abstract class MemberFlowState with _$MemberFlowState {
     CommitmentFollowUpStatus? followUpStatus,
     @Default('') String followUpNote,
     int? followUpScore,
+    @Default('') String followUpJustification,
 
     // Reflection draft: answers by question id.
     @Default({}) Map<String, String> answers,
     int? reflectionScore,
+    @Default('') String reflectionJustification,
 
     // Commitment draft: qué / cuándo / cómo.
     @Default('') String commitmentWhat,

@@ -66,8 +66,10 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
           followUpStatus: draft.followUpStatus,
           followUpNote: draft.followUpNote,
           followUpScore: draft.followUpScore,
+          followUpJustification: draft.followUpJustification,
           answers: draft.answers,
           reflectionScore: draft.reflectionScore,
+          reflectionJustification: draft.reflectionJustification,
           commitmentWhat: draft.commitmentWhat,
           commitmentWhen: draft.commitmentWhen,
           commitmentHow: draft.commitmentHow,
@@ -82,8 +84,10 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     followUpStatus: state.followUpStatus,
     followUpNote: state.followUpNote,
     followUpScore: state.followUpScore,
+    followUpJustification: state.followUpJustification,
     answers: state.answers,
     reflectionScore: state.reflectionScore,
+    reflectionJustification: state.reflectionJustification,
     commitmentWhat: state.commitmentWhat,
     commitmentWhen: state.commitmentWhen,
     commitmentHow: state.commitmentHow,
@@ -103,12 +107,18 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
       followUpScore: _sentSteps.contains(MemberStep.followUp)
           ? null
           : draft.followUpScore,
+      followUpJustification: _sentSteps.contains(MemberStep.followUp)
+          ? ''
+          : draft.followUpJustification,
       answers: _sentSteps.contains(MemberStep.reflection)
           ? const {}
           : draft.answers,
       reflectionScore: _sentSteps.contains(MemberStep.reflection)
           ? null
           : draft.reflectionScore,
+      reflectionJustification: _sentSteps.contains(MemberStep.reflection)
+          ? ''
+          : draft.reflectionJustification,
       commitmentWhat: _sentSteps.contains(MemberStep.commitment)
           ? ''
           : draft.commitmentWhat,
@@ -185,6 +195,12 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     ),
   );
 
+  void setFollowUpJustification(String text) =>
+      emit(state.copyWith(followUpJustification: text));
+
+  void setReflectionJustification(String text) =>
+      emit(state.copyWith(reflectionJustification: text));
+
   void setAnswer(String questionId, String text) => emit(
     state.copyWith(
       answers: {...state.answers, questionId: text},
@@ -241,6 +257,7 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
           status: status!,
           score: score!,
           note: state.followUpNote,
+          justification: state.followUpJustification,
         ),
       ),
     );
@@ -264,6 +281,7 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
           sessionId: session.session.id,
           answers: answers,
           score: state.reflectionScore!,
+          justification: state.reflectionJustification,
         ),
       ),
     );

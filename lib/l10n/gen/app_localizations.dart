@@ -5542,6 +5542,18 @@ abstract class AppLocalizations {
   /// **'No pude cumplirlo'**
   String get sessionMemberStatusNotKept;
 
+  /// No description provided for @sessionMemberJustificationLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué ese puntaje?'**
+  String get sessionMemberJustificationLabel;
+
+  /// No description provided for @sessionMemberJustificationHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Opcional. Una frase corta.'**
+  String get sessionMemberJustificationHint;
+
   /// No description provided for @sessionMemberFollowUpNoteLabel.
   ///
   /// In es, this message translates to:
@@ -7599,6 +7611,353 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver todas las invitaciones'**
   String get invitesViewAll;
+
+  /// No description provided for @historyNavLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso'**
+  String get historyNavLabel;
+
+  /// No description provided for @historyMemberTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi progreso'**
+  String get historyMemberTitle;
+
+  /// No description provided for @historyTableTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso de la mesa'**
+  String get historyTableTitle;
+
+  /// No description provided for @historyTimelineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recorrido de {name}'**
+  String historyTimelineTitle(String name);
+
+  /// No description provided for @historyHomeLinkMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver mi progreso'**
+  String get historyHomeLinkMember;
+
+  /// No description provided for @historyHomeLinkFacilitator.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el progreso de la mesa'**
+  String get historyHomeLinkFacilitator;
+
+  /// No description provided for @historyWindowNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.'**
+  String get historyWindowNote;
+
+  /// No description provided for @historyOfflineDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'estás viendo lo guardado en este dispositivo'**
+  String get historyOfflineDetail;
+
+  /// No description provided for @historyUnavailableTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí verás tu progreso'**
+  String get historyUnavailableTitle;
+
+  /// No description provided for @historyUnavailableMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando te unas a una mesa, tus puntajes y compromisos aparecerán aquí.'**
+  String get historyUnavailableMessage;
+
+  /// No description provided for @historyEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay historial'**
+  String get historyEmptyTitle;
+
+  /// No description provided for @historyEmptyMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Después de la primera sesión verás aquí puntajes, compromisos y asistencia.'**
+  String get historyEmptyMessage;
+
+  /// No description provided for @historyStatAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia'**
+  String get historyStatAttendance;
+
+  /// No description provided for @historyAttendedOf.
+  ///
+  /// In es, this message translates to:
+  /// **'{attended} de {total}'**
+  String historyAttendedOf(int attended, int total);
+
+  /// No description provided for @historyStatInitial.
+  ///
+  /// In es, this message translates to:
+  /// **'Puntaje inicial (promedio)'**
+  String get historyStatInitial;
+
+  /// No description provided for @historyStatFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento (promedio)'**
+  String get historyStatFollowUp;
+
+  /// No description provided for @historyStatImprovement.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejora promedio'**
+  String get historyStatImprovement;
+
+  /// No description provided for @historyStatSessions.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesiones realizadas'**
+  String get historyStatSessions;
+
+  /// No description provided for @historyStatAttendanceRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia de la mesa'**
+  String get historyStatAttendanceRate;
+
+  /// No description provided for @historyPercent.
+  ///
+  /// In es, this message translates to:
+  /// **'{value}'**
+  String historyPercent(double value);
+
+  /// No description provided for @historyChartTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial y seguimiento por valor'**
+  String get historyChartTitle;
+
+  /// No description provided for @historyChartAxisHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada número es el valor del programa. Puntajes del 1 al 10.'**
+  String get historyChartAxisHint;
+
+  /// No description provided for @historyLegendInitial.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial'**
+  String get historyLegendInitial;
+
+  /// No description provided for @historyLegendFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento'**
+  String get historyLegendFollowUp;
+
+  /// No description provided for @historyChartSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'Gráfica de puntajes inicial y de seguimiento por valor'**
+  String get historyChartSemantics;
+
+  /// No description provided for @historyChartItemSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {sequence}, {name}: inicial {initial}, seguimiento {followUp}'**
+  String historyChartItemSemantics(
+    int sequence,
+    String name,
+    String initial,
+    String followUp,
+  );
+
+  /// No description provided for @historyScoreMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'sin dato'**
+  String get historyScoreMissing;
+
+  /// No description provided for @historyImprovementUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejoró {points}'**
+  String historyImprovementUp(int points);
+
+  /// No description provided for @historyImprovementDown.
+  ///
+  /// In es, this message translates to:
+  /// **'Bajó {points}'**
+  String historyImprovementDown(int points);
+
+  /// No description provided for @historyImprovementSame.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cambio'**
+  String get historyImprovementSame;
+
+  /// No description provided for @historyImprovementPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Se mide en el seguimiento'**
+  String get historyImprovementPending;
+
+  /// No description provided for @historyModuleHeading.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo {number} · {name}'**
+  String historyModuleHeading(int number, String name);
+
+  /// No description provided for @historyValueHeading.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {sequence} · {name}'**
+  String historyValueHeading(int sequence, String name);
+
+  /// No description provided for @historyValuesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Por valor'**
+  String get historyValuesTitle;
+
+  /// No description provided for @historyScoreInitialLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial: {score}'**
+  String historyScoreInitialLine(String score);
+
+  /// No description provided for @historyScoreFollowUpLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento: {score}'**
+  String historyScoreFollowUpLine(String score);
+
+  /// No description provided for @historyWhyKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué ese puntaje?'**
+  String get historyWhyKicker;
+
+  /// No description provided for @historyCommitmentKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Compromiso'**
+  String get historyCommitmentKicker;
+
+  /// No description provided for @historyCommitmentMeasure.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo lo mediré: {measure}'**
+  String historyCommitmentMeasure(String measure);
+
+  /// No description provided for @historyCommitmentPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Se revisa en la próxima sesión'**
+  String get historyCommitmentPending;
+
+  /// No description provided for @historyCommitmentNote.
+  ///
+  /// In es, this message translates to:
+  /// **'“{note}”'**
+  String historyCommitmentNote(String note);
+
+  /// No description provided for @historyLateSynced.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado tarde'**
+  String get historyLateSynced;
+
+  /// No description provided for @historySessionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesiones'**
+  String get historySessionsTitle;
+
+  /// No description provided for @historySessionOpenNow.
+  ///
+  /// In es, this message translates to:
+  /// **'En curso'**
+  String get historySessionOpenNow;
+
+  /// No description provided for @historyAttendanceNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin registro'**
+  String get historyAttendanceNone;
+
+  /// No description provided for @historySessionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'{date}'**
+  String historySessionTitle(DateTime date);
+
+  /// No description provided for @historySessionValueLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {sequence} · {name}'**
+  String historySessionValueLine(int sequence, String name);
+
+  /// No description provided for @historySessionAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistieron {attended} de {total}'**
+  String historySessionAttendance(int attended, int total);
+
+  /// No description provided for @historySessionScores.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial {initial} · Seguimiento {followUp}'**
+  String historySessionScores(String initial, String followUp);
+
+  /// No description provided for @historyMembersTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Integrantes'**
+  String get historyMembersTitle;
+
+  /// No description provided for @historyFacilitatorTag.
+  ///
+  /// In es, this message translates to:
+  /// **'Facilitador'**
+  String get historyFacilitatorTag;
+
+  /// No description provided for @historyMemberAverages.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial {initial} · Seguimiento {followUp}'**
+  String historyMemberAverages(String initial, String followUp);
+
+  /// No description provided for @historyOpenTimeline.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el recorrido de {name}'**
+  String historyOpenTimeline(String name);
+
+  /// No description provided for @historyTableValuesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio de la mesa por valor'**
+  String get historyTableValuesTitle;
+
+  /// No description provided for @historyTableValueLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicial {initial} · Seguimiento {followUp} · {count} personas'**
+  String historyTableValueLine(String initial, String followUp, int count);
+
+  /// No description provided for @historyNoCommitment.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin compromiso'**
+  String get historyNoCommitment;
+
+  /// No description provided for @historyLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos leer tu historial en este dispositivo.'**
+  String get historyLoadError;
 }
 
 class _AppLocalizationsDelegate

@@ -19,6 +19,9 @@ mixin _$FollowUpSubmission {
   int get score;
   String? get note;
 
+  /// Optional "¿Por qué ese puntaje?" (RF-52).
+  String? get justification;
+
   /// Create a copy of FollowUpSubmission
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -40,7 +43,9 @@ mixin _$FollowUpSubmission {
                 other.previousCommitmentId == previousCommitmentId) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.score, score) || other.score == score) &&
-            (identical(other.note, note) || other.note == note));
+            (identical(other.note, note) || other.note == note) &&
+            (identical(other.justification, justification) ||
+                other.justification == justification));
   }
 
   @override
@@ -51,11 +56,12 @@ mixin _$FollowUpSubmission {
     status,
     score,
     note,
+    justification,
   );
 
   @override
   String toString() {
-    return 'FollowUpSubmission(sessionId: $sessionId, previousCommitmentId: $previousCommitmentId, status: $status, score: $score, note: $note)';
+    return 'FollowUpSubmission(sessionId: $sessionId, previousCommitmentId: $previousCommitmentId, status: $status, score: $score, note: $note, justification: $justification)';
   }
 }
 
@@ -72,6 +78,7 @@ abstract mixin class $FollowUpSubmissionCopyWith<$Res> {
     CommitmentFollowUpStatus status,
     int score,
     String? note,
+    String? justification,
   });
 }
 
@@ -93,6 +100,7 @@ class _$FollowUpSubmissionCopyWithImpl<$Res>
     Object? status = null,
     Object? score = null,
     Object? note = freezed,
+    Object? justification = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -115,6 +123,10 @@ class _$FollowUpSubmissionCopyWithImpl<$Res>
         note: freezed == note
             ? _self.note
             : note // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        justification: freezed == justification
+            ? _self.justification
+            : justification // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );
@@ -220,6 +232,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
       CommitmentFollowUpStatus status,
       int score,
       String? note,
+      String? justification,
     )?
     $default, {
     required TResult orElse(),
@@ -233,6 +246,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
           _that.status,
           _that.score,
           _that.note,
+          _that.justification,
         );
       case _:
         return orElse();
@@ -260,6 +274,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
       CommitmentFollowUpStatus status,
       int score,
       String? note,
+      String? justification,
     )
     $default,
   ) {
@@ -272,6 +287,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
           _that.status,
           _that.score,
           _that.note,
+          _that.justification,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -298,6 +314,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
       CommitmentFollowUpStatus status,
       int score,
       String? note,
+      String? justification,
     )?
     $default,
   ) {
@@ -310,6 +327,7 @@ extension FollowUpSubmissionPatterns on FollowUpSubmission {
           _that.status,
           _that.score,
           _that.note,
+          _that.justification,
         );
       case _:
         return null;
@@ -326,6 +344,7 @@ class _FollowUpSubmission implements FollowUpSubmission {
     required this.status,
     required this.score,
     this.note,
+    this.justification,
   });
 
   @override
@@ -338,6 +357,10 @@ class _FollowUpSubmission implements FollowUpSubmission {
   final int score;
   @override
   final String? note;
+
+  /// Optional "¿Por qué ese puntaje?" (RF-52).
+  @override
+  final String? justification;
 
   /// Create a copy of FollowUpSubmission
   /// with the given fields replaced by the non-null parameter values.
@@ -358,7 +381,9 @@ class _FollowUpSubmission implements FollowUpSubmission {
                 other.previousCommitmentId == previousCommitmentId) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.score, score) || other.score == score) &&
-            (identical(other.note, note) || other.note == note));
+            (identical(other.note, note) || other.note == note) &&
+            (identical(other.justification, justification) ||
+                other.justification == justification));
   }
 
   @override
@@ -369,11 +394,12 @@ class _FollowUpSubmission implements FollowUpSubmission {
     status,
     score,
     note,
+    justification,
   );
 
   @override
   String toString() {
-    return 'FollowUpSubmission(sessionId: $sessionId, previousCommitmentId: $previousCommitmentId, status: $status, score: $score, note: $note)';
+    return 'FollowUpSubmission(sessionId: $sessionId, previousCommitmentId: $previousCommitmentId, status: $status, score: $score, note: $note, justification: $justification)';
   }
 }
 
@@ -392,6 +418,7 @@ abstract mixin class _$FollowUpSubmissionCopyWith<$Res>
     CommitmentFollowUpStatus status,
     int score,
     String? note,
+    String? justification,
   });
 }
 
@@ -413,6 +440,7 @@ class __$FollowUpSubmissionCopyWithImpl<$Res>
     Object? status = null,
     Object? score = null,
     Object? note = freezed,
+    Object? justification = freezed,
   }) {
     return _then(
       _FollowUpSubmission(
@@ -436,6 +464,10 @@ class __$FollowUpSubmissionCopyWithImpl<$Res>
             ? _self.note
             : note // ignore: cast_nullable_to_non_nullable
                   as String?,
+        justification: freezed == justification
+            ? _self.justification
+            : justification // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -448,6 +480,9 @@ mixin _$ReflectionSubmission {
   /// Answer text by question id.
   Map<String, String> get answers;
   int get score;
+
+  /// Optional "¿Por qué ese puntaje?" (RF-52).
+  String? get justification;
 
   /// Create a copy of ReflectionSubmission
   /// with the given fields replaced by the non-null parameter values.
@@ -467,7 +502,9 @@ mixin _$ReflectionSubmission {
             (identical(other.sessionId, sessionId) ||
                 other.sessionId == sessionId) &&
             const DeepCollectionEquality().equals(other.answers, answers) &&
-            (identical(other.score, score) || other.score == score));
+            (identical(other.score, score) || other.score == score) &&
+            (identical(other.justification, justification) ||
+                other.justification == justification));
   }
 
   @override
@@ -476,11 +513,12 @@ mixin _$ReflectionSubmission {
     sessionId,
     const DeepCollectionEquality().hash(answers),
     score,
+    justification,
   );
 
   @override
   String toString() {
-    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score)';
+    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, justification: $justification)';
   }
 }
 
@@ -491,7 +529,12 @@ abstract mixin class $ReflectionSubmissionCopyWith<$Res> {
     $Res Function(ReflectionSubmission) _then,
   ) = _$ReflectionSubmissionCopyWithImpl;
   @useResult
-  $Res call({String sessionId, Map<String, String> answers, int score});
+  $Res call({
+    String sessionId,
+    Map<String, String> answers,
+    int score,
+    String? justification,
+  });
 }
 
 /// @nodoc
@@ -510,6 +553,7 @@ class _$ReflectionSubmissionCopyWithImpl<$Res>
     Object? sessionId = null,
     Object? answers = null,
     Object? score = null,
+    Object? justification = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -525,6 +569,10 @@ class _$ReflectionSubmissionCopyWithImpl<$Res>
             ? _self.score
             : score // ignore: cast_nullable_to_non_nullable
                   as int,
+        justification: freezed == justification
+            ? _self.justification
+            : justification // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -623,14 +671,24 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String sessionId, Map<String, String> answers, int score)?
+    TResult Function(
+      String sessionId,
+      Map<String, String> answers,
+      int score,
+      String? justification,
+    )?
     $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ReflectionSubmission() when $default != null:
-        return $default(_that.sessionId, _that.answers, _that.score);
+        return $default(
+          _that.sessionId,
+          _that.answers,
+          _that.score,
+          _that.justification,
+        );
       case _:
         return orElse();
     }
@@ -651,13 +709,23 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String sessionId, Map<String, String> answers, int score)
+    TResult Function(
+      String sessionId,
+      Map<String, String> answers,
+      int score,
+      String? justification,
+    )
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ReflectionSubmission():
-        return $default(_that.sessionId, _that.answers, _that.score);
+        return $default(
+          _that.sessionId,
+          _that.answers,
+          _that.score,
+          _that.justification,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -677,13 +745,23 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String sessionId, Map<String, String> answers, int score)?
+    TResult? Function(
+      String sessionId,
+      Map<String, String> answers,
+      int score,
+      String? justification,
+    )?
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ReflectionSubmission() when $default != null:
-        return $default(_that.sessionId, _that.answers, _that.score);
+        return $default(
+          _that.sessionId,
+          _that.answers,
+          _that.score,
+          _that.justification,
+        );
       case _:
         return null;
     }
@@ -697,6 +775,7 @@ class _ReflectionSubmission implements ReflectionSubmission {
     required this.sessionId,
     required final Map<String, String> answers,
     required this.score,
+    this.justification,
   }) : _answers = answers;
 
   @override
@@ -715,6 +794,10 @@ class _ReflectionSubmission implements ReflectionSubmission {
 
   @override
   final int score;
+
+  /// Optional "¿Por qué ese puntaje?" (RF-52).
+  @override
+  final String? justification;
 
   /// Create a copy of ReflectionSubmission
   /// with the given fields replaced by the non-null parameter values.
@@ -735,7 +818,9 @@ class _ReflectionSubmission implements ReflectionSubmission {
             (identical(other.sessionId, sessionId) ||
                 other.sessionId == sessionId) &&
             const DeepCollectionEquality().equals(other._answers, _answers) &&
-            (identical(other.score, score) || other.score == score));
+            (identical(other.score, score) || other.score == score) &&
+            (identical(other.justification, justification) ||
+                other.justification == justification));
   }
 
   @override
@@ -744,11 +829,12 @@ class _ReflectionSubmission implements ReflectionSubmission {
     sessionId,
     const DeepCollectionEquality().hash(_answers),
     score,
+    justification,
   );
 
   @override
   String toString() {
-    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score)';
+    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, justification: $justification)';
   }
 }
 
@@ -761,7 +847,12 @@ abstract mixin class _$ReflectionSubmissionCopyWith<$Res>
   ) = __$ReflectionSubmissionCopyWithImpl;
   @override
   @useResult
-  $Res call({String sessionId, Map<String, String> answers, int score});
+  $Res call({
+    String sessionId,
+    Map<String, String> answers,
+    int score,
+    String? justification,
+  });
 }
 
 /// @nodoc
@@ -780,6 +871,7 @@ class __$ReflectionSubmissionCopyWithImpl<$Res>
     Object? sessionId = null,
     Object? answers = null,
     Object? score = null,
+    Object? justification = freezed,
   }) {
     return _then(
       _ReflectionSubmission(
@@ -795,6 +887,10 @@ class __$ReflectionSubmissionCopyWithImpl<$Res>
             ? _self.score
             : score // ignore: cast_nullable_to_non_nullable
                   as int,
+        justification: freezed == justification
+            ? _self.justification
+            : justification // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
