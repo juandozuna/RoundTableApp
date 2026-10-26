@@ -18,6 +18,18 @@ const PREVIEW_PER_ADDRESS = 20;
 const PREVIEW_GLOBAL = 300;
 const PREVIEW_WINDOW_SECONDS = 60;
 
+/**
+ * Redeem attempts (signed-in, but a code is still a bearer secret): per address, per account
+ * and per code each minute-ish window, plus a global ceiling. Re-redeeming with the same
+ * account is idempotent, so legitimate retries stay far below these.
+ */
+const REDEEM_PER_ADDRESS = 30;
+const REDEEM_PER_USER = 15;
+const REDEEM_USER_WINDOW_SECONDS = 600;
+const REDEEM_PER_CODE = 10;
+const REDEEM_GLOBAL = 300;
+const REDEEM_WINDOW_SECONDS = 60;
+
 const routes: Route[] = [
   {
     method: "POST",
@@ -80,10 +92,15 @@ const routes: Route[] = [
             .text("profile.position", { max: 120 }).phone("profile.phone");
         }
       });
+      const code = normalizeInviteCode(body.code);
+      await enforceRateLimit(`invite_redeem:ip:${clientAddress(req)}`, REDEEM_PER_ADDRESS, REDEEM_WINDOW_SECONDS);
+      await enforceRateLimit(`invite_redeem:user:${caller.userId}`, REDEEM_PER_USER, REDEEM_USER_WINDOW_SECONDS);
+      await enforceRateLimit(`invite_redeem:code:${code}`, REDEEM_PER_CODE, REDEEM_WINDOW_SECONDS);
+      await enforceRateLimit("invite_redeem:all", REDEEM_GLOBAL, REDEEM_WINDOW_SECONDS);
       const result = await callApi("invite_redeem", {
         p_uid: caller.userId,
         p_email: caller.email,
-        p_input: { ...body, code: normalizeInviteCode(body.code) },
+        p_input: { ...body, code },
       });
       return json(req, result);
     },
