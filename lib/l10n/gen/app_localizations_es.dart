@@ -158,7 +158,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get syncSyncedLate => 'Sincronizado tarde';
 
   @override
-  String get syncUnavailable => 'Sincronización no disponible';
+  String get syncUnavailable => 'Sincronización no configurada';
 
   @override
   String get syncNever => 'Aún no se ha sincronizado';

@@ -379,7 +379,7 @@ abstract class AppLocalizations {
   /// No description provided for @syncUnavailable.
   ///
   /// In es, this message translates to:
-  /// **'Sincronización no disponible'**
+  /// **'Sincronización no configurada'**
   String get syncUnavailable;
 
   /// No description provided for @syncNever.

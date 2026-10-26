@@ -54,7 +54,7 @@
   "syncSyncing": "Sincronizando",
   "syncSynced": "Sincronizado",
   "syncSyncedLate": "Sincronizado tarde",
-  "syncUnavailable": "Sincronización no disponible",
+  "syncUnavailable": "Sincronización no configurada",
   "syncNever": "Aún no se ha sincronizado",
   "syncPendingCount": "{count, plural, =0{Nada pendiente} =1{1 cambio pendiente} other{{count} cambios pendientes}}",
   "@syncPendingCount": {

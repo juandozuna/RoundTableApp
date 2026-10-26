@@ -42,14 +42,12 @@ Widget → Cubit → Use case → Service contract → Service impl → SessionL
 destination for facilitators and members. The home feature should link to
 `SessionRoutes.liveFor(tableId)`.
 
-## Running without the PowerSync service
+## Sync configuration
 
-PowerSync arrives with the Docker phase. Until then a **development-only** stand-in,
-`DevSyncFallback`, is compiled in with `--dart-define=DEV_AUTH=true` and active only while
-`POWERSYNC_URL` is empty. Every 2 s it mirrors the user's rows from PostgREST into the local tables
-(skipping rows with a queued change) and drains the upload queue through the real connector and
-uploader. With it, `SessionView.isLive` treats the missing service as connected. Nothing of this
-runs in production builds, or when `POWERSYNC_URL` is set.
+Replication and uploads are always PowerSync's. Without `POWERSYNC_URL` the build has no sync
+service: `SyncConnection.unavailable` is reported, the home screen shows "sync not configured" and
+the live session runs self-paced from whatever is on the device (nothing replicates or uploads).
+There is no development stand-in. Run the stack with `bash scripts/dev-up.sh` (README).
 
 ## Verified
 
@@ -61,6 +59,4 @@ runs in production builds, or when `POWERSYNC_URL` is set.
 
 ## Not verified
 
-- PowerSync replication itself (service not running), including that downloads never overwrite
-  rows with a queued change (guaranteed by PowerSync; the dev stand-in skips such rows).
 - Android/iOS builds, push (`stage_opened`) delivery, the local ">24 h unsynced" notification.

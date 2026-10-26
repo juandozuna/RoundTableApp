@@ -51,3 +51,6 @@ app.*.map.json
 
 # Deployed Firebase web options for the push service worker
 web/firebase-config.js
+
+# E2E tooling
+tool/e2e/node_modules/

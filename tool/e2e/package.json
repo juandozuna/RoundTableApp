@@ -1,0 +1,12 @@
+{
+  "name": "gold-roundtables-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Headless-Chrome end-to-end checks against the local stack (see README.md)",
+  "scripts": {
+    "test": "node run.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}

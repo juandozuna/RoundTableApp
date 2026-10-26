@@ -319,8 +319,6 @@ import '../../features/session/data/datasources/session_local_data_source.dart'
     as _i751;
 import '../../features/session/data/datasources/session_remote_data_source.dart'
     as _i215;
-import '../../features/session/data/dev/dev_sync_fallback.dart' as _i171;
-import '../../features/session/data/dev/dev_sync_fallback_impl.dart' as _i989;
 import '../../features/session/data/local/session_drift_database.dart' as _i4;
 import '../../features/session/data/services/attendance_service_impl.dart'
     as _i1058;
@@ -938,15 +936,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i662.WatchAccessStateUseCase>(
       () => _i662.WatchAccessStateUseCase(gh<_i656.AccessSessionService>()),
     );
-    gh.lazySingleton<_i171.DevSyncFallback>(
-      () => _i989.DevSyncFallbackImpl(
-        gh<_i609.AppConfig>(),
-        gh<_i924.SyncDatabase>(),
-        gh<_i84.AuthTokenProvider>(),
-        gh<_i529.SyncUploader>(),
-        gh<_i361.Dio>(instanceName: 'postgrestDio'),
-      ),
-    );
     gh.factory<_i1038.LoadExplorerDataUseCase>(
       () => _i1038.LoadExplorerDataUseCase(
         gh<_i680.AdminDirectoryService>(),
@@ -1171,14 +1160,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i242.LoadSavedViewsUseCase>(
       () => _i242.LoadSavedViewsUseCase(gh<_i298.SavedViewsService>()),
     );
-    gh.lazySingleton<_i530.LiveSessionService>(
-      () => _i635.LiveSessionServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i1020.SyncStatusService>(),
-        gh<_i508.ClockService>(),
-        gh<_i171.DevSyncFallback>(),
-      ),
-    );
     gh.factory<_i81.OrganizationDetailCubit>(
       () => _i81.OrganizationDetailCubit(
         gh<_i739.LoadOrganizationDetailUseCase>(),
@@ -1194,9 +1175,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i677.LoadInviteUseCase>(
       () => _i677.LoadInviteUseCase(gh<_i276.ListInvitesUseCase>()),
-    );
-    gh.factory<_i975.WatchLiveSessionUseCase>(
-      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
     );
     gh.factory<_i169.WatchUnsyncedAlertUseCase>(
       () => _i169.WatchUnsyncedAlertUseCase(
@@ -1282,6 +1260,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i228.ExportCsvUseCase>(),
       ),
     );
+    gh.lazySingleton<_i530.LiveSessionService>(
+      () => _i635.LiveSessionServiceImpl(
+        gh<_i751.SessionLocalDataSource>(),
+        gh<_i1020.SyncStatusService>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
     gh.factory<_i327.SignOutCubit>(
       () => _i327.SignOutCubit(
         gh<_i318.WatchSyncStatusUseCase>(),
@@ -1318,6 +1303,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i200.OpenWhatsAppUseCase>(),
         gh<_i434.WatchSessionContextUseCase>(),
       ),
+    );
+    gh.factory<_i975.WatchLiveSessionUseCase>(
+      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
     );
     gh.factory<_i1002.SubmitCommitmentUseCase>(
       () => _i1002.SubmitCommitmentUseCase(gh<_i307.ResponsesService>()),
