@@ -48,7 +48,7 @@ Emulators: `flutter emulators --launch Pixel_8`; simulators: `xcrun simctl list 
 
 | Area | Android | iOS |
 |---|---|---|
-| Identifier | `applicationId com.goldroundtables.gold_roundtables` | `com.goldroundtables.goldRoundtables` (team `8D3RNM335D`) |
+| Identifier | `applicationId io.goldroundtables.app` | `io.goldroundtables.app` (team `8D3RNM335D`) |
 | Minimum OS | `flutter.minSdkVersion` (Flutter default) | 15.0 (Podfile + project) |
 | Camera (QR) | `CAMERA` permission, camera `uses-feature` optional | `NSCameraUsageDescription` (Spanish) |
 | Notifications | `POST_NOTIFICATIONS` (Android 13+) | `UIBackgroundModes: remote-notification`; `aps-environment` in entitlements |
@@ -57,8 +57,7 @@ Emulators: `flutter emulators --launch Pixel_8`; simulators: `xcrun simctl list 
 | Sign in with Apple | n/a | `ios/Runner/Runner.entitlements` (`com.apple.developer.applesignin`) |
 | Export compliance | n/a | `ITSAppUsesNonExemptEncryption = false` |
 
-Note the two bundle ids differ (underscore vs camelCase). Align them before the first store upload if the
-Firebase/Apple/Google consoles should share one id; changing `applicationId` after a Play release is not possible.
+Both platforms use the same identifier, `io.goldroundtables.app` (the OAuth redirect scheme is `io.goldroundtables.app://login-callback`). Register this id in the Firebase, Apple and Google consoles; it cannot be changed on Play after the first release.
 
 `Runner.entitlements` is wired only to the **Release** and **Profile** configurations. Debug builds do not use it, so
 simulators and personal (free) teams keep working. Release signing needs a paid team with the *Sign in with Apple* and
