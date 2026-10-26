@@ -1,6 +1,9 @@
 import '../core/config/app_config.dart';
 import '../core/routing/feature_router.dart';
 import '../core/sync/data/sync_schema.dart';
+import '../features/admin/admin_router.dart';
+import '../features/audit/audit_router.dart';
+import '../features/kpis/kpis_router.dart';
 import '../features/shell/shell_router.dart';
 import '../features/shell/shell_routes.dart';
 
@@ -13,6 +16,9 @@ const String appHomeLocation = ShellRoutes.home;
 /// Routes, destinations and public locations of every feature.
 List<FeatureRouter> buildFeatureRouters(AppConfig config) => [
   ShellFeatureRouter(includeComponentGallery: !config.isProduction),
+  const AdminFeatureRouter(),
+  const KpisFeatureRouter(),
+  const AuditFeatureRouter(),
 ];
 
 /// PowerSync tables of every offline-first feature (session).

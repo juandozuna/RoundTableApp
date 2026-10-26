@@ -38,6 +38,10 @@ class AppDataTable<T> extends StatelessWidget {
     this.onSort,
     this.isSelected,
     this.onSelectChanged,
+    this.allSelected = false,
+    this.onSelectAll,
+    this.rowExtent = rowHeight,
+    this.rowSemanticLabel,
   });
 
   final List<AppDataColumn<T>> columns;
@@ -51,6 +55,16 @@ class AppDataTable<T> extends StatelessWidget {
   /// Enables row checkboxes (tablet and desktop) when both are set.
   final bool Function(T row)? isSelected;
   final void Function(T row, bool selected)? onSelectChanged;
+
+  /// Header checkbox; shown when [onSelectAll] is set.
+  final bool allSelected;
+  final ValueChanged<bool>? onSelectAll;
+
+  /// Accessible name of a row's selection checkbox.
+  final String Function(T row)? rowSemanticLabel;
+
+  /// Row height; dense tables pass a smaller value.
+  final double rowExtent;
 
   static const double rowHeight = 52;
 
@@ -93,7 +107,16 @@ class AppDataTable<T> extends StatelessWidget {
       height: AppSizes.control,
       child: Row(
         children: [
-          if (_selectable) const SizedBox(width: AppSizes.control),
+          if (_selectable)
+            SizedBox(
+              width: AppSizes.control,
+              child: onSelectAll == null
+                  ? null
+                  : Checkbox(
+                      value: allSelected,
+                      onChanged: (value) => onSelectAll!(value ?? false),
+                    ),
+            ),
           for (var i = 0; i < columns.length; i++)
             Expanded(
               flex: columns[i].flex,
@@ -149,7 +172,7 @@ class AppDataTable<T> extends StatelessWidget {
       child: InkWell(
         onTap: onRowTap == null ? null : () => onRowTap!(row),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: rowHeight),
+          constraints: BoxConstraints(minHeight: rowExtent),
           child: Row(
             children: [
               if (_selectable)
@@ -157,6 +180,7 @@ class AppDataTable<T> extends StatelessWidget {
                   width: AppSizes.control,
                   child: Checkbox(
                     value: selected,
+                    semanticLabel: rowSemanticLabel?.call(row),
                     onChanged: (value) => onSelectChanged!(row, value ?? false),
                   ),
                 ),
