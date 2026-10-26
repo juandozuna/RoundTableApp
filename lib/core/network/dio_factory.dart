@@ -9,6 +9,14 @@ abstract final class DioFactory {
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 30);
 
+  /// Without `SUPABASE_URL` the base URL is only a path, which Dio rejects on
+  /// non-web platforms. Point it at a host that never resolves so building
+  /// the client succeeds and calls fail as ordinary network errors.
+  static String _absolute(String baseUrl) =>
+      Uri.tryParse(baseUrl)?.hasScheme ?? false
+      ? baseUrl
+      : 'http://supabase-not-configured.invalid$baseUrl';
+
   static Dio create({
     required String baseUrl,
     required String apiKey,
@@ -16,7 +24,7 @@ abstract final class DioFactory {
   }) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: _absolute(baseUrl),
         connectTimeout: connectTimeout,
         receiveTimeout: receiveTimeout,
         contentType: Headers.jsonContentType,
