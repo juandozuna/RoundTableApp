@@ -193,6 +193,8 @@ abstract final class AppTheme {
         labelPadding: EdgeInsets.zero,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => textTheme.labelSmall?.copyWith(
+            letterSpacing: 0,
+            fontWeight: FontWeight.w700,
             color: states.contains(WidgetState.selected) ? p.ink : p.mut,
           ),
         ),
