@@ -117,6 +117,14 @@ export class App {
 
   /** All visible semantic nodes: [{role, text, x, y, w, h, checked, disabled}]. */
   async nodes() {
+    // Flutter can drop its semantics tree (the placeholder comes back): switch it on again.
+    const revived = await this.page.evaluate(() => {
+      const placeholder = document.querySelector('flt-semantics-placeholder');
+      if (!placeholder) return false;
+      placeholder.click();
+      return true;
+    });
+    if (revived) await sleep(700);
     return this.page.evaluate(() =>
       [...document.querySelectorAll('flt-semantics, flt-semantics-container')]
         .filter((e) => e.tagName === 'FLT-SEMANTICS')
@@ -144,6 +152,17 @@ export class App {
 
   async text() {
     return (await this.nodes()).map((n) => n.text).join('\n');
+  }
+
+  /** Clicks a menu trigger and then an entry, retrying the trigger when the popup did not open. */
+  async chooseFromMenu(trigger, entry, { role = 'menuitem' } = {}) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await this.click(trigger, { role: 'button' });
+      if (await this.seen(entry, 3000)) break;
+      await this.page.keyboard.press('Escape');
+      await sleep(500);
+    }
+    await this.click(entry, { role });
   }
 
   /** Picks the n-th entry of the open dropdown menu; returns its text. */

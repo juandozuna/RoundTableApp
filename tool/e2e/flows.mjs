@@ -52,12 +52,16 @@ export async function memberCommitment(app, { what, when = 'Todos los días', ho
   await sleep(1500);
 }
 
-/** Frees the seats taken by people the E2E scenarios invited (emails ending in @e2e.local). */
+/** Removes the people the E2E scenarios invited (emails ending in @e2e.local) and what hangs off them. */
 export function releaseE2eSeats() {
   sql(`begin;
     set local session_replication_role = replica;
-    delete from invites where person_id in (select id from people where email like '%@e2e.local');
-    delete from table_members where person_id in (select id from people where email like '%@e2e.local');
+    create temp table e2e_people on commit drop as select id from people where email like '%@e2e.local';
+    delete from invites where person_id in (select id from e2e_people);
+    delete from table_members where person_id in (select id from e2e_people);
+    delete from role_assignments where person_id in (select id from e2e_people);
+    update audit_events set actor_person_id = null where actor_person_id in (select id from e2e_people);
+    delete from people where id in (select id from e2e_people);
     commit;`);
 }
 
@@ -67,4 +71,9 @@ export async function openTableFromExplorer(app, search, rowText = search) {
   await sleep(1200);
   await app.click(rowText);
   await app.waitFor('Agregar miembro', { timeout: 20_000 });
+}
+
+/** The explorer and KPIs read rollups that pg_cron refreshes every 5 minutes; do it now. */
+export function refreshKpis() {
+  sql('select kpi.refresh_if_dirty()');
 }

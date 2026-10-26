@@ -1,7 +1,7 @@
 // Scenario e (admin part) — explorer, saved views, filters, reports, create organization /
 // location / table, assign facilitator, 9-seat limit, audit log, reveal answers.
 import { App, check, sleep } from '../lib.mjs';
-import { openTableFromExplorer, releaseE2eSeats, resetDemoSession, sql } from '../flows.mjs';
+import { openTableFromExplorer, refreshKpis, releaseE2eSeats, resetDemoSession, sql } from '../flows.mjs';
 
 export async function admin(browser) {
   resetDemoSession();
@@ -16,8 +16,7 @@ export async function admin(browser) {
     await a.devSignIn('admin');
     await a.click('Mesas', { role: 'button' });
     check('explorer lists the seeded tables', await a.seen(/^Mesas \d+$/, 15_000));
-    await a.click('Crear', { role: 'button' });
-    await a.click('Crear mesa');
+    await a.chooseFromMenu('Crear', 'Crear mesa', { role: null });
     await a.click('Organización *', { role: 'button' });
     await a.click('Fundación Luz', { role: 'menuitem' });
     await a.fill('Nombre de la mesa *', name);
@@ -37,6 +36,8 @@ export async function admin(browser) {
     check('server: table exists with a facilitator', Number(sql(`select count(*) from round_tables t join table_members m on m.round_table_id = t.id and m.role = 'facilitator' where t.code = '${code}'`)) === 1);
     await a.shot('e-01-table-created');
     check('new table with only its facilitator shows the "needs 3 to 9 people" warning', await a.has('Faltan 2 personas'));
+
+    refreshKpis(); // explorer rows come from rollups (cron: every 5 min)
 
     // 9-seat limit on Mesa Esperanza 03 (8/9): the first invitation fits, the second is refused.
     await a.click('Volver', { role: 'button' });
@@ -76,6 +77,7 @@ export async function admin(browser) {
     await a.click('Volver', { role: 'button' });
 
     // Change the facilitator of the table created above.
+    refreshKpis();
     await a.waitFor(/^Mesas \d+$/);
     await openTableFromExplorer(a, code, `${code} · ${name}`);
     await a.click('Cambiar facilitador', { role: 'button' });
@@ -92,8 +94,7 @@ export async function admin(browser) {
 
     // Organization → location → table, from the explorer.
     await a.click('Volver', { role: 'button' });
-    await a.click('Crear', { role: 'button' });
-    await a.click('Crear organización');
+    await a.chooseFromMenu('Crear', 'Crear organización', { role: null });
     const orgName = `Org E2E ${n}`;
     await a.fill('Nombre *', orgName);
     await a.click('País *', { role: 'button' });
@@ -117,6 +118,56 @@ export async function admin(browser) {
     check('location created in the new organization', await a.seen('Sede Cali', 10_000));
     check('server: location exists', Number(sql(`select count(*) from locations where name = 'Sede Cali' and organization_id = (select id from organizations where name = '${orgName}')`)) === 1);
     await a.shot('e-06-location-created');
+
+    // Explorer: views, filters and saved views (the saved view survives a reload).
+    await a.goto('/');
+    await a.click('Mesas', { role: 'button' });
+    await a.click('Mesas retrasadas', { role: 'button' });
+    check('"Mesas retrasadas" view lists only late tables', (await a.seen('HOR-02 · Mesa Padres 02')) && (await a.has('AND-03 · Mesa Ventas 03')) && !(await a.has('LUZ-01 · Mesa Fe 01')));
+    await a.click('Filtros', { role: 'button' });
+    await a.click('País', { role: 'button' });
+    await a.click('Colombia', { role: 'menuitem' });
+    await a.click(/^Ver \d+ resultados/, { role: 'button' });
+    check('country filter narrows the view to Colombian organizations', (await a.has('AND-03 · Mesa Ventas 03')) && !(await a.has('LUZ-04 · Mesa Camino 04')));
+    await a.shot('e-07-explorer-filtered');
+    const viewName = `Retrasadas CO ${n}`;
+    await a.click('Guardar vista', { role: 'button' });
+    await a.fill('Nombre de la vista', viewName);
+    await a.click('Guardar', { role: 'button', last: true });
+    check('saved view appears among the views', await a.seen(viewName, 8000));
+    await a.goto('/');
+    await a.click('Mesas', { role: 'button' });
+    check('saved view persists after reloading the app', await a.seen(viewName, 15_000));
+    await a.click(viewName, { role: 'button' });
+    check('applying the saved view restores its filters', await a.seen('AND-03 · Mesa Ventas 03') && !(await a.has('LUZ-04 · Mesa Camino 04')));
+
+    // Reports: global figures, country filter, drill-down to the explorer.
+    await a.click('Informes', { role: 'button' });
+    await a.waitFor(/VALORES COMPLETADOS/, { timeout: 20_000 });
+    const totalValues = (await a.text()).match(/Valores completados: (\d+)/)?.[1];
+    check('reports show organisation-wide KPIs', Boolean(totalValues), (await a.text()).slice(0, 300));
+    await a.shot('e-08-reports');
+    await a.click('País', { role: 'button' });
+    await a.click('Colombia', { role: 'menuitem' });
+    await sleep(2500);
+    const colombiaValues = (await a.text()).match(/Valores completados: (\d+)/)?.[1];
+    check('country filter changes the KPIs', colombiaValues && colombiaValues !== totalValues, `${totalValues} → ${colombiaValues}`);
+    await a.click('Limpiar filtros', { role: 'button' });
+    await a.click('Tabla', { role: 'button', nth: 0 });
+    await sleep(1000);
+    await a.shot('e-09-reports-table');
+    await a.click('Ver retrasadas', { role: 'button' });
+    check('drill-down from the late-tables KPI opens the explorer on that view', await a.seen('HOR-02 · Mesa Padres 02', 15_000) && !(await a.has('LUZ-01 · Mesa Fe 01')));
+
+    // Audit log: recent actions are there and can be filtered.
+    await a.click('Auditoría', { role: 'button' });
+    await a.waitFor(/Mesa creada|Organización creada|Sesión/, { timeout: 15_000 });
+    check('audit log lists the actions made in this run (table, organization, invitation)',
+      (await a.has('Mesa creada')) || (await a.has('Organización creada')) || (await a.has('Invitación creada')), (await a.text()).slice(0, 400));
+    await a.click('Vista sensible', { role: 'button' });
+    await sleep(1500);
+    check('audit filter "Vista sensible" lists the answer reveals ("Respuestas consultadas")', await a.seen('Respuestas consultadas', 8000));
+    await a.shot('e-10-audit');
   } finally {
     await a.close();
   }
