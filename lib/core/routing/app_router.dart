@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -33,8 +34,13 @@ class AppRouter {
 
     return GoRouter(
       initialLocation: _registry.homeLocation,
-      refreshListenable: StreamListenable(_auth.statusChanges),
-      redirect: (context, state) => guard.redirect(state.uri),
+      refreshListenable: Listenable.merge([
+        StreamListenable(_auth.statusChanges),
+        for (final stream in _registry.redirectRefreshStreams)
+          StreamListenable(stream),
+      ]),
+      redirect: (context, state) =>
+          guard.redirect(state.uri) ?? _registry.redirect(state.uri),
       errorBuilder: (context, state) =>
           NotFoundPage(homeLocation: _registry.homeLocation),
       routes: [

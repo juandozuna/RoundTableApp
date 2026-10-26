@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:injectable/injectable.dart';
-
 import 'session_context.dart';
 import 'session_context_service.dart';
 
-/// Default, non-persistent context holder. The auth/context feature replaces
-/// it with a persisted implementation (see flutter-conventions.md).
-@LazySingleton(as: SessionContextService)
+/// Non-persistent context holder for tests. The auth feature registers
+/// `PersistedSessionContextService` as the app's [SessionContextService].
 class InMemorySessionContextService implements SessionContextService {
   final StreamController<SessionContext?> _changes =
       StreamController<SessionContext?>.broadcast();
