@@ -9,6 +9,7 @@ import '../../../../../core/widgets/app_avatar.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_dialogs.dart';
 import '../../../../../core/widgets/app_message.dart';
+import '../../../../../core/widgets/app_text_button.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
 import '../../../../../core/widgets/skeleton.dart';
@@ -609,11 +610,11 @@ class OrganizationDetailPage extends StatelessWidget {
                   '${event.actorName ?? AdminFormat.missing} · ${AdminFormat.dateTime(event.createdAt)}',
                 ),
               ),
-          TextButton(
+          AppTextButton(
+            label: l10n.adminSeeInAudit,
             onPressed: () => context.go(
               AuditRoutes.auditPath(organizationId: detail.organization.id),
             ),
-            child: Text(l10n.adminSeeInAudit),
           ),
         ],
       ),

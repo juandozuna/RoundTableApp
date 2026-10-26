@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/config/injection.dart';
 import '../../../../../core/extensions/build_context_x.dart';
+import '../../../../../core/form_rules/app_field_kind.dart';
 import '../../../../../core/theme/app_spacing.dart';
+import '../../../../../core/widgets/form_fields/app_text_form_field.dart';
 import '../../../../../l10n/gen/app_localizations.dart';
 import '../../../../audit/audit_routes.dart';
 import '../../../../kpis/kpis_routes.dart';
@@ -236,15 +238,15 @@ class _CommandPaletteState extends State<CommandPalette> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(AppSpacing.md),
-                        child: TextField(
+                        child: AppTextFormField(
+                          name: 'query',
+                          kind: AppFieldKind.search,
                           controller: _controller,
                           autofocus: true,
+                          hint: l10n.adminPaletteHint,
+                          prefixIcon: Icons.search_rounded,
                           onChanged: (_) => setState(() => _highlight = 0),
                           onSubmitted: (_) => _run(items),
-                          decoration: InputDecoration(
-                            hintText: l10n.adminPaletteHint,
-                            prefixIcon: const Icon(Icons.search_rounded),
-                          ),
                         ),
                       ),
                       Flexible(

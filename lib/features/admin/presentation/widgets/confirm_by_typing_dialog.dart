@@ -5,6 +5,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/status_tone.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_message.dart';
+import '../../../../core/widgets/form_fields/app_text_form_field.dart';
 import '../../domain/explorer/explorer_engine.dart';
 
 /// Confirm dialog for hard-to-undo actions: the confirm button stays disabled
@@ -78,13 +79,12 @@ class _ConfirmByTypingDialogState extends State<ConfirmByTypingDialog> {
             detail: widget.warningDetail,
           ),
           const SizedBox(height: AppSpacing.md),
-          TextField(
+          AppTextFormField(
+            name: 'confirmName',
+            label: l10n.adminTypeNameToConfirm(widget.name),
             controller: _controller,
             autofocus: true,
             onChanged: (_) => setState(() {}),
-            decoration: InputDecoration(
-              labelText: l10n.adminTypeNameToConfirm(widget.name),
-            ),
           ),
         ],
       ),

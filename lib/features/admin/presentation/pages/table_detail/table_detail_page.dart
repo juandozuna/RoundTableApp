@@ -9,6 +9,7 @@ import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_avatar.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_dialogs.dart';
+import '../../../../../core/widgets/app_icon_button.dart';
 import '../../../../../core/widgets/app_message.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
@@ -588,9 +589,9 @@ class TableDetailPage extends StatelessWidget {
       trailing: Wrap(
         spacing: AppSpacing.xs,
         children: [
-          IconButton(
+          AppIconButton(
             tooltip: l10n.adminSeeAnswersOf(member.fullName),
-            icon: const Icon(Icons.visibility_rounded),
+            icon: Icons.visibility_rounded,
             onPressed: () => context.push(
               KpisRoutes.memberDetailPath(
                 tableId: table.id,
@@ -599,22 +600,22 @@ class TableDetailPage extends StatelessWidget {
             ),
           ),
           if (isFacilitator)
-            IconButton(
+            AppIconButton(
               tooltip: l10n.adminChangeFacilitator,
-              icon: const Icon(Icons.swap_horiz_rounded),
+              icon: Icons.swap_horiz_rounded,
               onPressed: writable
                   ? () => _changeFacilitator(context, detail)
                   : null,
             )
           else ...[
-            IconButton(
+            AppIconButton(
               tooltip: l10n.adminMoveTitle(member.fullName),
-              icon: const Icon(Icons.drive_file_move_rounded),
+              icon: Icons.drive_file_move_rounded,
               onPressed: writable ? () => _move(context, detail, member) : null,
             ),
-            IconButton(
+            AppIconButton(
               tooltip: l10n.adminDeactivateMemberTitle(member.fullName),
-              icon: const Icon(Icons.person_off_rounded),
+              icon: Icons.person_off_rounded,
               onPressed: writable
                   ? () => _deactivate(context, detail, member)
                   : null,

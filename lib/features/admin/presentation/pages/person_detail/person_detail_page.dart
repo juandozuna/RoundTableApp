@@ -8,6 +8,7 @@ import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_avatar.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_dialogs.dart';
+import '../../../../../core/widgets/app_icon_button.dart';
 import '../../../../../core/widgets/app_message.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/empty_state.dart';
@@ -247,9 +248,9 @@ class PersonDetailPage extends StatelessWidget {
             ),
             trailing: Wrap(
               children: [
-                IconButton(
+                AppIconButton(
                   tooltip: l10n.adminSeeAnswersOf(person.fullName),
-                  icon: const Icon(Icons.visibility_rounded),
+                  icon: Icons.visibility_rounded,
                   onPressed: () => context.push(
                     KpisRoutes.memberDetailPath(
                       tableId: table.roundTableId,
