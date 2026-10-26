@@ -30,7 +30,7 @@ export async function admin(browser) {
     await a.click('Zona horaria *', { role: 'button' });
     await a.click('Santo_Domingo', { role: 'menuitem' });
     await a.click('Facilitador de la mesa *', { role: 'button' });
-    const facilitatorName = await a.pickMenuItem(0, { skip: /Asiento|Invitación pendiente/ });
+    const facilitatorName = await a.pickMenuItem(0, { skip: /Ferrer|Herrera|Méndez|Quiroz|Rojas|Mena|Paz|Núñez|Asiento|Invitación pendiente/ });
     await a.click('Crear mesa', { role: 'button', last: true });
     check('table created and shown with its detail', await a.seen(`${code} · ${name}`, 15_000), (await a.text()).slice(0, 400));
     check('server: table exists with a facilitator', Number(sql(`select count(*) from round_tables t join table_members m on m.round_table_id = t.id and m.role = 'facilitator' where t.code = '${code}'`)) === 1);
@@ -84,7 +84,7 @@ export async function admin(browser) {
     await sleep(1500);
     const facilitatorBefore = sql(`select p.id from table_members m join people p on p.id = m.person_id join round_tables t on t.id = m.round_table_id where t.code = '${code}' and m.role = 'facilitator' and m.status = 'active'`);
     await a.click('Nuevo facilitador *', { role: 'button' });
-    const newFacilitator = await a.pickMenuItem(1, { skip: /Asiento|Invitación pendiente/ });
+    const newFacilitator = await a.pickMenuItem(1, { skip: /Ferrer|Herrera|Méndez|Quiroz|Rojas|Mena|Paz|Núñez|Asiento|Invitación pendiente/ });
     await a.shot('e-04-change-facilitator');
     await a.click('Confirmar', { role: 'button' });
     await sleep(2500);

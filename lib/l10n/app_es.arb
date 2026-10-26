@@ -209,6 +209,7 @@
   "adminPaletteTooltip": "Buscar o ejecutar (Ctrl+K)",
   "adminDeniedTitle": "Sin permiso",
   "adminDeniedAction": "Ir al explorador",
+  "adminDeniedHomeAction": "Ir al inicio",
   "adminDeniedRoleMessage": "Tu rol no incluye la administración. Si crees que es un error, pide acceso a una persona de la iglesia.",
   "adminDeniedAdminOnlyMessage": "Esta acción es solo para el Administrador (personal de la iglesia).",
   "adminDeniedOrganizationTitle": "Sin permiso para esta organización",

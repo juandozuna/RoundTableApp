@@ -1,5 +1,8 @@
 /// Paths and parameter keys of the administration feature.
 abstract final class AdminRoutes {
+  /// The app's home, for people whose role cannot use the admin screens.
+  static const String appHome = '/';
+
   static const String explorer = '/admin';
   static const String organizationNew = '/admin/organizaciones/nueva';
   static const String organizationIdParam = 'organizationId';

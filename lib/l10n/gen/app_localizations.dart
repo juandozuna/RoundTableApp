@@ -934,6 +934,12 @@ abstract class AppLocalizations {
   /// **'Ir al explorador'**
   String get adminDeniedAction;
 
+  /// No description provided for @adminDeniedHomeAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir al inicio'**
+  String get adminDeniedHomeAction;
+
   /// No description provided for @adminDeniedRoleMessage.
   ///
   /// In es, this message translates to:

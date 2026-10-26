@@ -110,7 +110,8 @@ class AdminPageFrame extends StatelessWidget {
       ),
       AdminAccessStatus.denied => AdminDeniedView(
         message: context.l10n.adminDeniedRoleMessage,
-        homeLocation: AdminRoutes.explorer,
+        homeLocation: AdminRoutes.appHome,
+        actionLabel: context.l10n.adminDeniedHomeAction,
       ),
       AdminAccessStatus.failure => ErrorState(
         message: access.error?.userMessage(context.l10n),

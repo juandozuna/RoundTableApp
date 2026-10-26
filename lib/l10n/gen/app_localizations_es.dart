@@ -465,6 +465,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminDeniedAction => 'Ir al explorador';
 
   @override
+  String get adminDeniedHomeAction => 'Ir al inicio';
+
+  @override
   String get adminDeniedRoleMessage =>
       'Tu rol no incluye la administración. Si crees que es un error, pide acceso a una persona de la iglesia.';
 

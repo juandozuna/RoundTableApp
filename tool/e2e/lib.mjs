@@ -96,8 +96,12 @@ export class App {
 
   async goto(path = '/') {
     await this.page.goto(`${BASE}${path}`, { waitUntil: 'load' });
-    await this.page.waitForSelector('flt-semantics-placeholder', { timeout: 60_000 });
+    await this.page.waitForFunction(
+      () => document.querySelector('flt-semantics-placeholder, flt-semantics'),
+      { timeout: 60_000 },
+    );
     await this.enableSemantics();
+    await sleep(1200); // a hash-only change does not reload; let the router settle
   }
 
   async enableSemantics() {
