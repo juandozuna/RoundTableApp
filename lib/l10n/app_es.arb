@@ -2469,6 +2469,7 @@
   "invitesProblemTableHasFacilitator": "Esta mesa ya tiene facilitador.",
   "invitesProblemPendingExists": "Ya hay una invitación pendiente para esta persona. Reenvíala o revócala desde Invitaciones.",
   "invitesProblemPersonAlreadyLinked": "Esta persona ya tiene una cuenta vinculada. Agrégala directamente a la mesa.",
+  "invitesProblemRateLimited": "Hubo demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.",
   "invitesProblemOffline": "Sin conexión: necesitas internet para esto.",
   "invitesManagerTitle": "Invitaciones",
   "invitesInviteAction": "Invitar",

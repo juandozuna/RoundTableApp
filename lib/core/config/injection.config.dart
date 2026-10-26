@@ -332,6 +332,8 @@ import '../../features/session/data/services/session_sync_service_impl.dart'
     as _i1002;
 import '../../features/session/data/services/session_sync_uploader.dart'
     as _i194;
+import '../../features/session/data/services/shared_prefs_session_draft_service.dart'
+    as _i551;
 import '../../features/session/data/session_data_module.dart' as _i129;
 import '../../features/session/domain/services/attendance_service.dart'
     as _i620;
@@ -340,6 +342,8 @@ import '../../features/session/domain/services/live_session_service.dart'
 import '../../features/session/domain/services/responses_service.dart' as _i307;
 import '../../features/session/domain/services/session_control_service.dart'
     as _i728;
+import '../../features/session/domain/services/session_draft_service.dart'
+    as _i369;
 import '../../features/session/domain/services/session_sync_service.dart'
     as _i468;
 import '../../features/session/domain/use_cases/attendance/mark_attendance_use_case.dart'
@@ -354,6 +358,10 @@ import '../../features/session/domain/use_cases/control/open_session_use_case.da
     as _i545;
 import '../../features/session/domain/use_cases/control/set_session_stage_use_case.dart'
     as _i736;
+import '../../features/session/domain/use_cases/drafts/load_session_draft_use_case.dart'
+    as _i454;
+import '../../features/session/domain/use_cases/drafts/save_session_draft_use_case.dart'
+    as _i363;
 import '../../features/session/domain/use_cases/live/watch_live_session_use_case.dart'
     as _i975;
 import '../../features/session/domain/use_cases/responses/submit_commitment_use_case.dart'
@@ -454,6 +462,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i460.SharedPreferencesAsync>(
       () => notificationsModule.sharedPreferences,
     );
+    gh.lazySingleton<_i369.SessionDraftService>(
+      () => _i551.SharedPrefsSessionDraftService(
+        gh<_i460.SharedPreferencesAsync>(),
+      ),
+    );
     gh.lazySingleton<_i1034.NotificationsLocalDataSource>(
       () => _i1034.NotificationsLocalDataSource(
         gh<_i460.SharedPreferencesAsync>(),
@@ -485,6 +498,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1068.FirebaseBootstrap>(
       () => _i326.FirebaseBootstrapImpl(gh<_i609.AppConfig>()),
+    );
+    gh.factory<_i454.LoadSessionDraftUseCase>(
+      () => _i454.LoadSessionDraftUseCase(gh<_i369.SessionDraftService>()),
+    );
+    gh.factory<_i363.SaveSessionDraftUseCase>(
+      () => _i363.SaveSessionDraftUseCase(gh<_i369.SessionDraftService>()),
     );
     gh.lazySingleton<_i59.AuthService>(
       () => _i738.SupabaseAuthService(gh<_i609.AppConfig>()),
@@ -1316,13 +1335,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i58.SubmitReflectionUseCase>(
       () => _i58.SubmitReflectionUseCase(gh<_i307.ResponsesService>()),
     );
-    gh.factory<_i174.MemberFlowCubit>(
-      () => _i174.MemberFlowCubit(
-        gh<_i833.SubmitFollowUpUseCase>(),
-        gh<_i58.SubmitReflectionUseCase>(),
-        gh<_i1002.SubmitCommitmentUseCase>(),
-      ),
-    );
     gh.factory<_i275.HomeCubit>(
       () => _i275.HomeCubit(
         gh<_i246.WatchHomeOverviewUseCase>(),
@@ -1352,6 +1364,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i126.CloseAnswersUseCase>(),
         gh<_i995.CloseSessionUseCase>(),
         gh<_i659.RequestSyncUseCase>(),
+      ),
+    );
+    gh.factory<_i174.MemberFlowCubit>(
+      () => _i174.MemberFlowCubit(
+        gh<_i833.SubmitFollowUpUseCase>(),
+        gh<_i58.SubmitReflectionUseCase>(),
+        gh<_i1002.SubmitCommitmentUseCase>(),
+        gh<_i454.LoadSessionDraftUseCase>(),
+        gh<_i363.SaveSessionDraftUseCase>(),
       ),
     );
     return this;

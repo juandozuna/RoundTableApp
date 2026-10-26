@@ -11,11 +11,7 @@ import '../local/live_session_assembler.dart';
 
 @LazySingleton(as: LiveSessionService)
 class LiveSessionServiceImpl implements LiveSessionService {
-  LiveSessionServiceImpl(
-    this._local,
-    this._status,
-    this._clock,
-  );
+  LiveSessionServiceImpl(this._local, this._status, this._clock);
 
   /// "Today" depends on the clock, so re-evaluate even without data changes.
   static const Duration clockCheckInterval = Duration(minutes: 1);

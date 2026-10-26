@@ -8,6 +8,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 
 /** Puts Mesa Esperanza 03's demo session back to scheduled/lobby (scripts/dev-open-session.sh). */
 export function resetDemoSession() {
+  releaseE2eSeats(); // people invited by earlier scenarios would join the table's roll call
   execFileSync('bash', [resolve(repoRoot, 'scripts/dev-open-session.sh')], { stdio: 'pipe' });
 }
 
@@ -76,4 +77,14 @@ export async function openTableFromExplorer(app, search, rowText = search) {
 /** The explorer and KPIs read rollups that pg_cron refreshes every 5 minutes; do it now. */
 export function refreshKpis() {
   sql('select kpi.refresh_if_dirty()');
+}
+
+/** Local Supabase API URL and anon key (from the environment, else `supabase status`). */
+export function supabaseKeys() {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+    return { url: process.env.SUPABASE_URL, anon: process.env.SUPABASE_ANON_KEY };
+  }
+  const status = execFileSync('supabase', ['status', '-o', 'env'], { cwd: repoRoot, encoding: 'utf8' });
+  const pick = (name) => status.match(new RegExp(`^${name}="(.*)"$`, 'm'))?.[1];
+  return { url: pick('API_URL'), anon: pick('ANON_KEY') };
 }

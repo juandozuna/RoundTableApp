@@ -2,12 +2,27 @@
 // service: stages follow live, attendance, follow-up, reflection, score (5 blocked), commitment by
 // the member and by the facilitator-as-participant, closing answers and the session, summaries.
 import { App, check, sleep } from '../lib.mjs';
-import { memberCommitment, memberFollowUp, memberValue, openSessionScreen, resetDemoSession, sql } from '../flows.mjs';
+import { memberCommitment, memberFollowUp, memberValue, openSessionScreen, refreshKpis, resetDemoSession, sql } from '../flows.mjs';
 
 const SESSION = "md5('gold-roundtables:session:luz-03:4')::uuid";
 
+/** "Valores" column of Mesa Esperanza 03 in the admin explorer (completed values). */
+async function completedValuesInExplorer(admin) {
+  await admin.fillNth(0, 'Esperanza');
+  await sleep(1500);
+  const row = await admin.waitFor('LUZ-03 · Mesa Esperanza 03');
+  return Number(row.text.split('\n').map((l) => l.trim()).filter(Boolean).at(-3));
+}
+
 export async function liveSession(browser) {
   resetDemoSession();
+  refreshKpis();
+  const admin = await App.open(browser, 'admin');
+  await admin.devSignIn('admin');
+  await admin.click('Mesas', { role: 'button' });
+  await admin.waitFor(/^Mesas \d+$/, { timeout: 20_000 });
+  const valuesBefore = await completedValuesInExplorer(admin);
+  check('KPIs before the session: Mesa Esperanza 03 has 3 completed values', valuesBefore === 3, `rows: ${valuesBefore}`);
   const facil = await App.open(browser, 'facilitador');
   const ana = await App.open(browser, 'ana');
   try {
@@ -29,6 +44,18 @@ export async function liveSession(browser) {
     await facil.click('Abrir seguimiento', { role: 'button' });
     check('member sees the follow-up stage with last week\'s commitment', await ana.seen('TU COMPROMISO DE LA SEMANA PASADA', 15_000));
     await ana.shot('c-02-member-followup');
+
+    // A draft survives closing the app: type, reload, come back.
+    await ana.click('Lo cumplí', { role: 'radio' });
+    await ana.fill('Cuéntanos en una frase', 'Borrador sin enviar');
+    await sleep(1200); // drafts are written shortly after the last keystroke
+    await ana.goto('/');
+    await ana.waitFor('Estás como Miembro', { timeout: 30_000 });
+    await openSessionScreen(ana);
+    await ana.waitFor('TU COMPROMISO DE LA SEMANA PASADA', { timeout: 30_000 });
+    const restored = await ana.fieldValue('Cuéntanos en una frase');
+    check('unsent answer survives closing and reopening the app', restored === 'Borrador sin enviar', `value=${restored}`);
+    await ana.shot('c-02b-draft-restored');
 
     // Score 5 is blocked; submitting without a valid score keeps the form open.
     await ana.click('Lo cumplí', { role: 'radio' });
@@ -79,7 +106,17 @@ export async function liveSession(browser) {
       ['session_attendance', 'member_assessments', 'member_answers', 'member_commitments'].map((t) => `${t}=${rows(t)}`).join(' '));
     check('server: no score of 5 stored', Number(sql('select count(*) from member_assessments where score = 5')) === 0);
     check('server: nothing flagged late (everything synced while the session was open)', Number(sql(`select count(*) from member_assessments where session_id = ${SESSION} and synced_late`)) === 0);
+
+    // KPIs afterwards reflect the closed session (the explorer reads rollups that cron refreshes every 5 min).
+    refreshKpis();
+    await admin.goto('/');
+    await admin.click('Mesas', { role: 'button' });
+    await admin.waitFor(/^Mesas \d+$/, { timeout: 20_000 });
+    const valuesAfter = await completedValuesInExplorer(admin);
+    check('KPIs after closing: Mesa Esperanza 03 shows 4 completed values', valuesAfter === 4, `rows: ${valuesAfter}`);
+    await admin.shot('c-07-admin-kpis-after-close');
   } finally {
+    await admin.close();
     await facil.close();
     await ana.close();
   }

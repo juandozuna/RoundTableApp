@@ -25,6 +25,8 @@ class AppTextFormField extends StatelessWidget {
     this.onSubmitted,
     this.onChanged,
     this.prefixIcon,
+    this.controller,
+    this.errorText,
   });
 
   final String name;
@@ -43,11 +45,20 @@ class AppTextFormField extends StatelessWidget {
   final ValueChanged<String?>? onChanged;
   final IconData? prefixIcon;
 
+  /// For text owned outside the form (e.g. a Cubit draft that can be replaced
+  /// from elsewhere); the field then follows this controller.
+  final TextEditingController? controller;
+
+  /// Error decided outside the form (e.g. by a Cubit's domain validation);
+  /// shown instead of the [kind] validator's message.
+  final String? errorText;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: name,
-      initialValue: initialValue,
+      initialValue: controller == null ? initialValue : null,
+      controller: controller,
       enabled: enabled,
       maxLines: maxLines,
       minLines: maxLines > 1 ? 2 : null,
@@ -64,6 +75,8 @@ class AppTextFormField extends StatelessWidget {
         labelText: required ? '$label *' : label,
         hintText: hint,
         helperText: helper,
+        errorText: errorText,
+        errorMaxLines: errorText == null ? null : 3,
         prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
       ),
       validator: kind.validator(

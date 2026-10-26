@@ -7084,6 +7084,12 @@ abstract class AppLocalizations {
   /// **'Esta persona ya tiene una cuenta vinculada. Agrégala directamente a la mesa.'**
   String get invitesProblemPersonAlreadyLinked;
 
+  /// No description provided for @invitesProblemRateLimited.
+  ///
+  /// In es, this message translates to:
+  /// **'Hubo demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.'**
+  String get invitesProblemRateLimited;
+
   /// No description provided for @invitesProblemOffline.
   ///
   /// In es, this message translates to:

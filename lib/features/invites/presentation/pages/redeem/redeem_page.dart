@@ -376,6 +376,13 @@ class RedeemPage extends StatelessWidget {
         body: l10n.authNoticeOfflineDetail,
         actions: [retry, toGate],
       ),
+      InviteProblem.rateLimited => AuthResultView(
+        tone: StatusTone.error,
+        icon: Icons.timer_outlined,
+        title: l10n.invitesGenericFailureTitle,
+        body: l10n.invitesProblemRateLimited,
+        actions: [retry, toGate],
+      ),
       _ => AuthResultView(
         tone: StatusTone.error,
         icon: Icons.error_outline_rounded,

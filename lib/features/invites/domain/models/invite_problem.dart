@@ -19,6 +19,9 @@ enum InviteProblem {
   forbidden,
   offline,
   lockedOut,
+
+  /// The server asked this device to slow down (HTTP 429).
+  rateLimited,
   unauthenticated,
   validation,
   generic,

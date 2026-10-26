@@ -1,6 +1,6 @@
 // Invites (ADR 0007): create, list, revoke, renew, anonymous preview, redeem.
 import { requireCaller } from "../_shared/auth.ts";
-import { callApi } from "../_shared/db.ts";
+import { callApi, clientAddress, enforceRateLimit } from "../_shared/db.ts";
 import { ApiError } from "../_shared/errors.ts";
 import { json, readJson, type Route, serveRoutes } from "../_shared/http.ts";
 import { isUuid, normalizeInviteCode, validate } from "../_shared/validation.ts";
@@ -12,6 +12,11 @@ const withLink = (invite: Invite) => ({
   ...invite,
   invite_url: `${appUrl()}/invite/${invite.code}`,
 });
+
+/** Anonymous preview allowance: per address and for everyone, per window. */
+const PREVIEW_PER_ADDRESS = 20;
+const PREVIEW_GLOBAL = 300;
+const PREVIEW_WINDOW_SECONDS = 60;
 
 const routes: Route[] = [
   {
@@ -54,6 +59,9 @@ const routes: Route[] = [
     method: "GET",
     pattern: "preview",
     handler: async (req, _params, url) => {
+      // The 6-character code is the only secret: cap guesses per address and across all callers.
+      await enforceRateLimit(`invite_preview:ip:${clientAddress(req)}`, PREVIEW_PER_ADDRESS, PREVIEW_WINDOW_SECONDS);
+      await enforceRateLimit("invite_preview:all", PREVIEW_GLOBAL, PREVIEW_WINDOW_SECONDS);
       const code = normalizeInviteCode(url.searchParams.get("code"));
       validate({ code }, (v) => v.inviteCode("code"));
       return json(req, { invite: await callApi("invite_preview", { p_code: code }) });

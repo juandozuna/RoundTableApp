@@ -4285,6 +4285,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Esta persona ya tiene una cuenta vinculada. Agrégala directamente a la mesa.';
 
   @override
+  String get invitesProblemRateLimited =>
+      'Hubo demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.';
+
+  @override
   String get invitesProblemOffline =>
       'Sin conexión: necesitas internet para esto.';
 

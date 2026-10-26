@@ -42,6 +42,14 @@ Widget → Cubit → Use case → Service contract → Service impl → SessionL
 destination for facilitators and members. The home feature should link to
 `SessionRoutes.liveFor(tableId)`.
 
+## Drafts
+
+What a person typed and did not send (follow-up note and score, reflection answers and score,
+commitment) is kept on the device by `SessionDraftService` (shared preferences, one entry per session
+and person) and restored when the screen opens again. `MemberFlowCubit` writes it 600 ms after the
+last keystroke and leaves out the steps that were already saved. Text controls are the shared
+`AppTextFormField` (which also shows the Cubit-driven validation error).
+
 ## Sync configuration
 
 Replication and uploads are always PowerSync's. Without `POWERSYNC_URL` the build has no sync
@@ -52,6 +60,10 @@ There is no development stand-in. Run the stack with `bash scripts/dev-up.sh` (R
 ## Verified
 
 - Unit/widget/real-database tests in `test/features/session`.
+- Browser end-to-end (`tool/e2e`, scenarios `live-session` and `offline`) with the real PowerSync
+  service: stages follow live between two browsers, rows upload and replicate, offline capture is
+  flagged "Sincronizado tarde" after the close, and a download never overwrites rows still waiting to
+  upload.
 - Against the local stack (seeded users): open/stage/close-answers/close through the Edge Function,
   `sync-upload` batches from the Flutter uploader (accepted, idempotent re-send, `duplicate_follow_up`,
   `score_five_not_allowed`), auto-attendance, offline capture then "Sincronizado tarde" after the

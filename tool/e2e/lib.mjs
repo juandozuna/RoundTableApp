@@ -192,7 +192,8 @@ export class App {
   /** `last`: take the match that comes last in the DOM (the top-most one, e.g. in a dialog). */
   async find(matcher, { role, nth = 0, last = false } = {}) {
     const test = toTest(matcher);
-    const found = (await this.nodes()).filter((n) => (!role || n.role === role) && test(n.text));
+    const roles = role ? [].concat(role) : null;
+    const found = (await this.nodes()).filter((n) => (!roles || roles.includes(n.role)) && test(n.text));
     if (last) return found.filter((n) => rank(n, matcher) === Math.min(...found.map((m) => rank(m, matcher)))).at(-1);
     // Prefer the tightest match (exact first line), then smallest area.
     found.sort((a, b) => rank(a, matcher) - rank(b, matcher) || a.w * a.h - b.w * b.h);
@@ -257,6 +258,15 @@ export class App {
     const field = fields[index];
     if (!field) throw new Error(`[${this.name}] no text field #${index} (found ${fields.length})`);
     await this.typeInto(field, value);
+  }
+
+  /** Focuses a text field and returns what it holds (the focused DOM input mirrors the field). */
+  async fieldValue(label) {
+    await this.waitFor(label, { timeout: 15_000 });
+    const field = (await this.nodes()).find((n) => n.hasInput && toTest(label)(n.text));
+    await this.page.mouse.click(field.x + field.w / 2, field.y + field.h / 2);
+    await sleep(400);
+    return this.page.evaluate(() => document.activeElement?.value ?? null);
   }
 
   /** Focuses a text field by its label and types. */

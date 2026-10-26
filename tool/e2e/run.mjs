@@ -6,8 +6,10 @@ import { offline } from './scenarios/offline.mjs';
 import { admin } from './scenarios/admin.mjs';
 import { signIn } from './scenarios/sign-in.mjs';
 import { invites } from './scenarios/invites.mjs';
+import { isolation } from './scenarios/isolation.mjs';
+import { responsive } from './scenarios/responsive.mjs';
 
-const all = { 'sign-in': signIn, invites, 'live-session': liveSession, offline, admin };
+const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin };
 const selected = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(all);
 const browser = await launch();
 try {
