@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,17 +80,6 @@ class AuthFeatureRouter extends FeatureRouter {
           child: const AccountPage(),
         ),
       ),
-    ),
-  ];
-
-  @override
-  List<ShellDestination> get destinations => [
-    ShellDestination(
-      location: AuthRoutes.account,
-      icon: Icons.person_outline_rounded,
-      selectedIcon: Icons.person_rounded,
-      label: (l10n) => l10n.navAccount,
-      order: 90,
     ),
   ];
 }
