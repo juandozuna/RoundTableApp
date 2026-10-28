@@ -129,7 +129,7 @@ switcher.
 | 403 | `forbidden`, `not_table_participant`, `invite_role_forbidden`, `invite_table_forbidden` |
 | 404 | `not_found`, `route_not_found`, `session_not_found`, `invite_not_found` |
 | 405 | `method_not_allowed` |
-| 409 | `table_full`, `table_has_facilitator`, `table_not_active`, `already_member`, `membership_inactive`, `cannot_move_facilitator`, `cannot_remove_facilitator`, `person_inactive`, `person_already_linked`, `duplicate_id`, `duplicate_assessment`, `duplicate_follow_up`, `duplicate_answer`, `duplicate_commitment`, `duplicate_attendance`, `duplicate_table_code`, `duplicate_organization`, `duplicate_location`, `duplicate_token`, `conflict`, `session_closed`, `session_cancelled`, `session_finalized`, `session_pending_exists`, `invalid_session_transition`, `follow_up_already_recorded`, `value_change_blocked`, `organization_inactive`, `last_platform_admin`, `invite_already_used`, `invite_pending_exists`, `person_linked_elsewhere`, `identity_linked_elsewhere`, `no_person`, `operation_not_allowed` |
+| 409 | `table_full`, `table_has_facilitator`, `table_not_active`, `already_member`, `membership_inactive`, `cannot_move_facilitator`, `cannot_remove_facilitator`, `person_inactive`, `person_already_linked`, `duplicate_id`, `duplicate_assessment`, `duplicate_follow_up`, `duplicate_answer`, `duplicate_commitment`, `duplicate_attendance`, `duplicate_table_code`, `duplicate_organization`, `duplicate_location`, `duplicate_token`, `conflict`, `session_closed`, `session_cancelled`, `session_finalized`, `session_pending_exists`, `invalid_session_transition`, `follow_up_already_recorded`, `value_change_blocked`, `value_rewind_confirmation_required`, `organization_inactive`, `last_platform_admin`, `invite_already_used`, `invite_pending_exists`, `person_linked_elsewhere`, `identity_linked_elsewhere`, `no_person`, `operation_not_allowed` |
 | 410 | `invite_expired`, `invite_revoked` |
 | 422 | `validation_failed`, `invalid_reference`, `immutable_field`, `invalid_timezone`, `unsupported_table`, `score_out_of_range`, `score_five_not_allowed`, `question_mismatch`, `follow_up_not_available`, `follow_up_session_mismatch`, `facilitator_required` |
 | 429 | `rate_limited` (anonymous invite preview; `Retry-After` header and `retry_after_seconds`) |
@@ -415,7 +415,7 @@ codes to these endpoints.
 | `POST /admin/locations` | coordinator/admin | `{ organization_id, name, city?, region?, address? }` | `201 { location }` |
 | `PATCH /admin/locations/{id}` | coordinator/admin | `{ name?, city?, region?, address?, status? }` | `{ location }` |
 | `POST /admin/tables` | coordinator/admin | `{ organization_id, location_id, name, code, weekday 1..7, start_time "HH:MM", timezone (IANA), duration_minutes? 10..120, start_value_id?, first_session_after? ISO, facilitator: { person_id } \| { person: {...} } }` | `201 { table }` |
-| `PATCH /admin/tables/{id}` | coordinator/admin | `{ name?, code?, location_id?, weekday?, start_time?, timezone?, duration_minutes?, status?, current_value_id? }` | `{ table }` |
+| `PATCH /admin/tables/{id}` | coordinator/admin | `{ name?, code?, location_id?, weekday?, start_time?, timezone?, duration_minutes?, status?, current_value_id?, confirm_rewind? }` | `{ table }` |
 | `POST /admin/tables/{id}/facilitator` | coordinator/admin | `{ person_id } \| { person }, keep_previous_as_member?: bool` | `{ table }` (+ `facilitator_invite` when the new facilitator has no account) |
 | `POST /admin/tables/{id}/members` | coordinator/admin | `{ person_id }` (existing person of the org; new people go through `POST /invites`) | `201 { member }` |
 | `POST /admin/members/{table_member_id}/move` | coordinator/admin | `{ to_round_table_id }` | `{ member }` (the new membership) |
@@ -428,6 +428,17 @@ codes to these endpoints.
 `facilitator: { table_member_id, person_id, first_name, last_name, linked } | null`,
 `pending_session: { id, status, scheduled_at, value_id, follow_up_value_id } | null`, and on create /
 facilitator change `facilitator_invite: invite | null`.
+
+Program position (RF-28): `POST /admin/tables` takes an optional `start_value_id` (default: value 1) and
+`PATCH` takes `current_value_id` (an active `curriculum_values.id`, sequence 1–48; the form offers a
+module + value picker fed by `GET curriculum_values?select=…,module:curriculum_modules(number,name)`).
+Moving the table **back** to a value at or before one it already closed a session on is refused with
+`value_rewind_confirmation_required` (409) unless the request carries `confirm_rewind: true`; moving
+forward, or back to a value with no closed session, needs no confirmation. Closed sessions are never
+modified (history keeps its own `value_id`); the pending session is re-pointed (see below); moving a
+`completed` table back into the program reactivates it. Every position change writes an audit event
+`table.value_changed` with payload `{ from_value_id, to_value_id, from_sequence, to_sequence, rewind,
+confirmed }` in addition to `table.updated`.
 
 Table rules: code is uppercased (`LUZ-03`), unique per organization (`duplicate_table_code`);
 missing facilitator → `validation_failed` with `fields.facilitator` (API) / `facilitator_required`

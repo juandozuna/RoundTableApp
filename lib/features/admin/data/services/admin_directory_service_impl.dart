@@ -4,6 +4,7 @@ import '../../domain/models/admin_location.dart';
 import '../../domain/models/admin_organization.dart';
 import '../../domain/models/admin_person.dart';
 import '../../domain/models/admin_table.dart';
+import '../../domain/models/program_value.dart';
 import '../../domain/models/table_membership.dart';
 import '../../domain/services/admin_directory_service.dart';
 import '../datasources/admin_remote_data_source.dart';
@@ -40,6 +41,9 @@ class AdminDirectoryServiceImpl implements AdminDirectoryService {
 
   @override
   Future<AdminPerson> person(String id) => _remote.person(id);
+
+  @override
+  Future<List<ProgramValue>> programValues() => _remote.programValues();
 
   @override
   Future<List<TableMembership>> memberships(String roundTableId) =>

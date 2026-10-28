@@ -97,6 +97,28 @@ void main() {
       expect(request.query['organization_id'], 'eq.o1');
     });
 
+    test('program values come ordered with their module embedded', () async {
+      adapter.replies.add((
+        status: 200,
+        body: [
+          {
+            'id': 'v1',
+            'sequence': 1,
+            'number_in_module': 1,
+            'name': 'Honestidad',
+            'module': {'number': 1, 'name': 'Carácter'},
+          },
+        ],
+      ));
+      final values = await admin.programValues();
+      final request = adapter.requests.single;
+      expect(request.path, '/curriculum_values');
+      expect(request.query['order'], 'sequence.asc');
+      expect(request.query['status'], 'eq.active');
+      expect(values.single.module.name, 'Carácter');
+      expect(values.single.sequence, 1);
+    });
+
     test('a missing row is a not-found failure', () async {
       adapter.replies.add((status: 200, body: <Object>[]));
       expect(
@@ -214,6 +236,44 @@ void main() {
         });
       },
     );
+
+    test(
+      'a table edit sends the chosen value and the rewind confirmation',
+      () async {
+        adapter.replies.add((
+          status: 200,
+          body: {
+            'table': {'id': 't1'},
+          },
+        ));
+        await admin.updateTable(
+          't1',
+          const TableInput(currentValueId: 'v3', confirmRewind: true),
+        );
+        final request = adapter.requests.single;
+        expect(request.method, 'PATCH');
+        expect(request.body, {
+          'current_value_id': 'v3',
+          'confirm_rewind': true,
+        });
+      },
+    );
+
+    test('creating a table sends the starting value', () async {
+      adapter.replies.add((
+        status: 201,
+        body: {
+          'table': {'id': 't1'},
+        },
+      ));
+      await admin.createTable(
+        organizationId: 'o1',
+        input: const TableInput(name: 'Mesa', startValueId: 'v7'),
+        facilitator: const PersonRef.existing('p1'),
+      );
+      final body = adapter.requests.single.body! as Map<String, dynamic>;
+      expect(body['start_value_id'], 'v7');
+    });
 
     test(
       'change facilitator sends the existing person and the keep flag',

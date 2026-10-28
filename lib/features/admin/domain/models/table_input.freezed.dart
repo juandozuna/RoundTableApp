@@ -22,6 +22,15 @@ mixin _$TableInput {
   int? get durationMinutes;
   RoundTableStatus? get status;
 
+  /// Create only: value the program starts at (default: value 1).
+  String? get startValueId;
+
+  /// Edit only: value the table works next (RF-28).
+  String? get currentValueId;
+
+  /// Edit only: the admin confirmed moving back past completed history.
+  bool? get confirmRewind;
+
   /// Create a copy of TableInput
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +57,13 @@ mixin _$TableInput {
                 other.timezone == timezone) &&
             (identical(other.durationMinutes, durationMinutes) ||
                 other.durationMinutes == durationMinutes) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.startValueId, startValueId) ||
+                other.startValueId == startValueId) &&
+            (identical(other.currentValueId, currentValueId) ||
+                other.currentValueId == currentValueId) &&
+            (identical(other.confirmRewind, confirmRewind) ||
+                other.confirmRewind == confirmRewind));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -63,11 +78,14 @@ mixin _$TableInput {
     timezone,
     durationMinutes,
     status,
+    startValueId,
+    currentValueId,
+    confirmRewind,
   );
 
   @override
   String toString() {
-    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status)';
+    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, confirmRewind: $confirmRewind)';
   }
 }
 
@@ -87,6 +105,9 @@ abstract mixin class $TableInputCopyWith<$Res> {
     String? timezone,
     int? durationMinutes,
     RoundTableStatus? status,
+    String? startValueId,
+    String? currentValueId,
+    bool? confirmRewind,
   });
 }
 
@@ -110,6 +131,9 @@ class _$TableInputCopyWithImpl<$Res> implements $TableInputCopyWith<$Res> {
     Object? timezone = freezed,
     Object? durationMinutes = freezed,
     Object? status = freezed,
+    Object? startValueId = freezed,
+    Object? currentValueId = freezed,
+    Object? confirmRewind = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -145,6 +169,18 @@ class _$TableInputCopyWithImpl<$Res> implements $TableInputCopyWith<$Res> {
             ? _self.status
             : status // ignore: cast_nullable_to_non_nullable
                   as RoundTableStatus?,
+        startValueId: freezed == startValueId
+            ? _self.startValueId
+            : startValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        currentValueId: freezed == currentValueId
+            ? _self.currentValueId
+            : currentValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        confirmRewind: freezed == confirmRewind
+            ? _self.confirmRewind
+            : confirmRewind // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -252,6 +288,9 @@ extension TableInputPatterns on TableInput {
       String? timezone,
       int? durationMinutes,
       RoundTableStatus? status,
+      String? startValueId,
+      String? currentValueId,
+      bool? confirmRewind,
     )?
     $default, {
     required TResult orElse(),
@@ -268,6 +307,9 @@ extension TableInputPatterns on TableInput {
           _that.timezone,
           _that.durationMinutes,
           _that.status,
+          _that.startValueId,
+          _that.currentValueId,
+          _that.confirmRewind,
         );
       case _:
         return orElse();
@@ -298,6 +340,9 @@ extension TableInputPatterns on TableInput {
       String? timezone,
       int? durationMinutes,
       RoundTableStatus? status,
+      String? startValueId,
+      String? currentValueId,
+      bool? confirmRewind,
     )
     $default,
   ) {
@@ -313,6 +358,9 @@ extension TableInputPatterns on TableInput {
           _that.timezone,
           _that.durationMinutes,
           _that.status,
+          _that.startValueId,
+          _that.currentValueId,
+          _that.confirmRewind,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -342,6 +390,9 @@ extension TableInputPatterns on TableInput {
       String? timezone,
       int? durationMinutes,
       RoundTableStatus? status,
+      String? startValueId,
+      String? currentValueId,
+      bool? confirmRewind,
     )?
     $default,
   ) {
@@ -357,6 +408,9 @@ extension TableInputPatterns on TableInput {
           _that.timezone,
           _that.durationMinutes,
           _that.status,
+          _that.startValueId,
+          _that.currentValueId,
+          _that.confirmRewind,
         );
       case _:
         return null;
@@ -376,6 +430,9 @@ class _TableInput implements TableInput {
     this.timezone,
     this.durationMinutes,
     this.status,
+    this.startValueId,
+    this.currentValueId,
+    this.confirmRewind,
   });
   factory _TableInput.fromJson(Map<String, dynamic> json) =>
       _$TableInputFromJson(json);
@@ -396,6 +453,18 @@ class _TableInput implements TableInput {
   final int? durationMinutes;
   @override
   final RoundTableStatus? status;
+
+  /// Create only: value the program starts at (default: value 1).
+  @override
+  final String? startValueId;
+
+  /// Edit only: value the table works next (RF-28).
+  @override
+  final String? currentValueId;
+
+  /// Edit only: the admin confirmed moving back past completed history.
+  @override
+  final bool? confirmRewind;
 
   /// Create a copy of TableInput
   /// with the given fields replaced by the non-null parameter values.
@@ -426,7 +495,13 @@ class _TableInput implements TableInput {
                 other.timezone == timezone) &&
             (identical(other.durationMinutes, durationMinutes) ||
                 other.durationMinutes == durationMinutes) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.startValueId, startValueId) ||
+                other.startValueId == startValueId) &&
+            (identical(other.currentValueId, currentValueId) ||
+                other.currentValueId == currentValueId) &&
+            (identical(other.confirmRewind, confirmRewind) ||
+                other.confirmRewind == confirmRewind));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -441,11 +516,14 @@ class _TableInput implements TableInput {
     timezone,
     durationMinutes,
     status,
+    startValueId,
+    currentValueId,
+    confirmRewind,
   );
 
   @override
   String toString() {
-    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status)';
+    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, confirmRewind: $confirmRewind)';
   }
 }
 
@@ -467,6 +545,9 @@ abstract mixin class _$TableInputCopyWith<$Res>
     String? timezone,
     int? durationMinutes,
     RoundTableStatus? status,
+    String? startValueId,
+    String? currentValueId,
+    bool? confirmRewind,
   });
 }
 
@@ -490,6 +571,9 @@ class __$TableInputCopyWithImpl<$Res> implements _$TableInputCopyWith<$Res> {
     Object? timezone = freezed,
     Object? durationMinutes = freezed,
     Object? status = freezed,
+    Object? startValueId = freezed,
+    Object? currentValueId = freezed,
+    Object? confirmRewind = freezed,
   }) {
     return _then(
       _TableInput(
@@ -525,6 +609,18 @@ class __$TableInputCopyWithImpl<$Res> implements _$TableInputCopyWith<$Res> {
             ? _self.status
             : status // ignore: cast_nullable_to_non_nullable
                   as RoundTableStatus?,
+        startValueId: freezed == startValueId
+            ? _self.startValueId
+            : startValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        currentValueId: freezed == currentValueId
+            ? _self.currentValueId
+            : currentValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        confirmRewind: freezed == confirmRewind
+            ? _self.confirmRewind
+            : confirmRewind // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }

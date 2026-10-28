@@ -7,6 +7,7 @@ import '../../domain/models/admin_location.dart';
 import '../../domain/models/admin_organization.dart';
 import '../../domain/models/admin_person.dart';
 import '../../domain/models/admin_table.dart';
+import '../../domain/models/program_value.dart';
 import '../../domain/models/table_membership.dart';
 
 part 'admin_read_client.g.dart';
@@ -33,6 +34,11 @@ abstract class AdminReadClient {
 
   @GET('/admin_people')
   Future<List<AdminPerson>> people(@Queries() Map<String, dynamic> query);
+
+  @GET('/curriculum_values')
+  Future<List<ProgramValue>> programValues(
+    @Queries() Map<String, dynamic> query,
+  );
 
   @GET('/table_members')
   Future<List<TableMembership>> memberships(

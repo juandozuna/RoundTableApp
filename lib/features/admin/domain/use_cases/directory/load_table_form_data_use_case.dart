@@ -7,7 +7,8 @@ import '../../models/table_form_data.dart';
 import '../../services/admin_directory_service.dart';
 
 /// Choices for the table form: organizations, the chosen organization's
-/// locations and the people who can facilitate, plus the table when editing.
+/// locations, the people who can facilitate and the program values, plus the
+/// table when editing.
 @injectable
 class LoadTableFormDataUseCase {
   const LoadTableFormDataUseCase(this._directory);
@@ -27,12 +28,14 @@ class LoadTableFormDataUseCase {
     final tables = orgId == null
         ? Future.value(const <AdminTable>[])
         : _directory.tables(organizationId: orgId);
+    final programValues = _directory.programValues();
     return TableFormData(
       table: table,
       organizations: await organizations,
       locations: await locations,
       people: await people,
       organizationTables: await tables,
+      programValues: await programValues,
     );
   }
 }

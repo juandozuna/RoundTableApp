@@ -76,14 +76,37 @@ class TableFormCubit extends Cubit<TableFormState> {
   }
 
   Future<void> update(String tableId, TableInput input) async {
-    emit(state.copyWith(status: TableFormStatus.submitting, error: null));
+    emit(
+      state.copyWith(
+        status: TableFormStatus.submitting,
+        error: null,
+        pendingRewind: null,
+      ),
+    );
     try {
       await _updateTable(tableId, input);
       emit(
         state.copyWith(status: TableFormStatus.saved, savedTableId: tableId),
       );
     } on ApiException catch (error) {
+      if (error.code == _rewindConfirmationCode) {
+        emit(
+          state.copyWith(status: TableFormStatus.editing, pendingRewind: input),
+        );
+        return;
+      }
       emit(state.copyWith(status: TableFormStatus.editing, error: error));
     }
   }
+
+  /// The admin confirmed the rewind: resend the refused edit.
+  Future<void> confirmRewind(String tableId) async {
+    final pending = state.pendingRewind;
+    if (pending == null) return;
+    await update(tableId, pending.copyWith(confirmRewind: true));
+  }
+
+  void dismissRewind() => emit(state.copyWith(pendingRewind: null));
+
+  static const _rewindConfirmationCode = 'value_rewind_confirmation_required';
 }

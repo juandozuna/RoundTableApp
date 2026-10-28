@@ -12,6 +12,7 @@ import '../../domain/models/location_input.dart';
 import '../../domain/models/organization_input.dart';
 import '../../domain/models/organization_status.dart';
 import '../../domain/models/person_input.dart';
+import '../../domain/models/program_value.dart';
 import '../../domain/models/table_change.dart';
 import '../../domain/models/table_input.dart';
 import '../../domain/models/table_membership.dart';
@@ -88,6 +89,15 @@ class AdminRemoteDataSource {
     );
     return _first(rows);
   }
+
+  Future<List<ProgramValue>> programValues() => guardApiCall(
+    () => _read.programValues({
+      'select':
+          'id,sequence,number_in_module,name,module:curriculum_modules(number,name)',
+      'status': 'eq.active',
+      'order': 'sequence.asc',
+    }),
+  );
 
   Future<List<TableMembership>> memberships(String roundTableId) =>
       guardApiCall(

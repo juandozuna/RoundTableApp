@@ -15,6 +15,9 @@ _TableInput _$TableInputFromJson(Map<String, dynamic> json) => _TableInput(
   timezone: json['timezone'] as String?,
   durationMinutes: (json['duration_minutes'] as num?)?.toInt(),
   status: $enumDecodeNullable(_$RoundTableStatusEnumMap, json['status']),
+  startValueId: json['start_value_id'] as String?,
+  currentValueId: json['current_value_id'] as String?,
+  confirmRewind: json['confirm_rewind'] as bool?,
 );
 
 Map<String, dynamic> _$TableInputToJson(_TableInput instance) =>
@@ -27,6 +30,9 @@ Map<String, dynamic> _$TableInputToJson(_TableInput instance) =>
       'timezone': ?instance.timezone,
       'duration_minutes': ?instance.durationMinutes,
       'status': ?_$RoundTableStatusEnumMap[instance.status],
+      'start_value_id': ?instance.startValueId,
+      'current_value_id': ?instance.currentValueId,
+      'confirm_rewind': ?instance.confirmRewind,
     };
 
 const _$RoundTableStatusEnumMap = {

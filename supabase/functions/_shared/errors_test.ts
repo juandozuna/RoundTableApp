@@ -23,6 +23,7 @@ Deno.test("http status per code family", () => {
   assertEquals(new ApiError("unauthenticated").status, 401);
   assertEquals(new ApiError("invite_expired").status, 410);
   assertEquals(new ApiError("score_five_not_allowed").status, 422);
+  assertEquals(new ApiError("value_rewind_confirmation_required").status, 409);
 });
 
 Deno.test("router strips the function prefix and matches params", () => {
