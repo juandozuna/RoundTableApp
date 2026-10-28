@@ -1,6 +1,6 @@
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../core/models/score_rules.dart';
-import 'commitment_follow_up_status.dart';
 
 /// Fields a person fills in, used to attach validation errors to controls.
 enum ResponseField {

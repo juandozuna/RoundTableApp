@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/models/session_stage.dart';
-import 'session_status.dart';
+import '../../../../core/models/session_status.dart';
 
 part 'session_info.freezed.dart';
 

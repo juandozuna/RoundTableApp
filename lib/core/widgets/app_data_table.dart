@@ -136,6 +136,8 @@ class AppDataTable<T> extends StatelessWidget {
         color: active ? context.colors.ink : null,
       ),
       textAlign: column.numeric ? TextAlign.end : TextAlign.start,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
     if (!column.sortable || onSort == null) return label;
     return InkWell(

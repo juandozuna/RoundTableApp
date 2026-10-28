@@ -36,7 +36,8 @@ abstract class ExplorerTable with _$ExplorerTable {
     double? improvementAvg,
     @Default(0) int syncedLateRows,
     DateTime? lastSessionAt,
-    String? currentValueLabel,
+    int? currentValueSequence,
+    String? currentValueName,
   }) = _ExplorerTable;
 
   factory ExplorerTable.merge(AdminTable table, KpiTableRow? kpi) =>
@@ -63,12 +64,8 @@ abstract class ExplorerTable with _$ExplorerTable {
         improvementAvg: kpi?.improvementAvg,
         syncedLateRows: kpi?.syncedLateRows ?? 0,
         lastSessionAt: kpi?.lastSessionAt,
-        currentValueLabel:
-            kpi?.currentValueLabel ??
-            (table.currentValueSequence == null
-                ? null
-                : 'Valor ${table.currentValueSequence} · '
-                      '${table.currentValueName ?? ''}'),
+        currentValueSequence: table.currentValueSequence,
+        currentValueName: table.currentValueName,
       );
 
   static HealthStatus _healthFromStatus(RoundTableStatus status) =>

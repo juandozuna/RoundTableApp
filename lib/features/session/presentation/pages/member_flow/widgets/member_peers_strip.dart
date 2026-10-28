@@ -67,15 +67,16 @@ class MemberPeersStrip extends StatelessWidget {
                   Positioned(
                     right: -4,
                     top: -4,
-                    child: _Badge(icon: badge, color: color),
+                    child: _buildBadge(context, badge, color),
                   ),
                   if (participant.isFacilitator)
                     Positioned(
                       left: -4,
                       top: -4,
-                      child: _Badge(
-                        icon: Icons.workspace_premium_rounded,
-                        color: context.colors.accentStrong,
+                      child: _buildBadge(
+                        context,
+                        Icons.workspace_premium_rounded,
+                        context.colors.accentStrong,
                       ),
                     ),
                 ],
@@ -128,16 +129,8 @@ class MemberPeersStrip extends StatelessWidget {
     AttendanceStatus.absent => Icons.close_rounded,
     null => Icons.more_horiz_rounded,
   };
-}
 
-class _Badge extends StatelessWidget {
-  const _Badge({required this.icon, required this.color});
-
-  final IconData icon;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildBadge(BuildContext context, IconData icon, Color color) {
     return Container(
       width: 16,
       height: 16,

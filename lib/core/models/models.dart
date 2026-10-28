@@ -1,7 +1,9 @@
 export 'assessment_kind.dart';
 export 'attendance_status.dart';
+export 'commitment_follow_up_status.dart';
 export 'health_status.dart';
 export 'score_rules.dart';
 export 'session_stage.dart';
+export 'session_status.dart';
 export 'sync_state.dart';
 export 'user_role.dart';

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/extensions/build_context_x.dart';
+import '../../../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../../../core/theme/app_spacing.dart';
 import '../../../../../../core/theme/status_tone.dart';
 import '../../../../../../core/widgets/app_card.dart';
 import '../../../../../../core/widgets/app_message.dart';
 import '../../../../../../core/widgets/score_grid.dart';
-import '../../../../domain/models/commitment_follow_up_status.dart';
 import '../../../../domain/models/member_flow.dart';
 import '../../../../domain/models/member_step.dart';
 import '../../../../domain/models/response_validation.dart';

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'commitment_follow_up_status.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
 
 part 'my_responses.freezed.dart';
 

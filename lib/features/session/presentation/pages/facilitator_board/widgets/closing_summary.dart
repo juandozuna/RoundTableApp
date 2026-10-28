@@ -77,28 +77,32 @@ class ClosingSummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _grid(context, [
-          _Tile(
+        _buildTileGrid(context, [
+          (
             value: '$attending/${_people.length}',
             caption: absent > 0
                 ? l10n.sessionBoardSummaryPresentWithAbsent(absent)
                 : l10n.sessionBoardSummaryPresent,
+            wide: false,
           ),
-          _Tile(
+          (
             value: duration == null ? '–' : SessionTimerFormat.format(duration),
             caption: l10n.sessionBoardSummaryDuration(
               session.table.durationMinutes,
             ),
+            wide: false,
           ),
-          _Tile(
+          (
             value: '${followUp.received}/${followUp.expected}',
             caption: l10n.sessionBoardSummaryFollowUp(followUp.average),
+            wide: false,
           ),
-          _Tile(
+          (
             value: '${reflection.received}/${reflection.expected}',
             caption: l10n.sessionBoardSummaryValue(reflection.average),
+            wide: false,
           ),
-          _Tile(
+          (
             value: '${commitment.received}/${commitment.expected}',
             caption: l10n.sessionBoardSummaryCommitments,
             wide: true,
@@ -140,7 +144,7 @@ class ClosingSummary extends StatelessWidget {
     child: child,
   );
 
-  Widget _grid(BuildContext context, List<_Tile> tiles) {
+  Widget _buildTileGrid(BuildContext context, List<_TileData> tiles) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final half = (constraints.maxWidth - AppSpacing.sm) / 2;
@@ -151,24 +155,15 @@ class ClosingSummary extends StatelessWidget {
             for (final tile in tiles)
               SizedBox(
                 width: tile.wide ? constraints.maxWidth : half,
-                child: tile,
+                child: _buildTile(context, tile),
               ),
           ],
         );
       },
     );
   }
-}
 
-class _Tile extends StatelessWidget {
-  const _Tile({required this.value, required this.caption, this.wide = false});
-
-  final String value;
-  final String caption;
-  final bool wide;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTile(BuildContext context, _TileData tile) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -185,13 +180,17 @@ class _Tile extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 84),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(value, style: context.textStyles.numberLarge),
+              child: Text(tile.value, style: context.textStyles.numberLarge),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          Expanded(child: Text(caption, style: context.textTheme.bodySmall)),
+          Expanded(
+            child: Text(tile.caption, style: context.textTheme.bodySmall),
+          ),
         ],
       ),
     );
   }
 }
+
+typedef _TileData = ({String value, String caption, bool wide});

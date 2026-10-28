@@ -35,7 +35,8 @@ mixin _$ExplorerTable {
   double? get improvementAvg;
   int get syncedLateRows;
   DateTime? get lastSessionAt;
-  String? get currentValueLabel;
+  int? get currentValueSequence;
+  String? get currentValueName;
 
   /// Create a copy of ExplorerTable
   /// with the given fields replaced by the non-null parameter values.
@@ -90,8 +91,10 @@ mixin _$ExplorerTable {
                 other.syncedLateRows == syncedLateRows) &&
             (identical(other.lastSessionAt, lastSessionAt) ||
                 other.lastSessionAt == lastSessionAt) &&
-            (identical(other.currentValueLabel, currentValueLabel) ||
-                other.currentValueLabel == currentValueLabel));
+            (identical(other.currentValueSequence, currentValueSequence) ||
+                other.currentValueSequence == currentValueSequence) &&
+            (identical(other.currentValueName, currentValueName) ||
+                other.currentValueName == currentValueName));
   }
 
   @override
@@ -119,12 +122,13 @@ mixin _$ExplorerTable {
     improvementAvg,
     syncedLateRows,
     lastSessionAt,
-    currentValueLabel,
+    currentValueSequence,
+    currentValueName,
   ]);
 
   @override
   String toString() {
-    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueLabel: $currentValueLabel)';
+    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName)';
   }
 }
 
@@ -158,7 +162,8 @@ abstract mixin class $ExplorerTableCopyWith<$Res> {
     double? improvementAvg,
     int syncedLateRows,
     DateTime? lastSessionAt,
-    String? currentValueLabel,
+    int? currentValueSequence,
+    String? currentValueName,
   });
 }
 
@@ -197,7 +202,8 @@ class _$ExplorerTableCopyWithImpl<$Res>
     Object? improvementAvg = freezed,
     Object? syncedLateRows = null,
     Object? lastSessionAt = freezed,
-    Object? currentValueLabel = freezed,
+    Object? currentValueSequence = freezed,
+    Object? currentValueName = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -289,9 +295,13 @@ class _$ExplorerTableCopyWithImpl<$Res>
             ? _self.lastSessionAt
             : lastSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        currentValueLabel: freezed == currentValueLabel
-            ? _self.currentValueLabel
-            : currentValueLabel // ignore: cast_nullable_to_non_nullable
+        currentValueSequence: freezed == currentValueSequence
+            ? _self.currentValueSequence
+            : currentValueSequence // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        currentValueName: freezed == currentValueName
+            ? _self.currentValueName
+            : currentValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );
@@ -414,7 +424,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       double? improvementAvg,
       int syncedLateRows,
       DateTime? lastSessionAt,
-      String? currentValueLabel,
+      int? currentValueSequence,
+      String? currentValueName,
     )?
     $default, {
     required TResult orElse(),
@@ -445,7 +456,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.improvementAvg,
           _that.syncedLateRows,
           _that.lastSessionAt,
-          _that.currentValueLabel,
+          _that.currentValueSequence,
+          _that.currentValueName,
         );
       case _:
         return orElse();
@@ -490,7 +502,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       double? improvementAvg,
       int syncedLateRows,
       DateTime? lastSessionAt,
-      String? currentValueLabel,
+      int? currentValueSequence,
+      String? currentValueName,
     )
     $default,
   ) {
@@ -520,7 +533,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.improvementAvg,
           _that.syncedLateRows,
           _that.lastSessionAt,
-          _that.currentValueLabel,
+          _that.currentValueSequence,
+          _that.currentValueName,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -564,7 +578,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       double? improvementAvg,
       int syncedLateRows,
       DateTime? lastSessionAt,
-      String? currentValueLabel,
+      int? currentValueSequence,
+      String? currentValueName,
     )?
     $default,
   ) {
@@ -594,7 +609,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.improvementAvg,
           _that.syncedLateRows,
           _that.lastSessionAt,
-          _that.currentValueLabel,
+          _that.currentValueSequence,
+          _that.currentValueName,
         );
       case _:
         return null;
@@ -628,7 +644,8 @@ class _ExplorerTable extends ExplorerTable {
     this.improvementAvg,
     this.syncedLateRows = 0,
     this.lastSessionAt,
-    this.currentValueLabel,
+    this.currentValueSequence,
+    this.currentValueName,
   }) : super._();
 
   @override
@@ -678,7 +695,9 @@ class _ExplorerTable extends ExplorerTable {
   @override
   final DateTime? lastSessionAt;
   @override
-  final String? currentValueLabel;
+  final int? currentValueSequence;
+  @override
+  final String? currentValueName;
 
   /// Create a copy of ExplorerTable
   /// with the given fields replaced by the non-null parameter values.
@@ -731,8 +750,10 @@ class _ExplorerTable extends ExplorerTable {
                 other.syncedLateRows == syncedLateRows) &&
             (identical(other.lastSessionAt, lastSessionAt) ||
                 other.lastSessionAt == lastSessionAt) &&
-            (identical(other.currentValueLabel, currentValueLabel) ||
-                other.currentValueLabel == currentValueLabel));
+            (identical(other.currentValueSequence, currentValueSequence) ||
+                other.currentValueSequence == currentValueSequence) &&
+            (identical(other.currentValueName, currentValueName) ||
+                other.currentValueName == currentValueName));
   }
 
   @override
@@ -760,12 +781,13 @@ class _ExplorerTable extends ExplorerTable {
     improvementAvg,
     syncedLateRows,
     lastSessionAt,
-    currentValueLabel,
+    currentValueSequence,
+    currentValueName,
   ]);
 
   @override
   String toString() {
-    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueLabel: $currentValueLabel)';
+    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName)';
   }
 }
 
@@ -801,7 +823,8 @@ abstract mixin class _$ExplorerTableCopyWith<$Res>
     double? improvementAvg,
     int syncedLateRows,
     DateTime? lastSessionAt,
-    String? currentValueLabel,
+    int? currentValueSequence,
+    String? currentValueName,
   });
 }
 
@@ -840,7 +863,8 @@ class __$ExplorerTableCopyWithImpl<$Res>
     Object? improvementAvg = freezed,
     Object? syncedLateRows = null,
     Object? lastSessionAt = freezed,
-    Object? currentValueLabel = freezed,
+    Object? currentValueSequence = freezed,
+    Object? currentValueName = freezed,
   }) {
     return _then(
       _ExplorerTable(
@@ -932,9 +956,13 @@ class __$ExplorerTableCopyWithImpl<$Res>
             ? _self.lastSessionAt
             : lastSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        currentValueLabel: freezed == currentValueLabel
-            ? _self.currentValueLabel
-            : currentValueLabel // ignore: cast_nullable_to_non_nullable
+        currentValueSequence: freezed == currentValueSequence
+            ? _self.currentValueSequence
+            : currentValueSequence // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        currentValueName: freezed == currentValueName
+            ? _self.currentValueName
+            : currentValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );

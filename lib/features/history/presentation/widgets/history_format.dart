@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/build_context_x.dart';
 import '../../../../core/models/attendance_status.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../core/theme/status_tone.dart';
-import '../../../session/domain/models/commitment_follow_up_status.dart';
 
 /// Number, attendance and commitment-status wording shared by the history
 /// widgets.

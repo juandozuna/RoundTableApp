@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../../../core/services/logging/app_log.dart';
-import '../../../../domain/models/commitment_follow_up_status.dart';
 import '../../../../domain/models/invalid_response_exception.dart';
 import '../../../../domain/models/live_session.dart';
 import '../../../../domain/models/member_flow.dart';

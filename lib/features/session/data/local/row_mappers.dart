@@ -1,6 +1,6 @@
 import '../../../../core/models/session_stage.dart';
+import '../../../../core/models/session_status.dart';
 import '../../domain/models/session_info.dart';
-import '../../domain/models/session_status.dart';
 import 'session_drift_database.dart';
 
 /// Timestamps are stored as ISO-8601 text; parse them leniently.

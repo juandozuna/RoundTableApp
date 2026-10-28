@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/core/models/session_stage.dart';
-import 'package:gold_roundtables/features/session/domain/models/commitment_follow_up_status.dart';
+import 'package:gold_roundtables/core/models/session_status.dart';
 import 'package:gold_roundtables/features/session/domain/models/facilitator_stage.dart';
 import 'package:gold_roundtables/features/session/domain/models/response_validation.dart';
 import 'package:gold_roundtables/features/session/domain/models/session_info.dart';
-import 'package:gold_roundtables/features/session/domain/models/session_status.dart';
 import 'package:gold_roundtables/features/session/domain/models/today_session_selector.dart';
 
 SessionInfo info({

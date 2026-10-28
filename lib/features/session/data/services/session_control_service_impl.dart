@@ -1,10 +1,10 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/models/session_stage.dart';
+import '../../../../core/models/session_status.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/services/clock/clock_service.dart';
 import '../../../../core/services/connectivity/connectivity_service.dart';
-import '../../domain/models/session_status.dart';
 import '../../domain/services/session_control_service.dart';
 import '../datasources/session_local_data_source.dart';
 import '../datasources/session_remote_data_source.dart';

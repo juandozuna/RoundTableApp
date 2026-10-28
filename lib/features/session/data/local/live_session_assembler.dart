@@ -1,8 +1,8 @@
 import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/models/attendance_status.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../core/models/sync_state.dart';
 import '../../domain/models/attendance_source.dart';
-import '../../domain/models/commitment_follow_up_status.dart';
 import '../../domain/models/curriculum_value.dart';
 import '../../domain/models/live_session.dart';
 import '../../domain/models/my_responses.dart';
