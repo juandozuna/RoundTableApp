@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../domain/models/commitment_follow_up_status.dart';
+import '../../../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../domain/models/member_step.dart';
 import '../../../../domain/models/response_validation.dart';
 

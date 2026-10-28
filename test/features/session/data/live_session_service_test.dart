@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/models/attendance_status.dart';
+import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/core/models/sync_state.dart';
 import 'package:gold_roundtables/core/sync/domain/sync_snapshot.dart';
 import 'package:gold_roundtables/core/sync/domain/sync_status_service.dart';
@@ -9,7 +10,6 @@ import 'package:gold_roundtables/features/session/data/datasources/session_local
 import 'package:gold_roundtables/features/session/data/services/attendance_service_impl.dart';
 import 'package:gold_roundtables/features/session/data/services/live_session_service_impl.dart';
 import 'package:gold_roundtables/features/session/data/services/responses_service_impl.dart';
-import 'package:gold_roundtables/features/session/domain/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/features/session/domain/models/live_session.dart';
 import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
 

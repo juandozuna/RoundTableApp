@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../core/models/session_stage.dart';
+import '../../../../../../core/models/session_status.dart';
 import '../../../../../../core/sync/domain/sync_snapshot.dart';
 import '../../../../domain/models/facilitator_stage.dart';
 import '../../../../domain/models/live_session.dart';
 import '../../../../domain/models/member_step.dart';
-import '../../../../domain/models/session_status.dart';
 
 part 'session_state.freezed.dart';
 

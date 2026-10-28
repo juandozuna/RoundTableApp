@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/models/assessment_kind.dart';
+import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/features/history/data/datasources/history_local_data_source.dart';
 import 'package:gold_roundtables/features/history/data/services/history_service_impl.dart';
 import 'package:gold_roundtables/features/session/data/datasources/session_local_data_source.dart';
 import 'package:gold_roundtables/features/session/data/services/responses_service_impl.dart';
-import 'package:gold_roundtables/features/session/domain/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
 
 import '../../session/support/counter_id_generator.dart';

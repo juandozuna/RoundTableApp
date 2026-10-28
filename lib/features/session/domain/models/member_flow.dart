@@ -1,8 +1,8 @@
 import '../../../../core/models/session_stage.dart';
+import '../../../../core/models/session_status.dart';
 import 'live_session.dart';
 import 'member_step.dart';
 import 'session_participant.dart';
-import 'session_status.dart';
 
 /// What a participant can do with one step right now.
 enum StepAccess {

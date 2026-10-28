@@ -2,9 +2,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/models/attendance_status.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
+import '../../../../core/models/session_status.dart';
 import '../../../../core/sync/data/sync_database.dart';
-import '../../../session/domain/models/commitment_follow_up_status.dart';
-import '../../../session/domain/models/session_status.dart';
 import '../../domain/models/history_snapshot.dart';
 
 /// Reads a table's history from the synced tables (ADR 0004), so it works

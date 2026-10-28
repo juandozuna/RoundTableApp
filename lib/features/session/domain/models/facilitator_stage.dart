@@ -1,6 +1,6 @@
 import '../../../../core/models/session_stage.dart';
+import '../../../../core/models/session_status.dart';
 import 'session_info.dart';
-import 'session_status.dart';
 
 /// The five stages on the facilitator's stage bar (ADR 0013). Commitment is
 /// part of [value], and [closing] is "answers closed, session not yet

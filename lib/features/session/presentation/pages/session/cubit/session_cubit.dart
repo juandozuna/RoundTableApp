@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/models/session_stage.dart';
+import '../../../../../../core/models/session_status.dart';
 import '../../../../../../core/services/connectivity/watch_connectivity_use_case.dart';
 import '../../../../../../core/services/logging/app_log.dart';
 import '../../../../../../core/sync/domain/sync_snapshot.dart';
@@ -11,7 +12,6 @@ import '../../../../../../core/sync/domain/watch_sync_status_use_case.dart';
 import '../../../../domain/models/facilitator_stage.dart';
 import '../../../../domain/models/live_session.dart';
 import '../../../../domain/models/member_step.dart';
-import '../../../../domain/models/session_status.dart';
 import '../../../../domain/services/session_control_service.dart';
 import '../../../../domain/use_cases/control/close_answers_use_case.dart';
 import '../../../../domain/use_cases/control/close_session_use_case.dart';

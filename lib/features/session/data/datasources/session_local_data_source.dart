@@ -4,9 +4,9 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/models/assessment_kind.dart';
+import '../../../../core/models/session_status.dart';
 import '../../../../core/sync/data/sync_database.dart';
 import '../../../../core/sync/data/sync_schema.dart';
-import '../../domain/models/session_status.dart';
 import '../../domain/models/today_session_selector.dart';
 import '../local/local_session_data.dart';
 import '../local/row_mappers.dart';

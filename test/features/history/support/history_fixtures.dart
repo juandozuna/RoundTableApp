@@ -1,8 +1,8 @@
 import 'package:gold_roundtables/core/models/assessment_kind.dart';
 import 'package:gold_roundtables/core/models/attendance_status.dart';
+import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
+import 'package:gold_roundtables/core/models/session_status.dart';
 import 'package:gold_roundtables/features/history/domain/models/history_snapshot.dart';
-import 'package:gold_roundtables/features/session/domain/models/commitment_follow_up_status.dart';
-import 'package:gold_roundtables/features/session/domain/models/session_status.dart';
 
 /// Table "Esperanza": facilitator Sofía, members Ana and Luis, and Marta who
 /// left without any data. Two closed sessions (Honestidad on the 22nd,

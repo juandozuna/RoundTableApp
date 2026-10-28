@@ -1,5 +1,5 @@
 import '../../../../core/models/assessment_kind.dart';
-import '../../../session/domain/models/session_status.dart';
+import '../../../../core/models/session_status.dart';
 import 'history_snapshot.dart';
 import 'member_history.dart';
 import 'table_history.dart';

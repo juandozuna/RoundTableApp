@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/models/attendance_status.dart';
 import 'package:gold_roundtables/core/models/session_stage.dart';
+import 'package:gold_roundtables/core/models/session_status.dart';
 import 'package:gold_roundtables/core/models/sync_state.dart';
 import 'package:gold_roundtables/core/sync/domain/sync_snapshot.dart';
 import 'package:gold_roundtables/core/theme/app_theme.dart';
@@ -12,7 +13,6 @@ import 'package:gold_roundtables/features/session/domain/models/live_session.dar
 import 'package:gold_roundtables/features/session/domain/models/previous_commitment.dart';
 import 'package:gold_roundtables/features/session/domain/models/session_info.dart';
 import 'package:gold_roundtables/features/session/domain/models/session_participant.dart';
-import 'package:gold_roundtables/features/session/domain/models/session_status.dart';
 import 'package:gold_roundtables/features/session/domain/models/session_table.dart';
 import 'package:gold_roundtables/features/session/domain/models/step_progress.dart';
 import 'package:gold_roundtables/features/session/domain/models/value_question.dart';

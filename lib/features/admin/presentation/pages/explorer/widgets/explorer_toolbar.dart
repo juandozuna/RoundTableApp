@@ -50,19 +50,25 @@ class ExplorerToolbar extends StatelessWidget {
           isAdministrator ? l10n.adminExplorerTitle : l10n.adminMyOrganization,
           style: context.textTheme.headlineSmall,
         ),
-        SegmentedButton<ExplorerEntity>(
-          showSelectedIcon: false,
-          segments: [
-            for (final e in entities)
-              ButtonSegment(
-                value: e,
-                label: Text(
-                  '${ExplorerLabels.entity(context, e)} ${counts[e] ?? 0}',
+        SizedBox(
+          width: context.layout.isPhone ? double.infinity : null,
+          child: SegmentedButton<ExplorerEntity>(
+            showSelectedIcon: false,
+            segments: [
+              for (final e in entities)
+                ButtonSegment(
+                  value: e,
+                  label: Text(
+                    '${ExplorerLabels.entity(context, e)} ${counts[e] ?? 0}',
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-          ],
-          selected: {entity},
-          onSelectionChanged: (value) => onEntity(value.first),
+            ],
+            selected: {entity},
+            onSelectionChanged: (value) => onEntity(value.first),
+          ),
         ),
         if (!isAdministrator && organizationId != null)
           AppButton(

@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/models/attendance_status.dart';
-import '../../../session/domain/models/commitment_follow_up_status.dart';
+import '../../../../core/models/commitment_follow_up_status.dart';
 
 part 'member_history.freezed.dart';
 
