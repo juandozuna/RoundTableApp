@@ -7,6 +7,7 @@ import '../../../../../../core/services/connectivity/watch_connectivity_use_case
 import '../../../../../../core/services/session_context/session_context.dart';
 import '../../../../../../core/services/session_context/watch_session_context_use_case.dart';
 import '../../../../domain/models/invite.dart';
+import '../../../../domain/models/invite_permissions.dart';
 import '../../../../domain/models/invite_problem.dart';
 import '../../../../domain/models/invite_status.dart';
 import '../../../../domain/use_cases/manage/list_invites_use_case.dart';
@@ -65,7 +66,15 @@ class InvitesManagerCubit extends Cubit<InvitesManagerState> {
       final invites = await _list(context);
       if (isClosed) return;
       emit(
-        state.copyWith(status: InvitesManagerStatus.ready, invites: invites),
+        state.copyWith(
+          status: InvitesManagerStatus.ready,
+          invites: invites,
+          manageableIds: {
+            for (final invite in invites)
+              if (InvitePermissions.canManage(context.role, invite.roleKind))
+                invite.id,
+          },
+        ),
       );
     } on InviteFailure catch (failure) {
       if (isClosed) return;

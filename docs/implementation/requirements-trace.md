@@ -44,7 +44,7 @@ Counts: 75 RF rows, 25 RNF rows, 20 PC/P rows, 15 ADR rows. Gap list in §3: 1 b
 | RF-06 | Aggregates by org/region/country | I | `kpi_breakdown` dimensions country/organization/location/round_table/facilitator/module/value (M:kpi:288); `reports_page.dart` |
 | RF-07 | Master program of modules/values | P | Curriculum tables + seed with **placeholder names** (`seed.sql:56`); read-only in app; changes only via migration. See G-01, G-09 |
 | RF-08 | Admin action log | I | `audit_events` + `app.audit` in 21 api calls; `audit_page.dart`; e2e admin "audit log" |
-| RF-09 | Org admin creates coordinators | I | `api.invite_create` role `coordinator` by platform admin or org coordinator; pgTAP 030 ("facilitator cannot invite coordinators"). Note: coordinators can also create coordinators (not stated in PC-03) |
+| RF-09 | Org admin creates coordinators | I | `api.invite_create` role `coordinator` by the platform admin only; pgTAP 030 ("facilitator cannot invite coordinators"). Coordinators can no longer create coordinators (ADR 0016): `app.require_can_invite`, pgTAP 030 role-matrix cases, e2e `invites` denied cases |
 | RF-10 | Assign coordinators to locations/areas | P | `role_assignments.location_id` exists but is never used for scope: coordinator RLS is org-wide (`app.coordinator_orgs`). P-16 unanswered. See G-16 |
 | RF-11 | Coordinator creates/activates facilitators | I | `invite_create`, `table_create`/`table_set_facilitator` (M:api); e2e invites/admin |
 | RF-12 | One principal facilitator per table | I | unique index `table_members_active_facilitator_key`; pgTAP 020 "a second active facilitator is rejected"; `facilitator_required` pgTAP 030 |

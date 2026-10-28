@@ -262,7 +262,7 @@ class InvitesManagerPage extends StatelessWidget {
     final l10n = context.l10n;
     final cubit = context.read<InvitesManagerCubit>();
     final open = state.selected
-        .where((invite) => invite.status.isOpen)
+        .where((invite) => invite.status.isOpen && state.canManage(invite))
         .toList();
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -424,34 +424,36 @@ class InvitesManagerPage extends StatelessWidget {
             onPressed: () =>
                 context.push(InvitesRoutes.shareFor(invite.id), extra: invite),
           ),
-        AppButton(
-          label: l10n.invitesRenewAction,
-          icon: Icons.autorenew_rounded,
-          variant: AppButtonVariant.secondary,
-          size: AppButtonSize.small,
-          fullWidth: false,
-          onPressed: enabled
-              ? () async {
-                  final renewed = await cubit.renew([invite.id]);
-                  if (renewed != null && context.mounted) {
-                    unawaited(
-                      context.push(
-                        InvitesRoutes.shareFor(renewed.id),
-                        extra: renewed,
-                      ),
-                    );
+        if (state.canManage(invite)) ...[
+          AppButton(
+            label: l10n.invitesRenewAction,
+            icon: Icons.autorenew_rounded,
+            variant: AppButtonVariant.secondary,
+            size: AppButtonSize.small,
+            fullWidth: false,
+            onPressed: enabled
+                ? () async {
+                    final renewed = await cubit.renew([invite.id]);
+                    if (renewed != null && context.mounted) {
+                      unawaited(
+                        context.push(
+                          InvitesRoutes.shareFor(renewed.id),
+                          extra: renewed,
+                        ),
+                      );
+                    }
                   }
-                }
-              : null,
-        ),
-        AppButton(
-          label: l10n.invitesRevokeAction,
-          icon: Icons.block_rounded,
-          variant: AppButtonVariant.danger,
-          size: AppButtonSize.small,
-          fullWidth: false,
-          onPressed: enabled ? () => confirmRevoke(context, [invite]) : null,
-        ),
+                : null,
+          ),
+          AppButton(
+            label: l10n.invitesRevokeAction,
+            icon: Icons.block_rounded,
+            variant: AppButtonVariant.danger,
+            size: AppButtonSize.small,
+            fullWidth: false,
+            onPressed: enabled ? () => confirmRevoke(context, [invite]) : null,
+          ),
+        ],
       ],
     );
   }

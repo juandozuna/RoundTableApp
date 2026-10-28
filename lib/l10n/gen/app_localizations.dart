@@ -7402,6 +7402,30 @@ abstract class AppLocalizations {
   /// **'Solo Coordinador o Administrador'**
   String get invitesRoleOnlyStaff;
 
+  /// No description provided for @invitesRoleOnlyAdmin.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo la administración de la plataforma'**
+  String get invitesRoleOnlyAdmin;
+
+  /// No description provided for @invitesRoleLockedCoordinatorToast.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo la administración de la plataforma puede invitar coordinadores.'**
+  String get invitesRoleLockedCoordinatorToast;
+
+  /// No description provided for @invitesProblemRoleNotAllowed.
+  ///
+  /// In es, this message translates to:
+  /// **'Con tu rol no puedes invitar a una persona con ese rol.'**
+  String get invitesProblemRoleNotAllowed;
+
+  /// No description provided for @invitesProblemTableNotAllowed.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo puedes invitar integrantes a tu propia mesa.'**
+  String get invitesProblemTableNotAllowed;
+
   /// No description provided for @invitesRoleLockedToast.
   ///
   /// In es, this message translates to:

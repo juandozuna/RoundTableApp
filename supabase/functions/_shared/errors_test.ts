@@ -38,3 +38,11 @@ Deno.test("router strips the function prefix and matches params", () => {
   assertEquals(matchRoute(routes, "GET", ["tables", "abc"]), { allowed: ["PATCH"] });
   assertEquals(matchRoute(routes, "GET", ["nope"]), null);
 });
+
+Deno.test("role matrix denials keep their typed code and map to 403", () => {
+  for (const code of ["invite_role_forbidden", "invite_table_forbidden"]) {
+    const e = fromPostgrestError({ code: "P0001", message: code, details: "Detalle en español." });
+    assertEquals([e.code, e.status, e.userMessage], [code, 403, "Detalle en español."]);
+    assertEquals(new ApiError(code).status, 403);
+  }
+});

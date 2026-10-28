@@ -28,6 +28,9 @@ abstract class InvitesManagerState with _$InvitesManagerState {
     @Default(InvitesManagerStatus.loading) InvitesManagerStatus status,
     @Default([]) List<Invite> invites,
 
+    /// Invites the signed-in role may renew or revoke (ADR 0016).
+    @Default({}) Set<String> manageableIds,
+
     /// `null` shows every status.
     InviteStatus? filter,
     @Default('') String query,
@@ -64,6 +67,8 @@ abstract class InvitesManagerState with _$InvitesManagerState {
     for (final invite in invites)
       if (selectedIds.contains(invite.id)) invite,
   ];
+
+  bool canManage(Invite invite) => manageableIds.contains(invite.id);
 
   bool get allVisibleSelected =>
       visible.isNotEmpty &&
