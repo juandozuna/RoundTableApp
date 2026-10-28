@@ -1,36 +1,38 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/config/app_config.dart';
 import '../core/config/injection.dart';
 import '../core/routing/app_router.dart';
+import '../core/services/clock/system_clock_service.dart';
+import '../core/services/error_reporting/error_handlers.dart';
+import '../core/services/error_reporting/error_reporter.dart';
+import '../core/services/error_reporting/logging_error_reporter.dart';
 import '../core/services/firebase/firebase_bootstrap.dart';
 import '../core/services/logging/app_log.dart';
 import '../core/sync/data/sync_lifecycle.dart';
 import 'app.dart';
 
-/// Startup order: config → Supabase Auth → DI → optional Firebase → local
-/// database → UI. Missing optional configuration never blocks startup.
+/// Startup order: config → error handlers → Supabase Auth → DI → optional
+/// Firebase → local database → UI. Missing optional configuration never
+/// blocks startup.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    AppLog.error(
-      'flutter',
-      details.exceptionAsString(),
-      details.exception,
-      details.stack,
-    );
-  };
-  PlatformDispatcher.instance.onError = (error, stackTrace) {
-    AppLog.error('app', 'Uncaught error', error, stackTrace);
-    return true;
-  };
-
   final config = AppConfig.fromEnvironment();
+
+  // Errors before dependency injection is ready only reach the log; the
+  // configured reporter replaces it right after `configureDependencies`.
+  ErrorReporter reporter = LoggingErrorReporter(
+    StaticErrorContextProvider(
+      ErrorReportContext(environment: config.environment.name),
+    ),
+    const NoErrorReportSink(),
+    SystemClockService(),
+  );
+  installErrorHandlers(() => reporter);
+
   if (config.hasSupabase) {
     await Supabase.initialize(
       url: config.supabaseUrl,
@@ -45,6 +47,8 @@ Future<void> bootstrap() async {
   }
 
   configureDependencies();
+  await getIt<ErrorContextProvider>().prepare();
+  reporter = getIt<ErrorReporter>();
   await getIt<FirebaseBootstrap>().initialize();
   await getIt<SyncLifecycle>().start();
 
