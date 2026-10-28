@@ -30,6 +30,10 @@ class AccessPage extends StatelessWidget {
           AccessStatus.deactivated => _buildDeactivated(context, state),
           AccessStatus.unknownAccount => _buildUnknown(context),
           AccessStatus.failed => _buildFailed(context, state),
+          AccessStatus.needsOnlineSignIn => _buildNeedsOnlineSignIn(
+            context,
+            state,
+          ),
           _ => _buildResolving(context),
         },
       ),
@@ -62,6 +66,25 @@ class AccessPage extends StatelessWidget {
       icon: offline ? Icons.cloud_off_rounded : Icons.error_outline_rounded,
       title: offline ? l10n.authAccessOfflineTitle : l10n.authAccessFailedTitle,
       body: offline ? l10n.authAccessOfflineBody : l10n.errorServer,
+      actions: [
+        AppButton(
+          label: l10n.actionRetry,
+          icon: Icons.refresh_rounded,
+          loading: state.refreshing,
+          onPressed: context.read<AccessCubit>().refresh,
+        ),
+        _signOutButton(context),
+      ],
+    );
+  }
+
+  Widget _buildNeedsOnlineSignIn(BuildContext context, AccessCubitState state) {
+    final l10n = context.l10n;
+    return AuthResultView(
+      tone: StatusTone.offline,
+      icon: Icons.cloud_off_rounded,
+      title: l10n.authOfflineWindowTitle,
+      body: l10n.authOfflineWindowBody,
       actions: [
         AppButton(
           label: l10n.actionRetry,

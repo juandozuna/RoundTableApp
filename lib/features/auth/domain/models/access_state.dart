@@ -28,6 +28,10 @@ enum AccessStatus {
 
   /// Signed in, but nobody invited this identity.
   unknownAccount,
+
+  /// The device has been offline longer than the offline window (ADR 0005);
+  /// the person must sign in again online. Local data stays on the device.
+  needsOnlineSignIn,
 }
 
 @freezed

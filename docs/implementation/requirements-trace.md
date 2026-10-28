@@ -175,7 +175,7 @@ Counts: 75 RF rows, 25 RNF rows, 20 PC/P rows, 15 ADR rows. Gap list in §3: 1 b
 | 0002 Supabase backend | I | migrations, 6 Edge Functions |
 | 0003 offline scope | I | session domain offline; exceptions show `OfflineBanner`; e2e `offline` |
 | 0004 PowerSync + Drift | I | `powersync/sync-rules.yaml`, `lib/core/sync/**`, `session_drift_database`; `powersync/tools/simulate-buckets.mjs`, `scripts/powersync-sync-check.mjs`; dart: `test/core/sync`, `test/features/session/data` |
-| 0005 late sync, attendance, 7-day window, score, follow-up | P | Late flag + auto-present + score + once: pgTAP 020, e2e `offline`. **7-day offline window / token policy**: no test or explicit enforcement found (only `late_grace` helper). See G-11 |
+| 0005 late sync, attendance, 7-day window, score, follow-up | P | Late flag + auto-present + score + once: pgTAP 020, e2e `offline`. **7-day offline window**: enforced via `AccessStatus.needsOnlineSignIn`, tested with a fake clock; see `offline-window.md` (G-11; E2E with expired JWT still manual) |
 | 0006 multi-tenancy and roles | I | RLS, contexts, pgTAP 010 |
 | 0007 social login only, phone unverified, invite binding | P | Invite binding verified (pgTAP 030, e2e invites with dev accounts); Google/Apple/Facebook never exercised against real providers. See G-01 |
 | 0008 Auth via supabase_flutter, Retrofit for Edge/PostgREST | I | `lib/features/*/data/client/*.dart`; core `network` |

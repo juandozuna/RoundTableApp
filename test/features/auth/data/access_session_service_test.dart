@@ -14,9 +14,20 @@ void main() {
   late FakeAccountService accounts;
   late MemoryAccessStore store;
   late InMemorySessionContextService sessionContext;
+  late MemoryVerificationStore verification;
+  late FakeVerifications verifications;
+  late TestClock clock;
 
-  AccessSessionServiceImpl build() =>
-      AccessSessionServiceImpl(auth, auth, accounts, store, sessionContext);
+  AccessSessionServiceImpl build() => AccessSessionServiceImpl(
+    auth,
+    auth,
+    accounts,
+    store,
+    sessionContext,
+    verification,
+    verifications,
+    clock,
+  );
 
   Future<void> settle() => Future<void>.delayed(Duration.zero);
 
@@ -25,6 +36,9 @@ void main() {
     accounts = FakeAccountService();
     store = MemoryAccessStore();
     sessionContext = InMemorySessionContextService();
+    verification = MemoryVerificationStore();
+    verifications = FakeVerifications();
+    clock = TestClock(DateTime.utc(2026, 10, 1, 8));
   });
 
   test('starts signed out', () {
@@ -129,18 +143,90 @@ void main() {
     // New app run: still signed in, server unreachable.
     sessionContext = InMemorySessionContextService();
     accounts.error = const ApiException(kind: ApiErrorKind.network);
-    final restarted = AccessSessionServiceImpl(
-      auth,
-      auth,
-      accounts,
-      store,
-      sessionContext,
-    );
+    final restarted = build();
     await settle();
 
     expect(restarted.state.status, AccessStatus.ready);
     expect(restarted.state.fromCache, isTrue);
     expect(sessionContext.current?.tableId, 'table-fe');
+  });
+
+  group('offline window (ADR 0005)', () {
+    Future<void> signInOnline() async {
+      accounts.account = accountWith([memberContext]);
+      build();
+      auth.signIn('user-1');
+      await settle();
+      expect(verification.verified['user-1'], clock.now);
+    }
+
+    Future<AccessSessionServiceImpl> restartOffline() async {
+      sessionContext = InMemorySessionContextService();
+      accounts.error = const ApiException(kind: ApiErrorKind.network);
+      final restarted = build();
+      await settle();
+      return restarted;
+    }
+
+    test('keeps working from the cache on day 7', () async {
+      await signInOnline();
+      clock.now = clock.now.add(const Duration(days: 7));
+
+      final restarted = await restartOffline();
+
+      expect(restarted.state.status, AccessStatus.ready);
+      expect(restarted.state.fromCache, isTrue);
+    });
+
+    test('needs an online sign-in after more than 7 days', () async {
+      await signInOnline();
+      clock.now = clock.now.add(const Duration(days: 7, minutes: 1));
+
+      final restarted = await restartOffline();
+
+      expect(restarted.state.status, AccessStatus.needsOnlineSignIn);
+      expect(sessionContext.current, isNull);
+    });
+
+    test('a token refresh restarts the window', () async {
+      await signInOnline();
+      clock.now = clock.now.add(const Duration(days: 6));
+      verifications.controller.add(null);
+      await settle();
+      clock.now = clock.now.add(const Duration(days: 6));
+
+      final restarted = await restartOffline();
+
+      expect(restarted.state.status, AccessStatus.ready);
+    });
+
+    test('coming back online lifts the block', () async {
+      await signInOnline();
+      clock.now = clock.now.add(const Duration(days: 9));
+      final restarted = await restartOffline();
+      expect(restarted.state.status, AccessStatus.needsOnlineSignIn);
+
+      accounts.error = null;
+      await restarted.refresh();
+
+      expect(restarted.state.status, AccessStatus.ready);
+      expect(verification.verified['user-1'], clock.now);
+    });
+
+    test('a device without a record starts its window now', () async {
+      accounts.account = accountWith([memberContext]);
+      final first = build();
+      auth.signIn('user-1');
+      await settle();
+      expect(first.state.status, AccessStatus.ready);
+      verification.verified.clear();
+      clock.now = clock.now.add(const Duration(days: 30));
+
+      final restarted = await restartOffline();
+
+      expect(restarted.state.status, AccessStatus.ready);
+      expect(verification.verified['user-1'], clock.now);
+    });
   });
 
   test('offline with nothing cached fails with the reason', () async {

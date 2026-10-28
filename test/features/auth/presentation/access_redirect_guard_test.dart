@@ -70,6 +70,7 @@ void main() {
       AccessStatus.noRole,
       AccessStatus.deactivated,
       AccessStatus.unknownAccount,
+      AccessStatus.needsOnlineSignIn,
     ]) {
       expect(redirect(status, '/'), '/acceso');
       expect(redirect(status, '/acceso'), isNull);

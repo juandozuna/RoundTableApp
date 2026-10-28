@@ -35,7 +35,8 @@ class AccessRedirectGuard {
           AccessStatus.failed ||
           AccessStatus.noRole ||
           AccessStatus.deactivated ||
-          AccessStatus.unknownAccount:
+          AccessStatus.unknownAccount ||
+          AccessStatus.needsOnlineSignIn:
         return path == AuthRoutes.access ? null : _to(AuthRoutes.access, uri);
       case AccessStatus.needsContext:
         return path == AuthRoutes.contextPicker

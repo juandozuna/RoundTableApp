@@ -2258,6 +2258,8 @@
   "authAccessFailedTitle": "No pudimos cargar tu cuenta",
   "authAccessOfflineTitle": "Necesitas internet para entrar",
   "authAccessOfflineBody": "La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.",
+  "authOfflineWindowTitle": "Conéctate para volver a entrar",
+  "authOfflineWindowBody": "Llevas más de 7 días sin conexión. Conéctate a internet y toca Reintentar para confirmar tu sesión. Lo que guardaste en este teléfono sigue aquí y se enviará al conectarte.",
   "authNoRoleTitle": "Todavía no tienes un rol asignado",
   "authNoRoleBody": "Tu cuenta existe, pero nadie te ha asignado a una organización o mesa. Cuando ocurra, actualiza esta pantalla y verás tu espacio.",
   "authDeactivatedTitle": "Tu cuenta está desactivada",

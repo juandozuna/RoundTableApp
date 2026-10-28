@@ -3816,6 +3816,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.';
 
   @override
+  String get authOfflineWindowTitle => 'Conéctate para volver a entrar';
+
+  @override
+  String get authOfflineWindowBody =>
+      'Llevas más de 7 días sin conexión. Conéctate a internet y toca Reintentar para confirmar tu sesión. Lo que guardaste en este teléfono sigue aquí y se enviará al conectarte.';
+
+  @override
   String get authNoRoleTitle => 'Todavía no tienes un rol asignado';
 
   @override

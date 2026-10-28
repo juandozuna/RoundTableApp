@@ -5,6 +5,9 @@ import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/core/network/auth_token_provider.dart';
 import 'package:gold_roundtables/core/services/auth_session/auth_state_source.dart';
 import 'package:gold_roundtables/core/services/auth_session/auth_status.dart';
+import 'package:gold_roundtables/core/services/auth_session/online_verification_store.dart';
+import 'package:gold_roundtables/core/services/auth_session/session_verification_source.dart';
+import 'package:gold_roundtables/core/services/clock/clock_service.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account_context.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account_person.dart';
@@ -119,3 +122,30 @@ Account accountWith(
   people: people ?? [person('p-member')],
   contexts: contexts,
 );
+
+class MemoryVerificationStore implements OnlineVerificationStore {
+  final Map<String, DateTime> verified = {};
+
+  @override
+  Future<DateTime?> readLastVerifiedAt(String userId) async => verified[userId];
+
+  @override
+  Future<void> saveLastVerifiedAt(String userId, DateTime at) async =>
+      verified[userId] = at;
+}
+
+class FakeVerifications implements SessionVerificationSource {
+  final StreamController<void> controller = StreamController<void>.broadcast();
+
+  @override
+  Stream<void> get verifications => controller.stream;
+}
+
+class TestClock implements ClockService {
+  TestClock(this.now);
+
+  DateTime now;
+
+  @override
+  DateTime nowUtc() => now;
+}

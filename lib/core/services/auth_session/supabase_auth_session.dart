@@ -6,6 +6,7 @@ import '../../network/auth_token_provider.dart';
 import '../logging/app_log.dart';
 import 'auth_state_source.dart';
 import 'auth_status.dart';
+import 'session_verification_source.dart';
 
 /// Exposes the Supabase Auth session as [AuthStateSource] and
 /// [AuthTokenProvider]. Sign-in flows live in the auth feature; this class
@@ -13,14 +14,21 @@ import 'auth_status.dart';
 ///
 /// With no Supabase configuration ([auth] is `null`) it reports
 /// [AuthStatus.unauthenticated] so the app still starts.
-class SupabaseAuthSession implements AuthStateSource, AuthTokenProvider {
+class SupabaseAuthSession
+    implements AuthStateSource, AuthTokenProvider, SessionVerificationSource {
   SupabaseAuthSession(this._auth) {
     _subscription = _auth?.onAuthStateChange.listen(
-      (state) => _emit(
-        state.session == null
-            ? AuthStatus.unauthenticated
-            : AuthStatus.authenticated,
-      ),
+      (state) {
+        if (state.event == AuthChangeEvent.signedIn ||
+            state.event == AuthChangeEvent.tokenRefreshed) {
+          _verifications.add(null);
+        }
+        _emit(
+          state.session == null
+              ? AuthStatus.unauthenticated
+              : AuthStatus.authenticated,
+        );
+      },
       onError: (Object error) =>
           AppLog.warning('auth', 'Auth state stream failed', error),
     );
@@ -29,6 +37,8 @@ class SupabaseAuthSession implements AuthStateSource, AuthTokenProvider {
   final GoTrueClient? _auth;
   final StreamController<AuthStatus> _changes =
       StreamController<AuthStatus>.broadcast();
+  final StreamController<void> _verifications =
+      StreamController<void>.broadcast();
   StreamSubscription<AuthState>? _subscription;
   AuthStatus? _last;
 
@@ -39,6 +49,9 @@ class SupabaseAuthSession implements AuthStateSource, AuthTokenProvider {
 
   @override
   Stream<AuthStatus> get statusChanges => _changes.stream;
+
+  @override
+  Stream<void> get verifications => _verifications.stream;
 
   @override
   String? get accessToken => _auth?.currentSession?.accessToken;
@@ -63,5 +76,6 @@ class SupabaseAuthSession implements AuthStateSource, AuthTokenProvider {
   Future<void> dispose() async {
     await _subscription?.cancel();
     await _changes.close();
+    await _verifications.close();
   }
 }

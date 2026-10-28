@@ -6,6 +6,10 @@ import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/auth_token_provider.dart';
 import '../../../../core/services/auth_session/auth_state_source.dart';
 import '../../../../core/services/auth_session/auth_status.dart';
+import '../../../../core/services/auth_session/offline_window.dart';
+import '../../../../core/services/auth_session/online_verification_store.dart';
+import '../../../../core/services/auth_session/session_verification_source.dart';
+import '../../../../core/services/clock/clock_service.dart';
 import '../../../../core/services/logging/app_log.dart';
 import '../../../../core/services/session_context/session_context_service.dart';
 import '../../domain/models/access_state.dart';
@@ -23,10 +27,15 @@ class AccessSessionServiceImpl implements AccessSessionService {
     this._accounts,
     this._store,
     this._sessionContext,
+    this._verification,
+    this._verifications,
+    this._clock,
   ) {
     // Lives as long as the app (lazy singleton).
     // ignore: cancel_subscriptions
     _authState.statusChanges.listen(_onAuthChanged);
+    // ignore: cancel_subscriptions
+    _verifications.verifications.listen((_) => unawaited(_recordVerified()));
     if (_authState.status == AuthStatus.authenticated) {
       _state = const AccessState(status: AccessStatus.resolving);
       unawaited(refresh());
@@ -38,6 +47,9 @@ class AccessSessionServiceImpl implements AccessSessionService {
   final AccountService _accounts;
   final AccessStore _store;
   final SessionContextService _sessionContext;
+  final OnlineVerificationStore _verification;
+  final SessionVerificationSource _verifications;
+  final ClockService _clock;
 
   final StreamController<AccessState> _changes =
       StreamController<AccessState>.broadcast();
@@ -116,10 +128,16 @@ class AccessSessionServiceImpl implements AccessSessionService {
     try {
       final account = await _accounts.fetch();
       await _store.saveAccount(userId, account);
+      await _recordVerified();
       await _apply(userId, account, preferPersonId: preferPersonId);
     } on ApiException catch (error) {
       final cached = await _store.readAccount(userId);
       if (cached != null && error.isRetryable) {
+        if (await _offlineWindowExpired(userId)) {
+          await _sessionContext.clear();
+          _emit(const AccessState(status: AccessStatus.needsOnlineSignIn));
+          return;
+        }
         await _apply(
           userId,
           cached,
@@ -132,6 +150,22 @@ class AccessSessionServiceImpl implements AccessSessionService {
       AppLog.warning('auth', 'Account could not be loaded', error);
       _emit(_state.copyWith(status: AccessStatus.failed, failure: error));
     }
+  }
+
+  Future<void> _recordVerified() async {
+    final userId = _tokens.userId;
+    if (userId == null) return;
+    await _verification.saveLastVerifiedAt(userId, _clock.nowUtc());
+  }
+
+  Future<bool> _offlineWindowExpired(String userId) async {
+    final now = _clock.nowUtc();
+    final lastVerifiedAt = await _verification.readLastVerifiedAt(userId);
+    if (lastVerifiedAt == null) {
+      // Installed before the window existed: start counting now.
+      await _verification.saveLastVerifiedAt(userId, now);
+    }
+    return OfflineWindow.hasExpired(lastVerifiedAt: lastVerifiedAt, now: now);
   }
 
   Future<void> _apply(

@@ -4,10 +4,10 @@ import 'package:injectable/injectable.dart';
 import 'package:powersync/powersync.dart';
 
 import '../../config/app_config.dart';
-import '../../constants/app_constants.dart';
 import '../../services/clock/clock_service.dart';
 import '../domain/sync_snapshot.dart';
 import '../domain/sync_status_service.dart';
+import '../domain/unsynced_changes_policy.dart';
 import 'sync_database.dart';
 import 'sync_schema.dart';
 
@@ -89,10 +89,10 @@ class PowerSyncSyncStatusService implements SyncStatusService {
       pendingCount: pending,
       lastSyncedAt: status.lastSyncedAt,
       pendingSince: pendingSince,
-      hasStalePending:
-          pendingSince != null &&
-          _clock.nowUtc().difference(pendingSince) >=
-              AppLimits.unsyncedWarningAfter,
+      hasStalePending: UnsyncedChangesPolicy.isStale(
+        pendingSince: pendingSince,
+        now: _clock.nowUtc(),
+      ),
       hasError: status.anyError != null,
     );
   }
