@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/features/admin/presentation/admin_error_messages.dart';
 import 'package:gold_roundtables/features/admin/presentation/admin_format.dart';
 import 'package:gold_roundtables/features/admin/presentation/widgets/admin_search_field.dart';
+import 'package:gold_roundtables/features/admin/presentation/widgets/admin_status_pills.dart';
 import 'package:gold_roundtables/features/admin/presentation/widgets/attendance_meter.dart';
 import 'package:gold_roundtables/features/admin/presentation/widgets/confirm_by_typing_dialog.dart';
 import 'package:gold_roundtables/l10n/gen/app_localizations.dart';
@@ -28,6 +30,23 @@ void main() {
       await tester.pumpApp(field(''));
       await tester.pump();
       expect(find.text('luz'), findsNothing);
+    });
+  });
+
+  group('HealthReasonChips', () {
+    testWidgets('shows one chip per reason', (tester) async {
+      await tester.pumpApp(
+        const HealthReasonChips(
+          reasons: [HealthReason.lowAttendance, HealthReason.fewPeople],
+        ),
+      );
+      expect(find.text('Baja asistencia'), findsOneWidget);
+      expect(find.text('Menos de 3 personas'), findsOneWidget);
+    });
+
+    testWidgets('a healthy table shows nothing', (tester) async {
+      await tester.pumpApp(const HealthReasonChips(reasons: []));
+      expect(find.byType(Text), findsNothing);
     });
   });
 

@@ -12,6 +12,9 @@ abstract final class HomeRoutes {
   /// KPI dashboard of the admin feature (coordinators and administrators).
   static const String adminDashboard = '/admin';
 
+  /// Table detail of the admin feature (`AdminRoutes.tablePath`); keep in sync.
+  static String table(String id) => '/admin/mesas/$id';
+
   /// Progress and history of the history feature (`HistoryRoutes.progress`);
   /// keep in sync with its router.
   static const String progress = '/progreso';

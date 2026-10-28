@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/models/health_reason.dart';
 import '../../../../core/models/health_status.dart';
 import '../../../kpis/domain/models/kpi_table_row.dart';
 import 'admin_table.dart';
@@ -38,6 +39,8 @@ abstract class ExplorerTable with _$ExplorerTable {
     DateTime? lastSessionAt,
     int? currentValueSequence,
     String? currentValueName,
+    double? recentAttendancePct,
+    @Default([]) List<HealthReason> healthReasons,
   }) = _ExplorerTable;
 
   factory ExplorerTable.merge(AdminTable table, KpiTableRow? kpi) =>
@@ -66,6 +69,8 @@ abstract class ExplorerTable with _$ExplorerTable {
         lastSessionAt: kpi?.lastSessionAt,
         currentValueSequence: table.currentValueSequence,
         currentValueName: table.currentValueName,
+        recentAttendancePct: kpi?.recentAttendancePct,
+        healthReasons: kpi?.healthReasons ?? const [],
       );
 
   static HealthStatus _healthFromStatus(RoundTableStatus status) =>
@@ -76,11 +81,12 @@ abstract class ExplorerTable with _$ExplorerTable {
         RoundTableStatus.closed => HealthStatus.inactive,
       };
 
-  /// Attendance under this percentage flags a table as "Baja asistencia".
-  static const double lowAttendanceThreshold = 70;
-
+  /// Decided by the server (`kpi_tables.health_reasons`), so the thresholds
+  /// live in one place.
   bool get hasLowAttendance =>
-      attendancePct != null && attendancePct! < lowAttendanceThreshold;
+      healthReasons.contains(HealthReason.lowAttendance);
+
+  bool get hasFewPeople => healthReasons.contains(HealthReason.fewPeople);
 
   bool get hasSessions => lastSessionAt != null || valuesCompleted > 0;
 }

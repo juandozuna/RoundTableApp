@@ -31,7 +31,15 @@ void main() {
       expect(rows.map((t) => t.code), ['LUZ-02']);
     });
 
-    test('"Baja asistencia" is attendance under 70 and ignores no data', () {
+    test('"Menos de 3 personas" keeps the tables the server flagged', () {
+      final rows = ExplorerEngine.tables(
+        data,
+        tables.copyWith(viewId: ExplorerView.fewPeople.id),
+      );
+      expect(rows.map((t) => t.code), ['HOR-01']);
+    });
+
+    test('"Baja asistencia" follows the server reasons, not a local 70', () {
       final rows = ExplorerEngine.tables(
         data,
         tables.copyWith(viewId: ExplorerView.lowAttendance.id),
@@ -85,7 +93,7 @@ void main() {
     test('aggregate weights attendance by people and counts health', () {
       final a = ExplorerEngine.aggregate(data.tables);
       expect(a.tables, 3);
-      expect(a.people, 15);
+      expect(a.people, 14);
       expect(a.valuesCompleted, 15);
       expect(a.syncedLateRows, 3);
       expect(a.active, 1);

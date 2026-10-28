@@ -84,10 +84,12 @@ class HomeServiceImpl implements HomeService {
     final organizationId = context.organizationId;
     final kpis = await _remote.fetchKpis(organizationId);
     final invites = await _remote.countPendingInvites(organizationId);
+    final alerts = await _remote.fetchTableAlerts(organizationId);
     return HomeOverview.manager(
       context: context,
       kpis: kpis,
       pendingInvites: invites,
+      alerts: alerts,
     );
   }
 

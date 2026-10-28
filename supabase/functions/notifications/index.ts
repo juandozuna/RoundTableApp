@@ -23,7 +23,7 @@ async function dispatch(limit = 200) {
   };
 }
 
-const cron = (kind: "session_reminder" | "commitment_nudge") => async (req: Request) => {
+const cron = (kind: "session_reminder" | "commitment_nudge" | "table_alert") => async (req: Request) => {
   requireCron(req);
   const enqueued = await callApi<{ enqueued: number }>("notifications_enqueue", { p_kind: kind });
   return json(req, { ...enqueued, dispatch: await dispatch() });
@@ -62,6 +62,7 @@ const routes: Route[] = [
   },
   { method: "POST", pattern: "cron/session-reminders", handler: cron("session_reminder") },
   { method: "POST", pattern: "cron/commitment-nudges", handler: cron("commitment_nudge") },
+  { method: "POST", pattern: "cron/table-alerts", handler: cron("table_alert") },
 ];
 
 serveRoutes("notifications", routes);

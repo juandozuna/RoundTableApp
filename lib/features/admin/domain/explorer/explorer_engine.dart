@@ -75,6 +75,7 @@ abstract final class ExplorerEngine {
       switch (ExplorerView.tryParse(viewId)) {
         ExplorerView.delayed => t.health == HealthStatus.delayed,
         ExplorerView.lowAttendance => t.hasLowAttendance,
+        ExplorerView.fewPeople => t.hasFewPeople,
         ExplorerView.syncedLate => t.syncedLateRows > 0,
         _ => true,
       };

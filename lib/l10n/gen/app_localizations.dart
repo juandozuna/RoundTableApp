@@ -1174,6 +1174,12 @@ abstract class AppLocalizations {
   /// **'Baja asistencia'**
   String get adminViewLowAttendance;
 
+  /// No description provided for @adminViewFewPeople.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos de 3 personas'**
+  String get adminViewFewPeople;
+
   /// No description provided for @adminViewSyncedLate.
   ///
   /// In es, this message translates to:
@@ -4173,6 +4179,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver el tablero completo'**
   String get homeKpiViewAll;
+
+  /// No description provided for @homeAlertsKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas que necesitan atención'**
+  String get homeAlertsKicker;
+
+  /// No description provided for @homeAlertsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas tus mesas activas están al día.'**
+  String get homeAlertsEmpty;
+
+  /// No description provided for @homeAlertsMore.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{y 1 mesa más} other{y {count} mesas más}}'**
+  String homeAlertsMore(int count);
+
+  /// No description provided for @adminReasonLowAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Baja asistencia'**
+  String get adminReasonLowAttendance;
+
+  /// No description provided for @adminReasonFewPeople.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos de 3 personas'**
+  String get adminReasonFewPeople;
+
+  /// No description provided for @adminTableLowAttendanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Baja asistencia en las últimas sesiones'**
+  String get adminTableLowAttendanceTitle;
+
+  /// No description provided for @adminTableLowAttendanceDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'El promedio de asistencia de las últimas 3 sesiones es {percent}, por debajo del 70 %.'**
+  String adminTableLowAttendanceDetail(String percent);
 
   /// No description provided for @homeInvitesPending.
   ///

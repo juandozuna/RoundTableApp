@@ -9,6 +9,7 @@ enum ExplorerView {
   all,
   delayed,
   lowAttendance,
+  fewPeople,
   syncedLate,
   paused,
   withoutTables,
@@ -29,6 +30,7 @@ enum ExplorerView {
           all,
           delayed,
           lowAttendance,
+          fewPeople,
           syncedLate,
         ],
         ExplorerEntity.organizations => const [

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/models/health_status.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
@@ -10,6 +11,7 @@ import 'package:gold_roundtables/features/home/data/models/home_records.dart';
 import 'package:gold_roundtables/features/home/data/services/home_service_impl.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_kpi_summary.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_overview.dart';
+import 'package:gold_roundtables/features/home/domain/models/home_table_alert.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLocal extends Mock implements HomeLocalDataSource {}
@@ -198,12 +200,23 @@ void main() {
       () => remote.fetchKpis('org-1'),
     ).thenAnswer((_) async => const HomeKpiSummary(valuesCompleted: 115));
     when(() => remote.countPendingInvites('org-1')).thenAnswer((_) async => 2);
+    when(() => remote.fetchTableAlerts('org-1')).thenAnswer(
+      (_) async => const [
+        HomeTableAlert(
+          tableId: 't7',
+          code: 'LUZ-07',
+          name: 'Mesa Fe 07',
+          reasons: [HealthReason.fewPeople],
+        ),
+      ],
+    );
 
     final overview = await service.watchOverview(coordinator).first;
 
     final home = overview as HomeManager;
     expect(home.kpis?.valuesCompleted, 115);
     expect(home.pendingInvites, 2);
+    expect(home.alerts.single.code, 'LUZ-07');
   });
 
   test('manager home surfaces offline as a stream error', () async {

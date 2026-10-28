@@ -1,3 +1,4 @@
+import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/models/health_status.dart';
 import 'package:gold_roundtables/features/admin/domain/models/admin_organization.dart';
 import 'package:gold_roundtables/features/admin/domain/models/admin_person.dart';
@@ -22,6 +23,7 @@ ExplorerTable table(
   int late = 0,
   String? facilitator = 'Ana Pérez',
   DateTime? lastSession,
+  List<HealthReason> reasons = const [],
 }) => ExplorerTable(
   id: 'id-$code',
   code: code,
@@ -45,6 +47,7 @@ ExplorerTable table(
   improvementAvg: improvement,
   syncedLateRows: late,
   lastSessionAt: lastSession,
+  healthReasons: reasons,
 );
 
 AdminOrganization organization(
@@ -114,6 +117,7 @@ ExplorerData sampleData() {
         attendance: 66,
         late: 3,
         lastSession: DateTime.utc(2026, 10, 1),
+        reasons: const [HealthReason.lowAttendance],
       ),
       table(
         'HOR-01',
@@ -123,7 +127,8 @@ ExplorerData sampleData() {
         health: HealthStatus.inactive,
         attendance: null,
         facilitator: null,
-        people: 3,
+        people: 2,
+        reasons: const [HealthReason.fewPeople],
       ),
     ],
     organizations: [

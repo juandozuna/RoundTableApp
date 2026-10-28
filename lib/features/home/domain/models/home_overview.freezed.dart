@@ -164,6 +164,7 @@ extension HomeOverviewPatterns on HomeOverview {
       SessionContext context,
       HomeKpiSummary? kpis,
       int pendingInvites,
+      List<HomeTableAlert> alerts,
     )?
     manager,
     required TResult orElse(),
@@ -182,7 +183,12 @@ extension HomeOverviewPatterns on HomeOverview {
           _that.progress,
         );
       case HomeManager() when manager != null:
-        return manager(_that.context, _that.kpis, _that.pendingInvites);
+        return manager(
+          _that.context,
+          _that.kpis,
+          _that.pendingInvites,
+          _that.alerts,
+        );
       case _:
         return orElse();
     }
@@ -217,6 +223,7 @@ extension HomeOverviewPatterns on HomeOverview {
       SessionContext context,
       HomeKpiSummary? kpis,
       int pendingInvites,
+      List<HomeTableAlert> alerts,
     )
     manager,
   }) {
@@ -234,7 +241,12 @@ extension HomeOverviewPatterns on HomeOverview {
           _that.progress,
         );
       case HomeManager():
-        return manager(_that.context, _that.kpis, _that.pendingInvites);
+        return manager(
+          _that.context,
+          _that.kpis,
+          _that.pendingInvites,
+          _that.alerts,
+        );
     }
   }
 
@@ -266,6 +278,7 @@ extension HomeOverviewPatterns on HomeOverview {
       SessionContext context,
       HomeKpiSummary? kpis,
       int pendingInvites,
+      List<HomeTableAlert> alerts,
     )?
     manager,
   }) {
@@ -283,7 +296,12 @@ extension HomeOverviewPatterns on HomeOverview {
           _that.progress,
         );
       case HomeManager() when manager != null:
-        return manager(_that.context, _that.kpis, _that.pendingInvites);
+        return manager(
+          _that.context,
+          _that.kpis,
+          _that.pendingInvites,
+          _that.alerts,
+        );
       case _:
         return null;
     }
@@ -569,12 +587,20 @@ class HomeManager implements HomeOverview {
     required this.context,
     this.kpis,
     this.pendingInvites = 0,
-  });
+    final List<HomeTableAlert> alerts = const [],
+  }) : _alerts = alerts;
 
   final SessionContext context;
   final HomeKpiSummary? kpis;
   @JsonKey()
   final int pendingInvites;
+  final List<HomeTableAlert> _alerts;
+  @JsonKey()
+  List<HomeTableAlert> get alerts {
+    if (_alerts is EqualUnmodifiableListView) return _alerts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_alerts);
+  }
 
   /// Create a copy of HomeOverview
   /// with the given fields replaced by the non-null parameter values.
@@ -591,15 +617,22 @@ class HomeManager implements HomeOverview {
             (identical(other.context, context) || other.context == context) &&
             (identical(other.kpis, kpis) || other.kpis == kpis) &&
             (identical(other.pendingInvites, pendingInvites) ||
-                other.pendingInvites == pendingInvites));
+                other.pendingInvites == pendingInvites) &&
+            const DeepCollectionEquality().equals(other._alerts, _alerts));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, context, kpis, pendingInvites);
+  int get hashCode => Object.hash(
+    runtimeType,
+    context,
+    kpis,
+    pendingInvites,
+    const DeepCollectionEquality().hash(_alerts),
+  );
 
   @override
   String toString() {
-    return 'HomeOverview.manager(context: $context, kpis: $kpis, pendingInvites: $pendingInvites)';
+    return 'HomeOverview.manager(context: $context, kpis: $kpis, pendingInvites: $pendingInvites, alerts: $alerts)';
   }
 }
 
@@ -611,7 +644,12 @@ abstract mixin class $HomeManagerCopyWith<$Res>
     $Res Function(HomeManager) _then,
   ) = _$HomeManagerCopyWithImpl;
   @useResult
-  $Res call({SessionContext context, HomeKpiSummary? kpis, int pendingInvites});
+  $Res call({
+    SessionContext context,
+    HomeKpiSummary? kpis,
+    int pendingInvites,
+    List<HomeTableAlert> alerts,
+  });
 
   $SessionContextCopyWith<$Res> get context;
   $HomeKpiSummaryCopyWith<$Res>? get kpis;
@@ -631,6 +669,7 @@ class _$HomeManagerCopyWithImpl<$Res> implements $HomeManagerCopyWith<$Res> {
     Object? context = null,
     Object? kpis = freezed,
     Object? pendingInvites = null,
+    Object? alerts = null,
   }) {
     return _then(
       HomeManager(
@@ -646,6 +685,10 @@ class _$HomeManagerCopyWithImpl<$Res> implements $HomeManagerCopyWith<$Res> {
             ? _self.pendingInvites
             : pendingInvites // ignore: cast_nullable_to_non_nullable
                   as int,
+        alerts: null == alerts
+            ? _self._alerts
+            : alerts // ignore: cast_nullable_to_non_nullable
+                  as List<HomeTableAlert>,
       ),
     );
   }

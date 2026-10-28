@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/build_context_x.dart';
+import '../../../../core/models/health_reason.dart';
 import '../../../../core/models/health_status.dart';
 import '../../../../core/theme/status_tone.dart';
 import '../../../../core/widgets/status_pill.dart';
@@ -38,6 +39,41 @@ class HealthPill extends StatelessWidget {
         icon: Icons.flag_rounded,
       ),
     };
+  }
+}
+
+/// Why a table needs attention: one chip per reason, nothing when healthy.
+class HealthReasonChips extends StatelessWidget {
+  const HealthReasonChips({super.key, required this.reasons});
+
+  final List<HealthReason> reasons;
+
+  static String labelFor(BuildContext context, HealthReason reason) =>
+      switch (reason) {
+        HealthReason.lowAttendance => context.l10n.adminReasonLowAttendance,
+        HealthReason.fewPeople => context.l10n.adminReasonFewPeople,
+      };
+
+  static IconData iconFor(HealthReason reason) => switch (reason) {
+    HealthReason.lowAttendance => Icons.trending_down_rounded,
+    HealthReason.fewPeople => Icons.groups_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    if (reasons.isEmpty) return const SizedBox.shrink();
+    return Wrap(
+      spacing: 6,
+      runSpacing: 4,
+      children: [
+        for (final reason in reasons)
+          StatusPill(
+            tone: StatusTone.late,
+            label: labelFor(context, reason),
+            icon: iconFor(reason),
+          ),
+      ],
+    );
   }
 }
 

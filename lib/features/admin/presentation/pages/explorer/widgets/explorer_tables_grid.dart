@@ -111,7 +111,14 @@ class ExplorerTablesGrid extends StatelessWidget {
           label: l10n.adminColStatus,
           flex: 3,
           sortable: true,
-          cellBuilder: (context, t) => HealthPill(health: t.health),
+          cellBuilder: (context, t) => Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
+            children: [
+              HealthPill(health: t.health),
+              HealthReasonChips(reasons: t.healthReasons),
+            ],
+          ),
         ),
       ),
       (
@@ -243,6 +250,10 @@ class ExplorerTablesGrid extends StatelessWidget {
           '${t.organizationName} · ${t.locationName ?? AdminFormat.missing}',
           style: context.textTheme.bodySmall,
         ),
+        if (t.healthReasons.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          HealthReasonChips(reasons: t.healthReasons),
+        ],
         const SizedBox(height: AppSpacing.sm),
         Row(
           children: [

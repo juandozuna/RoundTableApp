@@ -270,6 +270,7 @@
   "adminViewAll": "Todas",
   "adminViewDelayed": "Mesas retrasadas",
   "adminViewLowAttendance": "Baja asistencia",
+  "adminViewFewPeople": "Menos de 3 personas",
   "adminViewSyncedLate": "Sincronizado tarde",
   "adminViewPaused": "Pausadas / desactivadas",
   "adminViewWithoutTables": "Sin mesas",
@@ -1404,6 +1405,27 @@
   "homeKpiTablesActive": "Mesas activas",
   "homeKpiTablesDelayed": "Mesas retrasadas",
   "homeKpiViewAll": "Ver el tablero completo",
+  "homeAlertsKicker": "Mesas que necesitan atención",
+  "homeAlertsEmpty": "Todas tus mesas activas están al día.",
+  "homeAlertsMore": "{count, plural, =1{y 1 mesa más} other{y {count} mesas más}}",
+  "@homeAlertsMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminReasonLowAttendance": "Baja asistencia",
+  "adminReasonFewPeople": "Menos de 3 personas",
+  "adminTableLowAttendanceTitle": "Baja asistencia en las últimas sesiones",
+  "adminTableLowAttendanceDetail": "El promedio de asistencia de las últimas 3 sesiones es {percent}, por debajo del 70 %.",
+  "@adminTableLowAttendanceDetail": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
   "homeInvitesPending": "{count, plural, =0{No hay invitaciones pendientes} =1{1 invitación pendiente} other{{count} invitaciones pendientes}}",
   "@homeInvitesPending": {
     "placeholders": {

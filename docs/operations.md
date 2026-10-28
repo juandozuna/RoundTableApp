@@ -116,7 +116,7 @@ Review weekly and wire alerts for the starred items.
       `select j.jobname, d.status, d.return_message, d.start_time from cron.job_run_details d
       join cron.job j using (jobid) where d.status <> 'succeeded' and d.start_time > now() -
       interval '1 day' order by d.start_time desc;` Expected jobs: `gr-kpi-refresh-dirty` (30 s),
-      `gr-kpi-refresh-hourly`, `gr-session-reminders` (15 min), `gr-commitment-nudges`,
+      `gr-kpi-refresh-hourly`, `gr-session-reminders` (15 min), `gr-commitment-nudges`, `gr-table-alerts` (daily),
       `gr-invites-expire`, `gr-pending-sessions`, `gr-apply-schedule`, `gr-archive-sessions`
       (daily). Alert on any failure or a job without a run in 2× its period.
 - [ ] **KPI freshness**: `select dirty, refreshed_at from kpi.refresh_state;` — `dirty` with

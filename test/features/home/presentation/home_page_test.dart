@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gold_roundtables/core/config/injection.dart';
+import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/models/health_status.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
@@ -16,6 +17,7 @@ import 'package:gold_roundtables/features/home/domain/models/home_kpi_summary.da
 import 'package:gold_roundtables/features/home/domain/models/home_overview.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_progress.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_session.dart';
+import 'package:gold_roundtables/features/home/domain/models/home_table_alert.dart';
 import 'package:gold_roundtables/features/home/presentation/pages/home/cubit/home_cubit.dart';
 import 'package:gold_roundtables/features/home/presentation/pages/home/cubit/home_state.dart';
 import 'package:gold_roundtables/features/home/presentation/pages/home/home_page.dart';
@@ -291,6 +293,14 @@ void main() {
             tables: HomeTableHealthCounts(active: 12, delayed: 3),
           ),
           pendingInvites: 2,
+          alerts: [
+            HomeTableAlert(
+              tableId: 't7',
+              code: 'LUZ-07',
+              name: 'Mesa Fe 07',
+              reasons: [HealthReason.fewPeople, HealthReason.lowAttendance],
+            ),
+          ],
         ),
       ),
     );
@@ -299,6 +309,23 @@ void main() {
     expect(find.text('+0.7'), findsOneWidget);
     expect(find.text('86%'), findsOneWidget);
     expect(find.text('2 invitaciones pendientes'), findsOneWidget);
+    expect(find.text('LUZ-07 · Mesa Fe 07'), findsOneWidget);
+    expect(find.text('Menos de 3 personas'), findsOneWidget);
+    expect(find.text('Baja asistencia'), findsOneWidget);
+  });
+
+  testWidgets('a manager without alerts sees the all-clear', (tester) async {
+    await pumpPage(
+      tester,
+      const HomeState(
+        status: HomeStatus.ready,
+        overview: HomeOverview.manager(
+          context: SessionContext(role: UserRole.coordinator),
+        ),
+      ),
+    );
+
+    expect(find.text('Todas tus mesas activas están al día.'), findsOneWidget);
   });
 
   testWidgets('a manager offline sees the banner and a retry', (tester) async {

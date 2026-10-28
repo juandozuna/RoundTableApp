@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/models/health_reason.dart';
 import '../../../../core/models/health_status.dart';
 
 part 'kpi_table_row.freezed.dart';
@@ -32,6 +33,10 @@ abstract class KpiTableRow with _$KpiTableRow {
     @Default(0) int syncedLateRows,
     DateTime? lastSessionAt,
     DateTime? pendingSessionAt,
+    double? recentAttendancePct,
+    @JsonKey(fromJson: HealthReason.listFromJson)
+    @Default([])
+    List<HealthReason> healthReasons,
   }) = _KpiTableRow;
 
   factory KpiTableRow.fromJson(Map<String, dynamic> json) =>

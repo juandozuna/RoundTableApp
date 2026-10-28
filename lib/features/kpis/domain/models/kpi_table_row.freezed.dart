@@ -35,6 +35,9 @@ mixin _$KpiTableRow {
   int get syncedLateRows;
   DateTime? get lastSessionAt;
   DateTime? get pendingSessionAt;
+  double? get recentAttendancePct;
+  @JsonKey(fromJson: HealthReason.listFromJson)
+  List<HealthReason> get healthReasons;
 
   /// Create a copy of KpiTableRow
   /// with the given fields replaced by the non-null parameter values.
@@ -88,7 +91,13 @@ mixin _$KpiTableRow {
             (identical(other.lastSessionAt, lastSessionAt) ||
                 other.lastSessionAt == lastSessionAt) &&
             (identical(other.pendingSessionAt, pendingSessionAt) ||
-                other.pendingSessionAt == pendingSessionAt));
+                other.pendingSessionAt == pendingSessionAt) &&
+            (identical(other.recentAttendancePct, recentAttendancePct) ||
+                other.recentAttendancePct == recentAttendancePct) &&
+            const DeepCollectionEquality().equals(
+              other.healthReasons,
+              healthReasons,
+            ));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -116,11 +125,13 @@ mixin _$KpiTableRow {
     syncedLateRows,
     lastSessionAt,
     pendingSessionAt,
+    recentAttendancePct,
+    const DeepCollectionEquality().hash(healthReasons),
   ]);
 
   @override
   String toString() {
-    return 'KpiTableRow(roundTableId: $roundTableId, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, status: $status, health: $health, activePeople: $activePeople, valuesCompleted: $valuesCompleted, currentValueId: $currentValueId, currentValueLabel: $currentValueLabel, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, pendingSessionAt: $pendingSessionAt)';
+    return 'KpiTableRow(roundTableId: $roundTableId, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, status: $status, health: $health, activePeople: $activePeople, valuesCompleted: $valuesCompleted, currentValueId: $currentValueId, currentValueLabel: $currentValueLabel, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, pendingSessionAt: $pendingSessionAt, recentAttendancePct: $recentAttendancePct, healthReasons: $healthReasons)';
   }
 }
 
@@ -153,6 +164,9 @@ abstract mixin class $KpiTableRowCopyWith<$Res> {
     int syncedLateRows,
     DateTime? lastSessionAt,
     DateTime? pendingSessionAt,
+    double? recentAttendancePct,
+    @JsonKey(fromJson: HealthReason.listFromJson)
+    List<HealthReason> healthReasons,
   });
 }
 
@@ -189,6 +203,8 @@ class _$KpiTableRowCopyWithImpl<$Res> implements $KpiTableRowCopyWith<$Res> {
     Object? syncedLateRows = null,
     Object? lastSessionAt = freezed,
     Object? pendingSessionAt = freezed,
+    Object? recentAttendancePct = freezed,
+    Object? healthReasons = null,
   }) {
     return _then(
       _self.copyWith(
@@ -276,6 +292,14 @@ class _$KpiTableRowCopyWithImpl<$Res> implements $KpiTableRowCopyWith<$Res> {
             ? _self.pendingSessionAt
             : pendingSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        recentAttendancePct: freezed == recentAttendancePct
+            ? _self.recentAttendancePct
+            : recentAttendancePct // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        healthReasons: null == healthReasons
+            ? _self.healthReasons
+            : healthReasons // ignore: cast_nullable_to_non_nullable
+                  as List<HealthReason>,
       ),
     );
   }
@@ -396,6 +420,9 @@ extension KpiTableRowPatterns on KpiTableRow {
       int syncedLateRows,
       DateTime? lastSessionAt,
       DateTime? pendingSessionAt,
+      double? recentAttendancePct,
+      @JsonKey(fromJson: HealthReason.listFromJson)
+      List<HealthReason> healthReasons,
     )?
     $default, {
     required TResult orElse(),
@@ -425,6 +452,8 @@ extension KpiTableRowPatterns on KpiTableRow {
           _that.syncedLateRows,
           _that.lastSessionAt,
           _that.pendingSessionAt,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         return orElse();
@@ -468,6 +497,9 @@ extension KpiTableRowPatterns on KpiTableRow {
       int syncedLateRows,
       DateTime? lastSessionAt,
       DateTime? pendingSessionAt,
+      double? recentAttendancePct,
+      @JsonKey(fromJson: HealthReason.listFromJson)
+      List<HealthReason> healthReasons,
     )
     $default,
   ) {
@@ -496,6 +528,8 @@ extension KpiTableRowPatterns on KpiTableRow {
           _that.syncedLateRows,
           _that.lastSessionAt,
           _that.pendingSessionAt,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -538,6 +572,9 @@ extension KpiTableRowPatterns on KpiTableRow {
       int syncedLateRows,
       DateTime? lastSessionAt,
       DateTime? pendingSessionAt,
+      double? recentAttendancePct,
+      @JsonKey(fromJson: HealthReason.listFromJson)
+      List<HealthReason> healthReasons,
     )?
     $default,
   ) {
@@ -566,6 +603,8 @@ extension KpiTableRowPatterns on KpiTableRow {
           _that.syncedLateRows,
           _that.lastSessionAt,
           _that.pendingSessionAt,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         return null;
@@ -599,7 +638,10 @@ class _KpiTableRow implements KpiTableRow {
     this.syncedLateRows = 0,
     this.lastSessionAt,
     this.pendingSessionAt,
-  });
+    this.recentAttendancePct,
+    @JsonKey(fromJson: HealthReason.listFromJson)
+    final List<HealthReason> healthReasons = const [],
+  }) : _healthReasons = healthReasons;
   factory _KpiTableRow.fromJson(Map<String, dynamic> json) =>
       _$KpiTableRowFromJson(json);
 
@@ -649,6 +691,16 @@ class _KpiTableRow implements KpiTableRow {
   final DateTime? lastSessionAt;
   @override
   final DateTime? pendingSessionAt;
+  @override
+  final double? recentAttendancePct;
+  final List<HealthReason> _healthReasons;
+  @override
+  @JsonKey(fromJson: HealthReason.listFromJson)
+  List<HealthReason> get healthReasons {
+    if (_healthReasons is EqualUnmodifiableListView) return _healthReasons;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_healthReasons);
+  }
 
   /// Create a copy of KpiTableRow
   /// with the given fields replaced by the non-null parameter values.
@@ -705,7 +757,13 @@ class _KpiTableRow implements KpiTableRow {
             (identical(other.lastSessionAt, lastSessionAt) ||
                 other.lastSessionAt == lastSessionAt) &&
             (identical(other.pendingSessionAt, pendingSessionAt) ||
-                other.pendingSessionAt == pendingSessionAt));
+                other.pendingSessionAt == pendingSessionAt) &&
+            (identical(other.recentAttendancePct, recentAttendancePct) ||
+                other.recentAttendancePct == recentAttendancePct) &&
+            const DeepCollectionEquality().equals(
+              other._healthReasons,
+              _healthReasons,
+            ));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -733,11 +791,13 @@ class _KpiTableRow implements KpiTableRow {
     syncedLateRows,
     lastSessionAt,
     pendingSessionAt,
+    recentAttendancePct,
+    const DeepCollectionEquality().hash(_healthReasons),
   ]);
 
   @override
   String toString() {
-    return 'KpiTableRow(roundTableId: $roundTableId, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, status: $status, health: $health, activePeople: $activePeople, valuesCompleted: $valuesCompleted, currentValueId: $currentValueId, currentValueLabel: $currentValueLabel, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, pendingSessionAt: $pendingSessionAt)';
+    return 'KpiTableRow(roundTableId: $roundTableId, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, status: $status, health: $health, activePeople: $activePeople, valuesCompleted: $valuesCompleted, currentValueId: $currentValueId, currentValueLabel: $currentValueLabel, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, pendingSessionAt: $pendingSessionAt, recentAttendancePct: $recentAttendancePct, healthReasons: $healthReasons)';
   }
 }
 
@@ -772,6 +832,9 @@ abstract mixin class _$KpiTableRowCopyWith<$Res>
     int syncedLateRows,
     DateTime? lastSessionAt,
     DateTime? pendingSessionAt,
+    double? recentAttendancePct,
+    @JsonKey(fromJson: HealthReason.listFromJson)
+    List<HealthReason> healthReasons,
   });
 }
 
@@ -808,6 +871,8 @@ class __$KpiTableRowCopyWithImpl<$Res> implements _$KpiTableRowCopyWith<$Res> {
     Object? syncedLateRows = null,
     Object? lastSessionAt = freezed,
     Object? pendingSessionAt = freezed,
+    Object? recentAttendancePct = freezed,
+    Object? healthReasons = null,
   }) {
     return _then(
       _KpiTableRow(
@@ -895,6 +960,14 @@ class __$KpiTableRowCopyWithImpl<$Res> implements _$KpiTableRowCopyWith<$Res> {
             ? _self.pendingSessionAt
             : pendingSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        recentAttendancePct: freezed == recentAttendancePct
+            ? _self.recentAttendancePct
+            : recentAttendancePct // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        healthReasons: null == healthReasons
+            ? _self._healthReasons
+            : healthReasons // ignore: cast_nullable_to_non_nullable
+                  as List<HealthReason>,
       ),
     );
   }
