@@ -2946,5 +2946,102 @@
     }
   },
   "historyNoCommitment": "Sin compromiso",
-  "historyLoadError": "No pudimos leer tu historial en este dispositivo."
+  "historyLoadError": "No pudimos leer tu historial en este dispositivo.",
+  "adminSessionsTitle": "Próxima sesión",
+  "adminSessionNone": "Esta mesa no tiene una sesión pendiente.",
+  "adminSessionExtraBadge": "Extraordinaria",
+  "adminSessionMovedBadge": "Reprogramada",
+  "adminSessionMovedFrom": "Antes: {date}",
+  "@adminSessionMovedFrom": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminSessionInProgress": "La sesión ya empezó: no se puede cambiar.",
+  "adminSessionReschedule": "Reprogramar",
+  "adminSessionCancel": "Cancelar sesión",
+  "adminSessionAddExtra": "Sesión extraordinaria",
+  "adminRescheduleTitle": "Reprogramar la sesión",
+  "adminRescheduleMessage": "La mesa se reunirá en la fecha y hora que elijas (zona {timezone}). El resto del calendario semanal no cambia.",
+  "@adminRescheduleMessage": {
+    "placeholders": {
+      "timezone": {
+        "type": "String"
+      }
+    }
+  },
+  "adminExtraTitle": "Agregar sesión extraordinaria",
+  "adminExtraMessage": "Una reunión adicional antes de la próxima sesión regular ({date}). Trabaja el valor actual de la mesa y, al realizarla, el programa avanza. Zona {timezone}.",
+  "@adminExtraMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "timezone": {
+        "type": "String"
+      }
+    }
+  },
+  "adminFieldDateTime": "Fecha y hora",
+  "adminFieldDate": "Fecha",
+  "adminSessionReason": "Motivo (opcional)",
+  "adminSessionConfirmReschedule": "Reprogramar",
+  "adminSessionConfirmExtra": "Agregar sesión",
+  "adminCancelSessionTitle": "Cancelar esta sesión",
+  "adminCancelSessionMessage": "La sesión del {date} no se realizará. El valor no avanza: la próxima sesión de la mesa trabajará el mismo valor.",
+  "@adminCancelSessionMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminCancelReason": "Motivo",
+  "adminCancelReasonHoliday": "Feriado",
+  "adminCancelReasonForceMajeure": "Fuerza mayor",
+  "adminCancelReasonOther": "Otro motivo",
+  "adminCancelNote": "Nota (opcional)",
+  "adminCancelConfirm": "Cancelar sesión",
+  "adminCancelKeep": "Mantener sesión",
+  "adminToastSessionRescheduled": "Sesión reprogramada.",
+  "adminToastSessionCancelled": "Sesión cancelada. La próxima trabajará el mismo valor.",
+  "adminToastExtraAdded": "Sesión extraordinaria agregada.",
+  "adminErrorSessionInProgress": "La sesión ya empezó; no se puede cambiar.",
+  "adminErrorScheduleInPast": "La fecha de la sesión debe ser futura.",
+  "adminErrorSlotTaken": "La mesa ya tiene una sesión en esa fecha y hora.",
+  "adminErrorExtraNotBeforeNext": "La sesión extraordinaria debe ser antes de la próxima sesión de la mesa.",
+  "adminErrorExtraExists": "Ya hay una sesión extraordinaria pendiente; reprográmala o cancélala.",
+  "adminErrorEffectiveInPast": "El nuevo horario no puede empezar en una fecha pasada.",
+  "adminScheduleHistory": "Historial de horarios",
+  "adminScheduleFrom": "Desde {date}",
+  "@adminScheduleFrom": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminScheduleCurrent": "Vigente",
+  "adminScheduleUpcoming": "Programado",
+  "adminScheduleEffectiveFrom": "Vigente desde",
+  "adminScheduleEffectiveHelp": "Si no eliges fecha, el cambio aplica desde hoy. Con una fecha futura, las sesiones anteriores no se mueven.",
+  "homeSessionExtraordinary": "Sesión extraordinaria",
+  "homeSessionMoved": "Reprogramada · antes {date}",
+  "@homeSessionMoved": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSessionCancelledNotice": "Se canceló la sesión del {date}. La próxima trabaja el mismo valor.",
+  "@homeSessionCancelledNotice": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

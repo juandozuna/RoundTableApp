@@ -8048,6 +8048,276 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos leer tu historial en este dispositivo.'**
   String get historyLoadError;
+
+  /// No description provided for @adminSessionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Próxima sesión'**
+  String get adminSessionsTitle;
+
+  /// No description provided for @adminSessionNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta mesa no tiene una sesión pendiente.'**
+  String get adminSessionNone;
+
+  /// No description provided for @adminSessionExtraBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Extraordinaria'**
+  String get adminSessionExtraBadge;
+
+  /// No description provided for @adminSessionMovedBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramada'**
+  String get adminSessionMovedBadge;
+
+  /// No description provided for @adminSessionMovedFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes: {date}'**
+  String adminSessionMovedFrom(String date);
+
+  /// No description provided for @adminSessionInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'La sesión ya empezó: no se puede cambiar.'**
+  String get adminSessionInProgress;
+
+  /// No description provided for @adminSessionReschedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramar'**
+  String get adminSessionReschedule;
+
+  /// No description provided for @adminSessionCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar sesión'**
+  String get adminSessionCancel;
+
+  /// No description provided for @adminSessionAddExtra.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión extraordinaria'**
+  String get adminSessionAddExtra;
+
+  /// No description provided for @adminRescheduleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramar la sesión'**
+  String get adminRescheduleTitle;
+
+  /// No description provided for @adminRescheduleMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'La mesa se reunirá en la fecha y hora que elijas (zona {timezone}). El resto del calendario semanal no cambia.'**
+  String adminRescheduleMessage(String timezone);
+
+  /// No description provided for @adminExtraTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar sesión extraordinaria'**
+  String get adminExtraTitle;
+
+  /// No description provided for @adminExtraMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Una reunión adicional antes de la próxima sesión regular ({date}). Trabaja el valor actual de la mesa y, al realizarla, el programa avanza. Zona {timezone}.'**
+  String adminExtraMessage(String date, String timezone);
+
+  /// No description provided for @adminFieldDateTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora'**
+  String get adminFieldDateTime;
+
+  /// No description provided for @adminFieldDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get adminFieldDate;
+
+  /// No description provided for @adminSessionReason.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo (opcional)'**
+  String get adminSessionReason;
+
+  /// No description provided for @adminSessionConfirmReschedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramar'**
+  String get adminSessionConfirmReschedule;
+
+  /// No description provided for @adminSessionConfirmExtra.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar sesión'**
+  String get adminSessionConfirmExtra;
+
+  /// No description provided for @adminCancelSessionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar esta sesión'**
+  String get adminCancelSessionTitle;
+
+  /// No description provided for @adminCancelSessionMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'La sesión del {date} no se realizará. El valor no avanza: la próxima sesión de la mesa trabajará el mismo valor.'**
+  String adminCancelSessionMessage(String date);
+
+  /// No description provided for @adminCancelReason.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo'**
+  String get adminCancelReason;
+
+  /// No description provided for @adminCancelReasonHoliday.
+  ///
+  /// In es, this message translates to:
+  /// **'Feriado'**
+  String get adminCancelReasonHoliday;
+
+  /// No description provided for @adminCancelReasonForceMajeure.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuerza mayor'**
+  String get adminCancelReasonForceMajeure;
+
+  /// No description provided for @adminCancelReasonOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro motivo'**
+  String get adminCancelReasonOther;
+
+  /// No description provided for @adminCancelNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota (opcional)'**
+  String get adminCancelNote;
+
+  /// No description provided for @adminCancelConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar sesión'**
+  String get adminCancelConfirm;
+
+  /// No description provided for @adminCancelKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantener sesión'**
+  String get adminCancelKeep;
+
+  /// No description provided for @adminToastSessionRescheduled.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión reprogramada.'**
+  String get adminToastSessionRescheduled;
+
+  /// No description provided for @adminToastSessionCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión cancelada. La próxima trabajará el mismo valor.'**
+  String get adminToastSessionCancelled;
+
+  /// No description provided for @adminToastExtraAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión extraordinaria agregada.'**
+  String get adminToastExtraAdded;
+
+  /// No description provided for @adminErrorSessionInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'La sesión ya empezó; no se puede cambiar.'**
+  String get adminErrorSessionInProgress;
+
+  /// No description provided for @adminErrorScheduleInPast.
+  ///
+  /// In es, this message translates to:
+  /// **'La fecha de la sesión debe ser futura.'**
+  String get adminErrorScheduleInPast;
+
+  /// No description provided for @adminErrorSlotTaken.
+  ///
+  /// In es, this message translates to:
+  /// **'La mesa ya tiene una sesión en esa fecha y hora.'**
+  String get adminErrorSlotTaken;
+
+  /// No description provided for @adminErrorExtraNotBeforeNext.
+  ///
+  /// In es, this message translates to:
+  /// **'La sesión extraordinaria debe ser antes de la próxima sesión de la mesa.'**
+  String get adminErrorExtraNotBeforeNext;
+
+  /// No description provided for @adminErrorExtraExists.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya hay una sesión extraordinaria pendiente; reprográmala o cancélala.'**
+  String get adminErrorExtraExists;
+
+  /// No description provided for @adminErrorEffectiveInPast.
+  ///
+  /// In es, this message translates to:
+  /// **'El nuevo horario no puede empezar en una fecha pasada.'**
+  String get adminErrorEffectiveInPast;
+
+  /// No description provided for @adminScheduleHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial de horarios'**
+  String get adminScheduleHistory;
+
+  /// No description provided for @adminScheduleFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde {date}'**
+  String adminScheduleFrom(String date);
+
+  /// No description provided for @adminScheduleCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigente'**
+  String get adminScheduleCurrent;
+
+  /// No description provided for @adminScheduleUpcoming.
+  ///
+  /// In es, this message translates to:
+  /// **'Programado'**
+  String get adminScheduleUpcoming;
+
+  /// No description provided for @adminScheduleEffectiveFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigente desde'**
+  String get adminScheduleEffectiveFrom;
+
+  /// No description provided for @adminScheduleEffectiveHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Si no eliges fecha, el cambio aplica desde hoy. Con una fecha futura, las sesiones anteriores no se mueven.'**
+  String get adminScheduleEffectiveHelp;
+
+  /// No description provided for @homeSessionExtraordinary.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión extraordinaria'**
+  String get homeSessionExtraordinary;
+
+  /// No description provided for @homeSessionMoved.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramada · antes {date}'**
+  String homeSessionMoved(String date);
+
+  /// No description provided for @homeSessionCancelledNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Se canceló la sesión del {date}. La próxima trabaja el mismo valor.'**
+  String homeSessionCancelledNotice(String date);
 }
 
 class _AppLocalizationsDelegate

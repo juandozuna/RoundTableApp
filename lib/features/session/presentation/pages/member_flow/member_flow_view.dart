@@ -157,7 +157,9 @@ class _MemberFlowViewState extends State<MemberFlowView> {
           child: SingleChildScrollView(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: MemberFlowView.maxContentWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: MemberFlowView.maxContentWidth,
+                ),
                 child: content,
               ),
             ),
@@ -171,7 +173,9 @@ class _MemberFlowViewState extends State<MemberFlowView> {
   Widget _constrain(Widget dock) => Center(
     heightFactor: 1,
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: MemberFlowView.maxContentWidth),
+      constraints: const BoxConstraints(
+        maxWidth: MemberFlowView.maxContentWidth,
+      ),
       child: dock,
     ),
   );

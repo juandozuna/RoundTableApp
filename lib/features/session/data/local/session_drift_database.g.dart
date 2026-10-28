@@ -3481,6 +3481,26 @@ class $SessionsTable extends Sessions
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _originalScheduledAtMeta =
+      const VerificationMeta('originalScheduledAt');
+  @override
+  late final GeneratedColumn<String> originalScheduledAt =
+      GeneratedColumn<String>(
+        'original_scheduled_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _facilitatorPersonIdMeta =
       const VerificationMeta('facilitatorPersonId');
   @override
@@ -3550,6 +3570,8 @@ class $SessionsTable extends Sessions
     endedAt,
     answersClosedAt,
     cancelledReason,
+    kind,
+    originalScheduledAt,
     facilitatorPersonId,
     deviceModifiedAt,
     archivedAt,
@@ -3657,6 +3679,21 @@ class $SessionsTable extends Sessions
         ),
       );
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
+    if (data.containsKey('original_scheduled_at')) {
+      context.handle(
+        _originalScheduledAtMeta,
+        originalScheduledAt.isAcceptableOrUnknown(
+          data['original_scheduled_at']!,
+          _originalScheduledAtMeta,
+        ),
+      );
+    }
     if (data.containsKey('facilitator_person_id')) {
       context.handle(
         _facilitatorPersonIdMeta,
@@ -3750,6 +3787,14 @@ class $SessionsTable extends Sessions
         DriftSqlType.string,
         data['${effectivePrefix}cancelled_reason'],
       ),
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      ),
+      originalScheduledAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_scheduled_at'],
+      ),
       facilitatorPersonId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}facilitator_person_id'],
@@ -3792,6 +3837,12 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
   final String? endedAt;
   final String? answersClosedAt;
   final String? cancelledReason;
+
+  /// `regular` or `extraordinary` (RF-30).
+  final String? kind;
+
+  /// Regular slot a rescheduled session moved from.
+  final String? originalScheduledAt;
   final String? facilitatorPersonId;
   final String? deviceModifiedAt;
   final String? archivedAt;
@@ -3810,6 +3861,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     this.endedAt,
     this.answersClosedAt,
     this.cancelledReason,
+    this.kind,
+    this.originalScheduledAt,
     this.facilitatorPersonId,
     this.deviceModifiedAt,
     this.archivedAt,
@@ -3852,6 +3905,12 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     }
     if (!nullToAbsent || cancelledReason != null) {
       map['cancelled_reason'] = Variable<String>(cancelledReason);
+    }
+    if (!nullToAbsent || kind != null) {
+      map['kind'] = Variable<String>(kind);
+    }
+    if (!nullToAbsent || originalScheduledAt != null) {
+      map['original_scheduled_at'] = Variable<String>(originalScheduledAt);
     }
     if (!nullToAbsent || facilitatorPersonId != null) {
       map['facilitator_person_id'] = Variable<String>(facilitatorPersonId);
@@ -3907,6 +3966,10 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       cancelledReason: cancelledReason == null && nullToAbsent
           ? const Value.absent()
           : Value(cancelledReason),
+      kind: kind == null && nullToAbsent ? const Value.absent() : Value(kind),
+      originalScheduledAt: originalScheduledAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalScheduledAt),
       facilitatorPersonId: facilitatorPersonId == null && nullToAbsent
           ? const Value.absent()
           : Value(facilitatorPersonId),
@@ -3943,6 +4006,10 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       endedAt: serializer.fromJson<String?>(json['endedAt']),
       answersClosedAt: serializer.fromJson<String?>(json['answersClosedAt']),
       cancelledReason: serializer.fromJson<String?>(json['cancelledReason']),
+      kind: serializer.fromJson<String?>(json['kind']),
+      originalScheduledAt: serializer.fromJson<String?>(
+        json['originalScheduledAt'],
+      ),
       facilitatorPersonId: serializer.fromJson<String?>(
         json['facilitatorPersonId'],
       ),
@@ -3968,6 +4035,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       'endedAt': serializer.toJson<String?>(endedAt),
       'answersClosedAt': serializer.toJson<String?>(answersClosedAt),
       'cancelledReason': serializer.toJson<String?>(cancelledReason),
+      'kind': serializer.toJson<String?>(kind),
+      'originalScheduledAt': serializer.toJson<String?>(originalScheduledAt),
       'facilitatorPersonId': serializer.toJson<String?>(facilitatorPersonId),
       'deviceModifiedAt': serializer.toJson<String?>(deviceModifiedAt),
       'archivedAt': serializer.toJson<String?>(archivedAt),
@@ -3989,6 +4058,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     Value<String?> endedAt = const Value.absent(),
     Value<String?> answersClosedAt = const Value.absent(),
     Value<String?> cancelledReason = const Value.absent(),
+    Value<String?> kind = const Value.absent(),
+    Value<String?> originalScheduledAt = const Value.absent(),
     Value<String?> facilitatorPersonId = const Value.absent(),
     Value<String?> deviceModifiedAt = const Value.absent(),
     Value<String?> archivedAt = const Value.absent(),
@@ -4015,6 +4086,10 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     cancelledReason: cancelledReason.present
         ? cancelledReason.value
         : this.cancelledReason,
+    kind: kind.present ? kind.value : this.kind,
+    originalScheduledAt: originalScheduledAt.present
+        ? originalScheduledAt.value
+        : this.originalScheduledAt,
     facilitatorPersonId: facilitatorPersonId.present
         ? facilitatorPersonId.value
         : this.facilitatorPersonId,
@@ -4051,6 +4126,10 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       cancelledReason: data.cancelledReason.present
           ? data.cancelledReason.value
           : this.cancelledReason,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      originalScheduledAt: data.originalScheduledAt.present
+          ? data.originalScheduledAt.value
+          : this.originalScheduledAt,
       facilitatorPersonId: data.facilitatorPersonId.present
           ? data.facilitatorPersonId.value
           : this.facilitatorPersonId,
@@ -4080,6 +4159,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
           ..write('endedAt: $endedAt, ')
           ..write('answersClosedAt: $answersClosedAt, ')
           ..write('cancelledReason: $cancelledReason, ')
+          ..write('kind: $kind, ')
+          ..write('originalScheduledAt: $originalScheduledAt, ')
           ..write('facilitatorPersonId: $facilitatorPersonId, ')
           ..write('deviceModifiedAt: $deviceModifiedAt, ')
           ..write('archivedAt: $archivedAt, ')
@@ -4103,6 +4184,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     endedAt,
     answersClosedAt,
     cancelledReason,
+    kind,
+    originalScheduledAt,
     facilitatorPersonId,
     deviceModifiedAt,
     archivedAt,
@@ -4125,6 +4208,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
           other.endedAt == this.endedAt &&
           other.answersClosedAt == this.answersClosedAt &&
           other.cancelledReason == this.cancelledReason &&
+          other.kind == this.kind &&
+          other.originalScheduledAt == this.originalScheduledAt &&
           other.facilitatorPersonId == this.facilitatorPersonId &&
           other.deviceModifiedAt == this.deviceModifiedAt &&
           other.archivedAt == this.archivedAt &&
@@ -4145,6 +4230,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
   final Value<String?> endedAt;
   final Value<String?> answersClosedAt;
   final Value<String?> cancelledReason;
+  final Value<String?> kind;
+  final Value<String?> originalScheduledAt;
   final Value<String?> facilitatorPersonId;
   final Value<String?> deviceModifiedAt;
   final Value<String?> archivedAt;
@@ -4164,6 +4251,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     this.endedAt = const Value.absent(),
     this.answersClosedAt = const Value.absent(),
     this.cancelledReason = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.originalScheduledAt = const Value.absent(),
     this.facilitatorPersonId = const Value.absent(),
     this.deviceModifiedAt = const Value.absent(),
     this.archivedAt = const Value.absent(),
@@ -4184,6 +4273,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     this.endedAt = const Value.absent(),
     this.answersClosedAt = const Value.absent(),
     this.cancelledReason = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.originalScheduledAt = const Value.absent(),
     this.facilitatorPersonId = const Value.absent(),
     this.deviceModifiedAt = const Value.absent(),
     this.archivedAt = const Value.absent(),
@@ -4204,6 +4295,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     Expression<String>? endedAt,
     Expression<String>? answersClosedAt,
     Expression<String>? cancelledReason,
+    Expression<String>? kind,
+    Expression<String>? originalScheduledAt,
     Expression<String>? facilitatorPersonId,
     Expression<String>? deviceModifiedAt,
     Expression<String>? archivedAt,
@@ -4224,6 +4317,9 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
       if (endedAt != null) 'ended_at': endedAt,
       if (answersClosedAt != null) 'answers_closed_at': answersClosedAt,
       if (cancelledReason != null) 'cancelled_reason': cancelledReason,
+      if (kind != null) 'kind': kind,
+      if (originalScheduledAt != null)
+        'original_scheduled_at': originalScheduledAt,
       if (facilitatorPersonId != null)
         'facilitator_person_id': facilitatorPersonId,
       if (deviceModifiedAt != null) 'device_modified_at': deviceModifiedAt,
@@ -4247,6 +4343,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     Value<String?>? endedAt,
     Value<String?>? answersClosedAt,
     Value<String?>? cancelledReason,
+    Value<String?>? kind,
+    Value<String?>? originalScheduledAt,
     Value<String?>? facilitatorPersonId,
     Value<String?>? deviceModifiedAt,
     Value<String?>? archivedAt,
@@ -4267,6 +4365,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
       endedAt: endedAt ?? this.endedAt,
       answersClosedAt: answersClosedAt ?? this.answersClosedAt,
       cancelledReason: cancelledReason ?? this.cancelledReason,
+      kind: kind ?? this.kind,
+      originalScheduledAt: originalScheduledAt ?? this.originalScheduledAt,
       facilitatorPersonId: facilitatorPersonId ?? this.facilitatorPersonId,
       deviceModifiedAt: deviceModifiedAt ?? this.deviceModifiedAt,
       archivedAt: archivedAt ?? this.archivedAt,
@@ -4315,6 +4415,14 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     if (cancelledReason.present) {
       map['cancelled_reason'] = Variable<String>(cancelledReason.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (originalScheduledAt.present) {
+      map['original_scheduled_at'] = Variable<String>(
+        originalScheduledAt.value,
+      );
+    }
     if (facilitatorPersonId.present) {
       map['facilitator_person_id'] = Variable<String>(
         facilitatorPersonId.value,
@@ -4353,6 +4461,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
           ..write('endedAt: $endedAt, ')
           ..write('answersClosedAt: $answersClosedAt, ')
           ..write('cancelledReason: $cancelledReason, ')
+          ..write('kind: $kind, ')
+          ..write('originalScheduledAt: $originalScheduledAt, ')
           ..write('facilitatorPersonId: $facilitatorPersonId, ')
           ..write('deviceModifiedAt: $deviceModifiedAt, ')
           ..write('archivedAt: $archivedAt, ')
@@ -10543,6 +10653,8 @@ typedef $$SessionsTableCreateCompanionBuilder =
       Value<String?> endedAt,
       Value<String?> answersClosedAt,
       Value<String?> cancelledReason,
+      Value<String?> kind,
+      Value<String?> originalScheduledAt,
       Value<String?> facilitatorPersonId,
       Value<String?> deviceModifiedAt,
       Value<String?> archivedAt,
@@ -10564,6 +10676,8 @@ typedef $$SessionsTableUpdateCompanionBuilder =
       Value<String?> endedAt,
       Value<String?> answersClosedAt,
       Value<String?> cancelledReason,
+      Value<String?> kind,
+      Value<String?> originalScheduledAt,
       Value<String?> facilitatorPersonId,
       Value<String?> deviceModifiedAt,
       Value<String?> archivedAt,
@@ -10638,6 +10752,16 @@ class $$SessionsTableFilterComposer
 
   ColumnFilters<String> get cancelledReason => $composableBuilder(
     column: $table.cancelledReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalScheduledAt => $composableBuilder(
+    column: $table.originalScheduledAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10736,6 +10860,16 @@ class $$SessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalScheduledAt => $composableBuilder(
+    column: $table.originalScheduledAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get facilitatorPersonId => $composableBuilder(
     column: $table.facilitatorPersonId,
     builder: (column) => ColumnOrderings(column),
@@ -10819,6 +10953,14 @@ class $$SessionsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get originalScheduledAt => $composableBuilder(
+    column: $table.originalScheduledAt,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get facilitatorPersonId => $composableBuilder(
     column: $table.facilitatorPersonId,
     builder: (column) => column,
@@ -10884,6 +11026,8 @@ class $$SessionsTableTableManager
                 Value<String?> endedAt = const Value.absent(),
                 Value<String?> answersClosedAt = const Value.absent(),
                 Value<String?> cancelledReason = const Value.absent(),
+                Value<String?> kind = const Value.absent(),
+                Value<String?> originalScheduledAt = const Value.absent(),
                 Value<String?> facilitatorPersonId = const Value.absent(),
                 Value<String?> deviceModifiedAt = const Value.absent(),
                 Value<String?> archivedAt = const Value.absent(),
@@ -10903,6 +11047,8 @@ class $$SessionsTableTableManager
                 endedAt: endedAt,
                 answersClosedAt: answersClosedAt,
                 cancelledReason: cancelledReason,
+                kind: kind,
+                originalScheduledAt: originalScheduledAt,
                 facilitatorPersonId: facilitatorPersonId,
                 deviceModifiedAt: deviceModifiedAt,
                 archivedAt: archivedAt,
@@ -10924,6 +11070,8 @@ class $$SessionsTableTableManager
                 Value<String?> endedAt = const Value.absent(),
                 Value<String?> answersClosedAt = const Value.absent(),
                 Value<String?> cancelledReason = const Value.absent(),
+                Value<String?> kind = const Value.absent(),
+                Value<String?> originalScheduledAt = const Value.absent(),
                 Value<String?> facilitatorPersonId = const Value.absent(),
                 Value<String?> deviceModifiedAt = const Value.absent(),
                 Value<String?> archivedAt = const Value.absent(),
@@ -10943,6 +11091,8 @@ class $$SessionsTableTableManager
                 endedAt: endedAt,
                 answersClosedAt: answersClosedAt,
                 cancelledReason: cancelledReason,
+                kind: kind,
+                originalScheduledAt: originalScheduledAt,
                 facilitatorPersonId: facilitatorPersonId,
                 deviceModifiedAt: deviceModifiedAt,
                 archivedAt: archivedAt,

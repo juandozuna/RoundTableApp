@@ -25,6 +25,10 @@ abstract class TableInput with _$TableInput {
     /// Edit only: value the table works next (RF-28).
     String? currentValueId,
 
+    /// Edit only: date (`YYYY-MM-DD`, local to the table) the new weekday,
+    /// time or timezone takes effect (RF-23); today when absent.
+    String? scheduleEffectiveFrom,
+
     /// Edit only: the admin confirmed moving back past completed history.
     bool? confirmRewind,
   }) = _TableInput;

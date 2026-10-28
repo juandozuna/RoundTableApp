@@ -18,6 +18,16 @@ abstract class HomeSession with _$HomeSession {
     int? valueSequence,
     String? followUpValueName,
 
+    /// An extra meeting added by the coordination (RF-30).
+    @Default(false) bool isExtraordinary,
+
+    /// Regular slot this session was moved from, when it was rescheduled.
+    DateTime? rescheduledFrom,
+
+    /// Slot of a session cancelled since the last one held: the next session
+    /// carries the same value.
+    DateTime? cancelledNoticeFor,
+
     /// `null` when there is not enough history to judge.
     HealthStatus? health,
   }) = _HomeSession;

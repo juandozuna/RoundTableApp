@@ -120,6 +120,46 @@ void main() {
     );
   });
 
+  test('exceptions to the schedule reach the home session (RF-30)', () async {
+    final regularSlot = DateTime.utc(2026, 10, 28, 1);
+    final cancelled = DateTime.utc(2026, 10, 21, 1);
+    when(() => local.watchFacilitatorTable('table-1')).thenAnswer(
+      (_) => Stream.value(
+        HomeTableRecord(
+          tableId: 'table-1',
+          tableName: 'Mesa',
+          tableIsActive: true,
+          seats: 3,
+          sessionId: 's',
+          scheduledAt: upcoming,
+          sessionIsExtraordinary: true,
+          rescheduledFrom: regularSlot,
+          cancelledNoticeFor: cancelled,
+        ),
+      ),
+    );
+
+    final overview = await service.watchOverview(facilitator).first;
+
+    final session = (overview as HomeFacilitator).session!;
+    expect(session.isExtraordinary, isTrue);
+    expect(session.rescheduledFrom, regularSlot);
+    expect(session.cancelledNoticeFor, cancelled);
+  });
+
+  test('a regular session carries no exception markers', () async {
+    when(
+      () => local.watchFacilitatorTable('table-1'),
+    ).thenAnswer((_) => Stream.value(record));
+
+    final overview = await service.watchOverview(facilitator).first;
+
+    final session = (overview as HomeFacilitator).session!;
+    expect(session.isExtraordinary, isFalse);
+    expect(session.rescheduledFrom, isNull);
+    expect(session.cancelledNoticeFor, isNull);
+  });
+
   test('server health wins over the local rule', () async {
     when(() => local.watchFacilitatorTable('table-1')).thenAnswer(
       (_) => Stream.value(

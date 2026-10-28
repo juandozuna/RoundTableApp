@@ -36,6 +36,16 @@ abstract class AdminTable with _$AdminTable {
     String? pendingSessionId,
     String? pendingSessionStatus,
     DateTime? pendingSessionAt,
+
+    /// `regular` or `extraordinary`.
+    String? pendingSessionKind,
+
+    /// Regular slot the pending session was moved from, if it was.
+    DateTime? pendingSessionOriginalAt,
+
+    /// The pending session's slot as `YYYY-MM-DDTHH:MM` in [timezone].
+    String? pendingSessionLocal,
+    String? pendingSessionOriginalLocal,
   }) = _AdminTable;
 
   factory AdminTable.fromJson(Map<String, dynamic> json) =>
@@ -48,4 +58,22 @@ abstract class AdminTable with _$AdminTable {
   bool get isFull => activePeople >= maxPeople;
 
   bool get hasFacilitator => facilitatorPersonId != null;
+
+  bool get hasPendingSession => pendingSessionId != null;
+
+  bool get pendingIsExtraordinary => pendingSessionKind == 'extraordinary';
+
+  bool get pendingIsRescheduled => pendingSessionOriginalAt != null;
+
+  /// Only a session that has not started can be moved or cancelled.
+  bool get pendingIsEditable =>
+      hasPendingSession && pendingSessionStatus == 'scheduled';
+
+  /// The pending slot as a wall-clock time in the table's timezone.
+  DateTime? get pendingLocal => _wallClock(pendingSessionLocal);
+
+  DateTime? get pendingOriginalLocal => _wallClock(pendingSessionOriginalLocal);
+
+  static DateTime? _wallClock(String? raw) =>
+      raw == null ? null : DateTime.tryParse(raw);
 }

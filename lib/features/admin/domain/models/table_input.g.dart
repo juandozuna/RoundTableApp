@@ -17,6 +17,7 @@ _TableInput _$TableInputFromJson(Map<String, dynamic> json) => _TableInput(
   status: $enumDecodeNullable(_$RoundTableStatusEnumMap, json['status']),
   startValueId: json['start_value_id'] as String?,
   currentValueId: json['current_value_id'] as String?,
+  scheduleEffectiveFrom: json['schedule_effective_from'] as String?,
   confirmRewind: json['confirm_rewind'] as bool?,
 );
 
@@ -32,6 +33,7 @@ Map<String, dynamic> _$TableInputToJson(_TableInput instance) =>
       'status': ?_$RoundTableStatusEnumMap[instance.status],
       'start_value_id': ?instance.startValueId,
       'current_value_id': ?instance.currentValueId,
+      'schedule_effective_from': ?instance.scheduleEffectiveFrom,
       'confirm_rewind': ?instance.confirmRewind,
     };
 

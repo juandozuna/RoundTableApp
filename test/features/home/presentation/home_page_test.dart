@@ -146,6 +146,48 @@ void main() {
     expect(pushed, '/mesas/t1/sesion');
   });
 
+  testWidgets(
+    'shows an extraordinary, rescheduled session and the cancelled one',
+    (tester) async {
+      await pumpPage(
+        tester,
+        HomeState(
+          status: HomeStatus.ready,
+          overview: HomeOverview.facilitator(
+            context: facilitatorContext,
+            session: session.copyWith(
+              isExtraordinary: true,
+              rescheduledFrom: DateTime.utc(2026, 10, 28, 23),
+              cancelledNoticeFor: DateTime.utc(2026, 10, 19, 23),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Sesión extraordinaria'), findsOneWidget);
+      expect(find.textContaining('Reprogramada · antes'), findsOneWidget);
+      expect(find.textContaining('Se canceló la sesión del'), findsOneWidget);
+      expect(find.textContaining('mismo valor'), findsOneWidget);
+    },
+  );
+
+  testWidgets('a regular session shows no exception markers', (tester) async {
+    await pumpPage(
+      tester,
+      HomeState(
+        status: HomeStatus.ready,
+        overview: HomeOverview.facilitator(
+          context: facilitatorContext,
+          session: session,
+        ),
+      ),
+    );
+
+    expect(find.text('Sesión extraordinaria'), findsNothing);
+    expect(find.textContaining('Reprogramada'), findsNothing);
+    expect(find.textContaining('Se canceló'), findsNothing);
+  });
+
   testWidgets('facilitator and member link to their progress', (tester) async {
     await pumpPage(
       tester,

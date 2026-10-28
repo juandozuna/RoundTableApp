@@ -27,7 +27,16 @@ SELECT t.id AS table_id, t.name AS table_name, t.status AS table_status,
      WHERE m.round_table_id = t.id AND m.status = 'active') AS seats,
   (SELECT MAX(COALESCE(c.ended_at, c.scheduled_at)) FROM sessions c
      WHERE c.round_table_id = t.id AND c.status = 'closed') AS last_closed_at,
+  (SELECT MAX(x.scheduled_at) FROM sessions x
+     WHERE x.round_table_id = t.id AND x.status = 'cancelled'
+       AND SUBSTR(COALESCE(x.cancelled_reason, ''), 1, 6) <> 'table_'
+       AND x.archived_at IS NULL
+       AND x.scheduled_at > COALESCE(
+         (SELECT MAX(COALESCE(c.ended_at, c.scheduled_at)) FROM sessions c
+            WHERE c.round_table_id = t.id AND c.status = 'closed'), '')
+  ) AS cancelled_slot,
   s.id AS session_id, s.status AS session_status, s.scheduled_at,
+  s.kind AS session_kind, s.original_scheduled_at,
   v.name AS value_name, v.sequence AS value_sequence,
   fv.name AS follow_up_name''';
 
@@ -111,6 +120,9 @@ LEFT JOIN (
     valueName: row['value_name'] as String?,
     valueSequence: (row['value_sequence'] as num?)?.toInt(),
     followUpValueName: row['follow_up_name'] as String?,
+    sessionIsExtraordinary: row['session_kind'] == 'extraordinary',
+    rescheduledFrom: _date(row['original_scheduled_at']),
+    cancelledNoticeFor: _date(row['cancelled_slot']),
   );
 
   static DateTime? _date(Object? raw) =>

@@ -14,6 +14,9 @@ enum TableNotice {
   memberAdded,
   memberMoved,
   memberDeactivated,
+  sessionRescheduled,
+  sessionCancelled,
+  extraSessionAdded,
 }
 
 @freezed

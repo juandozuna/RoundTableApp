@@ -17,6 +17,7 @@ mixin _$TableDetail {
   List<TableMembership> get memberships;
   List<AdminTable> get organizationTables;
   List<AdminPerson> get organizationPeople;
+  List<ScheduleVersion> get scheduleVersions;
   KpiTableRow? get kpi;
 
   /// Create a copy of TableDetail
@@ -44,6 +45,10 @@ mixin _$TableDetail {
               other.organizationPeople,
               organizationPeople,
             ) &&
+            const DeepCollectionEquality().equals(
+              other.scheduleVersions,
+              scheduleVersions,
+            ) &&
             (identical(other.kpi, kpi) || other.kpi == kpi));
   }
 
@@ -54,12 +59,13 @@ mixin _$TableDetail {
     const DeepCollectionEquality().hash(memberships),
     const DeepCollectionEquality().hash(organizationTables),
     const DeepCollectionEquality().hash(organizationPeople),
+    const DeepCollectionEquality().hash(scheduleVersions),
     kpi,
   );
 
   @override
   String toString() {
-    return 'TableDetail(table: $table, memberships: $memberships, organizationTables: $organizationTables, organizationPeople: $organizationPeople, kpi: $kpi)';
+    return 'TableDetail(table: $table, memberships: $memberships, organizationTables: $organizationTables, organizationPeople: $organizationPeople, scheduleVersions: $scheduleVersions, kpi: $kpi)';
   }
 }
 
@@ -75,6 +81,7 @@ abstract mixin class $TableDetailCopyWith<$Res> {
     List<TableMembership> memberships,
     List<AdminTable> organizationTables,
     List<AdminPerson> organizationPeople,
+    List<ScheduleVersion> scheduleVersions,
     KpiTableRow? kpi,
   });
 
@@ -98,6 +105,7 @@ class _$TableDetailCopyWithImpl<$Res> implements $TableDetailCopyWith<$Res> {
     Object? memberships = null,
     Object? organizationTables = null,
     Object? organizationPeople = null,
+    Object? scheduleVersions = null,
     Object? kpi = freezed,
   }) {
     return _then(
@@ -118,6 +126,10 @@ class _$TableDetailCopyWithImpl<$Res> implements $TableDetailCopyWith<$Res> {
             ? _self.organizationPeople
             : organizationPeople // ignore: cast_nullable_to_non_nullable
                   as List<AdminPerson>,
+        scheduleVersions: null == scheduleVersions
+            ? _self.scheduleVersions
+            : scheduleVersions // ignore: cast_nullable_to_non_nullable
+                  as List<ScheduleVersion>,
         kpi: freezed == kpi
             ? _self.kpi
             : kpi // ignore: cast_nullable_to_non_nullable
@@ -249,6 +261,7 @@ extension TableDetailPatterns on TableDetail {
       List<TableMembership> memberships,
       List<AdminTable> organizationTables,
       List<AdminPerson> organizationPeople,
+      List<ScheduleVersion> scheduleVersions,
       KpiTableRow? kpi,
     )?
     $default, {
@@ -262,6 +275,7 @@ extension TableDetailPatterns on TableDetail {
           _that.memberships,
           _that.organizationTables,
           _that.organizationPeople,
+          _that.scheduleVersions,
           _that.kpi,
         );
       case _:
@@ -289,6 +303,7 @@ extension TableDetailPatterns on TableDetail {
       List<TableMembership> memberships,
       List<AdminTable> organizationTables,
       List<AdminPerson> organizationPeople,
+      List<ScheduleVersion> scheduleVersions,
       KpiTableRow? kpi,
     )
     $default,
@@ -301,6 +316,7 @@ extension TableDetailPatterns on TableDetail {
           _that.memberships,
           _that.organizationTables,
           _that.organizationPeople,
+          _that.scheduleVersions,
           _that.kpi,
         );
       case _:
@@ -327,6 +343,7 @@ extension TableDetailPatterns on TableDetail {
       List<TableMembership> memberships,
       List<AdminTable> organizationTables,
       List<AdminPerson> organizationPeople,
+      List<ScheduleVersion> scheduleVersions,
       KpiTableRow? kpi,
     )?
     $default,
@@ -339,6 +356,7 @@ extension TableDetailPatterns on TableDetail {
           _that.memberships,
           _that.organizationTables,
           _that.organizationPeople,
+          _that.scheduleVersions,
           _that.kpi,
         );
       case _:
@@ -355,10 +373,12 @@ class _TableDetail extends TableDetail {
     final List<TableMembership> memberships = const [],
     final List<AdminTable> organizationTables = const [],
     final List<AdminPerson> organizationPeople = const [],
+    final List<ScheduleVersion> scheduleVersions = const [],
     this.kpi,
   }) : _memberships = memberships,
        _organizationTables = organizationTables,
        _organizationPeople = organizationPeople,
+       _scheduleVersions = scheduleVersions,
        super._();
 
   @override
@@ -392,6 +412,16 @@ class _TableDetail extends TableDetail {
     return EqualUnmodifiableListView(_organizationPeople);
   }
 
+  final List<ScheduleVersion> _scheduleVersions;
+  @override
+  @JsonKey()
+  List<ScheduleVersion> get scheduleVersions {
+    if (_scheduleVersions is EqualUnmodifiableListView)
+      return _scheduleVersions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_scheduleVersions);
+  }
+
   @override
   final KpiTableRow? kpi;
 
@@ -421,6 +451,10 @@ class _TableDetail extends TableDetail {
               other._organizationPeople,
               _organizationPeople,
             ) &&
+            const DeepCollectionEquality().equals(
+              other._scheduleVersions,
+              _scheduleVersions,
+            ) &&
             (identical(other.kpi, kpi) || other.kpi == kpi));
   }
 
@@ -431,12 +465,13 @@ class _TableDetail extends TableDetail {
     const DeepCollectionEquality().hash(_memberships),
     const DeepCollectionEquality().hash(_organizationTables),
     const DeepCollectionEquality().hash(_organizationPeople),
+    const DeepCollectionEquality().hash(_scheduleVersions),
     kpi,
   );
 
   @override
   String toString() {
-    return 'TableDetail(table: $table, memberships: $memberships, organizationTables: $organizationTables, organizationPeople: $organizationPeople, kpi: $kpi)';
+    return 'TableDetail(table: $table, memberships: $memberships, organizationTables: $organizationTables, organizationPeople: $organizationPeople, scheduleVersions: $scheduleVersions, kpi: $kpi)';
   }
 }
 
@@ -454,6 +489,7 @@ abstract mixin class _$TableDetailCopyWith<$Res>
     List<TableMembership> memberships,
     List<AdminTable> organizationTables,
     List<AdminPerson> organizationPeople,
+    List<ScheduleVersion> scheduleVersions,
     KpiTableRow? kpi,
   });
 
@@ -479,6 +515,7 @@ class __$TableDetailCopyWithImpl<$Res> implements _$TableDetailCopyWith<$Res> {
     Object? memberships = null,
     Object? organizationTables = null,
     Object? organizationPeople = null,
+    Object? scheduleVersions = null,
     Object? kpi = freezed,
   }) {
     return _then(
@@ -499,6 +536,10 @@ class __$TableDetailCopyWithImpl<$Res> implements _$TableDetailCopyWith<$Res> {
             ? _self._organizationPeople
             : organizationPeople // ignore: cast_nullable_to_non_nullable
                   as List<AdminPerson>,
+        scheduleVersions: null == scheduleVersions
+            ? _self._scheduleVersions
+            : scheduleVersions // ignore: cast_nullable_to_non_nullable
+                  as List<ScheduleVersion>,
         kpi: freezed == kpi
             ? _self.kpi
             : kpi // ignore: cast_nullable_to_non_nullable

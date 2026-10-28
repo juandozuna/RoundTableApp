@@ -23,6 +23,16 @@ mixin _$HomeSession {
   int? get valueSequence;
   String? get followUpValueName;
 
+  /// An extra meeting added by the coordination (RF-30).
+  bool get isExtraordinary;
+
+  /// Regular slot this session was moved from, when it was rescheduled.
+  DateTime? get rescheduledFrom;
+
+  /// Slot of a session cancelled since the last one held: the next session
+  /// carries the same value.
+  DateTime? get cancelledNoticeFor;
+
   /// `null` when there is not enough history to judge.
   HealthStatus? get health;
 
@@ -54,6 +64,12 @@ mixin _$HomeSession {
                 other.valueSequence == valueSequence) &&
             (identical(other.followUpValueName, followUpValueName) ||
                 other.followUpValueName == followUpValueName) &&
+            (identical(other.isExtraordinary, isExtraordinary) ||
+                other.isExtraordinary == isExtraordinary) &&
+            (identical(other.rescheduledFrom, rescheduledFrom) ||
+                other.rescheduledFrom == rescheduledFrom) &&
+            (identical(other.cancelledNoticeFor, cancelledNoticeFor) ||
+                other.cancelledNoticeFor == cancelledNoticeFor) &&
             (identical(other.health, health) || other.health == health));
   }
 
@@ -69,12 +85,15 @@ mixin _$HomeSession {
     valueName,
     valueSequence,
     followUpValueName,
+    isExtraordinary,
+    rescheduledFrom,
+    cancelledNoticeFor,
     health,
   );
 
   @override
   String toString() {
-    return 'HomeSession(id: $id, roundTableId: $roundTableId, tableName: $tableName, scheduledAt: $scheduledAt, isOpen: $isOpen, seatsTaken: $seatsTaken, valueName: $valueName, valueSequence: $valueSequence, followUpValueName: $followUpValueName, health: $health)';
+    return 'HomeSession(id: $id, roundTableId: $roundTableId, tableName: $tableName, scheduledAt: $scheduledAt, isOpen: $isOpen, seatsTaken: $seatsTaken, valueName: $valueName, valueSequence: $valueSequence, followUpValueName: $followUpValueName, isExtraordinary: $isExtraordinary, rescheduledFrom: $rescheduledFrom, cancelledNoticeFor: $cancelledNoticeFor, health: $health)';
   }
 }
 
@@ -95,6 +114,9 @@ abstract mixin class $HomeSessionCopyWith<$Res> {
     String? valueName,
     int? valueSequence,
     String? followUpValueName,
+    bool isExtraordinary,
+    DateTime? rescheduledFrom,
+    DateTime? cancelledNoticeFor,
     HealthStatus? health,
   });
 }
@@ -120,6 +142,9 @@ class _$HomeSessionCopyWithImpl<$Res> implements $HomeSessionCopyWith<$Res> {
     Object? valueName = freezed,
     Object? valueSequence = freezed,
     Object? followUpValueName = freezed,
+    Object? isExtraordinary = null,
+    Object? rescheduledFrom = freezed,
+    Object? cancelledNoticeFor = freezed,
     Object? health = freezed,
   }) {
     return _then(
@@ -160,6 +185,18 @@ class _$HomeSessionCopyWithImpl<$Res> implements $HomeSessionCopyWith<$Res> {
             ? _self.followUpValueName
             : followUpValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        isExtraordinary: null == isExtraordinary
+            ? _self.isExtraordinary
+            : isExtraordinary // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        rescheduledFrom: freezed == rescheduledFrom
+            ? _self.rescheduledFrom
+            : rescheduledFrom // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        cancelledNoticeFor: freezed == cancelledNoticeFor
+            ? _self.cancelledNoticeFor
+            : cancelledNoticeFor // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         health: freezed == health
             ? _self.health
             : health // ignore: cast_nullable_to_non_nullable
@@ -272,6 +309,9 @@ extension HomeSessionPatterns on HomeSession {
       String? valueName,
       int? valueSequence,
       String? followUpValueName,
+      bool isExtraordinary,
+      DateTime? rescheduledFrom,
+      DateTime? cancelledNoticeFor,
       HealthStatus? health,
     )?
     $default, {
@@ -290,6 +330,9 @@ extension HomeSessionPatterns on HomeSession {
           _that.valueName,
           _that.valueSequence,
           _that.followUpValueName,
+          _that.isExtraordinary,
+          _that.rescheduledFrom,
+          _that.cancelledNoticeFor,
           _that.health,
         );
       case _:
@@ -322,6 +365,9 @@ extension HomeSessionPatterns on HomeSession {
       String? valueName,
       int? valueSequence,
       String? followUpValueName,
+      bool isExtraordinary,
+      DateTime? rescheduledFrom,
+      DateTime? cancelledNoticeFor,
       HealthStatus? health,
     )
     $default,
@@ -339,6 +385,9 @@ extension HomeSessionPatterns on HomeSession {
           _that.valueName,
           _that.valueSequence,
           _that.followUpValueName,
+          _that.isExtraordinary,
+          _that.rescheduledFrom,
+          _that.cancelledNoticeFor,
           _that.health,
         );
       case _:
@@ -370,6 +419,9 @@ extension HomeSessionPatterns on HomeSession {
       String? valueName,
       int? valueSequence,
       String? followUpValueName,
+      bool isExtraordinary,
+      DateTime? rescheduledFrom,
+      DateTime? cancelledNoticeFor,
       HealthStatus? health,
     )?
     $default,
@@ -387,6 +439,9 @@ extension HomeSessionPatterns on HomeSession {
           _that.valueName,
           _that.valueSequence,
           _that.followUpValueName,
+          _that.isExtraordinary,
+          _that.rescheduledFrom,
+          _that.cancelledNoticeFor,
           _that.health,
         );
       case _:
@@ -408,6 +463,9 @@ class _HomeSession implements HomeSession {
     this.valueName,
     this.valueSequence,
     this.followUpValueName,
+    this.isExtraordinary = false,
+    this.rescheduledFrom,
+    this.cancelledNoticeFor,
     this.health,
   });
 
@@ -429,6 +487,20 @@ class _HomeSession implements HomeSession {
   final int? valueSequence;
   @override
   final String? followUpValueName;
+
+  /// An extra meeting added by the coordination (RF-30).
+  @override
+  @JsonKey()
+  final bool isExtraordinary;
+
+  /// Regular slot this session was moved from, when it was rescheduled.
+  @override
+  final DateTime? rescheduledFrom;
+
+  /// Slot of a session cancelled since the last one held: the next session
+  /// carries the same value.
+  @override
+  final DateTime? cancelledNoticeFor;
 
   /// `null` when there is not enough history to judge.
   @override
@@ -463,6 +535,12 @@ class _HomeSession implements HomeSession {
                 other.valueSequence == valueSequence) &&
             (identical(other.followUpValueName, followUpValueName) ||
                 other.followUpValueName == followUpValueName) &&
+            (identical(other.isExtraordinary, isExtraordinary) ||
+                other.isExtraordinary == isExtraordinary) &&
+            (identical(other.rescheduledFrom, rescheduledFrom) ||
+                other.rescheduledFrom == rescheduledFrom) &&
+            (identical(other.cancelledNoticeFor, cancelledNoticeFor) ||
+                other.cancelledNoticeFor == cancelledNoticeFor) &&
             (identical(other.health, health) || other.health == health));
   }
 
@@ -478,12 +556,15 @@ class _HomeSession implements HomeSession {
     valueName,
     valueSequence,
     followUpValueName,
+    isExtraordinary,
+    rescheduledFrom,
+    cancelledNoticeFor,
     health,
   );
 
   @override
   String toString() {
-    return 'HomeSession(id: $id, roundTableId: $roundTableId, tableName: $tableName, scheduledAt: $scheduledAt, isOpen: $isOpen, seatsTaken: $seatsTaken, valueName: $valueName, valueSequence: $valueSequence, followUpValueName: $followUpValueName, health: $health)';
+    return 'HomeSession(id: $id, roundTableId: $roundTableId, tableName: $tableName, scheduledAt: $scheduledAt, isOpen: $isOpen, seatsTaken: $seatsTaken, valueName: $valueName, valueSequence: $valueSequence, followUpValueName: $followUpValueName, isExtraordinary: $isExtraordinary, rescheduledFrom: $rescheduledFrom, cancelledNoticeFor: $cancelledNoticeFor, health: $health)';
   }
 }
 
@@ -506,6 +587,9 @@ abstract mixin class _$HomeSessionCopyWith<$Res>
     String? valueName,
     int? valueSequence,
     String? followUpValueName,
+    bool isExtraordinary,
+    DateTime? rescheduledFrom,
+    DateTime? cancelledNoticeFor,
     HealthStatus? health,
   });
 }
@@ -531,6 +615,9 @@ class __$HomeSessionCopyWithImpl<$Res> implements _$HomeSessionCopyWith<$Res> {
     Object? valueName = freezed,
     Object? valueSequence = freezed,
     Object? followUpValueName = freezed,
+    Object? isExtraordinary = null,
+    Object? rescheduledFrom = freezed,
+    Object? cancelledNoticeFor = freezed,
     Object? health = freezed,
   }) {
     return _then(
@@ -571,6 +658,18 @@ class __$HomeSessionCopyWithImpl<$Res> implements _$HomeSessionCopyWith<$Res> {
             ? _self.followUpValueName
             : followUpValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        isExtraordinary: null == isExtraordinary
+            ? _self.isExtraordinary
+            : isExtraordinary // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        rescheduledFrom: freezed == rescheduledFrom
+            ? _self.rescheduledFrom
+            : rescheduledFrom // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        cancelledNoticeFor: freezed == cancelledNoticeFor
+            ? _self.cancelledNoticeFor
+            : cancelledNoticeFor // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         health: freezed == health
             ? _self.health
             : health // ignore: cast_nullable_to_non_nullable

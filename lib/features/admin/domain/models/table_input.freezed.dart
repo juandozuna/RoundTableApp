@@ -28,6 +28,10 @@ mixin _$TableInput {
   /// Edit only: value the table works next (RF-28).
   String? get currentValueId;
 
+  /// Edit only: date (`YYYY-MM-DD`, local to the table) the new weekday,
+  /// time or timezone takes effect (RF-23); today when absent.
+  String? get scheduleEffectiveFrom;
+
   /// Edit only: the admin confirmed moving back past completed history.
   bool? get confirmRewind;
 
@@ -62,6 +66,8 @@ mixin _$TableInput {
                 other.startValueId == startValueId) &&
             (identical(other.currentValueId, currentValueId) ||
                 other.currentValueId == currentValueId) &&
+            (identical(other.scheduleEffectiveFrom, scheduleEffectiveFrom) ||
+                other.scheduleEffectiveFrom == scheduleEffectiveFrom) &&
             (identical(other.confirmRewind, confirmRewind) ||
                 other.confirmRewind == confirmRewind));
   }
@@ -80,12 +86,13 @@ mixin _$TableInput {
     status,
     startValueId,
     currentValueId,
+    scheduleEffectiveFrom,
     confirmRewind,
   );
 
   @override
   String toString() {
-    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, confirmRewind: $confirmRewind)';
+    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, scheduleEffectiveFrom: $scheduleEffectiveFrom, confirmRewind: $confirmRewind)';
   }
 }
 
@@ -107,6 +114,7 @@ abstract mixin class $TableInputCopyWith<$Res> {
     RoundTableStatus? status,
     String? startValueId,
     String? currentValueId,
+    String? scheduleEffectiveFrom,
     bool? confirmRewind,
   });
 }
@@ -133,6 +141,7 @@ class _$TableInputCopyWithImpl<$Res> implements $TableInputCopyWith<$Res> {
     Object? status = freezed,
     Object? startValueId = freezed,
     Object? currentValueId = freezed,
+    Object? scheduleEffectiveFrom = freezed,
     Object? confirmRewind = freezed,
   }) {
     return _then(
@@ -176,6 +185,10 @@ class _$TableInputCopyWithImpl<$Res> implements $TableInputCopyWith<$Res> {
         currentValueId: freezed == currentValueId
             ? _self.currentValueId
             : currentValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        scheduleEffectiveFrom: freezed == scheduleEffectiveFrom
+            ? _self.scheduleEffectiveFrom
+            : scheduleEffectiveFrom // ignore: cast_nullable_to_non_nullable
                   as String?,
         confirmRewind: freezed == confirmRewind
             ? _self.confirmRewind
@@ -290,6 +303,7 @@ extension TableInputPatterns on TableInput {
       RoundTableStatus? status,
       String? startValueId,
       String? currentValueId,
+      String? scheduleEffectiveFrom,
       bool? confirmRewind,
     )?
     $default, {
@@ -309,6 +323,7 @@ extension TableInputPatterns on TableInput {
           _that.status,
           _that.startValueId,
           _that.currentValueId,
+          _that.scheduleEffectiveFrom,
           _that.confirmRewind,
         );
       case _:
@@ -342,6 +357,7 @@ extension TableInputPatterns on TableInput {
       RoundTableStatus? status,
       String? startValueId,
       String? currentValueId,
+      String? scheduleEffectiveFrom,
       bool? confirmRewind,
     )
     $default,
@@ -360,6 +376,7 @@ extension TableInputPatterns on TableInput {
           _that.status,
           _that.startValueId,
           _that.currentValueId,
+          _that.scheduleEffectiveFrom,
           _that.confirmRewind,
         );
       case _:
@@ -392,6 +409,7 @@ extension TableInputPatterns on TableInput {
       RoundTableStatus? status,
       String? startValueId,
       String? currentValueId,
+      String? scheduleEffectiveFrom,
       bool? confirmRewind,
     )?
     $default,
@@ -410,6 +428,7 @@ extension TableInputPatterns on TableInput {
           _that.status,
           _that.startValueId,
           _that.currentValueId,
+          _that.scheduleEffectiveFrom,
           _that.confirmRewind,
         );
       case _:
@@ -432,6 +451,7 @@ class _TableInput implements TableInput {
     this.status,
     this.startValueId,
     this.currentValueId,
+    this.scheduleEffectiveFrom,
     this.confirmRewind,
   });
   factory _TableInput.fromJson(Map<String, dynamic> json) =>
@@ -461,6 +481,11 @@ class _TableInput implements TableInput {
   /// Edit only: value the table works next (RF-28).
   @override
   final String? currentValueId;
+
+  /// Edit only: date (`YYYY-MM-DD`, local to the table) the new weekday,
+  /// time or timezone takes effect (RF-23); today when absent.
+  @override
+  final String? scheduleEffectiveFrom;
 
   /// Edit only: the admin confirmed moving back past completed history.
   @override
@@ -500,6 +525,8 @@ class _TableInput implements TableInput {
                 other.startValueId == startValueId) &&
             (identical(other.currentValueId, currentValueId) ||
                 other.currentValueId == currentValueId) &&
+            (identical(other.scheduleEffectiveFrom, scheduleEffectiveFrom) ||
+                other.scheduleEffectiveFrom == scheduleEffectiveFrom) &&
             (identical(other.confirmRewind, confirmRewind) ||
                 other.confirmRewind == confirmRewind));
   }
@@ -518,12 +545,13 @@ class _TableInput implements TableInput {
     status,
     startValueId,
     currentValueId,
+    scheduleEffectiveFrom,
     confirmRewind,
   );
 
   @override
   String toString() {
-    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, confirmRewind: $confirmRewind)';
+    return 'TableInput(locationId: $locationId, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, startValueId: $startValueId, currentValueId: $currentValueId, scheduleEffectiveFrom: $scheduleEffectiveFrom, confirmRewind: $confirmRewind)';
   }
 }
 
@@ -547,6 +575,7 @@ abstract mixin class _$TableInputCopyWith<$Res>
     RoundTableStatus? status,
     String? startValueId,
     String? currentValueId,
+    String? scheduleEffectiveFrom,
     bool? confirmRewind,
   });
 }
@@ -573,6 +602,7 @@ class __$TableInputCopyWithImpl<$Res> implements _$TableInputCopyWith<$Res> {
     Object? status = freezed,
     Object? startValueId = freezed,
     Object? currentValueId = freezed,
+    Object? scheduleEffectiveFrom = freezed,
     Object? confirmRewind = freezed,
   }) {
     return _then(
@@ -616,6 +646,10 @@ class __$TableInputCopyWithImpl<$Res> implements _$TableInputCopyWith<$Res> {
         currentValueId: freezed == currentValueId
             ? _self.currentValueId
             : currentValueId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        scheduleEffectiveFrom: freezed == scheduleEffectiveFrom
+            ? _self.scheduleEffectiveFrom
+            : scheduleEffectiveFrom // ignore: cast_nullable_to_non_nullable
                   as String?,
         confirmRewind: freezed == confirmRewind
             ? _self.confirmRewind

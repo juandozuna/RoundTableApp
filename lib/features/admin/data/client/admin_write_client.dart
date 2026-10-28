@@ -51,6 +51,24 @@ abstract class AdminWriteClient {
     @Body() Map<String, dynamic> body,
   );
 
+  @POST('/admin/tables/{id}/extra-session')
+  Future<dynamic> addExtraordinarySession(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/admin/sessions/{id}/reschedule')
+  Future<dynamic> rescheduleSession(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/admin/sessions/{id}/cancel')
+  Future<dynamic> cancelSession(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
   @POST('/admin/tables/{id}/facilitator')
   Future<dynamic> setFacilitator(
     @Path('id') String id,

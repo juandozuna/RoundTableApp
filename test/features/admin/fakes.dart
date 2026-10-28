@@ -7,6 +7,7 @@ import 'package:gold_roundtables/features/admin/domain/models/admin_person.dart'
 import 'package:gold_roundtables/features/admin/domain/models/admin_table.dart';
 import 'package:gold_roundtables/features/admin/domain/models/program_value.dart';
 import 'package:gold_roundtables/features/admin/domain/models/saved_explorer_view.dart';
+import 'package:gold_roundtables/features/admin/domain/models/schedule_version.dart';
 import 'package:gold_roundtables/features/admin/domain/models/table_membership.dart';
 import 'package:gold_roundtables/features/admin/domain/services/admin_directory_service.dart';
 import 'package:gold_roundtables/features/admin/domain/services/saved_views_service.dart';
@@ -63,6 +64,7 @@ class FakeDirectory implements AdminDirectoryService {
     this.memberRows = const [],
     this.locationRows = const [],
     this.programRows = const [],
+    this.versionRows = const [],
   });
 
   List<AdminOrganization> orgs;
@@ -71,6 +73,7 @@ class FakeDirectory implements AdminDirectoryService {
   List<TableMembership> memberRows;
   List<AdminLocation> locationRows;
   List<ProgramValue> programRows;
+  List<ScheduleVersion> versionRows;
 
   T _find<T>(List<T> rows, bool Function(T) test) {
     for (final row in rows) {
@@ -120,6 +123,10 @@ class FakeDirectory implements AdminDirectoryService {
 
   @override
   Future<List<ProgramValue>> programValues() async => programRows;
+
+  @override
+  Future<List<ScheduleVersion>> scheduleVersions(String roundTableId) async =>
+      versionRows;
 
   @override
   Future<List<TableMembership>> memberships(String roundTableId) async =>

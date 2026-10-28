@@ -5,6 +5,7 @@ import '../models/location_input.dart';
 import '../models/organization_input.dart';
 import '../models/organization_status.dart';
 import '../models/person_input.dart';
+import '../models/session_cancel_reason.dart';
 import '../models/table_change.dart';
 import '../models/table_input.dart';
 
@@ -38,6 +39,28 @@ abstract interface class AdminManagementService {
   });
 
   Future<void> updateTable(String id, TableInput input);
+
+  /// Moves one scheduled session; [localDateTime] is a wall-clock time in the
+  /// table's timezone (RF-30).
+  Future<void> rescheduleSession({
+    required String sessionId,
+    required DateTime localDateTime,
+    String? reason,
+  });
+
+  /// Cancels one scheduled session; the next one carries the same value.
+  Future<void> cancelSession({
+    required String sessionId,
+    required SessionCancelReason reason,
+    String? note,
+  });
+
+  /// Adds an extra meeting before the table's next regular session.
+  Future<void> addExtraordinarySession({
+    required String tableId,
+    required DateTime localDateTime,
+    String? reason,
+  });
 
   /// The previous facilitator ends their seat; they stay as a member when
   /// [keepPreviousAsMember] is set. History is kept.

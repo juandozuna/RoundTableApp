@@ -17,6 +17,9 @@ class HomeTableRecord {
     this.valueName,
     this.valueSequence,
     this.followUpValueName,
+    this.sessionIsExtraordinary = false,
+    this.rescheduledFrom,
+    this.cancelledNoticeFor,
     this.health,
   });
 
@@ -31,6 +34,14 @@ class HomeTableRecord {
   final String? valueName;
   final int? valueSequence;
   final String? followUpValueName;
+  final bool sessionIsExtraordinary;
+
+  /// Regular slot the pending session was moved from (RF-30).
+  final DateTime? rescheduledFrom;
+
+  /// Slot of the latest session an administrator cancelled since the last
+  /// closed one; the table's next session carries the same value.
+  final DateTime? cancelledNoticeFor;
 
   /// Pre-computed by the server (`kpi_tables`); `null` for local rows.
   final HealthStatus? health;

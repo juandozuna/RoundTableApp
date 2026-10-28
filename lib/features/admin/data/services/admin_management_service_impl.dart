@@ -7,6 +7,7 @@ import '../../domain/models/location_input.dart';
 import '../../domain/models/organization_input.dart';
 import '../../domain/models/organization_status.dart';
 import '../../domain/models/person_input.dart';
+import '../../domain/models/session_cancel_reason.dart';
 import '../../domain/models/table_change.dart';
 import '../../domain/models/table_input.dart';
 import '../../domain/services/admin_management_service.dart';
@@ -58,6 +59,35 @@ class AdminManagementServiceImpl implements AdminManagementService {
   @override
   Future<void> updateTable(String id, TableInput input) =>
       _remote.updateTable(id, input);
+
+  @override
+  Future<void> rescheduleSession({
+    required String sessionId,
+    required DateTime localDateTime,
+    String? reason,
+  }) => _remote.rescheduleSession(
+    sessionId: sessionId,
+    localDateTime: localDateTime,
+    reason: reason,
+  );
+
+  @override
+  Future<void> cancelSession({
+    required String sessionId,
+    required SessionCancelReason reason,
+    String? note,
+  }) => _remote.cancelSession(sessionId: sessionId, reason: reason, note: note);
+
+  @override
+  Future<void> addExtraordinarySession({
+    required String tableId,
+    required DateTime localDateTime,
+    String? reason,
+  }) => _remote.addExtraordinarySession(
+    tableId: tableId,
+    localDateTime: localDateTime,
+    reason: reason,
+  );
 
   @override
   Future<TableChange> changeFacilitator({
