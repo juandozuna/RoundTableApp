@@ -22,6 +22,8 @@ extension AdminApiErrorMessages on ApiException {
     'last_platform_admin' => l10n.adminErrorLastPlatformAdmin,
     'table_not_active' => l10n.adminErrorTableNotActive,
     'forbidden' => l10n.adminErrorForbidden,
+    'invite_role_forbidden' => l10n.invitesProblemRoleNotAllowed,
+    'invite_table_forbidden' => l10n.invitesProblemTableNotAllowed,
     _ =>
       (message != null && message!.isNotEmpty && code != null)
           ? message!

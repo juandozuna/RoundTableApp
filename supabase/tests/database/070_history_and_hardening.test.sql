@@ -55,11 +55,11 @@ select is((select (payload->>'invites_moved')::int from public.audit_events
           'the move audit event records the re-pointed invite');
 
 -- ── Coordinator location stays informational but must belong to the organization ───────────────
-select is(pg_temp.err(format($$select api.role_grant(%L, %L)$$, pg_temp.u('coord'), jsonb_build_object(
+select is(pg_temp.err(format($$select api.role_grant(%L, %L)$$, pg_temp.u('admin'), jsonb_build_object(
             'person_id', pg_temp.id('person:ana'), 'role', 'coordinator',
             'location_id', pg_temp.id('loc:hor-norte')))),
           'validation_failed', 'a location of another organization is rejected');
-select is((api.role_grant(pg_temp.u('coord'), jsonb_build_object(
+select is((api.role_grant(pg_temp.u('admin'), jsonb_build_object(
             'person_id', pg_temp.id('person:ana'), 'role', 'coordinator',
             'location_id', pg_temp.id('loc:luz-central'))))->>'location_id',
           pg_temp.id('loc:luz-central')::text, 'a location of the same organization is stored');

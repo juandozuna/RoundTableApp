@@ -92,6 +92,12 @@ call POST "$FN/invites" "$T_FACIL" '{"role_kind":"member","round_table_id":"x","
 check "invalid input → 422 with field errors" 422 '.error.fields|keys|join(",")' "person.first_name,person.phone,round_table_id"
 call POST "$FN/invites" "$T_HOR" "{\"role_kind\":\"member\",\"round_table_id\":\"$(id table:luz-01)\",\"person\":{\"first_name\":\"A\",\"last_name\":\"B\"}}"
 check "other organization's coordinator cannot invite here → 403" 403 .error.code forbidden
+call POST "$FN/invites" "$T_FACIL" "{\"role_kind\":\"coordinator\",\"organization_id\":\"$(id org:luz)\",\"person\":{\"first_name\":\"A\",\"last_name\":\"B\"}}"
+check "facilitator cannot invite a coordinator → 403 invite_role_forbidden" 403 .error.code invite_role_forbidden
+call POST "$FN/invites" "$T_FACIL" "{\"role_kind\":\"member\",\"round_table_id\":\"$(id table:luz-01)\",\"person\":{\"first_name\":\"A\",\"last_name\":\"B\"}}"
+check "facilitator cannot invite into another table → 403 invite_table_forbidden" 403 .error.code invite_table_forbidden
+call POST "$FN/invites" "$T_COORD" "{\"role_kind\":\"coordinator\",\"organization_id\":\"$(id org:luz)\",\"person\":{\"first_name\":\"A\",\"last_name\":\"B\"}}"
+check "coordinator cannot invite a coordinator → 403 invite_role_forbidden" 403 .error.code invite_role_forbidden
 call GET "$FN/invites?round_table_id=$(id table:luz-03)" "$T_FACIL"
 check "facilitator lists invites of their table" 200 '[.invites[].status]|unique|join(",")' "accepted,expired,pending,revoked"
 

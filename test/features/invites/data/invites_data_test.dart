@@ -180,6 +180,8 @@ void main() {
         (409, 'table_full'): InviteProblem.tableFull,
         (409, 'invite_pending_exists'): InviteProblem.pendingExists,
         (403, 'forbidden'): InviteProblem.forbidden,
+        (403, 'invite_role_forbidden'): InviteProblem.roleNotAllowed,
+        (403, 'invite_table_forbidden'): InviteProblem.tableNotAllowed,
         (422, 'validation_failed'): InviteProblem.validation,
       };
       for (final entry in cases.entries) {

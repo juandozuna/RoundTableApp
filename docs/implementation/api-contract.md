@@ -126,7 +126,7 @@ switcher.
 |---|---|
 | 400 | `invalid_json` |
 | 401 | `unauthenticated` |
-| 403 | `forbidden`, `not_table_participant` |
+| 403 | `forbidden`, `not_table_participant`, `invite_role_forbidden`, `invite_table_forbidden` |
 | 404 | `not_found`, `route_not_found`, `session_not_found`, `invite_not_found` |
 | 405 | `method_not_allowed` |
 | 409 | `table_full`, `table_has_facilitator`, `table_not_active`, `already_member`, `membership_inactive`, `cannot_move_facilitator`, `cannot_remove_facilitator`, `person_inactive`, `person_already_linked`, `duplicate_id`, `duplicate_assessment`, `duplicate_follow_up`, `duplicate_answer`, `duplicate_commitment`, `duplicate_attendance`, `duplicate_table_code`, `duplicate_organization`, `duplicate_location`, `duplicate_token`, `conflict`, `session_closed`, `session_cancelled`, `session_finalized`, `session_pending_exists`, `invalid_session_transition`, `follow_up_already_recorded`, `value_change_blocked`, `organization_inactive`, `last_platform_admin`, `invite_already_used`, `invite_pending_exists`, `person_linked_elsewhere`, `identity_linked_elsewhere`, `no_person`, `operation_not_allowed` |
@@ -362,7 +362,7 @@ Errors: `forbidden` (not the facilitator), `invalid_session_transition`, `sessio
 
 | Method & path | Who | Body / query | Response |
 |---|---|---|---|
-| `POST /invites` | coordinator/admin (any role kind); facilitator (`member` of own table) | `{ "role_kind": "coordinator"\|"facilitator"\|"member", "organization_id"` (coordinator) `\| "round_table_id"` (facilitator/member)`, "person": {first_name, last_name, position?, email?, phone?(E.164)} \| "person_id", "expires_in_days"?: 1..60 }` | `201 { invite }` |
+| `POST /invites` | platform admin (any role kind); coordinator (`facilitator`/`member`, any table of the organization; **not** `coordinator`); facilitator (`member` of own table only); member: never (role matrix, ADR 0016) | `{ "role_kind": "coordinator"\|"facilitator"\|"member", "organization_id"` (coordinator) `\| "round_table_id"` (facilitator/member)`, "person": {first_name, last_name, position?, email?, phone?(E.164)} \| "person_id", "expires_in_days"?: 1..60 }` | `201 { invite }` |
 | `GET /invites?organization_id=&round_table_id=&status=` | coordinator/admin; facilitator with `round_table_id` | — | `200 { invites: [invite] }` (newest first; without filters: platform admin only) |
 | `POST /invites/{id}/revoke` | same as create | — | `200 { invite }` — frees the reserved seat/role if the person never signed in |
 | `POST /invites/{id}/renew` | same as create | `{ "expires_in_days"? }` | `200 { invite }` — new code, new expiry |
@@ -383,6 +383,13 @@ Errors: preview/redeem `invite_not_found` (404), `invite_expired` / `invite_revo
 account), `identity_linked_elsewhere` (this account already has another person in that
 organization), `organization_inactive`, `person_inactive`; create `table_full`,
 `table_has_facilitator`, `person_already_linked`, `invite_pending_exists`, `forbidden`.
+
+Role matrix denials (ADR 0016), decided in SQL by `app.require_can_invite` (also used by revoke/renew
+and `POST /admin/roles`) before anything about the table is revealed: `invite_role_forbidden`
+(403: the caller's role cannot grant that role, e.g. a coordinator inviting a coordinator or a
+facilitator inviting a facilitator/coordinator), `invite_table_forbidden` (403: a facilitator targeting
+a table that is not theirs), `forbidden` (403: no relationship to the organization/table, members).
+Revoking or renewing a coordinator invite is likewise platform-admin only.
 Re-redeeming with the same account is idempotent (`already_redeemed: true`). Codes are normalized
 (case, spaces, dashes). Apple "hide my email" works: binding uses the auth user id, the relay email
 is stored only if the person had none.
@@ -404,7 +411,7 @@ codes to these endpoints.
 | `POST /admin/organizations` | platform admin | `{ name, kind?, country_code (ISO-2), country_name, region?, contact_name?, contact_email?, contact_phone? }` | `201 { organization }` |
 | `PATCH /admin/organizations/{id}` | platform admin | same fields, optional | `{ organization }` |
 | `POST /admin/organizations/{id}/status` | platform admin | `{ status: active\|paused\|inactive }` | `{ organization }` |
-| `POST /admin/organizations/{id}/coordinators` | platform admin, coordinator of the org | `{ person } \| { person_id }` | `201 { invite }` (coordinator invite) |
+| `POST /admin/organizations/{id}/coordinators` | platform admin only (a coordinator gets `403 invite_role_forbidden`) | `{ person } \| { person_id }` | `201 { invite }` (coordinator invite) |
 | `POST /admin/locations` | coordinator/admin | `{ organization_id, name, city?, region?, address? }` | `201 { location }` |
 | `PATCH /admin/locations/{id}` | coordinator/admin | `{ name?, city?, region?, address?, status? }` | `{ location }` |
 | `POST /admin/tables` | coordinator/admin | `{ organization_id, location_id, name, code, weekday 1..7, start_time "HH:MM", timezone (IANA), duration_minutes? 10..120, start_value_id?, first_session_after? ISO, facilitator: { person_id } \| { person: {...} } }` | `201 { table }` |
@@ -414,7 +421,7 @@ codes to these endpoints.
 | `POST /admin/members/{table_member_id}/move` | coordinator/admin | `{ to_round_table_id }` | `{ member }` (the new membership) |
 | `POST /admin/members/{table_member_id}/deactivate` | coordinator/admin; facilitator for members of own table | — | `{ member }` |
 | `PATCH /admin/people/{id}` | coordinator/admin | `{ first_name?, last_name?, position?, email?, phone?, status?: active\|inactive }` | `{ person }` — `inactive` ends memberships, roles and pending invites |
-| `POST /admin/roles` | coordinator/admin (coordinator); platform admin (platform_admin, staff people only) | `{ person_id, role, location_id? }` (`location_id` only for `coordinator`, same organization; informational, §3) | `201 { role_assignment }` |
+| `POST /admin/roles` | platform admin (`coordinator` and `platform_admin`; staff people only for the latter); a coordinator gets `403 invite_role_forbidden` | `{ person_id, role, location_id? }` (`location_id` only for `coordinator`, same organization; informational, §3) | `201 { role_assignment }` |
 | `POST /admin/roles/{id}/revoke` | same | — | `{ role_assignment }` (`last_platform_admin` protects the last admin) |
 
 `table` object: the `round_tables` row plus `location_name`, `active_people`,

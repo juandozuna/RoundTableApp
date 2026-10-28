@@ -1,7 +1,7 @@
 -- Invites (ADR 0007), administration (online-only) and logged answer reveal (ADR 0015).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(35);
+select plan(44);
 
 create function pg_temp.u(p text) returns uuid language sql immutable as
   $$ select md5('gold-roundtables:user:' || p)::uuid $$;
@@ -42,11 +42,48 @@ select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:faci
 select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:facil')::uuid,
             '{"role_kind":"coordinator","organization_id":"$$ || md5('gold-roundtables:org:luz')::uuid ||
             $$","person":{"first_name":"A","last_name":"B"}}')$$),
-          'forbidden', 'a facilitator cannot invite coordinators');
+          'invite_role_forbidden', 'a facilitator cannot invite coordinators');
 select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:coord-horizonte')::uuid,
             '{"role_kind":"member","round_table_id":"$$ || md5('gold-roundtables:table:luz-01')::uuid ||
             $$","person":{"first_name":"A","last_name":"B"}}')$$),
           'forbidden', 'a coordinator of another organization cannot invite into this one');
+
+-- ── Role matrix (ADR 0016) ─────────────────────────────────────────────────────────────────
+select is(api.invite_create(pg_temp.u('admin'), jsonb_build_object(
+            'role_kind', 'coordinator', 'organization_id', pg_temp.id('org:luz'),
+            'person', jsonb_build_object('first_name', 'Nora', 'last_name', 'Admin',
+                                         'email', 'nora@example.com')))->>'role_kind',
+          'coordinator', 'the platform admin invites a coordinator');
+select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:coord')::uuid,
+            '{"role_kind":"coordinator","organization_id":"$$ || md5('gold-roundtables:org:luz')::uuid ||
+            $$","person":{"first_name":"A","last_name":"B"}}')$$),
+          'invite_role_forbidden', 'a coordinator cannot invite coordinators');
+select is(api.invite_create(pg_temp.u('coord'), jsonb_build_object(
+            'role_kind', 'member', 'round_table_id', pg_temp.id('table:luz-04'),
+            'person', jsonb_build_object('first_name', 'Cora', 'last_name', 'Coord',
+                                         'email', 'cora@example.com')))->>'role_kind',
+          'member', 'a coordinator adds a member to any table of the organization');
+select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:facil')::uuid,
+            '{"role_kind":"member","round_table_id":"$$ || md5('gold-roundtables:table:luz-01')::uuid ||
+            $$","person":{"first_name":"A","last_name":"B"}}')$$),
+          'invite_table_forbidden', 'a facilitator cannot invite into a table that is not theirs');
+select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:facil')::uuid,
+            '{"role_kind":"facilitator","round_table_id":"$$ || md5('gold-roundtables:table:luz-03')::uuid ||
+            $$","person":{"first_name":"A","last_name":"B"}}')$$),
+          'invite_role_forbidden', 'a facilitator cannot invite facilitators');
+select is(pg_temp.err($$select api.invite_create(md5('gold-roundtables:user:ana')::uuid,
+            '{"role_kind":"member","round_table_id":"$$ || md5('gold-roundtables:table:luz-03')::uuid ||
+            $$","person":{"first_name":"A","last_name":"B"}}')$$),
+          'forbidden', 'a member cannot invite');
+select is(pg_temp.err(format($$select api.invite_revoke(%L, %L)$$, pg_temp.u('coord'),
+            jsonb_build_object('invite_id', (select id from public.invites where code = 'CRDN26')))),
+          'invite_role_forbidden', 'a coordinator cannot manage a coordinator invite');
+select is(api.invite_revoke(pg_temp.u('admin'),
+            jsonb_build_object('invite_id', (select id from public.invites where code = 'CRDN26')))->>'status',
+          'revoked', 'the platform admin revokes a coordinator invite');
+select is(pg_temp.err(format($$select api.role_grant(%L, %L)$$, pg_temp.u('coord'), jsonb_build_object(
+            'person_id', pg_temp.id('person:ana'), 'role', 'coordinator'))),
+          'invite_role_forbidden', 'a coordinator cannot grant the coordinator role directly');
 
 -- ── Preview (anonymous) ────────────────────────────────────────────────────────────────────
 create temp table t_preview as select api.invite_preview(lower((select j->>'code' from t_invite))) as j;

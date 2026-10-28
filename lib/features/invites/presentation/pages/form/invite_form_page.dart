@@ -207,6 +207,7 @@ class _InviteFormPageState extends State<InviteFormPage> {
             _buildRoleOption(
               context,
               kind: option,
+              inviter: role,
               selected: state.role == option,
               enabled: state.roles.contains(option),
               note:
@@ -425,6 +426,7 @@ class _InviteFormPageState extends State<InviteFormPage> {
   Widget _buildRoleOption(
     BuildContext context, {
     required InviteRoleKind kind,
+    required UserRole? inviter,
     required bool selected,
     required bool enabled,
     required VoidCallback onTap,
@@ -443,7 +445,12 @@ class _InviteFormPageState extends State<InviteFormPage> {
           child: AppCard(
             highlighted: selected,
             onTap: !enabled
-                ? () => AppToast.show(context, l10n.invitesRoleLockedToast)
+                ? () => AppToast.show(
+                    context,
+                    inviter == UserRole.coordinator
+                        ? l10n.invitesRoleLockedCoordinatorToast
+                        : l10n.invitesRoleLockedToast,
+                  )
                 : onTap,
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
@@ -478,7 +485,9 @@ class _InviteFormPageState extends State<InviteFormPage> {
                       ),
                       Text(
                         !enabled
-                            ? l10n.invitesRoleOnlyStaff
+                            ? (kind == InviteRoleKind.coordinator
+                                  ? l10n.invitesRoleOnlyAdmin
+                                  : l10n.invitesRoleOnlyStaff)
                             : note ??
                                   InviteLabels.roleDescription(context, kind),
                         style: context.textTheme.bodySmall,

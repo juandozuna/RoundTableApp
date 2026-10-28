@@ -393,6 +393,9 @@ mixin _$InvitesManagerState {
   InvitesManagerStatus get status;
   List<Invite> get invites;
 
+  /// Invites the signed-in role may renew or revoke (ADR 0016).
+  Set<String> get manageableIds;
+
   /// `null` shows every status.
   InviteStatus? get filter;
   String get query;
@@ -421,6 +424,10 @@ mixin _$InvitesManagerState {
             other is InvitesManagerState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other.invites, invites) &&
+            const DeepCollectionEquality().equals(
+              other.manageableIds,
+              manageableIds,
+            ) &&
             (identical(other.filter, filter) || other.filter == filter) &&
             (identical(other.query, query) || other.query == query) &&
             const DeepCollectionEquality().equals(
@@ -438,6 +445,7 @@ mixin _$InvitesManagerState {
     runtimeType,
     status,
     const DeepCollectionEquality().hash(invites),
+    const DeepCollectionEquality().hash(manageableIds),
     filter,
     query,
     const DeepCollectionEquality().hash(selectedIds),
@@ -449,7 +457,7 @@ mixin _$InvitesManagerState {
 
   @override
   String toString() {
-    return 'InvitesManagerState(status: $status, invites: $invites, filter: $filter, query: $query, selectedIds: $selectedIds, busy: $busy, problem: $problem, online: $online, event: $event)';
+    return 'InvitesManagerState(status: $status, invites: $invites, manageableIds: $manageableIds, filter: $filter, query: $query, selectedIds: $selectedIds, busy: $busy, problem: $problem, online: $online, event: $event)';
   }
 }
 
@@ -463,6 +471,7 @@ abstract mixin class $InvitesManagerStateCopyWith<$Res> {
   $Res call({
     InvitesManagerStatus status,
     List<Invite> invites,
+    Set<String> manageableIds,
     InviteStatus? filter,
     String query,
     Set<String> selectedIds,
@@ -490,6 +499,7 @@ class _$InvitesManagerStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? invites = null,
+    Object? manageableIds = null,
     Object? filter = freezed,
     Object? query = null,
     Object? selectedIds = null,
@@ -508,6 +518,10 @@ class _$InvitesManagerStateCopyWithImpl<$Res>
             ? _self.invites
             : invites // ignore: cast_nullable_to_non_nullable
                   as List<Invite>,
+        manageableIds: null == manageableIds
+            ? _self.manageableIds
+            : manageableIds // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
         filter: freezed == filter
             ? _self.filter
             : filter // ignore: cast_nullable_to_non_nullable
@@ -651,6 +665,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
     TResult Function(
       InvitesManagerStatus status,
       List<Invite> invites,
+      Set<String> manageableIds,
       InviteStatus? filter,
       String query,
       Set<String> selectedIds,
@@ -668,6 +683,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
         return $default(
           _that.status,
           _that.invites,
+          _that.manageableIds,
           _that.filter,
           _that.query,
           _that.selectedIds,
@@ -699,6 +715,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
     TResult Function(
       InvitesManagerStatus status,
       List<Invite> invites,
+      Set<String> manageableIds,
       InviteStatus? filter,
       String query,
       Set<String> selectedIds,
@@ -715,6 +732,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
         return $default(
           _that.status,
           _that.invites,
+          _that.manageableIds,
           _that.filter,
           _that.query,
           _that.selectedIds,
@@ -745,6 +763,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
     TResult? Function(
       InvitesManagerStatus status,
       List<Invite> invites,
+      Set<String> manageableIds,
       InviteStatus? filter,
       String query,
       Set<String> selectedIds,
@@ -761,6 +780,7 @@ extension InvitesManagerStatePatterns on InvitesManagerState {
         return $default(
           _that.status,
           _that.invites,
+          _that.manageableIds,
           _that.filter,
           _that.query,
           _that.selectedIds,
@@ -781,6 +801,7 @@ class _InvitesManagerState extends InvitesManagerState {
   const _InvitesManagerState({
     this.status = InvitesManagerStatus.loading,
     final List<Invite> invites = const [],
+    final Set<String> manageableIds = const {},
     this.filter,
     this.query = '',
     final Set<String> selectedIds = const {},
@@ -789,6 +810,7 @@ class _InvitesManagerState extends InvitesManagerState {
     this.online = true,
     this.event,
   }) : _invites = invites,
+       _manageableIds = manageableIds,
        _selectedIds = selectedIds,
        super._();
 
@@ -802,6 +824,18 @@ class _InvitesManagerState extends InvitesManagerState {
     if (_invites is EqualUnmodifiableListView) return _invites;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_invites);
+  }
+
+  /// Invites the signed-in role may renew or revoke (ADR 0016).
+  final Set<String> _manageableIds;
+
+  /// Invites the signed-in role may renew or revoke (ADR 0016).
+  @override
+  @JsonKey()
+  Set<String> get manageableIds {
+    if (_manageableIds is EqualUnmodifiableSetView) return _manageableIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_manageableIds);
   }
 
   /// `null` shows every status.
@@ -849,6 +883,10 @@ class _InvitesManagerState extends InvitesManagerState {
             other is _InvitesManagerState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other._invites, _invites) &&
+            const DeepCollectionEquality().equals(
+              other._manageableIds,
+              _manageableIds,
+            ) &&
             (identical(other.filter, filter) || other.filter == filter) &&
             (identical(other.query, query) || other.query == query) &&
             const DeepCollectionEquality().equals(
@@ -866,6 +904,7 @@ class _InvitesManagerState extends InvitesManagerState {
     runtimeType,
     status,
     const DeepCollectionEquality().hash(_invites),
+    const DeepCollectionEquality().hash(_manageableIds),
     filter,
     query,
     const DeepCollectionEquality().hash(_selectedIds),
@@ -877,7 +916,7 @@ class _InvitesManagerState extends InvitesManagerState {
 
   @override
   String toString() {
-    return 'InvitesManagerState(status: $status, invites: $invites, filter: $filter, query: $query, selectedIds: $selectedIds, busy: $busy, problem: $problem, online: $online, event: $event)';
+    return 'InvitesManagerState(status: $status, invites: $invites, manageableIds: $manageableIds, filter: $filter, query: $query, selectedIds: $selectedIds, busy: $busy, problem: $problem, online: $online, event: $event)';
   }
 }
 
@@ -893,6 +932,7 @@ abstract mixin class _$InvitesManagerStateCopyWith<$Res>
   $Res call({
     InvitesManagerStatus status,
     List<Invite> invites,
+    Set<String> manageableIds,
     InviteStatus? filter,
     String query,
     Set<String> selectedIds,
@@ -921,6 +961,7 @@ class __$InvitesManagerStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? invites = null,
+    Object? manageableIds = null,
     Object? filter = freezed,
     Object? query = null,
     Object? selectedIds = null,
@@ -939,6 +980,10 @@ class __$InvitesManagerStateCopyWithImpl<$Res>
             ? _self._invites
             : invites // ignore: cast_nullable_to_non_nullable
                   as List<Invite>,
+        manageableIds: null == manageableIds
+            ? _self._manageableIds
+            : manageableIds // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
         filter: freezed == filter
             ? _self.filter
             : filter // ignore: cast_nullable_to_non_nullable

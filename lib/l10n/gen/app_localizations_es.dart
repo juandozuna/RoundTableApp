@@ -4490,6 +4490,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invitesRoleOnlyStaff => 'Solo Coordinador o Administrador';
 
   @override
+  String get invitesRoleOnlyAdmin => 'Solo la administración de la plataforma';
+
+  @override
+  String get invitesRoleLockedCoordinatorToast =>
+      'Solo la administración de la plataforma puede invitar coordinadores.';
+
+  @override
+  String get invitesProblemRoleNotAllowed =>
+      'Con tu rol no puedes invitar a una persona con ese rol.';
+
+  @override
+  String get invitesProblemTableNotAllowed =>
+      'Solo puedes invitar integrantes a tu propia mesa.';
+
+  @override
   String get invitesRoleLockedToast =>
       'Con tu rol solo puedes invitar integrantes a tu mesa.';
 

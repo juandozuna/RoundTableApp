@@ -34,6 +34,10 @@ abstract final class InviteFailureMapper {
         return InviteProblem.personAlreadyLinked;
       case 'rate_limited':
         return InviteProblem.rateLimited;
+      case 'invite_role_forbidden':
+        return InviteProblem.roleNotAllowed;
+      case 'invite_table_forbidden':
+        return InviteProblem.tableNotAllowed;
       case 'forbidden':
         return InviteProblem.forbidden;
       case 'unauthenticated':

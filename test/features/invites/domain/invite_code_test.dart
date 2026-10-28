@@ -45,23 +45,44 @@ void main() {
   });
 
   group('InvitePermissions', () {
-    test(
-      'staff and coordinators grant any role, facilitators only members',
-      () {
-        expect(
-          InvitePermissions.grantableBy(UserRole.administrator),
-          hasLength(3),
-        );
-        expect(
-          InvitePermissions.grantableBy(UserRole.coordinator),
-          hasLength(3),
-        );
-        expect(InvitePermissions.grantableBy(UserRole.facilitator), [
-          InviteRoleKind.member,
-        ]);
-        expect(InvitePermissions.canInvite(UserRole.member), isFalse);
-      },
-    );
+    test('role matrix: admin any role, coordinator never coordinators', () {
+      expect(
+        InvitePermissions.grantableBy(UserRole.administrator),
+        hasLength(3),
+      );
+      expect(InvitePermissions.grantableBy(UserRole.coordinator), [
+        InviteRoleKind.member,
+        InviteRoleKind.facilitator,
+      ]);
+      expect(InvitePermissions.grantableBy(UserRole.facilitator), [
+        InviteRoleKind.member,
+      ]);
+      expect(InvitePermissions.canInvite(UserRole.member), isFalse);
+    });
+
+    test('managing an invite follows the same matrix', () {
+      expect(
+        InvitePermissions.canManage(
+          UserRole.coordinator,
+          InviteRoleKind.coordinator,
+        ),
+        isFalse,
+      );
+      expect(
+        InvitePermissions.canManage(
+          UserRole.administrator,
+          InviteRoleKind.coordinator,
+        ),
+        isTrue,
+      );
+      expect(
+        InvitePermissions.canManage(
+          UserRole.facilitator,
+          InviteRoleKind.facilitator,
+        ),
+        isFalse,
+      );
+    });
 
     test(
       'only staff pick the organization; facilitators have a fixed table',

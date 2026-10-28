@@ -68,7 +68,6 @@ void main() {
     expect(cubit.state.roles, [
       InviteRoleKind.member,
       InviteRoleKind.facilitator,
-      InviteRoleKind.coordinator,
     ]);
     expect(cubit.state.tables.map((t) => t.id), [
       'table-esperanza',
@@ -83,8 +82,16 @@ void main() {
     await cubit.close();
   });
 
-  test('a coordinator invite needs the organization, not a table', () async {
+  test('a coordinator cannot pick the coordinator role', () async {
     final cubit = await ready(coordinatorSession);
+    cubit.selectRole(InviteRoleKind.coordinator);
+
+    expect(cubit.state.role, InviteRoleKind.member);
+    await cubit.close();
+  });
+
+  test('a coordinator invite needs the organization, not a table', () async {
+    final cubit = await ready(adminSession);
     cubit.selectTable('table-fe'); // full, but irrelevant for this role
     cubit.selectRole(InviteRoleKind.coordinator);
 

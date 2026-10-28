@@ -17,6 +17,12 @@ enum InviteProblem {
   pendingExists,
   personAlreadyLinked,
   forbidden,
+
+  /// The inviter's role cannot grant the chosen role (`invite_role_forbidden`).
+  roleNotAllowed,
+
+  /// A facilitator targeted a table that is not theirs (`invite_table_forbidden`).
+  tableNotAllowed,
   offline,
   lockedOut,
 

@@ -6,6 +6,8 @@ export type ErrorCode = keyof typeof ERRORS;
 export const ERRORS = {
   unauthenticated: [401, "Inicia sesión para continuar."],
   forbidden: [403, "No tienes permiso para hacer esto."],
+  invite_role_forbidden: [403, "Con tu rol no puedes invitar a una persona con ese rol."],
+  invite_table_forbidden: [403, "Solo puedes invitar integrantes a tu propia mesa."],
   not_found: [404, "No encontramos lo que buscas."],
   route_not_found: [404, "Esta ruta no existe."],
   method_not_allowed: [405, "Método no permitido."],

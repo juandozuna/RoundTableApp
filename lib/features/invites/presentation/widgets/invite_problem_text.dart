@@ -25,6 +25,8 @@ extension InviteProblemText on InviteProblem {
       InviteProblem.personAlreadyLinked =>
         l10n.invitesProblemPersonAlreadyLinked,
       InviteProblem.forbidden => l10n.errorForbidden,
+      InviteProblem.roleNotAllowed => l10n.invitesProblemRoleNotAllowed,
+      InviteProblem.tableNotAllowed => l10n.invitesProblemTableNotAllowed,
       InviteProblem.offline => l10n.invitesProblemOffline,
       InviteProblem.lockedOut => l10n.invitesCodeLocked,
       InviteProblem.rateLimited => l10n.invitesProblemRateLimited,

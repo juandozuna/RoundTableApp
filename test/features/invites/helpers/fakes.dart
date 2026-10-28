@@ -80,6 +80,11 @@ class FakeSessionContext implements SessionContextService {
   }
 }
 
+const adminSession = SessionContext(
+  role: UserRole.administrator,
+  personId: 'p-admin',
+);
+
 const coordinatorSession = SessionContext(
   role: UserRole.coordinator,
   personId: 'p-coord',
