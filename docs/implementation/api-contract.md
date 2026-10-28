@@ -167,7 +167,7 @@ so a row can never point into another organization.
 | `invite_role_kind` | coordinator, facilitator, member |
 | `invite_status` | pending, accepted, expired, revoked |
 | `device_platform` | android, ios, web |
-| `notification_kind` | session_reminder, commitment_nudge, stage_opened |
+| `notification_kind` | session_reminder, commitment_nudge, stage_opened, table_alert |
 | `notification_status` | pending, sent, skipped, failed |
 
 `organizations.kind`: foundation | school | company | church | community | other.
@@ -526,9 +526,10 @@ commitments; this endpoint (and the score-only `kpi_member_detail`) is their onl
 | `POST /notifications/dispatch` | `x-cron-secret` or service key | — | `{ sender, claimed, sent, skipped, failed, tokens_removed }` |
 | `POST /notifications/cron/session-reminders` | cron | — | `{ enqueued, dispatch }` |
 | `POST /notifications/cron/commitment-nudges` | cron | — | `{ enqueued, dispatch }` |
+| `POST /notifications/cron/table-alerts` | cron | — | `{ enqueued, dispatch }` — one `table_alert` per flagged active table, recipient (the org's coordinators + platform administrators with an account) and ISO week (`dedupe_key = table_alert:<table>:<week start>:<user>`) |
 
 Push payload `data` (all strings): `type` (`session_reminder` \| `commitment_nudge` \|
-`stage_opened`), `session_id`, `round_table_id`, plus `scheduled_at` / `commitment_id` / `stage`.
+`stage_opened` \| `table_alert`), `session_id`, `round_table_id`, plus `scheduled_at` / `commitment_id` / `stage` / `reasons` (`table_alert`: JSON array of `low_attendance` \| `few_people`).
 The "unsynced data > 24 h" alert is a local notification (ADR 0009 #3), not a server push.
 
 ---
@@ -598,6 +599,11 @@ freshness. KPI reads never touch transactional tables (except live seat counts, 
   rollups takes **≈ 22 ms** (21–26 ms over repeated runs); a read that finds fresh rollups pays
   ≈ 0.5 ms for the check. Refreshes are bounded to one per 2 s however many users read.
 - Because the RPCs may refresh, they are **volatile**: call them with `POST` (as the app does), never `GET`.
+- `health_reasons` (`text[]`, values `low_attendance` | `few_people`; empty unless the table is `active`) explains
+  why a table needs attention without changing `health`. `low_attendance`: average of the attendance %
+  of the last `recent_sessions` (3) closed sessions is below `low_attendance_pct` (70) — `recent_attendance_pct`
+  is that average, null without closed sessions. `few_people`: live active members (facilitator included)
+  below `min_active_people` (3). All three thresholds are the single row of `kpi.health_settings`.
 - Seat counts are not rollup data: `kpi_tables.active_people` is counted live from `table_members`
   (`seats_free` and `max_people = 9` are added), like `admin_tables`. `kpi_summary.people_active` and the
   `tables` health counts come from the rollup (fresh per the rules above).
@@ -623,7 +629,7 @@ rows flagged `synced_late`; **health**: `completed`; `inactive` (paused/closed, 
 | `kpi_summary` | filters | object (below) |
 | `kpi_breakdown` | `p_dimension` (required): `country` \| `organization` \| `location` \| `round_table` \| `facilitator` \| `module` \| `value`; filters | rows `{ key, label, sessions_closed, values_completed, member_values_completed, attendance_pct, initial_avg, follow_up_avg, improvement_avg, improvement_pairs, synced_late_rows, tables_total, tables_active, tables_delayed, tables_inactive }` (table counts null for module/value) |
 | `kpi_weekly_series` | filters | rows `{ week_start, sessions_closed, values_completed, attendance_pct, initial_avg, improvement_avg, synced_late_rows }` ordered by week |
-| `kpi_tables` | `p_country, p_organization_id, p_location_id, p_round_table_id, p_facilitator_person_id, p_health` | grid rows `{ round_table_id, code, name, organization_id, organization_name, country_code, location_id, location_name, facilitator_person_id, facilitator_name, status, health, active_people (live), values_completed, current_value_id, current_value_label, attendance_pct, improvement_avg, synced_late_rows, last_session_at, pending_session_at, max_people (9), seats_free (live) }` |
+| `kpi_tables` | `p_country, p_organization_id, p_location_id, p_round_table_id, p_facilitator_person_id, p_health` | grid rows `{ round_table_id, code, name, organization_id, organization_name, country_code, location_id, location_name, facilitator_person_id, facilitator_name, status, health, active_people (live), values_completed, current_value_id, current_value_label, attendance_pct, improvement_avg, synced_late_rows, last_session_at, pending_session_at, max_people (9), seats_free (live), recent_attendance_pct, health_reasons }` |
 | `kpi_member_detail` | `p_round_table_id` (required) | member drill-down (sensitive, scores only) `{ person_id, first_name, last_name, role, membership_status, sessions_expected, sessions_present, attendance_pct, values_completed, improvement_avg, synced_late_sessions, scores: [{ value_id, value_label, sequence, initial_score, follow_up_score, delta, synced_late }] }`; members → `P0001 forbidden` |
 
 `kpi_summary` example (admin, seed):
@@ -652,6 +658,7 @@ function delivers through a `PushSender` (FCM HTTP v1; no-op without credentials
 |---|---|---|
 | `gr-session-reminders` | every 15 min | reminders for sessions in the next 24 h, then dispatch via pg_net (if configured) |
 | `gr-commitment-nudges` | hourly | mid-week nudge 3 days after a closed session while the follow-up is pending |
+| `gr-table-alerts` | daily 13:00 UTC | `app.enqueue_table_alerts()` (tables with health reasons → coordinators/administrators), then dispatch |
 | `gr-kpi-refresh-dirty` / `gr-kpi-refresh-hourly` | every 30 s / hourly | `kpi.refresh_if_dirty()` / `public.refresh_kpis()` (safety net; KPI reads refresh too, §7) |
 | `gr-invites-expire` | hourly | pending → expired |
 | `gr-pending-sessions` | hourly | every active table has its pending session |

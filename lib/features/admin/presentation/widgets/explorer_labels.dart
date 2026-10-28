@@ -23,6 +23,7 @@ abstract final class ExplorerLabels {
       ExplorerView.all => l10n.adminViewAll,
       ExplorerView.delayed => l10n.adminViewDelayed,
       ExplorerView.lowAttendance => l10n.adminViewLowAttendance,
+      ExplorerView.fewPeople => l10n.adminViewFewPeople,
       ExplorerView.syncedLate => l10n.adminViewSyncedLate,
       ExplorerView.paused => l10n.adminViewPaused,
       ExplorerView.withoutTables => l10n.adminViewWithoutTables,

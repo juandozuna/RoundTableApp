@@ -63,6 +63,7 @@ void main() {
             attendancePct: t.attendancePct,
             syncedLateRows: t.syncedLateRows,
             valuesCompleted: t.valuesCompleted,
+            healthReasons: t.healthReasons,
           ),
       ];
     views = InMemorySavedViews();
@@ -79,6 +80,8 @@ void main() {
       expect(state.tables.map((t) => t.code), ['HOR-01', 'LUZ-01', 'LUZ-02']);
       expect(state.data.organizations, hasLength(2));
       expect(state.viewCounts[ExplorerView.delayed.id], 1);
+      expect(state.viewCounts[ExplorerView.lowAttendance.id], 1);
+      expect(state.viewCounts[ExplorerView.fewPeople.id], 1);
       expect(state.aggregate.tables, 3);
     },
   );
@@ -92,6 +95,18 @@ void main() {
     verify: (cubit) {
       expect(cubit.state.query.viewId, ExplorerView.delayed.id);
       expect(cubit.state.tables.map((t) => t.code), ['LUZ-02']);
+    },
+  );
+
+  blocTest<ExplorerCubit, ExplorerState>(
+    'the "Menos de 3 personas" view lists only tables with that reason',
+    build: build,
+    act: (cubit) async {
+      await cubit.load(viewId: ExplorerView.fewPeople.id);
+    },
+    verify: (cubit) {
+      expect(cubit.state.tables.map((t) => t.code), ['HOR-01']);
+      expect(cubit.state.tables.single.hasFewPeople, isTrue);
     },
   );
 

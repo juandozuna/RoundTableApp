@@ -5,6 +5,7 @@ import 'home_commitment.dart';
 import 'home_kpi_summary.dart';
 import 'home_progress.dart';
 import 'home_session.dart';
+import 'home_table_alert.dart';
 
 part 'home_overview.freezed.dart';
 
@@ -30,5 +31,6 @@ sealed class HomeOverview with _$HomeOverview {
     required SessionContext context,
     HomeKpiSummary? kpis,
     @Default(0) int pendingInvites,
+    @Default([]) List<HomeTableAlert> alerts,
   }) = HomeManager;
 }

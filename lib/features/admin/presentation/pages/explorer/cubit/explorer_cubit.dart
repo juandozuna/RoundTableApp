@@ -253,6 +253,7 @@ class ExplorerCubit extends Cubit<ExplorerState> {
   (String, bool)? _sortForView(ExplorerView view) => switch (view) {
     ExplorerView.delayed => ('last', false),
     ExplorerView.lowAttendance => ('attendance', true),
+    ExplorerView.fewPeople => ('seats', true),
     ExplorerView.syncedLate => ('late', false),
     _ => null,
   };

@@ -38,6 +38,10 @@ _KpiTableRow _$KpiTableRowFromJson(Map<String, dynamic> json) => _KpiTableRow(
   pendingSessionAt: json['pending_session_at'] == null
       ? null
       : DateTime.parse(json['pending_session_at'] as String),
+  recentAttendancePct: (json['recent_attendance_pct'] as num?)?.toDouble(),
+  healthReasons: json['health_reasons'] == null
+      ? const []
+      : HealthReason.listFromJson(json['health_reasons']),
 );
 
 Map<String, dynamic> _$KpiTableRowToJson(_KpiTableRow instance) =>
@@ -63,6 +67,10 @@ Map<String, dynamic> _$KpiTableRowToJson(_KpiTableRow instance) =>
       'synced_late_rows': instance.syncedLateRows,
       'last_session_at': ?instance.lastSessionAt?.toIso8601String(),
       'pending_session_at': ?instance.pendingSessionAt?.toIso8601String(),
+      'recent_attendance_pct': ?instance.recentAttendancePct,
+      'health_reasons': instance.healthReasons
+          .map((e) => _$HealthReasonEnumMap[e]!)
+          .toList(),
     };
 
 const _$HealthStatusEnumMap = {
@@ -70,4 +78,9 @@ const _$HealthStatusEnumMap = {
   HealthStatus.delayed: 'delayed',
   HealthStatus.inactive: 'inactive',
   HealthStatus.completed: 'completed',
+};
+
+const _$HealthReasonEnumMap = {
+  HealthReason.lowAttendance: 'low_attendance',
+  HealthReason.fewPeople: 'few_people',
 };

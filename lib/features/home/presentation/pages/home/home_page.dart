@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/build_context_x.dart';
+import '../../../../../core/models/health_reason.dart';
 import '../../../../../core/models/health_status.dart';
 import '../../../../../core/network/api_error_messages.dart';
 import '../../../../../core/network/api_exception.dart';
@@ -26,9 +27,13 @@ import '../../../domain/models/home_kpi_summary.dart';
 import '../../../domain/models/home_overview.dart';
 import '../../../domain/models/home_progress.dart';
 import '../../../domain/models/home_session.dart';
+import '../../../domain/models/home_table_alert.dart';
 import '../../../home_routes.dart';
 import 'cubit/home_cubit.dart';
 import 'cubit/home_state.dart';
+
+/// Alerts listed on the manager home before "and N more".
+const int _maxAlertsShown = 5;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, this.showGalleryLink = false});
@@ -102,6 +107,7 @@ class HomePage extends StatelessWidget {
       ],
       HomeManager() => [
         _buildKpiCard(context, overview.kpis),
+        _buildAlertsCard(context, overview.alerts),
         _buildInvitesCard(context, overview.pendingInvites),
       ],
     };
@@ -479,6 +485,77 @@ class HomePage extends StatelessWidget {
         Text(value, style: context.textStyles.number),
         Text(label, style: context.textTheme.bodySmall),
       ],
+    );
+  }
+
+  Widget _buildAlertsCard(BuildContext context, List<HomeTableAlert> alerts) {
+    final l10n = context.l10n;
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.homeAlertsKicker.toUpperCase(),
+            style: context.textStyles.kicker,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          if (alerts.isEmpty)
+            Text(l10n.homeAlertsEmpty, style: context.textTheme.bodyMedium)
+          else
+            for (final alert in alerts.take(_maxAlertsShown))
+              _buildAlertRow(context, alert),
+          if (alerts.length > _maxAlertsShown)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
+              child: Text(
+                l10n.homeAlertsMore(alerts.length - _maxAlertsShown),
+                style: context.textTheme.bodySmall,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAlertRow(BuildContext context, HomeTableAlert alert) {
+    return InkWell(
+      onTap: () => context.push(HomeRoutes.table(alert.tableId)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${alert.code} · ${alert.name}',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Wrap(
+                    spacing: AppSpacing.xs,
+                    runSpacing: AppSpacing.xs,
+                    children: [
+                      for (final reason in alert.reasons)
+                        StatusPill(
+                          tone: StatusTone.late,
+                          label: switch (reason) {
+                            HealthReason.lowAttendance =>
+                              context.l10n.adminReasonLowAttendance,
+                            HealthReason.fewPeople =>
+                              context.l10n.adminReasonFewPeople,
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded),
+          ],
+        ),
+      ),
     );
   }
 

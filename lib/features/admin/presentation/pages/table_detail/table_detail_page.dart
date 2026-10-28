@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/build_context_x.dart';
+import '../../../../../core/models/health_reason.dart';
 import '../../../../../core/models/health_status.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/status_tone.dart';
@@ -194,6 +195,8 @@ class TableDetailPage extends StatelessWidget {
         detail.kpi != null
             ? HealthPill(health: detail.kpi!.health)
             : TableStatusPill(status: table.status),
+        if (detail.kpi != null)
+          HealthReasonChips(reasons: detail.kpi!.healthReasons),
         AppButton(
           label: l10n.adminEditSchedule,
           icon: Icons.edit_rounded,
@@ -308,6 +311,16 @@ class TableDetailPage extends StatelessWidget {
             AdminFormat.date(detail.kpi!.lastSessionAt),
           ),
           icon: Icons.schedule_rounded,
+        ),
+      if (detail.kpi?.healthReasons.contains(HealthReason.lowAttendance) ??
+          false)
+        AppMessage(
+          tone: StatusTone.late,
+          title: l10n.adminTableLowAttendanceTitle,
+          detail: l10n.adminTableLowAttendanceDetail(
+            AdminFormat.percent(detail.kpi!.recentAttendancePct),
+          ),
+          icon: Icons.trending_down_rounded,
         ),
       if (table.activePeople < 3)
         AppMessage(

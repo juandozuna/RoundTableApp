@@ -131,6 +131,7 @@ class _CommandPaletteState extends State<CommandPalette> {
       for (final view in const [
         ExplorerView.delayed,
         ExplorerView.lowAttendance,
+        ExplorerView.fewPeople,
         ExplorerView.syncedLate,
       ])
         _PaletteItem(
@@ -200,6 +201,7 @@ class _CommandPaletteState extends State<CommandPalette> {
   String _viewName(AppLocalizations l10n, ExplorerView view) => switch (view) {
     ExplorerView.delayed => l10n.adminViewDelayed,
     ExplorerView.lowAttendance => l10n.adminViewLowAttendance,
+    ExplorerView.fewPeople => l10n.adminViewFewPeople,
     _ => l10n.adminViewSyncedLate,
   };
 

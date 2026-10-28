@@ -598,6 +598,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminViewLowAttendance => 'Baja asistencia';
 
   @override
+  String get adminViewFewPeople => 'Menos de 3 personas';
+
+  @override
   String get adminViewSyncedLate => 'Sincronizado tarde';
 
   @override
@@ -2440,6 +2443,38 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeKpiViewAll => 'Ver el tablero completo';
+
+  @override
+  String get homeAlertsKicker => 'Mesas que necesitan atención';
+
+  @override
+  String get homeAlertsEmpty => 'Todas tus mesas activas están al día.';
+
+  @override
+  String homeAlertsMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'y $count mesas más',
+      one: 'y 1 mesa más',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminReasonLowAttendance => 'Baja asistencia';
+
+  @override
+  String get adminReasonFewPeople => 'Menos de 3 personas';
+
+  @override
+  String get adminTableLowAttendanceTitle =>
+      'Baja asistencia en las últimas sesiones';
+
+  @override
+  String adminTableLowAttendanceDetail(String percent) {
+    return 'El promedio de asistencia de las últimas 3 sesiones es $percent, por debajo del 70 %.';
+  }
 
   @override
   String homeInvitesPending(int count) {

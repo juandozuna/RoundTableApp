@@ -11,8 +11,9 @@ import { responsive } from './scenarios/responsive.mjs';
 import { history } from './scenarios/history.mjs';
 import { schedule } from './scenarios/schedule.mjs';
 import { calendar } from './scenarios/calendar.mjs';
+import { health } from './scenarios/health.mjs';
 
-const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin, history, schedule, calendar };
+const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin, history, schedule, calendar, health };
 const selected = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(all);
 const browser = await launch();
 try {

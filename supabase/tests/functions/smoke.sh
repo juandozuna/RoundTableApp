@@ -125,6 +125,9 @@ STATUS=$(curl -s -o /tmp/gr-smoke-body -w '%{http_code}' -X POST "$FN/notificati
   -H "x-cron-secret: $CRON_SECRET" -H 'Content-Type: application/json' -d '{}'); BODY=$(cat /tmp/gr-smoke-body)
 check "session reminders enqueued" 200 '.enqueued>=1' true
 check "without FCM credentials the no-op sender skips them" 200 '.dispatch.sender + "/" + (.dispatch.skipped>=1|tostring)' "noop/true"
+STATUS=$(curl -s -o /tmp/gr-smoke-body -w '%{http_code}' -X POST "$FN/notifications/cron/table-alerts" \
+  -H "x-cron-secret: $CRON_SECRET" -H 'Content-Type: application/json' -d '{}'); BODY=$(cat /tmp/gr-smoke-body)
+check "table health alerts enqueued (LUZ-07 has fewer than 3 people)" 200 '.enqueued>=1' true
 
 echo "── sync-upload (PowerSync uploadData)"
 A1=$(uuid); A2=$(uuid); A3=$(uuid)

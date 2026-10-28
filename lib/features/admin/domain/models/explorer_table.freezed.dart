@@ -37,6 +37,8 @@ mixin _$ExplorerTable {
   DateTime? get lastSessionAt;
   int? get currentValueSequence;
   String? get currentValueName;
+  double? get recentAttendancePct;
+  List<HealthReason> get healthReasons;
 
   /// Create a copy of ExplorerTable
   /// with the given fields replaced by the non-null parameter values.
@@ -94,7 +96,13 @@ mixin _$ExplorerTable {
             (identical(other.currentValueSequence, currentValueSequence) ||
                 other.currentValueSequence == currentValueSequence) &&
             (identical(other.currentValueName, currentValueName) ||
-                other.currentValueName == currentValueName));
+                other.currentValueName == currentValueName) &&
+            (identical(other.recentAttendancePct, recentAttendancePct) ||
+                other.recentAttendancePct == recentAttendancePct) &&
+            const DeepCollectionEquality().equals(
+              other.healthReasons,
+              healthReasons,
+            ));
   }
 
   @override
@@ -124,11 +132,13 @@ mixin _$ExplorerTable {
     lastSessionAt,
     currentValueSequence,
     currentValueName,
+    recentAttendancePct,
+    const DeepCollectionEquality().hash(healthReasons),
   ]);
 
   @override
   String toString() {
-    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName)';
+    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, recentAttendancePct: $recentAttendancePct, healthReasons: $healthReasons)';
   }
 }
 
@@ -164,6 +174,8 @@ abstract mixin class $ExplorerTableCopyWith<$Res> {
     DateTime? lastSessionAt,
     int? currentValueSequence,
     String? currentValueName,
+    double? recentAttendancePct,
+    List<HealthReason> healthReasons,
   });
 }
 
@@ -204,6 +216,8 @@ class _$ExplorerTableCopyWithImpl<$Res>
     Object? lastSessionAt = freezed,
     Object? currentValueSequence = freezed,
     Object? currentValueName = freezed,
+    Object? recentAttendancePct = freezed,
+    Object? healthReasons = null,
   }) {
     return _then(
       _self.copyWith(
@@ -303,6 +317,14 @@ class _$ExplorerTableCopyWithImpl<$Res>
             ? _self.currentValueName
             : currentValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        recentAttendancePct: freezed == recentAttendancePct
+            ? _self.recentAttendancePct
+            : recentAttendancePct // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        healthReasons: null == healthReasons
+            ? _self.healthReasons
+            : healthReasons // ignore: cast_nullable_to_non_nullable
+                  as List<HealthReason>,
       ),
     );
   }
@@ -426,6 +448,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       DateTime? lastSessionAt,
       int? currentValueSequence,
       String? currentValueName,
+      double? recentAttendancePct,
+      List<HealthReason> healthReasons,
     )?
     $default, {
     required TResult orElse(),
@@ -458,6 +482,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.lastSessionAt,
           _that.currentValueSequence,
           _that.currentValueName,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         return orElse();
@@ -504,6 +530,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       DateTime? lastSessionAt,
       int? currentValueSequence,
       String? currentValueName,
+      double? recentAttendancePct,
+      List<HealthReason> healthReasons,
     )
     $default,
   ) {
@@ -535,6 +563,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.lastSessionAt,
           _that.currentValueSequence,
           _that.currentValueName,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -580,6 +610,8 @@ extension ExplorerTablePatterns on ExplorerTable {
       DateTime? lastSessionAt,
       int? currentValueSequence,
       String? currentValueName,
+      double? recentAttendancePct,
+      List<HealthReason> healthReasons,
     )?
     $default,
   ) {
@@ -611,6 +643,8 @@ extension ExplorerTablePatterns on ExplorerTable {
           _that.lastSessionAt,
           _that.currentValueSequence,
           _that.currentValueName,
+          _that.recentAttendancePct,
+          _that.healthReasons,
         );
       case _:
         return null;
@@ -646,7 +680,10 @@ class _ExplorerTable extends ExplorerTable {
     this.lastSessionAt,
     this.currentValueSequence,
     this.currentValueName,
-  }) : super._();
+    this.recentAttendancePct,
+    final List<HealthReason> healthReasons = const [],
+  }) : _healthReasons = healthReasons,
+       super._();
 
   @override
   final String id;
@@ -698,6 +735,16 @@ class _ExplorerTable extends ExplorerTable {
   final int? currentValueSequence;
   @override
   final String? currentValueName;
+  @override
+  final double? recentAttendancePct;
+  final List<HealthReason> _healthReasons;
+  @override
+  @JsonKey()
+  List<HealthReason> get healthReasons {
+    if (_healthReasons is EqualUnmodifiableListView) return _healthReasons;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_healthReasons);
+  }
 
   /// Create a copy of ExplorerTable
   /// with the given fields replaced by the non-null parameter values.
@@ -753,7 +800,13 @@ class _ExplorerTable extends ExplorerTable {
             (identical(other.currentValueSequence, currentValueSequence) ||
                 other.currentValueSequence == currentValueSequence) &&
             (identical(other.currentValueName, currentValueName) ||
-                other.currentValueName == currentValueName));
+                other.currentValueName == currentValueName) &&
+            (identical(other.recentAttendancePct, recentAttendancePct) ||
+                other.recentAttendancePct == recentAttendancePct) &&
+            const DeepCollectionEquality().equals(
+              other._healthReasons,
+              _healthReasons,
+            ));
   }
 
   @override
@@ -783,11 +836,13 @@ class _ExplorerTable extends ExplorerTable {
     lastSessionAt,
     currentValueSequence,
     currentValueName,
+    recentAttendancePct,
+    const DeepCollectionEquality().hash(_healthReasons),
   ]);
 
   @override
   String toString() {
-    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName)';
+    return 'ExplorerTable(id: $id, code: $code, name: $name, organizationId: $organizationId, organizationName: $organizationName, countryCode: $countryCode, locationId: $locationId, locationName: $locationName, weekday: $weekday, startTime: $startTime, timezone: $timezone, status: $status, health: $health, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, valuesCompleted: $valuesCompleted, attendancePct: $attendancePct, improvementAvg: $improvementAvg, syncedLateRows: $syncedLateRows, lastSessionAt: $lastSessionAt, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, recentAttendancePct: $recentAttendancePct, healthReasons: $healthReasons)';
   }
 }
 
@@ -825,6 +880,8 @@ abstract mixin class _$ExplorerTableCopyWith<$Res>
     DateTime? lastSessionAt,
     int? currentValueSequence,
     String? currentValueName,
+    double? recentAttendancePct,
+    List<HealthReason> healthReasons,
   });
 }
 
@@ -865,6 +922,8 @@ class __$ExplorerTableCopyWithImpl<$Res>
     Object? lastSessionAt = freezed,
     Object? currentValueSequence = freezed,
     Object? currentValueName = freezed,
+    Object? recentAttendancePct = freezed,
+    Object? healthReasons = null,
   }) {
     return _then(
       _ExplorerTable(
@@ -964,6 +1023,14 @@ class __$ExplorerTableCopyWithImpl<$Res>
             ? _self.currentValueName
             : currentValueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        recentAttendancePct: freezed == recentAttendancePct
+            ? _self.recentAttendancePct
+            : recentAttendancePct // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        healthReasons: null == healthReasons
+            ? _self._healthReasons
+            : healthReasons // ignore: cast_nullable_to_non_nullable
+                  as List<HealthReason>,
       ),
     );
   }
