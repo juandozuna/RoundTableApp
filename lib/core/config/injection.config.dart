@@ -434,6 +434,10 @@ import '../services/clock/system_clock_service.dart' as _i799;
 import '../services/connectivity/connectivity_service.dart' as _i1015;
 import '../services/connectivity/connectivity_service_impl.dart' as _i916;
 import '../services/connectivity/watch_connectivity_use_case.dart' as _i17;
+import '../services/error_reporting/app_error_context_provider.dart' as _i204;
+import '../services/error_reporting/error_reporter.dart' as _i200;
+import '../services/error_reporting/error_reporting_module.dart' as _i439;
+import '../services/error_reporting/logging_error_reporter.dart' as _i967;
 import '../services/external_links/external_link_service.dart' as _i162;
 import '../services/external_links/external_link_service_impl.dart' as _i146;
 import '../services/firebase/firebase_bootstrap.dart' as _i1068;
@@ -468,6 +472,7 @@ extension GetItInjectableX on _i174.GetIt {
     final appCompositionModule = _$AppCompositionModule();
     final notificationsModule = _$NotificationsModule();
     final authSessionModule = _$AuthSessionModule();
+    final errorReportingModule = _$ErrorReportingModule();
     final networkModule = _$NetworkModule();
     final sessionDataModule = _$SessionDataModule();
     gh.factory<_i86.ParseInviteCodeUseCase>(
@@ -559,6 +564,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i171.SupabaseAuthSession>(
       () => authSessionModule.supabaseAuthSession(gh<_i609.AppConfig>()),
+    );
+    gh.lazySingleton<_i200.ErrorReportSink>(
+      () => errorReportingModule.errorReportSink(gh<_i609.AppConfig>()),
     );
     gh.lazySingleton<_i295.PushMessagingPlatform>(
       () => _i618.FirebasePushMessagingPlatform(
@@ -678,6 +686,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i625.AuditRemoteDataSource>(
       () => _i625.AuditRemoteDataSource(gh<_i800.AuditClient>()),
     );
+    gh.lazySingleton<_i200.ErrorContextProvider>(
+      () => _i204.AppErrorContextProvider(
+        gh<_i523.SessionContextService>(),
+        gh<_i282.AppRouter>(),
+        gh<_i609.AppConfig>(),
+      ),
+    );
     gh.lazySingleton<_i1010.AdminInvitesClient>(
       () => _i1010.AdminInvitesClient(
         gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
@@ -741,6 +756,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i349.AdminReadClient>(),
         gh<_i78.AdminWriteClient>(),
         gh<_i1010.AdminInvitesClient>(),
+      ),
+    );
+    gh.lazySingleton<_i200.ErrorReporter>(
+      () => _i967.LoggingErrorReporter(
+        gh<_i200.ErrorContextProvider>(),
+        gh<_i200.ErrorReportSink>(),
+        gh<_i508.ClockService>(),
       ),
     );
     gh.lazySingleton<_i951.NotificationsRemoteDataSource>(
@@ -1445,6 +1467,8 @@ class _$AppCompositionModule extends _i431.AppCompositionModule {}
 class _$NotificationsModule extends _i166.NotificationsModule {}
 
 class _$AuthSessionModule extends _i139.AuthSessionModule {}
+
+class _$ErrorReportingModule extends _i439.ErrorReportingModule {}
 
 class _$NetworkModule extends _i200.NetworkModule {}
 

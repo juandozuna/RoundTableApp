@@ -10,6 +10,7 @@ class AppConfig {
     required this.devAuthEnabled,
     required this.environment,
     this.firebase = const FirebaseWebConfig(),
+    this.errorReportUrl = '',
   });
 
   factory AppConfig.fromEnvironment() => AppConfig(
@@ -18,6 +19,7 @@ class AppConfig {
     powerSyncUrl: _powerSyncUrl,
     devAuthEnabled: devAuthCompiledIn,
     environment: AppEnvironment.parse(_appEnv),
+    errorReportUrl: _errorReportUrl,
     firebase: const FirebaseWebConfig(
       apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
       appId: String.fromEnvironment('FIREBASE_APP_ID'),
@@ -30,6 +32,7 @@ class AppConfig {
   static const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
   static const _powerSyncUrl = String.fromEnvironment('POWERSYNC_URL');
+  static const _errorReportUrl = String.fromEnvironment('ERROR_REPORT_URL');
   static const _appEnv = String.fromEnvironment(
     'APP_ENV',
     defaultValue: 'local',
@@ -46,7 +49,13 @@ class AppConfig {
   final AppEnvironment environment;
   final FirebaseWebConfig firebase;
 
+  /// Optional HTTP endpoint receiving error reports; empty disables it.
+  final String errorReportUrl;
+
   bool get hasSupabase => supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
+
+  bool get hasErrorReporting =>
+      Uri.tryParse(errorReportUrl)?.hasScheme ?? false;
 
   bool get hasPowerSync => powerSyncUrl.isNotEmpty;
 

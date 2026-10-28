@@ -185,7 +185,7 @@ variable names.
 6. **Push (FCM).** A Firebase project: web app config (`FIREBASE_*` defines + VAPID key), Android
    `google-services.json`, iOS `GoogleService-Info.plist` and APNs key; the service account JSON from
    step 5. Without it notifications are skipped, the rest works.
-7. **Web hosting.** `flutter build web --release --base-href / --dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=… --dart-define=POWERSYNC_URL=… --dart-define=APP_ENV=production`
+7. **Web hosting.** `flutter build web --release --base-href / --dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=… --dart-define=POWERSYNC_URL=… --dart-define=APP_ENV=production` (optional `--dart-define=ERROR_REPORT_URL=…`, see [docs/operations.md](docs/operations.md))
    (the anon key is public; never the service-role key). Serve `build/web` over HTTPS with the
    headers of `docker/web/nginx.conf` (`application/wasm`, no SPA fallback for assets, no-cache for
    `index.html` and the service worker). The compose `web` image builds exactly that.
