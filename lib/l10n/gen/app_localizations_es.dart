@@ -5068,4 +5068,66 @@ class AppLocalizationsEs extends AppLocalizations {
   String homeSessionCancelledNotice(String date) {
     return 'Se canceló la sesión del $date. La próxima trabaja el mismo valor.';
   }
+
+  @override
+  String get calendarNavLabel => 'Calendario';
+
+  @override
+  String get calendarTitle => 'Próximas sesiones';
+
+  @override
+  String calendarCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sesiones',
+      one: '1 sesión',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get calendarEmptyTitle => 'No hay sesiones próximas';
+
+  @override
+  String get calendarEmptyMessage =>
+      'Cuando una mesa tenga su siguiente sesión programada, aparecerá aquí.';
+
+  @override
+  String get calendarEmptyFilteredMessage =>
+      'Ninguna sesión coincide con estos filtros.';
+
+  @override
+  String get calendarUnavailableTitle => 'Sin calendario para este rol';
+
+  @override
+  String get calendarUnavailableMessage =>
+      'El calendario es para coordinadores, administradores y facilitadores.';
+
+  @override
+  String get calendarLoadError => 'No pudimos cargar las próximas sesiones.';
+
+  @override
+  String get calendarOpenBadge => 'En curso';
+
+  @override
+  String get calendarCancelledBadge => 'Cancelada';
+
+  @override
+  String calendarMovedBadge(String date) {
+    return 'Reprogramada · antes $date';
+  }
+
+  @override
+  String calendarTableTime(String timezone) {
+    return 'Hora de la mesa · $timezone';
+  }
+
+  @override
+  String get calendarNoFacilitator => 'Sin facilitador';
+
+  @override
+  String calendarOpenTable(String table) {
+    return 'Abrir la mesa $table';
+  }
 }

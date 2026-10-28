@@ -7,7 +7,7 @@ import { openTableFromExplorer, resetDemoSession, sql, supabaseKeys } from '../f
 
 const TABLE = "(select id from round_tables where code = 'LUZ-03')";
 
-async function tokenFor(email) {
+export async function tokenFor(email) {
   const { url, anon } = supabaseKeys();
   const login = await fetch(`${url}/auth/v1/token?grant_type=password`, {
     method: 'POST',
@@ -18,7 +18,7 @@ async function tokenFor(email) {
 }
 
 /** Calls the admin Edge Function as a dev account; returns { status, code, json }. */
-async function adminAs(email, method, path, body) {
+export async function adminAs(email, method, path, body) {
   const { url, anon } = supabaseKeys();
   const response = await fetch(`${url}/functions/v1/admin/${path}`, {
     method,
@@ -30,7 +30,7 @@ async function adminAs(email, method, path, body) {
 }
 
 /** `YYYY-MM-DDTHH:MM` wall clock in Santo Domingo (UTC-4, no DST), `days` from now. */
-function localInDays(days, hhmm) {
+export function localInDays(days, hhmm) {
   const day = new Date(Date.now() + days * 86_400_000 - 4 * 3_600_000);
   return `${day.toISOString().slice(0, 10)}T${hhmm}`;
 }

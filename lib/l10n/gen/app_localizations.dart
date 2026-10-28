@@ -8318,6 +8318,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Se canceló la sesión del {date}. La próxima trabaja el mismo valor.'**
   String homeSessionCancelledNotice(String date);
+
+  /// No description provided for @calendarNavLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Calendario'**
+  String get calendarNavLabel;
+
+  /// No description provided for @calendarTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximas sesiones'**
+  String get calendarTitle;
+
+  /// No description provided for @calendarCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 sesión} other{{count} sesiones}}'**
+  String calendarCount(int count);
+
+  /// No description provided for @calendarEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay sesiones próximas'**
+  String get calendarEmptyTitle;
+
+  /// No description provided for @calendarEmptyMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando una mesa tenga su siguiente sesión programada, aparecerá aquí.'**
+  String get calendarEmptyMessage;
+
+  /// No description provided for @calendarEmptyFilteredMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna sesión coincide con estos filtros.'**
+  String get calendarEmptyFilteredMessage;
+
+  /// No description provided for @calendarUnavailableTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin calendario para este rol'**
+  String get calendarUnavailableTitle;
+
+  /// No description provided for @calendarUnavailableMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'El calendario es para coordinadores, administradores y facilitadores.'**
+  String get calendarUnavailableMessage;
+
+  /// No description provided for @calendarLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las próximas sesiones.'**
+  String get calendarLoadError;
+
+  /// No description provided for @calendarOpenBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'En curso'**
+  String get calendarOpenBadge;
+
+  /// No description provided for @calendarCancelledBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelada'**
+  String get calendarCancelledBadge;
+
+  /// No description provided for @calendarMovedBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramada · antes {date}'**
+  String calendarMovedBadge(String date);
+
+  /// No description provided for @calendarTableTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Hora de la mesa · {timezone}'**
+  String calendarTableTime(String timezone);
+
+  /// No description provided for @calendarNoFacilitator.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin facilitador'**
+  String get calendarNoFacilitator;
+
+  /// No description provided for @calendarOpenTable.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir la mesa {table}'**
+  String calendarOpenTable(String table);
 }
 
 class _AppLocalizationsDelegate

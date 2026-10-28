@@ -4,6 +4,7 @@ import '../core/sync/data/sync_schema.dart';
 import '../features/admin/admin_router.dart';
 import '../features/audit/audit_router.dart';
 import '../features/auth/auth_router.dart';
+import '../features/calendar/calendar_router.dart';
 import '../features/history/history_router.dart';
 import '../features/home/home_router.dart';
 import '../features/home/home_routes.dart';
@@ -34,6 +35,7 @@ List<FeatureRouter> buildFeatureRouters(AppConfig config) => [
   const SettingsFeatureRouter(),
   const SessionFeatureRouter(),
   const HistoryFeatureRouter(),
+  const CalendarFeatureRouter(),
 ];
 
 /// PowerSync tables of every offline-first feature (session).
