@@ -49,4 +49,8 @@ Deno.test("schedule change dates", () => {
     assertEquals(Object.keys(error.extra?.fields as object), ["schedule_effective_from"]);
   }
   assertThrows(() => validate({}, (v) => v.timestamp("scheduled_at", true)), ApiError);
+  validate({ scheduled_local: "2026-11-02T19:30" }, (v) => v.local("scheduled_local", true));
+  for (const bad of ["2026-11-02 19:30", "2026-11-02T25:00", "2026-11-02", 5]) {
+    assertThrows(() => validate({ scheduled_local: bad }, (v) => v.local("scheduled_local", true)), ApiError);
+  }
 });

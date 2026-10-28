@@ -17,7 +17,7 @@ Evidence shorthand: `M:` = `supabase/migrations/2026102510xx_*.sql` (`core`=0100
 |---|---|---|---|---|---|
 | Platform & org admin (RF-01…08) | 8 | 7 | 1 | 0 | 0 |
 | Orgs, roles, users (RF-09…18) | 10 | 9 | 1 | 0 | 0 |
-| Locations, tables, calendar (RF-19…30) | 12 | 6 | 4 | 2 | 0 |
+| Locations, tables, calendar (RF-19…30) | 12 | 8 | 3 | 1 | 0 |
 | Program (RF-31…36) | 6 | 5 | 0 | 1 | 0 |
 | Session execution (RF-37…50) | 14 | 13 | 1 | 0 | 0 |
 | Answers & progress (RF-51…59) | 9 | 4 | 5 | 0 | 0 |
@@ -26,7 +26,7 @@ Evidence shorthand: `M:` = `supabase/migrations/2026102510xx_*.sql` (`core`=0100
 | RNF-01…25 | 25 | 15 | 8 | 2 | 0 |
 | PC-01…15 + answered P-xx | 20 | 15 | 3 | 0 | 2 |
 | ADR 0001…0015 | 15 | 11 | 4 | 0 | 0 |
-| **Total** | **135** | **96** | **31** | **6** | **2** |
+| **Total** | **135** | **98** | **30** | **5** | **2** |
 
 Counts: 75 RF rows, 25 RNF rows, 20 PC/P rows, 15 ADR rows. Gap list in §3: 1 blocker, 7 major, 9 minor.
 
@@ -58,14 +58,14 @@ Counts: 75 RF rows, 25 RNF rows, 20 PC/P rows, 15 ADR rows. Gap list in §3: 1 b
 | RF-20 | Table ↔ location | I | `round_tables.location_id` + composite FK |
 | RF-21 | Table name/code | I | `name`, `code` unique per org; pgTAP 030 "duplicate table codes are rejected" |
 | RF-22 | Day, time, frequency | P | weekday/start_time/timezone/duration (M:core:144); no frequency field (always weekly; P-50 unanswered). Acceptable |
-| RF-23 | Change schedule from an effective date | P | `table_update` moves the pending session immediately (M:api:1286); **no effective-date input, no schedule history table**. See G-04 |
+| RF-23 | Change schedule from an effective date | I | `table_schedule_versions` keeps every schedule with `effective_from`; `table_update` takes `schedule_effective_from` (today by default, the past is refused), a future date is applied by `app.apply_due_schedule` and never moves earlier sessions; audit `table.schedule_changed`; history in the table detail (M:`20261027200000_schedule_changes`; pgTAP:090; dart: `table_detail_cubit_test`, `admin_remote_data_source_test`). Issue #6 |
 | RF-24 | ≤ 9 active members | I | `table_members_prepare` trigger (M:rules:102) counts facilitator (ADR 0014); pgTAP 020/030 (10th seat rejected); e2e admin "9-seat limit" |
 | RF-25 | Alert if below minimum (3) | P | Only a UI warning when deactivating below 3 (`adminDeactivateMemberBelowMinimum`, `table_detail_page.dart:676`); no DB rule, no health flag, no alert. See G-06 |
 | RF-26 | Calendar/list of upcoming sessions by location/facilitator | N | Only the user's own next session on Home (`homeKickerNextSession`); `kpi_tables.pending_session_at` exists but no calendar/list UI. See G-05 |
 | RF-27 | Table states active/paused/completed/closed | I | enum `round_table_status`; `table_update` cancels pending session on pause/close and reschedules on reactivate (M:api:1316) |
 | RF-28 | Record which value each table is on | I | Table form has a module + value picker (create: `start_value_id`; edit: `current_value_id`); server refuses moving back past completed history without `confirm_rewind`, leaves closed sessions untouched and audits `table.value_changed` (M:`table_program_value`); pgTAP 080, cubit tests, e2e admin. Closes G-03 (issue #5) |
 | RF-29 | Create sessions from schedule | I | `app.schedule_next_session`, `ensure_pending_sessions` cron (M:rules:269, notif:261); pgTAP 030 "the first session is scheduled" |
-| RF-30 | Reschedule / extraordinary session | N | No api, no UI; cancel only as side effect of pausing a table. See G-04 |
+| RF-30 | Reschedule / extraordinary session | I | `api.session_reschedule`, `api.session_cancel` (holiday / force majeure / other), `api.session_extra_create` behind `POST /admin/sessions/{id}/reschedule`, `…/cancel`, `POST /admin/tables/{id}/extra-session`; audit `session.rescheduled/cancelled/extraordinary_added`; one pending session per table is preserved; a cancelled session does not advance the value (decision for P-51/52); table detail actions + Home markers (pgTAP:090, e2e `schedule`, dart: `session_dialogs_test`, `home_page_test`). Issue #6; facilitators cannot do it (admin/coordinator of the org only) |
 | RF-31 | Official program structure | I | `curriculum_modules`/`values` 5×48, sequence (M:core:102) — content is placeholder (G-01) |
 | RF-32 | Previous/current/next value per table | I | `sessions.value_id` + `follow_up_value_id`, `app.next_value_id`; pgTAP 020 "next session works value 5 with follow-up of value 4" |
 | RF-33 | Reflection questions per value | I | `value_questions` (2–3 per value); member flow reflection step; e2e live-session |
@@ -197,7 +197,7 @@ unusable for a role; **minor** = polish or low impact.
 | G-01 | blocker | **Production auth, push and content unverified.** Google/Apple/Facebook sign-in only works with dev accounts (`DEV_AUTH`); FCM sender is a no-op without credentials; web push untested; curriculum is **placeholder** (48 names, 2–3 template questions, `seed.sql:56`) and P-11/P-57 say the church approves content | Configure the three providers + redirect URLs in a real Supabase project and run one end-to-end sign-in per provider on web/Android/iOS; create the Firebase project and exercise `notifications` function with real tokens; load the church-approved curriculum through a migration (not seed) | `lib/features/auth/data/**`, `supabase/functions/notifications/**`, `_shared/fcm.ts`, `supabase/seed.sql` → new migration, README |
 | G-02 | major | **Facilitator and member have no history/progress UI.** RF-60 (facilitator sees table history), RF-55, P-92 (member sees own history), 06 "tablero del facilitador". Backend allows it (`kpi.row_visible`, RLS) but `AdminScope` is null for facilitators/members, so `/admin/*` and reports are unreachable; Home shows only module counts | Add a facilitator "Mi mesa" history view (reuse `LoadMemberDetailUseCase`/`LoadReportUseCase` scoped to the led table) and a member "Mi progreso" view (local Drift data); widen the report route gate to facilitator for their table | `lib/features/kpis/**`, `lib/features/home/**`, `admin_scope_service_impl.dart`, `kpis_router.dart`, `app_es.arb` |
 | G-03 | ~~major~~ closed | ~~Cannot set a table's program position (RF-28)~~ Resolved in issue #5: value picker on the table form, rewind confirmation, audit event | — | `table_form_page.dart`, `table_form_cubit.dart`, `20261027100000_table_program_value.sql` |
-| G-04 | major | **No session rescheduling/cancellation/extra sessions and no effective-dated schedule change** (RF-23, RF-30, P-51/52). A schedule edit mutates the pending session immediately; nothing records the old schedule | New `api.session_reschedule/_cancel/_create_extraordinary` + a `table_schedule_changes` history table with `effective_from`; surface in table detail | new migration, `supabase/functions/admin`, `lib/features/admin/**table_detail**` |
+| G-04 | ~~major~~ closed | ~~No session rescheduling/cancellation/extra sessions and no effective-dated schedule change (RF-23, RF-30, P-51/52)~~ Resolved in issue #6: schedule history with `effective_from`, reschedule / cancel / extraordinary session API + table-detail UI, Home markers, audit events, notification dedupe by slot. Decision: a cancelled session does not advance the value | — | `20261027200000_schedule_changes.sql`, `supabase/functions/admin`, `table_detail_page.dart`, `home_page.dart` |
 | G-05 | major | **No calendar / upcoming-sessions list** by location or facilitator (RF-26, P-54) | Add a "Calendario" explorer view driven by `kpi_tables.pending_session_at` and `sessions.scheduled_at`; filter by location/facilitator | `lib/features/admin/presentation/pages/explorer/**`, `kpi.sql` (new RPC) |
 | G-06 | major | **Alerts are passive and incomplete** (RF-25, RF-67, P-101, RNF-24): `health` ignores low attendance and tables with < 3 people; nobody is notified; sessions without activity only appear in the "delayed" filter | Extend `mv_table_status.health`/add flags `understaffed`, `low_attendance`; add `table_alert` notification kind sent to the org's coordinators by cron; show badges on Home for coordinators | `20261025100600_kpis.sql` (new migration), `notif` cron, `lib/features/home/**`, `selection_kpi_panel.dart` |
 | G-07 | major | **No monitoring or backup procedure** (RNF-21, RNF-23, RNF-25): only `FlutterError.onError` logging; nothing documents Supabase backup tier/restore or alerting | Add crash/error reporting (e.g. Sentry or Firebase Crashlytics) behind a service contract; write `docs/implementation/operations.md` (backups, restore drill, Edge Function log retention, uptime check) | `lib/app/bootstrap.dart`, `lib/core/services/logging/**`, new doc |

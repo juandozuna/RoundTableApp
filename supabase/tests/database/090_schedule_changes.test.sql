@@ -3,7 +3,7 @@
 -- reminder re-fire.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(57);
+select plan(59);
 
 create function pg_temp.u(p text) returns uuid language sql immutable as
   $$ select md5('gold-roundtables:user:' || p)::uuid $$;
@@ -187,6 +187,13 @@ select is((select payload->>'value_advances' from public.audit_events where even
            and entity_id = (select session_id from t_can)), 'false', 'the cancellation is audited');
 select is(pg_temp.cancel('coord', (select session_id from t_can), 'holiday'), 'session_finalized',
           'a cancelled session cannot be cancelled again');
+
+-- A wall-clock time is read in the table's own timezone (America/Santo_Domingo is UTC-4).
+select is(pg_temp.err(format($f$select api.session_reschedule(%L, jsonb_build_object('session_id', %L,
+          'scheduled_local', '2030-01-15T19:00'))$f$, pg_temp.u('coord'), (select (pg_temp.pending('luz-02')).id))),
+          null::text, 'scheduled_local reschedules in the table''s timezone');
+select is((select scheduled_at from pg_temp.pending('luz-02')), '2030-01-15 23:00+00'::timestamptz,
+          '19:00 Santo Domingo is 23:00 UTC');
 
 -- ── Extraordinary session ────────────────────────────────────────────────────────────────────
 -- luz-01 is Monday-bound now; pin its pending session three days out for a deterministic test.

@@ -325,7 +325,12 @@ select
   (select count(*) from public.invites i
    where i.round_table_id = rt.id and i.status = 'pending' and i.expires_at >= now()) as pending_invites,
   pending.kind as pending_session_kind,
-  pending.original_scheduled_at as pending_session_original_at
+  pending.original_scheduled_at as pending_session_original_at,
+  -- The same instants as wall-clock time in the table's timezone ('YYYY-MM-DDTHH:MM'), so clients
+  -- can show and prefill them without a timezone database.
+  to_char(pending.scheduled_at at time zone rt.timezone, 'YYYY-MM-DD"T"HH24:MI') as pending_session_local,
+  to_char(pending.original_scheduled_at at time zone rt.timezone, 'YYYY-MM-DD"T"HH24:MI')
+    as pending_session_original_local
 from public.round_tables rt
 join public.organizations o on o.id = rt.organization_id
 join public.locations l on l.id = rt.location_id
@@ -562,7 +567,23 @@ begin
 end;
 $$;
 
--- p_input: {session_id, scheduled_at, reason?}
+-- The date of a session in p_input: scheduled_at (an instant) or scheduled_local ('YYYY-MM-DDTHH:MM'
+-- wall-clock time in the table's timezone, so clients need no timezone database).
+create or replace function app.input_slot(p_input jsonb, p_round_table_id uuid)
+returns timestamptz
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select case
+    when nullif(p_input->>'scheduled_local', '') is not null
+      then (p_input->>'scheduled_local')::timestamp
+             at time zone (select timezone from public.round_tables where id = p_round_table_id)
+    else (p_input->>'scheduled_at')::timestamptz end;
+$$;
+
+-- p_input: {session_id, scheduled_at | scheduled_local, reason?}
 -- Moves one scheduled session. The weekly cadence is unchanged: the next session is still
 -- scheduled after the regular slot the session held.
 create or replace function api.session_reschedule(p_uid uuid, p_input jsonb)
@@ -574,10 +595,11 @@ as $$
 declare
   v_before public.sessions;
   v_after public.sessions;
-  v_at timestamptz := (p_input->>'scheduled_at')::timestamptz;
+  v_at timestamptz;
   v_origin timestamptz;
 begin
   v_before := app.lock_editable_session(p_uid, (p_input->>'session_id')::uuid);
+  v_at := app.input_slot(p_input, v_before.round_table_id);
   perform app.require_free_future_slot(v_before.round_table_id, v_at, v_before.id);
   if v_at = v_before.scheduled_at then
     perform app.fail('validation_failed', 'Elige una fecha distinta a la actual.');
@@ -639,7 +661,7 @@ begin
 end;
 $$;
 
--- p_input: {round_table_id, scheduled_at, reason?}
+-- p_input: {round_table_id, scheduled_at | scheduled_local, reason?}
 -- Adds an extra meeting before the table's next regular one. It takes the pending session's
 -- place (one pending session per table); the regular cadence resumes after it is held or
 -- cancelled. It works the table's current value, so holding it advances the program.
@@ -653,7 +675,7 @@ declare
   v_table public.round_tables;
   v_pending public.sessions;
   v_after public.sessions;
-  v_at timestamptz := (p_input->>'scheduled_at')::timestamptz;
+  v_at timestamptz;
 begin
   select * into v_table from public.round_tables
   where id = (p_input->>'round_table_id')::uuid for update;
@@ -672,6 +694,7 @@ begin
     perform app.fail('extra_session_exists',
       'Ya hay una sesión extraordinaria pendiente; reprográmala o cancélala.');
   end if;
+  v_at := app.input_slot(p_input, v_table.id);
   perform app.require_free_future_slot(v_table.id, v_at, v_pending.id);
   if v_at >= v_pending.scheduled_at then
     perform app.fail('extra_session_not_before_next',
@@ -698,6 +721,7 @@ $$;
 revoke execute on function
   app.round_tables_record_schedule(), app.schedule_in_force(uuid, date),
   app.next_slot_versioned(uuid, timestamptz, uuid), app.apply_due_schedule(uuid),
+  app.input_slot(jsonb, uuid),
   app.lock_editable_session(uuid, uuid), app.require_free_future_slot(uuid, timestamptz, uuid)
   from public, anon, authenticated;
 

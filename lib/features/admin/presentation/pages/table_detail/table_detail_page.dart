@@ -448,27 +448,29 @@ class TableDetailPage extends StatelessWidget {
         Padding(
           key: ValueKey('schedule-version-${v.id}'),
           padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-          child: Wrap(
-            spacing: AppSpacing.sm,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                '${l10n.adminScheduleFrom(AdminFormat.wallDate(v.effectiveFrom))}'
-                ' · ${AdminFormat.schedule(l10n, v.weekday, v.startTimeShort)}'
-                ' · ${v.timezone}',
-                style: context.textTheme.bodyMedium,
-              ),
-              if (v.effectiveFrom.isAfter(today))
-                StatusPill(
-                  label: l10n.adminScheduleUpcoming,
-                  tone: StatusTone.pending,
-                )
-              else if (identical(v, current))
-                StatusPill(
-                  label: l10n.adminScheduleCurrent,
-                  tone: StatusTone.ok,
+          child: MergeSemantics(
+            child: Wrap(
+              spacing: AppSpacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  '${l10n.adminScheduleFrom(AdminFormat.wallDate(v.effectiveFrom))}'
+                  ' · ${AdminFormat.schedule(l10n, v.weekday, v.startTimeShort)}'
+                  ' · ${v.timezone}',
+                  style: context.textTheme.bodyMedium,
                 ),
-            ],
+                if (v.effectiveFrom.isAfter(today))
+                  StatusPill(
+                    label: l10n.adminScheduleUpcoming,
+                    tone: StatusTone.pending,
+                  )
+                else if (identical(v, current))
+                  StatusPill(
+                    label: l10n.adminScheduleCurrent,
+                    tone: StatusTone.ok,
+                  ),
+              ],
+            ),
           ),
         ),
     ];
@@ -491,43 +493,50 @@ class TableDetailPage extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.xs,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(
-                      key: const ValueKey('pending-session-when'),
-                      AdminFormat.wallClock(table.pendingLocal),
-                      style: context.textTheme.titleMedium,
-                    ),
-                    if (table.pendingIsExtraordinary)
-                      StatusPill(
-                        label: l10n.adminSessionExtraBadge,
-                        tone: StatusTone.info,
+                MergeSemantics(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            key: const ValueKey('pending-session-when'),
+                            AdminFormat.wallClock(table.pendingLocal),
+                            style: context.textTheme.titleMedium,
+                          ),
+                          if (table.pendingIsExtraordinary)
+                            StatusPill(
+                              label: l10n.adminSessionExtraBadge,
+                              tone: StatusTone.info,
+                            ),
+                          if (table.pendingIsRescheduled)
+                            StatusPill(
+                              label: l10n.adminSessionMovedBadge,
+                              tone: StatusTone.pending,
+                            ),
+                        ],
                       ),
-                    if (table.pendingIsRescheduled)
-                      StatusPill(
-                        label: l10n.adminSessionMovedBadge,
-                        tone: StatusTone.pending,
-                      ),
-                  ],
+                      if (table.pendingIsRescheduled)
+                        Text(
+                          l10n.adminSessionMovedFrom(
+                            AdminFormat.wallClock(table.pendingOriginalLocal),
+                          ),
+                          style: context.textTheme.bodySmall,
+                        ),
+                      if (!table.pendingIsEditable)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Text(
+                            l10n.adminSessionInProgress,
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-                if (table.pendingIsRescheduled)
-                  Text(
-                    l10n.adminSessionMovedFrom(
-                      AdminFormat.wallClock(table.pendingOriginalLocal),
-                    ),
-                    style: context.textTheme.bodySmall,
-                  ),
-                if (!table.pendingIsEditable)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.xs),
-                    child: Text(
-                      l10n.adminSessionInProgress,
-                      style: context.textTheme.bodySmall,
-                    ),
-                  ),
                 const SizedBox(height: AppSpacing.md),
                 Wrap(
                   spacing: AppSpacing.sm,
