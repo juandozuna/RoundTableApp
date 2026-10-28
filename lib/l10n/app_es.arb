@@ -3045,5 +3045,48 @@
         "type": "String"
       }
     }
+  },
+  "calendarNavLabel": "Calendario",
+  "calendarTitle": "Próximas sesiones",
+  "calendarCount": "{count, plural, =1{1 sesión} other{{count} sesiones}}",
+  "@calendarCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarEmptyTitle": "No hay sesiones próximas",
+  "calendarEmptyMessage": "Cuando una mesa tenga su siguiente sesión programada, aparecerá aquí.",
+  "calendarEmptyFilteredMessage": "Ninguna sesión coincide con estos filtros.",
+  "calendarUnavailableTitle": "Sin calendario para este rol",
+  "calendarUnavailableMessage": "El calendario es para coordinadores, administradores y facilitadores.",
+  "calendarLoadError": "No pudimos cargar las próximas sesiones.",
+  "calendarOpenBadge": "En curso",
+  "calendarCancelledBadge": "Cancelada",
+  "calendarMovedBadge": "Reprogramada · antes {date}",
+  "@calendarMovedBadge": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarTableTime": "Hora de la mesa · {timezone}",
+  "@calendarTableTime": {
+    "placeholders": {
+      "timezone": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarNoFacilitator": "Sin facilitador",
+  "calendarOpenTable": "Abrir la mesa {table}",
+  "@calendarOpenTable": {
+    "placeholders": {
+      "table": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -179,6 +179,20 @@ import '../../features/auth/presentation/pages/sign_out/cubit/sign_out_cubit.dar
     as _i327;
 import '../../features/auth/presentation/routing/access_redirect_guard.dart'
     as _i393;
+import '../../features/calendar/data/client/calendar_client.dart' as _i515;
+import '../../features/calendar/data/datasources/calendar_local_data_source.dart'
+    as _i67;
+import '../../features/calendar/data/datasources/calendar_remote_data_source.dart'
+    as _i141;
+import '../../features/calendar/data/services/table_wall_clock.dart' as _i640;
+import '../../features/calendar/data/services/upcoming_sessions_service_impl.dart'
+    as _i1003;
+import '../../features/calendar/domain/services/upcoming_sessions_service.dart'
+    as _i781;
+import '../../features/calendar/domain/use_cases/watch/watch_upcoming_sessions_use_case.dart'
+    as _i168;
+import '../../features/calendar/presentation/pages/upcoming/cubit/upcoming_cubit.dart'
+    as _i480;
 import '../../features/history/data/datasources/history_local_data_source.dart'
     as _i437;
 import '../../features/history/data/services/history_service_impl.dart'
@@ -487,6 +501,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => appCompositionModule.syncSchemaRegistry,
     );
     gh.lazySingleton<_i895.Connectivity>(() => servicesModule.connectivity);
+    gh.lazySingleton<_i640.TableWallClock>(() => _i640.TableWallClock());
     gh.lazySingleton<_i460.SharedPreferencesAsync>(
       () => notificationsModule.sharedPreferences,
     );
@@ -641,6 +656,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i800.AuditClient>(
       () => _i800.AuditClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
+    gh.lazySingleton<_i515.CalendarClient>(
+      () => _i515.CalendarClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
     gh.lazySingleton<_i564.HomeClient>(
       () => _i564.HomeClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
@@ -664,6 +682,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i84.AuthTokenProvider>(),
       ),
       instanceName: 'edgeFunctionsDio',
+    );
+    gh.lazySingleton<_i141.CalendarRemoteDataSource>(
+      () => _i141.CalendarRemoteDataSource(gh<_i515.CalendarClient>()),
     );
     gh.lazySingleton<_i282.AppRouter>(
       () => _i282.AppRouter(
@@ -968,6 +989,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i785.LocalDataService>(
       () => _i375.LocalDataServiceImpl(gh<_i924.SyncDatabase>()),
     );
+    gh.lazySingleton<_i67.CalendarLocalDataSource>(
+      () => _i67.CalendarLocalDataSource(gh<_i924.SyncDatabase>()),
+    );
     gh.lazySingleton<_i437.HistoryLocalDataSource>(
       () => _i437.HistoryLocalDataSource(gh<_i924.SyncDatabase>()),
     );
@@ -984,6 +1008,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i422.PersonDetailCubit(
         gh<_i985.LoadPersonDetailUseCase>(),
         gh<_i479.UpdatePersonUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i781.UpcomingSessionsService>(
+      () => _i1003.UpcomingSessionsServiceImpl(
+        gh<_i67.CalendarLocalDataSource>(),
+        gh<_i141.CalendarRemoteDataSource>(),
+        gh<_i508.ClockService>(),
+        gh<_i640.TableWallClock>(),
       ),
     );
     gh.factory<_i710.TableFormCubit>(
@@ -1194,6 +1226,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i850.InvitePersonUseCase>(),
       ),
     );
+    gh.factory<_i168.WatchUpcomingSessionsUseCase>(
+      () => _i168.WatchUpcomingSessionsUseCase(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i781.UpcomingSessionsService>(),
+      ),
+    );
     gh.lazySingleton<_i4.SessionDriftDatabase>(
       () => sessionDataModule.sessionDriftDatabase(gh<_i924.SyncDatabase>()),
     );
@@ -1382,6 +1420,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i751.SessionLocalDataSource>(),
         gh<_i1020.SyncStatusService>(),
         gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i480.UpcomingCubit>(
+      () => _i480.UpcomingCubit(
+        gh<_i168.WatchUpcomingSessionsUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
       ),
     );
     gh.factory<_i327.SignOutCubit>(

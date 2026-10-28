@@ -478,6 +478,19 @@ Schedule history and exceptions (RF-23, RF-30; migration `20261027200000_schedul
   `table.pending_session` gains `kind` and `original_scheduled_at`. Not covered: facilitators rescheduling their
   own table; an immediate push when a session moves (the 24 h reminder re-fires instead).
 
+**Calendario (RF-26, issue #7)** — no new endpoint or SQL; the calendar reuses existing reads:
+
+- Coordinators and administrators (online only, ADR 0003): `GET /admin_tables?status=eq.active[&organization_id=eq.<org>]`
+  for `pending_session_*` (kind, original slot), `location_*`, `facilitator_*` and `timezone`, plus
+  `GET /sessions?status=eq.cancelled&archived_at=is.null&scheduled_at=gte.<now>` (RLS `sessions_read`). Cancelled
+  sessions whose `cancelled_reason` starts with `table_` (a closed or paused table) are not listed. Location,
+  facilitator and table filters are applied on the client.
+- Facilitators (offline-first, ADR 0004): read from the PowerSync tables `sessions`, `round_tables`, `locations` and
+  `table_members` already synced by `table_shared` (no sync-rule change). Falls back to the PostgREST reads above for
+  their table when nothing has synced yet.
+- Times are instants (UTC) converted on the device to the table's IANA `timezone` (bundled tz database), so the
+  clock shown is the table's wall clock whatever the viewer's zone.
+
 Table rules: code is uppercased (`LUZ-03`), unique per organization (`duplicate_table_code`);
 missing facilitator → `validation_failed` with `fields.facilitator` (API) / `facilitator_required`
 (SQL). Changing the schedule (effective-dated, see above) moves the pending (not yet opened) session to the new slot when it falls on or after the effective date;
