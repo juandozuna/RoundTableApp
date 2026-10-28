@@ -77,6 +77,12 @@ import '../../features/admin/domain/use_cases/people/update_person_use_case.dart
     as _i479;
 import '../../features/admin/domain/use_cases/scope/watch_admin_scope_use_case.dart'
     as _i615;
+import '../../features/admin/domain/use_cases/sessions/add_extraordinary_session_use_case.dart'
+    as _i298;
+import '../../features/admin/domain/use_cases/sessions/cancel_session_use_case.dart'
+    as _i453;
+import '../../features/admin/domain/use_cases/sessions/reschedule_session_use_case.dart'
+    as _i691;
 import '../../features/admin/domain/use_cases/tables/add_member_to_table_use_case.dart'
     as _i508;
 import '../../features/admin/domain/use_cases/tables/change_facilitator_use_case.dart'
@@ -795,6 +801,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i479.UpdatePersonUseCase>(
       () => _i479.UpdatePersonUseCase(gh<_i1045.AdminManagementService>()),
     );
+    gh.factory<_i298.AddExtraordinarySessionUseCase>(
+      () => _i298.AddExtraordinarySessionUseCase(
+        gh<_i1045.AdminManagementService>(),
+      ),
+    );
+    gh.factory<_i453.CancelSessionUseCase>(
+      () => _i453.CancelSessionUseCase(gh<_i1045.AdminManagementService>()),
+    );
+    gh.factory<_i691.RescheduleSessionUseCase>(
+      () => _i691.RescheduleSessionUseCase(gh<_i1045.AdminManagementService>()),
+    );
     gh.factory<_i508.AddMemberToTableUseCase>(
       () => _i508.AddMemberToTableUseCase(gh<_i1045.AdminManagementService>()),
     );
@@ -1112,6 +1129,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i318.WatchSyncStatusUseCase>(
       () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
     );
+    gh.factory<_i844.TableDetailCubit>(
+      () => _i844.TableDetailCubit(
+        gh<_i1005.LoadTableDetailUseCase>(),
+        gh<_i882.ChangeFacilitatorUseCase>(),
+        gh<_i508.AddMemberToTableUseCase>(),
+        gh<_i20.MoveMemberUseCase>(),
+        gh<_i230.DeactivateMemberUseCase>(),
+        gh<_i691.RescheduleSessionUseCase>(),
+        gh<_i453.CancelSessionUseCase>(),
+        gh<_i298.AddExtraordinarySessionUseCase>(),
+      ),
+    );
     gh.factory<_i475.AdminAccessCubit>(
       () => _i475.AdminAccessCubit(
         gh<_i615.WatchAdminScopeUseCase>(),
@@ -1254,15 +1283,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i747.WatchMemberHistoryUseCase>(),
         gh<_i115.WatchTableHistoryUseCase>(),
         gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i844.TableDetailCubit>(
-      () => _i844.TableDetailCubit(
-        gh<_i1005.LoadTableDetailUseCase>(),
-        gh<_i882.ChangeFacilitatorUseCase>(),
-        gh<_i508.AddMemberToTableUseCase>(),
-        gh<_i20.MoveMemberUseCase>(),
-        gh<_i230.DeactivateMemberUseCase>(),
       ),
     );
     gh.factory<_i911.CommandPaletteCubit>(

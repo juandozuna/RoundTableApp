@@ -3,6 +3,7 @@ import '../models/admin_organization.dart';
 import '../models/admin_person.dart';
 import '../models/admin_table.dart';
 import '../models/program_value.dart';
+import '../models/schedule_version.dart';
 import '../models/table_membership.dart';
 
 /// Online reads of the administration directory, filtered by the server to
@@ -27,6 +28,9 @@ abstract interface class AdminDirectoryService {
 
   /// The 48 values of the program in order, with their modules.
   Future<List<ProgramValue>> programValues();
+
+  /// The table's schedule history (RF-23), newest effective date first.
+  Future<List<ScheduleVersion>> scheduleVersions(String roundTableId);
 
   /// Current and past seats of a table, newest first.
   Future<List<TableMembership>> memberships(String roundTableId);

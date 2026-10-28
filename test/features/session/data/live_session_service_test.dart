@@ -38,11 +38,7 @@ void main() {
     clock = FixedClock(DateTime.utc(2026, 10, 29, 22, 30));
     ids = CounterIdGenerator();
     local = SessionLocalDataSource(db.drift, db.sync);
-    live = LiveSessionServiceImpl(
-      local,
-      _StaticStatus(),
-      clock,
-    );
+    live = LiveSessionServiceImpl(local, _StaticStatus(), clock);
   });
 
   tearDown(() => db.close());

@@ -22,6 +22,7 @@ class HomeRemoteDataSource {
         'eq.$tableId',
         'id,name,status,active_people,pending_session_id,'
             'pending_session_status,pending_session_at,'
+            'pending_session_kind,pending_session_original_at,'
             'current_value_sequence,current_value_name',
       ),
     );
@@ -40,6 +41,8 @@ class HomeRemoteDataSource {
       sessionId: row['pending_session_id'] as String?,
       sessionIsOpen: row['pending_session_status'] == 'open',
       scheduledAt: _date(row['pending_session_at']),
+      sessionIsExtraordinary: row['pending_session_kind'] == 'extraordinary',
+      rescheduledFrom: _date(row['pending_session_original_at']),
       valueName: row['current_value_name'] as String?,
       valueSequence: (row['current_value_sequence'] as num?)?.toInt(),
       health: HealthStatus.tryParse(kpiRow?['health'] as String?),

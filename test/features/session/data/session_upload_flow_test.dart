@@ -50,11 +50,7 @@ void main() {
     await SessionFixture.seed(db);
     clock = FixedClock(DateTime.utc(2026, 10, 29, 22, 30));
     local = SessionLocalDataSource(db.drift, db.sync);
-    live = LiveSessionServiceImpl(
-      local,
-      _Idle(),
-      clock,
-    );
+    live = LiveSessionServiceImpl(local, _Idle(), clock);
     responses = ResponsesServiceImpl(local, clock, CounterIdGenerator());
   });
 

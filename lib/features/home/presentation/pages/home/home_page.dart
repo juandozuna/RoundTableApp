@@ -11,6 +11,7 @@ import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/status_tone.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_card.dart';
+import '../../../../../core/widgets/app_message.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/empty_state.dart';
 import '../../../../../core/widgets/offline_banner.dart';
@@ -192,6 +193,17 @@ class HomePage extends StatelessWidget {
                 StatusPill(tone: StatusTone.ok, label: l10n.homeSessionOpenNow),
             ],
           ),
+          if (session.cancelledNoticeFor != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            AppMessage(
+              key: const ValueKey('home-session-cancelled'),
+              tone: StatusTone.info,
+              title: l10n.homeSessionCancelledNotice(
+                _formatDay(context, session.cancelledNoticeFor!),
+              ),
+              icon: Icons.event_busy_rounded,
+            ),
+          ],
           const SizedBox(height: AppSpacing.sm),
           Text(
             session.valueSequence == null || session.valueName == null
@@ -212,6 +224,29 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(session.tableName, style: context.textTheme.titleMedium),
           Text(when, style: context.textTheme.bodyMedium),
+          if (session.isExtraordinary || session.rescheduledFrom != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xs,
+              children: [
+                if (session.isExtraordinary)
+                  StatusPill(
+                    key: const ValueKey('home-session-extraordinary'),
+                    tone: StatusTone.info,
+                    label: l10n.homeSessionExtraordinary,
+                  ),
+                if (session.rescheduledFrom != null)
+                  StatusPill(
+                    key: const ValueKey('home-session-moved'),
+                    tone: StatusTone.pending,
+                    label: l10n.homeSessionMoved(
+                      _formatDay(context, session.rescheduledFrom!),
+                    ),
+                  ),
+              ],
+            ),
+          ],
           const SizedBox(height: AppSpacing.md),
           SeatPips(taken: session.seatsTaken),
           if (isFacilitator && session.health != null) ...[
@@ -229,6 +264,9 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  String _formatDay(BuildContext context, DateTime utc) =>
+      context.l10n.homeSessionDay(utc.toLocal());
 
   Widget _buildHealth(BuildContext context, HealthStatus health) {
     final l10n = context.l10n;

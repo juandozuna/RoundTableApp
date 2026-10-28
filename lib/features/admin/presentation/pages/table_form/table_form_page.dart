@@ -29,6 +29,7 @@ import '../../../domain/models/table_input.dart';
 import '../../admin_countries.dart';
 import '../../admin_error_messages.dart';
 import '../../admin_format.dart';
+import '../../widgets/admin_date_time_form_field.dart';
 import '../../widgets/admin_page_frame.dart';
 import '../../widgets/admin_time_form_field.dart';
 import 'cubit/table_form_cubit.dart';
@@ -268,6 +269,19 @@ class _TableFormPageState extends State<TableFormPage> {
                 AppDropdownItem(value: zone, label: zone),
             ],
           ),
+          if (_isEdit) ...[
+            const SizedBox(height: AppSpacing.md),
+            AdminDateTimeFormField(
+              name: 'scheduleEffectiveFrom',
+              label: l10n.adminScheduleEffectiveFrom,
+              withTime: false,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.adminScheduleEffectiveHelp,
+              style: context.textTheme.bodySmall,
+            ),
+          ],
           const SizedBox(height: AppSpacing.xs),
           Row(
             children: [
@@ -565,13 +579,22 @@ class _TableFormPageState extends State<TableFormPage> {
     final code = (values['code'] as String).trim().toUpperCase();
     if (table != null) {
       final time = values['time'] as String;
+      final weekday = _changed(values['weekday'] as int, table.weekday);
+      final startTime = _changed(time, table.startTimeShort);
+      final timezone = _changed(values['timezone'] as String, table.timezone);
+      final effectiveFrom = values['scheduleEffectiveFrom'] as DateTime?;
+      final scheduleChanged =
+          weekday != null || startTime != null || timezone != null;
       final input = TableInput(
         name: _changed(values['name'] as String, table.name),
         code: _changed(code, table.code),
         locationId: _changed(values['location'] as String?, table.locationId),
-        weekday: _changed(values['weekday'] as int, table.weekday),
-        startTime: _changed(time, table.startTimeShort),
-        timezone: _changed(values['timezone'] as String, table.timezone),
+        weekday: weekday,
+        startTime: startTime,
+        timezone: timezone,
+        scheduleEffectiveFrom: scheduleChanged && effectiveFrom != null
+            ? AdminDateTimeFormField.isoDate(effectiveFrom)
+            : null,
         status: _changed(values['status'] as RoundTableStatus?, table.status),
         currentValueId: _changed(
           values['programValue'] as String?,

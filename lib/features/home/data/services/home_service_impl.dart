@@ -126,6 +126,9 @@ class HomeServiceImpl implements HomeService {
       valueName: record.valueName,
       valueSequence: record.valueSequence,
       followUpValueName: record.followUpValueName,
+      isExtraordinary: record.sessionIsExtraordinary,
+      rescheduledFrom: record.rescheduledFrom,
+      cancelledNoticeFor: record.cancelledNoticeFor,
       health:
           record.health ??
           TableHealthRule.evaluate(

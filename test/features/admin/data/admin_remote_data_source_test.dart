@@ -14,6 +14,7 @@ import 'package:gold_roundtables/features/admin/domain/models/organization_input
 import 'package:gold_roundtables/features/admin/domain/models/organization_status.dart';
 import 'package:gold_roundtables/features/admin/domain/models/person_input.dart';
 import 'package:gold_roundtables/features/admin/domain/models/record_status.dart';
+import 'package:gold_roundtables/features/admin/domain/models/session_cancel_reason.dart';
 import 'package:gold_roundtables/features/admin/domain/models/table_input.dart';
 import 'package:gold_roundtables/features/kpis/data/client/answers_reveal_client.dart';
 import 'package:gold_roundtables/features/kpis/data/client/kpi_client.dart';
@@ -258,6 +259,104 @@ void main() {
         });
       },
     );
+
+    test('a schedule edit carries its effective date', () async {
+      adapter.replies.add((
+        status: 200,
+        body: {
+          'table': {'id': 't1'},
+        },
+      ));
+      await admin.updateTable(
+        't1',
+        const TableInput(
+          weekday: 4,
+          startTime: '18:30',
+          scheduleEffectiveFrom: '2026-11-18',
+        ),
+      );
+      expect(adapter.requests.single.body, {
+        'weekday': 4,
+        'start_time': '18:30',
+        'schedule_effective_from': '2026-11-18',
+      });
+    });
+
+    test('rescheduling posts the table-local wall-clock time', () async {
+      adapter.replies.add((
+        status: 200,
+        body: {
+          'session': {'id': 's1'},
+        },
+      ));
+      await admin.rescheduleSession(
+        sessionId: 's1',
+        localDateTime: DateTime(2026, 11, 3, 7, 5),
+        reason: 'Retiro',
+      );
+      final request = adapter.requests.single;
+      expect(request.method, 'POST');
+      expect(request.path, '/admin/sessions/s1/reschedule');
+      expect(request.body, {
+        'scheduled_local': '2026-11-03T07:05',
+        'reason': 'Retiro',
+      });
+    });
+
+    test('cancelling posts the reason code and omits an empty note', () async {
+      adapter.replies.add((
+        status: 200,
+        body: {
+          'session': {'id': 's1'},
+        },
+      ));
+      await admin.cancelSession(
+        sessionId: 's1',
+        reason: SessionCancelReason.forceMajeure,
+      );
+      final request = adapter.requests.single;
+      expect(request.path, '/admin/sessions/s1/cancel');
+      expect(request.body, {'reason': 'force_majeure'});
+    });
+
+    test('an extraordinary session is posted to the table', () async {
+      adapter.replies.add((
+        status: 201,
+        body: {
+          'session': {'id': 's1'},
+        },
+      ));
+      await admin.addExtraordinarySession(
+        tableId: 't1',
+        localDateTime: DateTime(2026, 12, 24, 19),
+      );
+      final request = adapter.requests.single;
+      expect(request.path, '/admin/tables/t1/extra-session');
+      expect(request.body, {'scheduled_local': '2026-12-24T19:00'});
+    });
+
+    test('the schedule history is read newest first', () async {
+      adapter.replies.add((
+        status: 200,
+        body: [
+          {
+            'id': 'sv2',
+            'weekday': 3,
+            'start_time': '19:30:00',
+            'timezone': 'America/Santo_Domingo',
+            'duration_minutes': 30,
+            'effective_from': '2026-11-18',
+          },
+        ],
+      ));
+      final versions = await admin.scheduleVersions('t1');
+      expect(versions.single.effectiveFrom, DateTime(2026, 11, 18));
+      expect(versions.single.startTimeShort, '19:30');
+      final request = adapter.requests.single;
+      expect(request.path, '/table_schedule_versions');
+      expect(request.query['round_table_id'], 'eq.t1');
+      expect(request.query['order'], 'effective_from.desc');
+    });
 
     test('creating a table sends the starting value', () async {
       adapter.replies.add((

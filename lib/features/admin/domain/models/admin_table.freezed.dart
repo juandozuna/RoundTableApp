@@ -37,6 +37,16 @@ mixin _$AdminTable {
   String? get pendingSessionStatus;
   DateTime? get pendingSessionAt;
 
+  /// `regular` or `extraordinary`.
+  String? get pendingSessionKind;
+
+  /// Regular slot the pending session was moved from, if it was.
+  DateTime? get pendingSessionOriginalAt;
+
+  /// The pending session's slot as `YYYY-MM-DDTHH:MM` in [timezone].
+  String? get pendingSessionLocal;
+  String? get pendingSessionOriginalLocal;
+
   /// Create a copy of AdminTable
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -90,7 +100,22 @@ mixin _$AdminTable {
             (identical(other.pendingSessionStatus, pendingSessionStatus) ||
                 other.pendingSessionStatus == pendingSessionStatus) &&
             (identical(other.pendingSessionAt, pendingSessionAt) ||
-                other.pendingSessionAt == pendingSessionAt));
+                other.pendingSessionAt == pendingSessionAt) &&
+            (identical(other.pendingSessionKind, pendingSessionKind) ||
+                other.pendingSessionKind == pendingSessionKind) &&
+            (identical(
+                  other.pendingSessionOriginalAt,
+                  pendingSessionOriginalAt,
+                ) ||
+                other.pendingSessionOriginalAt == pendingSessionOriginalAt) &&
+            (identical(other.pendingSessionLocal, pendingSessionLocal) ||
+                other.pendingSessionLocal == pendingSessionLocal) &&
+            (identical(
+                  other.pendingSessionOriginalLocal,
+                  pendingSessionOriginalLocal,
+                ) ||
+                other.pendingSessionOriginalLocal ==
+                    pendingSessionOriginalLocal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -119,11 +144,15 @@ mixin _$AdminTable {
     pendingSessionId,
     pendingSessionStatus,
     pendingSessionAt,
+    pendingSessionKind,
+    pendingSessionOriginalAt,
+    pendingSessionLocal,
+    pendingSessionOriginalLocal,
   ]);
 
   @override
   String toString() {
-    return 'AdminTable(id: $id, organizationId: $organizationId, organizationName: $organizationName, locationId: $locationId, locationName: $locationName, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, currentValueId: $currentValueId, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, pendingSessionId: $pendingSessionId, pendingSessionStatus: $pendingSessionStatus, pendingSessionAt: $pendingSessionAt)';
+    return 'AdminTable(id: $id, organizationId: $organizationId, organizationName: $organizationName, locationId: $locationId, locationName: $locationName, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, currentValueId: $currentValueId, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, pendingSessionId: $pendingSessionId, pendingSessionStatus: $pendingSessionStatus, pendingSessionAt: $pendingSessionAt, pendingSessionKind: $pendingSessionKind, pendingSessionOriginalAt: $pendingSessionOriginalAt, pendingSessionLocal: $pendingSessionLocal, pendingSessionOriginalLocal: $pendingSessionOriginalLocal)';
   }
 }
 
@@ -157,6 +186,10 @@ abstract mixin class $AdminTableCopyWith<$Res> {
     String? pendingSessionId,
     String? pendingSessionStatus,
     DateTime? pendingSessionAt,
+    String? pendingSessionKind,
+    DateTime? pendingSessionOriginalAt,
+    String? pendingSessionLocal,
+    String? pendingSessionOriginalLocal,
   });
 }
 
@@ -194,6 +227,10 @@ class _$AdminTableCopyWithImpl<$Res> implements $AdminTableCopyWith<$Res> {
     Object? pendingSessionId = freezed,
     Object? pendingSessionStatus = freezed,
     Object? pendingSessionAt = freezed,
+    Object? pendingSessionKind = freezed,
+    Object? pendingSessionOriginalAt = freezed,
+    Object? pendingSessionLocal = freezed,
+    Object? pendingSessionOriginalLocal = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -285,6 +322,22 @@ class _$AdminTableCopyWithImpl<$Res> implements $AdminTableCopyWith<$Res> {
             ? _self.pendingSessionAt
             : pendingSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        pendingSessionKind: freezed == pendingSessionKind
+            ? _self.pendingSessionKind
+            : pendingSessionKind // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        pendingSessionOriginalAt: freezed == pendingSessionOriginalAt
+            ? _self.pendingSessionOriginalAt
+            : pendingSessionOriginalAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        pendingSessionLocal: freezed == pendingSessionLocal
+            ? _self.pendingSessionLocal
+            : pendingSessionLocal // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        pendingSessionOriginalLocal: freezed == pendingSessionOriginalLocal
+            ? _self.pendingSessionOriginalLocal
+            : pendingSessionOriginalLocal // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -407,6 +460,10 @@ extension AdminTablePatterns on AdminTable {
       String? pendingSessionId,
       String? pendingSessionStatus,
       DateTime? pendingSessionAt,
+      String? pendingSessionKind,
+      DateTime? pendingSessionOriginalAt,
+      String? pendingSessionLocal,
+      String? pendingSessionOriginalLocal,
     )?
     $default, {
     required TResult orElse(),
@@ -437,6 +494,10 @@ extension AdminTablePatterns on AdminTable {
           _that.pendingSessionId,
           _that.pendingSessionStatus,
           _that.pendingSessionAt,
+          _that.pendingSessionKind,
+          _that.pendingSessionOriginalAt,
+          _that.pendingSessionLocal,
+          _that.pendingSessionOriginalLocal,
         );
       case _:
         return orElse();
@@ -482,6 +543,10 @@ extension AdminTablePatterns on AdminTable {
       String? pendingSessionId,
       String? pendingSessionStatus,
       DateTime? pendingSessionAt,
+      String? pendingSessionKind,
+      DateTime? pendingSessionOriginalAt,
+      String? pendingSessionLocal,
+      String? pendingSessionOriginalLocal,
     )
     $default,
   ) {
@@ -511,6 +576,10 @@ extension AdminTablePatterns on AdminTable {
           _that.pendingSessionId,
           _that.pendingSessionStatus,
           _that.pendingSessionAt,
+          _that.pendingSessionKind,
+          _that.pendingSessionOriginalAt,
+          _that.pendingSessionLocal,
+          _that.pendingSessionOriginalLocal,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -555,6 +624,10 @@ extension AdminTablePatterns on AdminTable {
       String? pendingSessionId,
       String? pendingSessionStatus,
       DateTime? pendingSessionAt,
+      String? pendingSessionKind,
+      DateTime? pendingSessionOriginalAt,
+      String? pendingSessionLocal,
+      String? pendingSessionOriginalLocal,
     )?
     $default,
   ) {
@@ -584,6 +657,10 @@ extension AdminTablePatterns on AdminTable {
           _that.pendingSessionId,
           _that.pendingSessionStatus,
           _that.pendingSessionAt,
+          _that.pendingSessionKind,
+          _that.pendingSessionOriginalAt,
+          _that.pendingSessionLocal,
+          _that.pendingSessionOriginalLocal,
         );
       case _:
         return null;
@@ -618,6 +695,10 @@ class _AdminTable extends AdminTable {
     this.pendingSessionId,
     this.pendingSessionStatus,
     this.pendingSessionAt,
+    this.pendingSessionKind,
+    this.pendingSessionOriginalAt,
+    this.pendingSessionLocal,
+    this.pendingSessionOriginalLocal,
   }) : super._();
   factory _AdminTable.fromJson(Map<String, dynamic> json) =>
       _$AdminTableFromJson(json);
@@ -673,6 +754,20 @@ class _AdminTable extends AdminTable {
   final String? pendingSessionStatus;
   @override
   final DateTime? pendingSessionAt;
+
+  /// `regular` or `extraordinary`.
+  @override
+  final String? pendingSessionKind;
+
+  /// Regular slot the pending session was moved from, if it was.
+  @override
+  final DateTime? pendingSessionOriginalAt;
+
+  /// The pending session's slot as `YYYY-MM-DDTHH:MM` in [timezone].
+  @override
+  final String? pendingSessionLocal;
+  @override
+  final String? pendingSessionOriginalLocal;
 
   /// Create a copy of AdminTable
   /// with the given fields replaced by the non-null parameter values.
@@ -730,7 +825,22 @@ class _AdminTable extends AdminTable {
             (identical(other.pendingSessionStatus, pendingSessionStatus) ||
                 other.pendingSessionStatus == pendingSessionStatus) &&
             (identical(other.pendingSessionAt, pendingSessionAt) ||
-                other.pendingSessionAt == pendingSessionAt));
+                other.pendingSessionAt == pendingSessionAt) &&
+            (identical(other.pendingSessionKind, pendingSessionKind) ||
+                other.pendingSessionKind == pendingSessionKind) &&
+            (identical(
+                  other.pendingSessionOriginalAt,
+                  pendingSessionOriginalAt,
+                ) ||
+                other.pendingSessionOriginalAt == pendingSessionOriginalAt) &&
+            (identical(other.pendingSessionLocal, pendingSessionLocal) ||
+                other.pendingSessionLocal == pendingSessionLocal) &&
+            (identical(
+                  other.pendingSessionOriginalLocal,
+                  pendingSessionOriginalLocal,
+                ) ||
+                other.pendingSessionOriginalLocal ==
+                    pendingSessionOriginalLocal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -759,11 +869,15 @@ class _AdminTable extends AdminTable {
     pendingSessionId,
     pendingSessionStatus,
     pendingSessionAt,
+    pendingSessionKind,
+    pendingSessionOriginalAt,
+    pendingSessionLocal,
+    pendingSessionOriginalLocal,
   ]);
 
   @override
   String toString() {
-    return 'AdminTable(id: $id, organizationId: $organizationId, organizationName: $organizationName, locationId: $locationId, locationName: $locationName, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, currentValueId: $currentValueId, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, pendingSessionId: $pendingSessionId, pendingSessionStatus: $pendingSessionStatus, pendingSessionAt: $pendingSessionAt)';
+    return 'AdminTable(id: $id, organizationId: $organizationId, organizationName: $organizationName, locationId: $locationId, locationName: $locationName, name: $name, code: $code, weekday: $weekday, startTime: $startTime, timezone: $timezone, durationMinutes: $durationMinutes, status: $status, currentValueId: $currentValueId, currentValueSequence: $currentValueSequence, currentValueName: $currentValueName, facilitatorPersonId: $facilitatorPersonId, facilitatorName: $facilitatorName, activePeople: $activePeople, maxPeople: $maxPeople, pendingSessionId: $pendingSessionId, pendingSessionStatus: $pendingSessionStatus, pendingSessionAt: $pendingSessionAt, pendingSessionKind: $pendingSessionKind, pendingSessionOriginalAt: $pendingSessionOriginalAt, pendingSessionLocal: $pendingSessionLocal, pendingSessionOriginalLocal: $pendingSessionOriginalLocal)';
   }
 }
 
@@ -799,6 +913,10 @@ abstract mixin class _$AdminTableCopyWith<$Res>
     String? pendingSessionId,
     String? pendingSessionStatus,
     DateTime? pendingSessionAt,
+    String? pendingSessionKind,
+    DateTime? pendingSessionOriginalAt,
+    String? pendingSessionLocal,
+    String? pendingSessionOriginalLocal,
   });
 }
 
@@ -836,6 +954,10 @@ class __$AdminTableCopyWithImpl<$Res> implements _$AdminTableCopyWith<$Res> {
     Object? pendingSessionId = freezed,
     Object? pendingSessionStatus = freezed,
     Object? pendingSessionAt = freezed,
+    Object? pendingSessionKind = freezed,
+    Object? pendingSessionOriginalAt = freezed,
+    Object? pendingSessionLocal = freezed,
+    Object? pendingSessionOriginalLocal = freezed,
   }) {
     return _then(
       _AdminTable(
@@ -927,6 +1049,22 @@ class __$AdminTableCopyWithImpl<$Res> implements _$AdminTableCopyWith<$Res> {
             ? _self.pendingSessionAt
             : pendingSessionAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        pendingSessionKind: freezed == pendingSessionKind
+            ? _self.pendingSessionKind
+            : pendingSessionKind // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        pendingSessionOriginalAt: freezed == pendingSessionOriginalAt
+            ? _self.pendingSessionOriginalAt
+            : pendingSessionOriginalAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        pendingSessionLocal: freezed == pendingSessionLocal
+            ? _self.pendingSessionLocal
+            : pendingSessionLocal // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        pendingSessionOriginalLocal: freezed == pendingSessionOriginalLocal
+            ? _self.pendingSessionOriginalLocal
+            : pendingSessionOriginalLocal // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }

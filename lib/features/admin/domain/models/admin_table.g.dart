@@ -37,6 +37,13 @@ _AdminTable _$AdminTableFromJson(Map<String, dynamic> json) => _AdminTable(
   pendingSessionAt: json['pending_session_at'] == null
       ? null
       : DateTime.parse(json['pending_session_at'] as String),
+  pendingSessionKind: json['pending_session_kind'] as String?,
+  pendingSessionOriginalAt: json['pending_session_original_at'] == null
+      ? null
+      : DateTime.parse(json['pending_session_original_at'] as String),
+  pendingSessionLocal: json['pending_session_local'] as String?,
+  pendingSessionOriginalLocal:
+      json['pending_session_original_local'] as String?,
 );
 
 Map<String, dynamic> _$AdminTableToJson(_AdminTable instance) =>
@@ -63,6 +70,11 @@ Map<String, dynamic> _$AdminTableToJson(_AdminTable instance) =>
       'pending_session_id': ?instance.pendingSessionId,
       'pending_session_status': ?instance.pendingSessionStatus,
       'pending_session_at': ?instance.pendingSessionAt?.toIso8601String(),
+      'pending_session_kind': ?instance.pendingSessionKind,
+      'pending_session_original_at': ?instance.pendingSessionOriginalAt
+          ?.toIso8601String(),
+      'pending_session_local': ?instance.pendingSessionLocal,
+      'pending_session_original_local': ?instance.pendingSessionOriginalLocal,
     };
 
 const _$RoundTableStatusEnumMap = {

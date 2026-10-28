@@ -13,6 +13,8 @@ import '../../domain/models/organization_input.dart';
 import '../../domain/models/organization_status.dart';
 import '../../domain/models/person_input.dart';
 import '../../domain/models/program_value.dart';
+import '../../domain/models/schedule_version.dart';
+import '../../domain/models/session_cancel_reason.dart';
 import '../../domain/models/table_change.dart';
 import '../../domain/models/table_input.dart';
 import '../../domain/models/table_membership.dart';
@@ -110,6 +112,16 @@ class AdminRemoteDataSource {
         }),
       );
 
+  Future<List<ScheduleVersion>> scheduleVersions(String roundTableId) =>
+      guardApiCall(
+        () => _read.scheduleVersions({
+          'select':
+              'id,weekday,start_time,timezone,duration_minutes,effective_from',
+          'round_table_id': _eq(roundTableId),
+          'order': 'effective_from.desc',
+        }),
+      );
+
   Future<Map<String, dynamic>> me() async =>
       (await guardApiCall(_write.me)) as Map<String, dynamic>;
 
@@ -179,6 +191,52 @@ class AdminRemoteDataSource {
 
   Future<void> updateTable(String id, TableInput input) async {
     await guardApiCall(() => _write.updateTable(id, input.toJson()));
+  }
+
+  Future<void> rescheduleSession({
+    required String sessionId,
+    required DateTime localDateTime,
+    String? reason,
+  }) async {
+    await guardApiCall(
+      () => _write.rescheduleSession(sessionId, {
+        'scheduled_local': _wallClock(localDateTime),
+        'reason': ?reason,
+      }),
+    );
+  }
+
+  Future<void> cancelSession({
+    required String sessionId,
+    required SessionCancelReason reason,
+    String? note,
+  }) async {
+    await guardApiCall(
+      () => _write.cancelSession(sessionId, {
+        'reason': reason.wireValue,
+        'note': ?note,
+      }),
+    );
+  }
+
+  Future<void> addExtraordinarySession({
+    required String tableId,
+    required DateTime localDateTime,
+    String? reason,
+  }) async {
+    await guardApiCall(
+      () => _write.addExtraordinarySession(tableId, {
+        'scheduled_local': _wallClock(localDateTime),
+        'reason': ?reason,
+      }),
+    );
+  }
+
+  /// `YYYY-MM-DDTHH:MM`, read by the server in the table's timezone.
+  static String _wallClock(DateTime value) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${value.year.toString().padLeft(4, '0')}-${two(value.month)}-'
+        '${two(value.day)}T${two(value.hour)}:${two(value.minute)}';
   }
 
   Future<TableChange> changeFacilitator({

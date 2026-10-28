@@ -62,7 +62,7 @@ select is((select md5(string_agg(s.id::text || s.value_id::text || s.status::tex
           (select history from t_base), 'closed sessions are untouched by the rewind');
 select is((select payload->>'confirmed' || ':' || (payload->>'from_sequence') || '>' || (payload->>'to_sequence')
            from public.audit_events where event_type = 'table.value_changed'
-           and entity_id = pg_temp.id('table:luz-02') order by created_at desc, id desc limit 1),
+           and entity_id = pg_temp.id('table:luz-02') and payload->>'to_sequence' = '1'),
           'true:' || ((select k from t_base) + 1) || '>1', 'the confirmed rewind is audited with both positions');
 
 -- ── Validation and scope ──────────────────────────────────────────────────────────────────────

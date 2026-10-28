@@ -119,6 +119,12 @@ class Sessions extends Table with _PowerSyncId {
   TextColumn get endedAt => text().nullable()();
   TextColumn get answersClosedAt => text().nullable()();
   TextColumn get cancelledReason => text().nullable()();
+
+  /// `regular` or `extraordinary` (RF-30).
+  TextColumn get kind => text().nullable()();
+
+  /// Regular slot a rescheduled session moved from.
+  TextColumn get originalScheduledAt => text().nullable()();
   TextColumn get facilitatorPersonId => text().nullable()();
   TextColumn get deviceModifiedAt => text().nullable()();
   TextColumn get archivedAt => text().nullable()();

@@ -19,9 +19,11 @@ import '../../../../../core/widgets/status_pill.dart';
 import '../../../../kpis/kpis_routes.dart';
 import '../../../admin_routes.dart';
 import '../../../domain/models/admin_person.dart';
+import '../../../domain/models/admin_table.dart';
 import '../../../domain/models/membership_role.dart';
 import '../../../domain/models/person_status.dart';
 import '../../../domain/models/round_table_status.dart';
+import '../../../domain/models/schedule_version.dart';
 import '../../../domain/models/table_detail.dart';
 import '../../../domain/models/table_membership.dart';
 import '../../admin_error_messages.dart';
@@ -35,8 +37,10 @@ import '../../widgets/section_card.dart';
 import 'cubit/table_detail_cubit.dart';
 import 'cubit/table_detail_state.dart';
 import 'widgets/add_existing_member_dialog.dart';
+import 'widgets/cancel_session_dialog.dart';
 import 'widgets/change_facilitator_dialog.dart';
 import 'widgets/move_member_dialog.dart';
+import 'widgets/session_schedule_dialog.dart';
 
 /// One table: schedule, facilitator with history, members and their KPIs.
 class TableDetailPage extends StatelessWidget {
@@ -81,6 +85,9 @@ class TableDetailPage extends StatelessWidget {
       TableNotice.memberAdded => l10n.adminToastMemberAdded(name),
       TableNotice.memberMoved => l10n.adminToastMemberMoved(name),
       TableNotice.memberDeactivated => l10n.adminToastMemberDeactivated(name),
+      TableNotice.sessionRescheduled => l10n.adminToastSessionRescheduled,
+      TableNotice.sessionCancelled => l10n.adminToastSessionCancelled,
+      TableNotice.extraSessionAdded => l10n.adminToastExtraAdded,
       null => null,
     };
     if (message != null) {
@@ -155,6 +162,7 @@ class TableDetailPage extends StatelessWidget {
             );
           },
         ),
+        _buildSessions(context, detail, writable),
         _buildMembers(context, detail, writable),
       ],
     );
@@ -409,8 +417,219 @@ class TableDetailPage extends StatelessWidget {
               ),
             ],
           ),
+          if (detail.scheduleVersions.length > 1)
+            ..._buildScheduleHistory(context, detail.scheduleVersions),
         ],
       ),
+    );
+  }
+
+  /// Every schedule the table has had, newest first: past versions are kept
+  /// (RF-23) and a future-dated one is marked as upcoming.
+  List<Widget> _buildScheduleHistory(
+    BuildContext context,
+    List<ScheduleVersion> versions,
+  ) {
+    final l10n = context.l10n;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final current = versions.firstWhere(
+      (v) => !v.effectiveFrom.isAfter(today),
+      orElse: () => versions.last,
+    );
+    return [
+      const SizedBox(height: AppSpacing.md),
+      Text(
+        l10n.adminScheduleHistory.toUpperCase(),
+        style: context.textStyles.kicker,
+      ),
+      const SizedBox(height: AppSpacing.xs),
+      for (final v in versions)
+        Padding(
+          key: ValueKey('schedule-version-${v.id}'),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+          child: MergeSemantics(
+            child: Wrap(
+              spacing: AppSpacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  '${l10n.adminScheduleFrom(AdminFormat.wallDate(v.effectiveFrom))}'
+                  ' · ${AdminFormat.schedule(l10n, v.weekday, v.startTimeShort)}'
+                  ' · ${v.timezone}',
+                  style: context.textTheme.bodyMedium,
+                ),
+                if (v.effectiveFrom.isAfter(today))
+                  StatusPill(
+                    label: l10n.adminScheduleUpcoming,
+                    tone: StatusTone.pending,
+                  )
+                else if (identical(v, current))
+                  StatusPill(
+                    label: l10n.adminScheduleCurrent,
+                    tone: StatusTone.ok,
+                  ),
+              ],
+            ),
+          ),
+        ),
+    ];
+  }
+
+  /// The pending session with its exceptions (RF-30): reschedule it, cancel
+  /// it, or add an extraordinary one before it.
+  Widget _buildSessions(
+    BuildContext context,
+    TableDetail detail,
+    bool writable,
+  ) {
+    final l10n = context.l10n;
+    final table = detail.table;
+    final editable = writable && table.pendingIsEditable;
+    return SectionCard(
+      title: l10n.adminSessionsTitle,
+      child: !table.hasPendingSession
+          ? Text(l10n.adminSessionNone)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MergeSemantics(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            key: const ValueKey('pending-session-when'),
+                            AdminFormat.wallClock(table.pendingLocal),
+                            style: context.textTheme.titleMedium,
+                          ),
+                          if (table.pendingIsExtraordinary)
+                            StatusPill(
+                              label: l10n.adminSessionExtraBadge,
+                              tone: StatusTone.info,
+                            ),
+                          if (table.pendingIsRescheduled)
+                            StatusPill(
+                              label: l10n.adminSessionMovedBadge,
+                              tone: StatusTone.pending,
+                            ),
+                        ],
+                      ),
+                      if (table.pendingIsRescheduled)
+                        Text(
+                          l10n.adminSessionMovedFrom(
+                            AdminFormat.wallClock(table.pendingOriginalLocal),
+                          ),
+                          style: context.textTheme.bodySmall,
+                        ),
+                      if (!table.pendingIsEditable)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Text(
+                            l10n.adminSessionInProgress,
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    AppButton(
+                      label: l10n.adminSessionReschedule,
+                      icon: Icons.event_repeat_rounded,
+                      variant: AppButtonVariant.secondary,
+                      size: AppButtonSize.small,
+                      fullWidth: false,
+                      onPressed: editable
+                          ? () => _rescheduleSession(context, table)
+                          : null,
+                    ),
+                    AppButton(
+                      label: l10n.adminSessionCancel,
+                      icon: Icons.event_busy_rounded,
+                      variant: AppButtonVariant.secondary,
+                      size: AppButtonSize.small,
+                      fullWidth: false,
+                      onPressed: editable
+                          ? () => _cancelSession(context, table)
+                          : null,
+                    ),
+                    AppButton(
+                      label: l10n.adminSessionAddExtra,
+                      icon: Icons.event_available_rounded,
+                      variant: AppButtonVariant.secondary,
+                      size: AppButtonSize.small,
+                      fullWidth: false,
+                      onPressed: editable && !table.pendingIsExtraordinary
+                          ? () => _addExtraSession(context, table)
+                          : null,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+    );
+  }
+
+  Future<void> _rescheduleSession(
+    BuildContext context,
+    AdminTable table,
+  ) async {
+    final l10n = context.l10n;
+    final cubit = context.read<TableDetailCubit>();
+    final choice = await SessionScheduleDialog.show(
+      context,
+      title: l10n.adminRescheduleTitle,
+      message: l10n.adminRescheduleMessage(table.timezone),
+      confirmLabel: l10n.adminSessionConfirmReschedule,
+      initial: table.pendingLocal,
+    );
+    if (choice == null) return;
+    await cubit.rescheduleSession(
+      sessionId: table.pendingSessionId!,
+      localDateTime: choice.when,
+      reason: choice.reason,
+    );
+  }
+
+  Future<void> _cancelSession(BuildContext context, AdminTable table) async {
+    final cubit = context.read<TableDetailCubit>();
+    final choice = await CancelSessionDialog.show(
+      context,
+      sessionDate: AdminFormat.wallClock(table.pendingLocal),
+    );
+    if (choice == null) return;
+    await cubit.cancelSession(
+      sessionId: table.pendingSessionId!,
+      reason: choice.reason,
+      note: choice.note,
+    );
+  }
+
+  Future<void> _addExtraSession(BuildContext context, AdminTable table) async {
+    final l10n = context.l10n;
+    final cubit = context.read<TableDetailCubit>();
+    final choice = await SessionScheduleDialog.show(
+      context,
+      title: l10n.adminExtraTitle,
+      message: l10n.adminExtraMessage(
+        AdminFormat.wallClock(table.pendingLocal),
+        table.timezone,
+      ),
+      confirmLabel: l10n.adminSessionConfirmExtra,
+    );
+    if (choice == null) return;
+    await cubit.addExtraordinarySession(
+      localDateTime: choice.when,
+      reason: choice.reason,
     );
   }
 

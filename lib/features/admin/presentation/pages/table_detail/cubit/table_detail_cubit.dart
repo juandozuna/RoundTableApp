@@ -3,7 +3,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/network/api_exception.dart';
 import '../../../../domain/models/person_input.dart';
+import '../../../../domain/models/session_cancel_reason.dart';
 import '../../../../domain/use_cases/directory/load_table_detail_use_case.dart';
+import '../../../../domain/use_cases/sessions/add_extraordinary_session_use_case.dart';
+import '../../../../domain/use_cases/sessions/cancel_session_use_case.dart';
+import '../../../../domain/use_cases/sessions/reschedule_session_use_case.dart';
 import '../../../../domain/use_cases/tables/add_member_to_table_use_case.dart';
 import '../../../../domain/use_cases/tables/change_facilitator_use_case.dart';
 import '../../../../domain/use_cases/tables/deactivate_member_use_case.dart';
@@ -18,6 +22,9 @@ class TableDetailCubit extends Cubit<TableDetailState> {
     this._addMember,
     this._moveMember,
     this._deactivateMember,
+    this._rescheduleSession,
+    this._cancelSession,
+    this._addExtraordinarySession,
   ) : super(const TableDetailState());
 
   final LoadTableDetailUseCase _load;
@@ -25,6 +32,9 @@ class TableDetailCubit extends Cubit<TableDetailState> {
   final AddMemberToTableUseCase _addMember;
   final MoveMemberUseCase _moveMember;
   final DeactivateMemberUseCase _deactivateMember;
+  final RescheduleSessionUseCase _rescheduleSession;
+  final CancelSessionUseCase _cancelSession;
+  final AddExtraordinarySessionUseCase _addExtraordinarySession;
   String? _tableId;
 
   Future<void> load(String tableId) async {
@@ -99,6 +109,45 @@ class TableDetailCubit extends Cubit<TableDetailState> {
     TableNotice.memberDeactivated,
     personName,
     () => _deactivateMember(tableMemberId),
+  );
+
+  /// Moves the pending session to [localDateTime] (table-local wall clock).
+  Future<void> rescheduleSession({
+    required String sessionId,
+    required DateTime localDateTime,
+    String? reason,
+  }) => _run(
+    TableNotice.sessionRescheduled,
+    '',
+    () => _rescheduleSession(
+      sessionId: sessionId,
+      localDateTime: localDateTime,
+      reason: reason,
+    ),
+  );
+
+  /// Cancels the pending session; the next one carries the same value.
+  Future<void> cancelSession({
+    required String sessionId,
+    required SessionCancelReason reason,
+    String? note,
+  }) => _run(
+    TableNotice.sessionCancelled,
+    '',
+    () => _cancelSession(sessionId: sessionId, reason: reason, note: note),
+  );
+
+  Future<void> addExtraordinarySession({
+    required DateTime localDateTime,
+    String? reason,
+  }) => _run(
+    TableNotice.extraSessionAdded,
+    '',
+    () => _addExtraordinarySession(
+      tableId: _tableId!,
+      localDateTime: localDateTime,
+      reason: reason,
+    ),
   );
 
   Future<void> _run(

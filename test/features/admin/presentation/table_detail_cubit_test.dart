@@ -4,10 +4,15 @@ import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/features/admin/domain/models/admin_table.dart';
 import 'package:gold_roundtables/features/admin/domain/models/membership_role.dart';
 import 'package:gold_roundtables/features/admin/domain/models/person_input.dart';
+import 'package:gold_roundtables/features/admin/domain/models/schedule_version.dart';
+import 'package:gold_roundtables/features/admin/domain/models/session_cancel_reason.dart';
 import 'package:gold_roundtables/features/admin/domain/models/table_change.dart';
 import 'package:gold_roundtables/features/admin/domain/models/table_membership.dart';
 import 'package:gold_roundtables/features/admin/domain/services/admin_management_service.dart';
 import 'package:gold_roundtables/features/admin/domain/use_cases/directory/load_table_detail_use_case.dart';
+import 'package:gold_roundtables/features/admin/domain/use_cases/sessions/add_extraordinary_session_use_case.dart';
+import 'package:gold_roundtables/features/admin/domain/use_cases/sessions/cancel_session_use_case.dart';
+import 'package:gold_roundtables/features/admin/domain/use_cases/sessions/reschedule_session_use_case.dart';
 import 'package:gold_roundtables/features/admin/domain/use_cases/tables/add_member_to_table_use_case.dart';
 import 'package:gold_roundtables/features/admin/domain/use_cases/tables/change_facilitator_use_case.dart';
 import 'package:gold_roundtables/features/admin/domain/use_cases/tables/deactivate_member_use_case.dart';
@@ -30,9 +35,16 @@ void main() {
     AddMemberToTableUseCase(management),
     MoveMemberUseCase(management),
     DeactivateMemberUseCase(management),
+    RescheduleSessionUseCase(management),
+    CancelSessionUseCase(management),
+    AddExtraordinarySessionUseCase(management),
   );
 
-  setUpAll(() => registerFallbackValue(const PersonRef.existing('x')));
+  setUpAll(() {
+    registerFallbackValue(const PersonRef.existing('x'));
+    registerFallbackValue(SessionCancelReason.other);
+    registerFallbackValue(DateTime(2026));
+  });
 
   setUp(() {
     management = MockManagement();
@@ -53,6 +65,24 @@ void main() {
           name: 'Alba',
           code: 'LUZ-02',
           activePeople: 4,
+        ),
+      ],
+      versionRows: [
+        ScheduleVersion(
+          id: 'sv2',
+          weekday: 3,
+          startTime: '19:30:00',
+          timezone: 'America/Santo_Domingo',
+          durationMinutes: 30,
+          effectiveFrom: DateTime(2026, 11, 18),
+        ),
+        ScheduleVersion(
+          id: 'sv1',
+          weekday: 2,
+          startTime: '19:00:00',
+          timezone: 'America/Santo_Domingo',
+          durationMinutes: 30,
+          effectiveFrom: DateTime(2026, 9, 1),
         ),
       ],
       memberRows: [
@@ -146,4 +176,119 @@ void main() {
       expect(cubit.state.error!.kind, ApiErrorKind.notFound);
     },
   );
+
+  test('load includes the schedule history, newest first', () async {
+    final cubit = build();
+    addTearDown(cubit.close);
+    await cubit.load('t1');
+    expect(cubit.state.detail!.scheduleVersions.map((v) => v.id), [
+      'sv2',
+      'sv1',
+    ]);
+  });
+
+  group('session exceptions (RF-30)', () {
+    final slot = DateTime(2026, 11, 3, 19, 30);
+
+    test('rescheduling sends the wall-clock time and reloads', () async {
+      when(
+        () => management.rescheduleSession(
+          sessionId: any(named: 'sessionId'),
+          localDateTime: any(named: 'localDateTime'),
+          reason: any(named: 'reason'),
+        ),
+      ).thenAnswer((_) async {});
+      final cubit = build();
+      addTearDown(cubit.close);
+      await cubit.load('t1');
+      await cubit.rescheduleSession(
+        sessionId: 's1',
+        localDateTime: slot,
+        reason: 'Retiro',
+      );
+      expect(cubit.state.notice, TableNotice.sessionRescheduled);
+      expect(cubit.state.working, isFalse);
+      verify(
+        () => management.rescheduleSession(
+          sessionId: 's1',
+          localDateTime: slot,
+          reason: 'Retiro',
+        ),
+      ).called(1);
+    });
+
+    test('cancelling carries the reason and note', () async {
+      when(
+        () => management.cancelSession(
+          sessionId: any(named: 'sessionId'),
+          reason: any(named: 'reason'),
+          note: any(named: 'note'),
+        ),
+      ).thenAnswer((_) async {});
+      final cubit = build();
+      addTearDown(cubit.close);
+      await cubit.load('t1');
+      await cubit.cancelSession(
+        sessionId: 's1',
+        reason: SessionCancelReason.holiday,
+        note: 'Día de la Altagracia',
+      );
+      expect(cubit.state.notice, TableNotice.sessionCancelled);
+      verify(
+        () => management.cancelSession(
+          sessionId: 's1',
+          reason: SessionCancelReason.holiday,
+          note: 'Día de la Altagracia',
+        ),
+      ).called(1);
+    });
+
+    test('an extraordinary session is added to the open table', () async {
+      when(
+        () => management.addExtraordinarySession(
+          tableId: any(named: 'tableId'),
+          localDateTime: any(named: 'localDateTime'),
+          reason: any(named: 'reason'),
+        ),
+      ).thenAnswer((_) async {});
+      final cubit = build();
+      addTearDown(cubit.close);
+      await cubit.load('t1');
+      await cubit.addExtraordinarySession(localDateTime: slot);
+      expect(cubit.state.notice, TableNotice.extraSessionAdded);
+      verify(
+        () => management.addExtraordinarySession(
+          tableId: 't1',
+          localDateTime: slot,
+          reason: null,
+        ),
+      ).called(1);
+    });
+
+    test(
+      'a refused slot surfaces its typed code and shows no notice',
+      () async {
+        when(
+          () => management.rescheduleSession(
+            sessionId: any(named: 'sessionId'),
+            localDateTime: any(named: 'localDateTime'),
+            reason: any(named: 'reason'),
+          ),
+        ).thenThrow(
+          const ApiException(
+            kind: ApiErrorKind.conflict,
+            code: 'slot_taken',
+            statusCode: 409,
+          ),
+        );
+        final cubit = build();
+        addTearDown(cubit.close);
+        await cubit.load('t1');
+        await cubit.rescheduleSession(sessionId: 's1', localDateTime: slot);
+        expect(cubit.state.actionError!.code, 'slot_taken');
+        expect(cubit.state.notice, isNull);
+        expect(cubit.state.working, isFalse);
+      },
+    );
+  });
 }

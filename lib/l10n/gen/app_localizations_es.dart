@@ -4910,4 +4910,162 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get historyLoadError =>
       'No pudimos leer tu historial en este dispositivo.';
+
+  @override
+  String get adminSessionsTitle => 'Próxima sesión';
+
+  @override
+  String get adminSessionNone => 'Esta mesa no tiene una sesión pendiente.';
+
+  @override
+  String get adminSessionExtraBadge => 'Extraordinaria';
+
+  @override
+  String get adminSessionMovedBadge => 'Reprogramada';
+
+  @override
+  String adminSessionMovedFrom(String date) {
+    return 'Antes: $date';
+  }
+
+  @override
+  String get adminSessionInProgress =>
+      'La sesión ya empezó: no se puede cambiar.';
+
+  @override
+  String get adminSessionReschedule => 'Reprogramar';
+
+  @override
+  String get adminSessionCancel => 'Cancelar sesión';
+
+  @override
+  String get adminSessionAddExtra => 'Sesión extraordinaria';
+
+  @override
+  String get adminRescheduleTitle => 'Reprogramar la sesión';
+
+  @override
+  String adminRescheduleMessage(String timezone) {
+    return 'La mesa se reunirá en la fecha y hora que elijas (zona $timezone). El resto del calendario semanal no cambia.';
+  }
+
+  @override
+  String get adminExtraTitle => 'Agregar sesión extraordinaria';
+
+  @override
+  String adminExtraMessage(String date, String timezone) {
+    return 'Una reunión adicional antes de la próxima sesión regular ($date). Trabaja el valor actual de la mesa y, al realizarla, el programa avanza. Zona $timezone.';
+  }
+
+  @override
+  String get adminFieldDateTime => 'Fecha y hora';
+
+  @override
+  String get adminFieldDate => 'Fecha';
+
+  @override
+  String get adminSessionReason => 'Motivo (opcional)';
+
+  @override
+  String get adminSessionConfirmReschedule => 'Reprogramar';
+
+  @override
+  String get adminSessionConfirmExtra => 'Agregar sesión';
+
+  @override
+  String get adminCancelSessionTitle => 'Cancelar esta sesión';
+
+  @override
+  String adminCancelSessionMessage(String date) {
+    return 'La sesión del $date no se realizará. El valor no avanza: la próxima sesión de la mesa trabajará el mismo valor.';
+  }
+
+  @override
+  String get adminCancelReason => 'Motivo';
+
+  @override
+  String get adminCancelReasonHoliday => 'Feriado';
+
+  @override
+  String get adminCancelReasonForceMajeure => 'Fuerza mayor';
+
+  @override
+  String get adminCancelReasonOther => 'Otro motivo';
+
+  @override
+  String get adminCancelNote => 'Nota (opcional)';
+
+  @override
+  String get adminCancelConfirm => 'Cancelar sesión';
+
+  @override
+  String get adminCancelKeep => 'Mantener sesión';
+
+  @override
+  String get adminToastSessionRescheduled => 'Sesión reprogramada.';
+
+  @override
+  String get adminToastSessionCancelled =>
+      'Sesión cancelada. La próxima trabajará el mismo valor.';
+
+  @override
+  String get adminToastExtraAdded => 'Sesión extraordinaria agregada.';
+
+  @override
+  String get adminErrorSessionInProgress =>
+      'La sesión ya empezó; no se puede cambiar.';
+
+  @override
+  String get adminErrorScheduleInPast =>
+      'La fecha de la sesión debe ser futura.';
+
+  @override
+  String get adminErrorSlotTaken =>
+      'La mesa ya tiene una sesión en esa fecha y hora.';
+
+  @override
+  String get adminErrorExtraNotBeforeNext =>
+      'La sesión extraordinaria debe ser antes de la próxima sesión de la mesa.';
+
+  @override
+  String get adminErrorExtraExists =>
+      'Ya hay una sesión extraordinaria pendiente; reprográmala o cancélala.';
+
+  @override
+  String get adminErrorEffectiveInPast =>
+      'El nuevo horario no puede empezar en una fecha pasada.';
+
+  @override
+  String get adminScheduleHistory => 'Historial de horarios';
+
+  @override
+  String adminScheduleFrom(String date) {
+    return 'Desde $date';
+  }
+
+  @override
+  String get adminScheduleCurrent => 'Vigente';
+
+  @override
+  String get adminScheduleUpcoming => 'Programado';
+
+  @override
+  String get adminScheduleEffectiveFrom => 'Vigente desde';
+
+  @override
+  String get adminScheduleEffectiveHelp =>
+      'Si no eliges fecha, el cambio aplica desde hoy. Con una fecha futura, las sesiones anteriores no se mueven.';
+
+  @override
+  String get homeSessionExtraordinary => 'Sesión extraordinaria';
+
+  @override
+  String homeSessionMoved(String date) {
+    return 'Reprogramada · antes $date';
+  }
+
+  @override
+  String homeSessionCancelledNotice(String date) {
+    return 'Se canceló la sesión del $date. La próxima trabaja el mismo valor.';
+  }
 }

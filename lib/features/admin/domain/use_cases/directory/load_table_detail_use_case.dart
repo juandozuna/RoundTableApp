@@ -20,6 +20,7 @@ class LoadTableDetailUseCase {
     final memberships = _directory.memberships(tableId);
     final siblings = _directory.tables(organizationId: table.organizationId);
     final people = _directory.people(organizationId: table.organizationId);
+    final versions = _directory.scheduleVersions(tableId);
     final kpi = _kpi(tableId);
     return TableDetail(
       table: table,
@@ -28,6 +29,7 @@ class LoadTableDetailUseCase {
           .where((t) => t.id != tableId)
           .toList(),
       organizationPeople: await people,
+      scheduleVersions: await versions,
       kpi: await kpi,
     );
   }

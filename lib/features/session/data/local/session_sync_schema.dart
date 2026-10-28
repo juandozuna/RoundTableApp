@@ -144,6 +144,8 @@ class SessionSyncSchema implements SyncSchemaContribution {
       Column.text('ended_at'),
       Column.text('answers_closed_at'),
       Column.text('cancelled_reason'),
+      Column.text('kind'),
+      Column.text('original_scheduled_at'),
       Column.text('facilitator_person_id'),
       Column.text('device_modified_at'),
       Column.text('archived_at'),

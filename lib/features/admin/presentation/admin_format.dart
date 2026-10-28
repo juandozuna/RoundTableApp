@@ -57,4 +57,19 @@ abstract final class AdminFormat {
     final minute = local.minute.toString().padLeft(2, '0');
     return '${date(value)} $hour:$minute';
   }
+
+  /// `25/10/2026` of a wall-clock date (no timezone conversion).
+  static String wallDate(DateTime value) {
+    final day = value.day.toString().padLeft(2, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    return '$day/$month/${value.year}';
+  }
+
+  /// `25/10/2026 19:30` of a wall-clock time (no timezone conversion).
+  static String wallClock(DateTime? value) {
+    if (value == null) return missing;
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '${wallDate(value)} $hour:$minute';
+  }
 }

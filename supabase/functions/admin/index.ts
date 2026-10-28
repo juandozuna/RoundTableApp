@@ -47,6 +47,14 @@ const tableRules = (required: boolean) => (v: Validator) =>
     .uuid("current_value_id", false)
     .oneOf("status", ["active", "paused", "completed", "closed"], false);
 
+/** A session date: an instant (`scheduled_at`) or the table's wall-clock time (`scheduled_local`). */
+const slotRules = (v: Validator, body: Json) =>
+  body.scheduled_local !== undefined
+    ? v.local("scheduled_local", true)
+    : v.timestamp("scheduled_at", true);
+const slotInput = (body: Json): Json =>
+  body.scheduled_local !== undefined ? { scheduled_local: body.scheduled_local } : { scheduled_at: body.scheduled_at };
+
 const routes: Route[] = [
   // ── Own profile and contexts ──
   {
@@ -157,7 +165,7 @@ const routes: Route[] = [
     method: "PATCH",
     pattern: "tables/:id",
     handler: op("table_update", {
-      rules: (v) => tableRules(false)(v).bool("confirm_rewind"),
+      rules: (v) => tableRules(false)(v).bool("confirm_rewind").date("schedule_effective_from"),
       input: (body, { id }) => ({
         ...body,
         ...(body.code ? { code: String(body.code).trim().toUpperCase() } : {}),
@@ -183,6 +191,33 @@ const routes: Route[] = [
       input: (body, { id }) => ({ person_id: body.person_id, round_table_id: id }),
       status: 201,
       wrap: "member",
+    }),
+  },
+
+  // ── Single-session changes (RF-30) ──
+  {
+    method: "POST",
+    pattern: "sessions/:id/reschedule",
+    handler: op("session_reschedule", {
+      rules: (v, body) => slotRules(v, body).text("reason", { max: 300 }),
+      input: (body, { id }) => ({ session_id: id, ...slotInput(body), reason: body.reason }),
+    }),
+  },
+  {
+    method: "POST",
+    pattern: "sessions/:id/cancel",
+    handler: op("session_cancel", {
+      rules: (v) => v.oneOf("reason", ["holiday", "force_majeure", "other"]).text("note", { max: 300 }),
+      input: (body, { id }) => ({ session_id: id, reason: body.reason, note: body.note }),
+    }),
+  },
+  {
+    method: "POST",
+    pattern: "tables/:id/extra-session",
+    handler: op("session_extra_create", {
+      rules: (v, body) => slotRules(v, body).text("reason", { max: 300 }),
+      input: (body, { id }) => ({ round_table_id: id, ...slotInput(body), reason: body.reason }),
+      status: 201,
     }),
   },
 

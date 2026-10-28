@@ -43,7 +43,7 @@ begin
   -- Sessions the server scheduled after the demo one was closed, and their data.
   create temp table extra on commit drop as
     select id from public.sessions where round_table_id = v_table and id <> v_session
-      and status in ('scheduled', 'open') and scheduled_at > (select scheduled_at from public.sessions where id = v_session) - interval '1 day';
+      and status in ('scheduled', 'open', 'cancelled') and scheduled_at > (select scheduled_at from public.sessions where id = v_session) - interval '1 day';
   update public.member_commitments set follow_up_session_id = null, follow_up_status = null,
     follow_up_note = null, follow_up_device_at = null, follow_up_received_at = null,
     follow_up_synced_late = false where follow_up_session_id in (select id from extra union select v_session);
@@ -58,8 +58,16 @@ begin
   update public.round_tables set current_value_id = v_value, status = 'active',
     weekday = extract(isodow from (v_now at time zone timezone))::smallint,
     start_time = (v_now at time zone timezone)::time where id = v_table;
+  -- Session slots follow the schedule history (RF-23), so it is reset to that one slot as well.
+  delete from public.table_schedule_versions where round_table_id = v_table;
+  insert into public.table_schedule_versions (organization_id, round_table_id, weekday, start_time,
+                                              timezone, duration_minutes, effective_from)
+  select organization_id, id, weekday, start_time, timezone, duration_minutes,
+         (created_at at time zone timezone)::date
+  from public.round_tables where id = v_table;
   update public.sessions set status = 'scheduled', stage = 'lobby', scheduled_at = v_now,
     started_at = null, ended_at = null, answers_closed_at = null, cancelled_reason = null,
+    kind = 'regular', original_scheduled_at = null,
     device_modified_at = null, archived_at = null where id = v_session;
 end $$;
 
