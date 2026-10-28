@@ -40,3 +40,13 @@ Deno.test("table schedule fields", () => {
   );
   assertEquals(Object.keys(error.extra?.fields as object).sort(), ["code", "start_time", "weekday"]);
 });
+
+Deno.test("schedule change dates", () => {
+  validate({ schedule_effective_from: "2026-11-02", scheduled_at: "2026-11-02T23:00:00Z" }, (v) =>
+    v.date("schedule_effective_from").timestamp("scheduled_at", true));
+  for (const bad of ["2026-13-01", "02/11/2026", "2026-02-30x", 20261102]) {
+    const error = assertThrows(() => validate({ schedule_effective_from: bad }, (v) => v.date("schedule_effective_from")), ApiError);
+    assertEquals(Object.keys(error.extra?.fields as object), ["schedule_effective_from"]);
+  }
+  assertThrows(() => validate({}, (v) => v.timestamp("scheduled_at", true)), ApiError);
+});

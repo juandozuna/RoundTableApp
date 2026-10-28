@@ -157,7 +157,7 @@ const routes: Route[] = [
     method: "PATCH",
     pattern: "tables/:id",
     handler: op("table_update", {
-      rules: (v) => tableRules(false)(v).bool("confirm_rewind"),
+      rules: (v) => tableRules(false)(v).bool("confirm_rewind").date("schedule_effective_from"),
       input: (body, { id }) => ({
         ...body,
         ...(body.code ? { code: String(body.code).trim().toUpperCase() } : {}),
@@ -183,6 +183,33 @@ const routes: Route[] = [
       input: (body, { id }) => ({ person_id: body.person_id, round_table_id: id }),
       status: 201,
       wrap: "member",
+    }),
+  },
+
+  // ── Single-session changes (RF-30) ──
+  {
+    method: "POST",
+    pattern: "sessions/:id/reschedule",
+    handler: op("session_reschedule", {
+      rules: (v) => v.timestamp("scheduled_at", true).text("reason", { max: 300 }),
+      input: (body, { id }) => ({ session_id: id, scheduled_at: body.scheduled_at, reason: body.reason }),
+    }),
+  },
+  {
+    method: "POST",
+    pattern: "sessions/:id/cancel",
+    handler: op("session_cancel", {
+      rules: (v) => v.oneOf("reason", ["holiday", "force_majeure", "other"]).text("note", { max: 300 }),
+      input: (body, { id }) => ({ session_id: id, reason: body.reason, note: body.note }),
+    }),
+  },
+  {
+    method: "POST",
+    pattern: "tables/:id/extra-session",
+    handler: op("session_extra_create", {
+      rules: (v) => v.timestamp("scheduled_at", true).text("reason", { max: 300 }),
+      input: (body, { id }) => ({ round_table_id: id, scheduled_at: body.scheduled_at, reason: body.reason }),
+      status: 201,
     }),
   },
 

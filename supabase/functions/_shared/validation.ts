@@ -8,6 +8,7 @@ export type FieldErrors = Record<string, string>;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const E164 = /^\+[1-9][0-9]{6,14}$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const DATE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 const TIME = /^([01][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
 const TABLE_CODE = /^[A-Z0-9][A-Z0-9-]{1,19}$/;
 export const INVITE_CODE = /^[A-HJ-NP-Z2-9]{6}$/;
@@ -115,6 +116,17 @@ export class Validator {
     if (v === undefined || v === null) {
       if (required) this.fail(field, "Es obligatorio.");
     } else if (typeof v !== "string" || !TIME.test(v)) this.fail(field, "Hora no válida (HH:MM).");
+    return this;
+  }
+
+  /** A calendar date, `YYYY-MM-DD`. */
+  date(field: string, required = false): this {
+    const v = this.value(field);
+    if (v === undefined || v === null) {
+      if (required) this.fail(field, "Es obligatorio.");
+    } else if (typeof v !== "string" || !DATE.test(v) || Number.isNaN(Date.parse(v))) {
+      this.fail(field, "Fecha no válida (AAAA-MM-DD).");
+    }
     return this;
   }
 
