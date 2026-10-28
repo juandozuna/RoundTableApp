@@ -2686,6 +2686,66 @@ abstract class AppLocalizations {
   /// **'Ubicación y horario'**
   String get adminSectionLocationSchedule;
 
+  /// No description provided for @adminSectionProgram.
+  ///
+  /// In es, this message translates to:
+  /// **'Programa'**
+  String get adminSectionProgram;
+
+  /// No description provided for @adminFieldModule.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo'**
+  String get adminFieldModule;
+
+  /// No description provided for @adminFieldProgramValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor'**
+  String get adminFieldProgramValue;
+
+  /// No description provided for @adminProgramModuleOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo {number} · {name}'**
+  String adminProgramModuleOption(int number, String name);
+
+  /// No description provided for @adminProgramValueOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor {number} · {name}'**
+  String adminProgramValueOption(int number, String name);
+
+  /// No description provided for @adminProgramValueHelperCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor en el que empieza la mesa (del 1 al 48). Si no eliges, empieza en el valor 1.'**
+  String get adminProgramValueHelperCreate;
+
+  /// No description provided for @adminProgramValueHelperEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor que trabajará la mesa en su próxima sesión. Las sesiones ya cerradas no cambian.'**
+  String get adminProgramValueHelperEdit;
+
+  /// No description provided for @adminRewindTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Retroceder en el programa?'**
+  String get adminRewindTitle;
+
+  /// No description provided for @adminRewindMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta mesa ya completó sesiones de este valor o de los siguientes. Esas sesiones y sus respuestas se conservan; la mesa volverá a trabajar el valor elegido.'**
+  String get adminRewindMessage;
+
+  /// No description provided for @adminRewindConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, retroceder'**
+  String get adminRewindConfirm;
+
   /// No description provided for @adminFieldLocation.
   ///
   /// In es, this message translates to:

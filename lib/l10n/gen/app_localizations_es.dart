@@ -1527,6 +1527,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminSectionLocationSchedule => 'Ubicación y horario';
 
   @override
+  String get adminSectionProgram => 'Programa';
+
+  @override
+  String get adminFieldModule => 'Módulo';
+
+  @override
+  String get adminFieldProgramValue => 'Valor';
+
+  @override
+  String adminProgramModuleOption(int number, String name) {
+    return 'Módulo $number · $name';
+  }
+
+  @override
+  String adminProgramValueOption(int number, String name) {
+    return 'Valor $number · $name';
+  }
+
+  @override
+  String get adminProgramValueHelperCreate =>
+      'Valor en el que empieza la mesa (del 1 al 48). Si no eliges, empieza en el valor 1.';
+
+  @override
+  String get adminProgramValueHelperEdit =>
+      'Valor que trabajará la mesa en su próxima sesión. Las sesiones ya cerradas no cambian.';
+
+  @override
+  String get adminRewindTitle => '¿Retroceder en el programa?';
+
+  @override
+  String get adminRewindMessage =>
+      'Esta mesa ya completó sesiones de este valor o de los siguientes. Esas sesiones y sus respuestas se conservan; la mesa volverá a trabajar el valor elegido.';
+
+  @override
+  String get adminRewindConfirm => 'Sí, retroceder';
+
+  @override
   String get adminFieldLocation => 'Ubicación';
 
   @override

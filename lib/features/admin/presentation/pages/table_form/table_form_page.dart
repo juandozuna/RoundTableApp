@@ -18,9 +18,11 @@ import '../../../../../core/widgets/skeleton.dart';
 import '../../../admin_routes.dart';
 import '../../../domain/models/admin_organization.dart';
 import '../../../domain/models/admin_person.dart';
+import '../../../domain/models/admin_table.dart';
 import '../../../domain/models/organization_status.dart';
 import '../../../domain/models/person_input.dart';
 import '../../../domain/models/person_status.dart';
+import '../../../domain/models/program_value.dart';
 import '../../../domain/models/record_status.dart';
 import '../../../domain/models/round_table_status.dart';
 import '../../../domain/models/table_input.dart';
@@ -31,6 +33,7 @@ import '../../widgets/admin_page_frame.dart';
 import '../../widgets/admin_time_form_field.dart';
 import 'cubit/table_form_cubit.dart';
 import 'cubit/table_form_state.dart';
+import 'widgets/rewind_confirm_dialog.dart';
 
 /// Full-page form to create a table or edit its schedule (coordinator/admin).
 class TableFormPage extends StatefulWidget {
@@ -46,6 +49,8 @@ class TableFormPage extends StatefulWidget {
 class _TableFormPageState extends State<TableFormPage> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   bool _newFacilitator = false;
+  int? _moduleNumber;
+  bool _moduleChosen = false;
 
   bool get _isEdit => widget.tableId != null;
 
@@ -61,7 +66,8 @@ class _TableFormPageState extends State<TableFormPage> {
       maxContentWidth: 760,
       builder: (context, access) =>
           BlocConsumer<TableFormCubit, TableFormState>(
-            listenWhen: (a, b) => a.status != b.status,
+            listenWhen: (a, b) =>
+                a.status != b.status || a.pendingRewind != b.pendingRewind,
             listener: _onStatus,
             builder: (context, state) => _buildBody(
               context,
@@ -74,8 +80,22 @@ class _TableFormPageState extends State<TableFormPage> {
     );
   }
 
+  Future<void> _askRewindConfirmation() async {
+    final cubit = context.read<TableFormCubit>();
+    final confirmed = await RewindConfirmDialog.show(context);
+    if (confirmed) {
+      await cubit.confirmRewind(widget.tableId!);
+    } else {
+      cubit.dismissRewind();
+    }
+  }
+
   void _onStatus(BuildContext context, TableFormState state) {
     final l10n = context.l10n;
+    if (state.pendingRewind != null) {
+      _askRewindConfirmation();
+      return;
+    }
     if (state.status == TableFormStatus.saved) {
       AppToast.show(
         context,
@@ -261,6 +281,7 @@ class _TableFormPageState extends State<TableFormPage> {
               ),
             ],
           ),
+          ..._buildProgramFields(context, data.programValues, table),
           if (_isEdit) ...[
             const SizedBox(height: AppSpacing.md),
             AppDropdownFormField<RoundTableStatus>(
@@ -324,6 +345,79 @@ class _TableFormPageState extends State<TableFormPage> {
         ],
       ),
     );
+  }
+
+  /// Module + value picker for the program position (RF-28, values 1–48).
+  List<Widget> _buildProgramFields(
+    BuildContext context,
+    List<ProgramValue> values,
+    AdminTable? table,
+  ) {
+    if (values.isEmpty) return const [];
+    final l10n = context.l10n;
+    final current = values.where((v) => v.id == table?.currentValueId);
+    final module = _moduleChosen
+        ? _moduleNumber
+        : current.firstOrNull?.module.number;
+    final modules = {for (final v in values) v.module.number: v.module};
+    final inModule = values.where((v) => v.module.number == module);
+    return [
+      const SizedBox(height: AppSpacing.xl),
+      Text(
+        l10n.adminSectionProgram.toUpperCase(),
+        style: context.textStyles.kicker,
+      ),
+      const SizedBox(height: AppSpacing.sm),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: AppDropdownFormField<int>(
+              name: 'module',
+              label: l10n.adminFieldModule,
+              initialValue: module,
+              onChanged: (value) => setState(() {
+                _moduleChosen = true;
+                _moduleNumber = value;
+              }),
+              items: [
+                for (final m in modules.values)
+                  AppDropdownItem(
+                    value: m.number,
+                    label: l10n.adminProgramModuleOption(m.number, m.name),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: AppDropdownFormField<String>(
+              key: ValueKey('program-value-$module'),
+              name: 'programValue',
+              label: l10n.adminFieldProgramValue,
+              enabled: module != null,
+              initialValue: current.firstOrNull?.module.number == module
+                  ? table?.currentValueId
+                  : null,
+              items: [
+                for (final v in inModule)
+                  AppDropdownItem(
+                    value: v.id,
+                    label: l10n.adminProgramValueOption(v.sequence, v.name),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: AppSpacing.xs),
+      Text(
+        _isEdit
+            ? l10n.adminProgramValueHelperEdit
+            : l10n.adminProgramValueHelperCreate,
+        style: context.textTheme.bodySmall,
+      ),
+    ];
   }
 
   String? _defaultTimezone(
@@ -479,6 +573,10 @@ class _TableFormPageState extends State<TableFormPage> {
         startTime: _changed(time, table.startTimeShort),
         timezone: _changed(values['timezone'] as String, table.timezone),
         status: _changed(values['status'] as RoundTableStatus?, table.status),
+        currentValueId: _changed(
+          values['programValue'] as String?,
+          table.currentValueId,
+        ),
       );
       cubit.update(table.id, input);
       return;
@@ -506,6 +604,7 @@ class _TableFormPageState extends State<TableFormPage> {
         weekday: values['weekday'] as int,
         startTime: values['time'] as String,
         timezone: values['timezone'] as String,
+        startValueId: values['programValue'] as String?,
       ),
       facilitator: facilitator,
     );

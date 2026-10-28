@@ -845,6 +845,36 @@
   "adminFieldTableCodeHint": "Ej. LUZ-07",
   "adminFieldTableCodeHelper": "Formato AAA-00, único dentro de la organización.",
   "adminSectionLocationSchedule": "Ubicación y horario",
+  "adminSectionProgram": "Programa",
+  "adminFieldModule": "Módulo",
+  "adminFieldProgramValue": "Valor",
+  "adminProgramModuleOption": "Módulo {number} · {name}",
+  "@adminProgramModuleOption": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminProgramValueOption": "Valor {number} · {name}",
+  "@adminProgramValueOption": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminProgramValueHelperCreate": "Valor en el que empieza la mesa (del 1 al 48). Si no eliges, empieza en el valor 1.",
+  "adminProgramValueHelperEdit": "Valor que trabajará la mesa en su próxima sesión. Las sesiones ya cerradas no cambian.",
+  "adminRewindTitle": "¿Retroceder en el programa?",
+  "adminRewindMessage": "Esta mesa ya completó sesiones de este valor o de los siguientes. Esas sesiones y sus respuestas se conservan; la mesa volverá a trabajar el valor elegido.",
+  "adminRewindConfirm": "Sí, retroceder",
   "adminFieldLocation": "Ubicación",
   "adminChooseOrganizationFirst": "Primero elige la organización",
   "adminOrgWithoutLocations": "Esta organización no tiene ubicaciones",

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../../core/network/api_exception.dart';
 import '../../../../domain/models/invite_share.dart';
 import '../../../../domain/models/table_form_data.dart';
+import '../../../../domain/models/table_input.dart';
 
 part 'table_form_state.freezed.dart';
 
@@ -19,5 +20,9 @@ abstract class TableFormState with _$TableFormState {
     ApiException? error,
     String? savedTableId,
     InviteShare? facilitatorInvite,
+
+    /// Edit the server refused until the admin confirms moving the program
+    /// back past completed sessions.
+    TableInput? pendingRewind,
   }) = _TableFormState;
 }

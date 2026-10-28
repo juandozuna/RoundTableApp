@@ -54,6 +54,10 @@ export const ERRORS = {
   invalid_session_transition: [409, "Ese cambio de etapa no está permitido para esta sesión."],
   not_table_participant: [403, "La persona no participa en esta mesa."],
   value_change_blocked: [409, "La sesión pendiente ya tiene respuestas."],
+  value_rewind_confirmation_required: [
+    409,
+    "La mesa ya completó sesiones de ese valor. Confirma para retroceder.",
+  ],
   organization_inactive: [409, "La organización está pausada o desactivada."],
   last_platform_admin: [409, "Debe quedar al menos un administrador de plataforma."],
   invite_not_found: [404, "No encontramos ese código. Revisa las letras y números."],

@@ -157,7 +157,7 @@ const routes: Route[] = [
     method: "PATCH",
     pattern: "tables/:id",
     handler: op("table_update", {
-      rules: tableRules(false),
+      rules: (v) => tableRules(false)(v).bool("confirm_rewind"),
       input: (body, { id }) => ({
         ...body,
         ...(body.code ? { code: String(body.code).trim().toUpperCase() } : {}),

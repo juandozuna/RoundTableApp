@@ -92,6 +92,45 @@ export async function admin(browser) {
     check('server: the table has exactly one (new) facilitator after the change', facilitatorAfter !== '' && !facilitatorAfter.includes('\n') && facilitatorAfter !== facilitatorBefore, `${facilitatorBefore} → ${facilitatorAfter} (${newFacilitator})`);
     check('table detail shows the new facilitator', await a.seen(newFacilitator, 10_000));
 
+    // Program position (RF-28): module + value picker; moving back past completed history asks first.
+    const valueOf = () => sql(`select cv.sequence from round_tables t join curriculum_values cv on cv.id = t.current_value_id where t.code = '${code}'`);
+    const closedSessions = () => sql(`select count(*) || ':' || coalesce(min(cv.sequence), 0) from sessions s join round_tables t on t.id = s.round_table_id join curriculum_values cv on cv.id = s.value_id where t.code = '${code}' and s.status = 'closed'`);
+    check('server: a table created without a starting value begins at value 1', valueOf() === '1', valueOf());
+    sql(`insert into sessions (organization_id, round_table_id, value_id, status, stage, scheduled_at, started_at, ended_at, answers_closed_at) select t.organization_id, t.id, cv.id, 'closed', 'closed', now() - interval '14 days', now() - interval '14 days', now() - interval '14 days' + interval '30 minutes', now() - interval '14 days' + interval '28 minutes' from round_tables t, curriculum_values cv where t.code = '${code}' and cv.sequence = 1`);
+    const historyBefore = closedSessions();
+    const pickProgramValue = async (module, value) => {
+      await a.click('Módulo', { role: 'button' });
+      await a.click(module, { role: 'menuitem' });
+      await a.click('Valor', { role: 'button' });
+      await a.click(value, { role: 'menuitem' });
+    };
+    await a.click('Editar horario', { role: 'button' });
+    await a.waitFor(/PROGRAMA/);
+    await pickProgramValue(/^Módulo 2 ·/, /^Valor 13 ·/);
+    await a.shot('e-04b-program-value');
+    await a.click('Guardar cambios', { role: 'button' });
+    await sleep(2500);
+    check('server: moving forward in the program saves without confirmation', valueOf() === '13', valueOf());
+    check('server: the move is audited as table.value_changed (no rewind)', Number(sql(`select count(*) from audit_events e join round_tables t on t.id = e.entity_id where t.code = '${code}' and e.event_type = 'table.value_changed' and e.payload->>'rewind' = 'false'`)) === 1);
+
+    await a.click('Editar horario', { role: 'button' });
+    await a.waitFor(/PROGRAMA/);
+    await pickProgramValue(/^Módulo 1 ·/, /^Valor 1 ·/);
+    await a.click('Guardar cambios', { role: 'button' });
+    check('moving back past completed history asks for confirmation', await a.seen('¿Retroceder en el programa?', 10_000));
+    await a.shot('e-04c-rewind-confirm');
+    check('server: nothing changed while the confirmation is pending', valueOf() === '13', valueOf());
+    await a.click('Cancelar', { role: 'button', last: true });
+    await sleep(1000);
+    check('server: declining the confirmation keeps the position', valueOf() === '13', valueOf());
+    await a.click('Guardar cambios', { role: 'button' });
+    await a.waitFor('¿Retroceder en el programa?');
+    await a.click('Sí, retroceder', { role: 'button' });
+    await sleep(2500);
+    check('server: the confirmed rewind moves the table back to value 1', valueOf() === '1', valueOf());
+    check('server: closed sessions are untouched by the rewind', closedSessions() === historyBefore, `${historyBefore} → ${closedSessions()}`);
+    check('server: the confirmed rewind is audited', Number(sql(`select count(*) from audit_events e join round_tables t on t.id = e.entity_id where t.code = '${code}' and e.event_type = 'table.value_changed' and e.payload->>'rewind' = 'true' and e.payload->>'confirmed' = 'true'`)) === 1);
+
     // Organization → location → table, from the explorer.
     await a.click('Volver', { role: 'button' });
     await a.chooseFromMenu('Crear', 'Crear organización', { role: null });

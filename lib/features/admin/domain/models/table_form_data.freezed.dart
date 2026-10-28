@@ -18,6 +18,7 @@ mixin _$TableFormData {
   List<AdminLocation> get locations;
   List<AdminPerson> get people;
   List<AdminTable> get organizationTables;
+  List<ProgramValue> get programValues;
 
   /// Create a copy of TableFormData
   /// with the given fields replaced by the non-null parameter values.
@@ -44,6 +45,10 @@ mixin _$TableFormData {
             const DeepCollectionEquality().equals(
               other.organizationTables,
               organizationTables,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other.programValues,
+              programValues,
             ));
   }
 
@@ -55,11 +60,12 @@ mixin _$TableFormData {
     const DeepCollectionEquality().hash(locations),
     const DeepCollectionEquality().hash(people),
     const DeepCollectionEquality().hash(organizationTables),
+    const DeepCollectionEquality().hash(programValues),
   );
 
   @override
   String toString() {
-    return 'TableFormData(table: $table, organizations: $organizations, locations: $locations, people: $people, organizationTables: $organizationTables)';
+    return 'TableFormData(table: $table, organizations: $organizations, locations: $locations, people: $people, organizationTables: $organizationTables, programValues: $programValues)';
   }
 }
 
@@ -76,6 +82,7 @@ abstract mixin class $TableFormDataCopyWith<$Res> {
     List<AdminLocation> locations,
     List<AdminPerson> people,
     List<AdminTable> organizationTables,
+    List<ProgramValue> programValues,
   });
 
   $AdminTableCopyWith<$Res>? get table;
@@ -99,6 +106,7 @@ class _$TableFormDataCopyWithImpl<$Res>
     Object? locations = null,
     Object? people = null,
     Object? organizationTables = null,
+    Object? programValues = null,
   }) {
     return _then(
       _self.copyWith(
@@ -122,6 +130,10 @@ class _$TableFormDataCopyWithImpl<$Res>
             ? _self.organizationTables
             : organizationTables // ignore: cast_nullable_to_non_nullable
                   as List<AdminTable>,
+        programValues: null == programValues
+            ? _self.programValues
+            : programValues // ignore: cast_nullable_to_non_nullable
+                  as List<ProgramValue>,
       ),
     );
   }
@@ -240,6 +252,7 @@ extension TableFormDataPatterns on TableFormData {
       List<AdminLocation> locations,
       List<AdminPerson> people,
       List<AdminTable> organizationTables,
+      List<ProgramValue> programValues,
     )?
     $default, {
     required TResult orElse(),
@@ -253,6 +266,7 @@ extension TableFormDataPatterns on TableFormData {
           _that.locations,
           _that.people,
           _that.organizationTables,
+          _that.programValues,
         );
       case _:
         return orElse();
@@ -280,6 +294,7 @@ extension TableFormDataPatterns on TableFormData {
       List<AdminLocation> locations,
       List<AdminPerson> people,
       List<AdminTable> organizationTables,
+      List<ProgramValue> programValues,
     )
     $default,
   ) {
@@ -292,6 +307,7 @@ extension TableFormDataPatterns on TableFormData {
           _that.locations,
           _that.people,
           _that.organizationTables,
+          _that.programValues,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -318,6 +334,7 @@ extension TableFormDataPatterns on TableFormData {
       List<AdminLocation> locations,
       List<AdminPerson> people,
       List<AdminTable> organizationTables,
+      List<ProgramValue> programValues,
     )?
     $default,
   ) {
@@ -330,6 +347,7 @@ extension TableFormDataPatterns on TableFormData {
           _that.locations,
           _that.people,
           _that.organizationTables,
+          _that.programValues,
         );
       case _:
         return null;
@@ -346,10 +364,12 @@ class _TableFormData implements TableFormData {
     final List<AdminLocation> locations = const [],
     final List<AdminPerson> people = const [],
     final List<AdminTable> organizationTables = const [],
+    final List<ProgramValue> programValues = const [],
   }) : _organizations = organizations,
        _locations = locations,
        _people = people,
-       _organizationTables = organizationTables;
+       _organizationTables = organizationTables,
+       _programValues = programValues;
 
   @override
   final AdminTable? table;
@@ -390,6 +410,15 @@ class _TableFormData implements TableFormData {
     return EqualUnmodifiableListView(_organizationTables);
   }
 
+  final List<ProgramValue> _programValues;
+  @override
+  @JsonKey()
+  List<ProgramValue> get programValues {
+    if (_programValues is EqualUnmodifiableListView) return _programValues;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_programValues);
+  }
+
   /// Create a copy of TableFormData
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -416,6 +445,10 @@ class _TableFormData implements TableFormData {
             const DeepCollectionEquality().equals(
               other._organizationTables,
               _organizationTables,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._programValues,
+              _programValues,
             ));
   }
 
@@ -427,11 +460,12 @@ class _TableFormData implements TableFormData {
     const DeepCollectionEquality().hash(_locations),
     const DeepCollectionEquality().hash(_people),
     const DeepCollectionEquality().hash(_organizationTables),
+    const DeepCollectionEquality().hash(_programValues),
   );
 
   @override
   String toString() {
-    return 'TableFormData(table: $table, organizations: $organizations, locations: $locations, people: $people, organizationTables: $organizationTables)';
+    return 'TableFormData(table: $table, organizations: $organizations, locations: $locations, people: $people, organizationTables: $organizationTables, programValues: $programValues)';
   }
 }
 
@@ -450,6 +484,7 @@ abstract mixin class _$TableFormDataCopyWith<$Res>
     List<AdminLocation> locations,
     List<AdminPerson> people,
     List<AdminTable> organizationTables,
+    List<ProgramValue> programValues,
   });
 
   @override
@@ -474,6 +509,7 @@ class __$TableFormDataCopyWithImpl<$Res>
     Object? locations = null,
     Object? people = null,
     Object? organizationTables = null,
+    Object? programValues = null,
   }) {
     return _then(
       _TableFormData(
@@ -497,6 +533,10 @@ class __$TableFormDataCopyWithImpl<$Res>
             ? _self._organizationTables
             : organizationTables // ignore: cast_nullable_to_non_nullable
                   as List<AdminTable>,
+        programValues: null == programValues
+            ? _self._programValues
+            : programValues // ignore: cast_nullable_to_non_nullable
+                  as List<ProgramValue>,
       ),
     );
   }

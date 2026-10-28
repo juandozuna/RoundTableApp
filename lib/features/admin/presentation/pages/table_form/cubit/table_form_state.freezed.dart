@@ -22,6 +22,10 @@ mixin _$TableFormState {
   String? get savedTableId;
   InviteShare? get facilitatorInvite;
 
+  /// Edit the server refused until the admin confirms moving the program
+  /// back past completed sessions.
+  TableInput? get pendingRewind;
+
   /// Create a copy of TableFormState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +49,9 @@ mixin _$TableFormState {
             (identical(other.savedTableId, savedTableId) ||
                 other.savedTableId == savedTableId) &&
             (identical(other.facilitatorInvite, facilitatorInvite) ||
-                other.facilitatorInvite == facilitatorInvite));
+                other.facilitatorInvite == facilitatorInvite) &&
+            (identical(other.pendingRewind, pendingRewind) ||
+                other.pendingRewind == pendingRewind));
   }
 
   @override
@@ -57,11 +63,12 @@ mixin _$TableFormState {
     error,
     savedTableId,
     facilitatorInvite,
+    pendingRewind,
   );
 
   @override
   String toString() {
-    return 'TableFormState(status: $status, data: $data, organizationId: $organizationId, error: $error, savedTableId: $savedTableId, facilitatorInvite: $facilitatorInvite)';
+    return 'TableFormState(status: $status, data: $data, organizationId: $organizationId, error: $error, savedTableId: $savedTableId, facilitatorInvite: $facilitatorInvite, pendingRewind: $pendingRewind)';
   }
 }
 
@@ -79,10 +86,12 @@ abstract mixin class $TableFormStateCopyWith<$Res> {
     ApiException? error,
     String? savedTableId,
     InviteShare? facilitatorInvite,
+    TableInput? pendingRewind,
   });
 
   $TableFormDataCopyWith<$Res> get data;
   $InviteShareCopyWith<$Res>? get facilitatorInvite;
+  $TableInputCopyWith<$Res>? get pendingRewind;
 }
 
 /// @nodoc
@@ -104,6 +113,7 @@ class _$TableFormStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? savedTableId = freezed,
     Object? facilitatorInvite = freezed,
+    Object? pendingRewind = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -131,6 +141,10 @@ class _$TableFormStateCopyWithImpl<$Res>
             ? _self.facilitatorInvite
             : facilitatorInvite // ignore: cast_nullable_to_non_nullable
                   as InviteShare?,
+        pendingRewind: freezed == pendingRewind
+            ? _self.pendingRewind
+            : pendingRewind // ignore: cast_nullable_to_non_nullable
+                  as TableInput?,
       ),
     );
   }
@@ -156,6 +170,20 @@ class _$TableFormStateCopyWithImpl<$Res>
 
     return $InviteShareCopyWith<$Res>(_self.facilitatorInvite!, (value) {
       return _then(_self.copyWith(facilitatorInvite: value));
+    });
+  }
+
+  /// Create a copy of TableFormState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TableInputCopyWith<$Res>? get pendingRewind {
+    if (_self.pendingRewind == null) {
+      return null;
+    }
+
+    return $TableInputCopyWith<$Res>(_self.pendingRewind!, (value) {
+      return _then(_self.copyWith(pendingRewind: value));
     });
   }
 }
@@ -260,6 +288,7 @@ extension TableFormStatePatterns on TableFormState {
       ApiException? error,
       String? savedTableId,
       InviteShare? facilitatorInvite,
+      TableInput? pendingRewind,
     )?
     $default, {
     required TResult orElse(),
@@ -274,6 +303,7 @@ extension TableFormStatePatterns on TableFormState {
           _that.error,
           _that.savedTableId,
           _that.facilitatorInvite,
+          _that.pendingRewind,
         );
       case _:
         return orElse();
@@ -302,6 +332,7 @@ extension TableFormStatePatterns on TableFormState {
       ApiException? error,
       String? savedTableId,
       InviteShare? facilitatorInvite,
+      TableInput? pendingRewind,
     )
     $default,
   ) {
@@ -315,6 +346,7 @@ extension TableFormStatePatterns on TableFormState {
           _that.error,
           _that.savedTableId,
           _that.facilitatorInvite,
+          _that.pendingRewind,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -342,6 +374,7 @@ extension TableFormStatePatterns on TableFormState {
       ApiException? error,
       String? savedTableId,
       InviteShare? facilitatorInvite,
+      TableInput? pendingRewind,
     )?
     $default,
   ) {
@@ -355,6 +388,7 @@ extension TableFormStatePatterns on TableFormState {
           _that.error,
           _that.savedTableId,
           _that.facilitatorInvite,
+          _that.pendingRewind,
         );
       case _:
         return null;
@@ -372,6 +406,7 @@ class _TableFormState implements TableFormState {
     this.error,
     this.savedTableId,
     this.facilitatorInvite,
+    this.pendingRewind,
   });
 
   @override
@@ -390,6 +425,11 @@ class _TableFormState implements TableFormState {
   final String? savedTableId;
   @override
   final InviteShare? facilitatorInvite;
+
+  /// Edit the server refused until the admin confirms moving the program
+  /// back past completed sessions.
+  @override
+  final TableInput? pendingRewind;
 
   /// Create a copy of TableFormState
   /// with the given fields replaced by the non-null parameter values.
@@ -412,7 +452,9 @@ class _TableFormState implements TableFormState {
             (identical(other.savedTableId, savedTableId) ||
                 other.savedTableId == savedTableId) &&
             (identical(other.facilitatorInvite, facilitatorInvite) ||
-                other.facilitatorInvite == facilitatorInvite));
+                other.facilitatorInvite == facilitatorInvite) &&
+            (identical(other.pendingRewind, pendingRewind) ||
+                other.pendingRewind == pendingRewind));
   }
 
   @override
@@ -424,11 +466,12 @@ class _TableFormState implements TableFormState {
     error,
     savedTableId,
     facilitatorInvite,
+    pendingRewind,
   );
 
   @override
   String toString() {
-    return 'TableFormState(status: $status, data: $data, organizationId: $organizationId, error: $error, savedTableId: $savedTableId, facilitatorInvite: $facilitatorInvite)';
+    return 'TableFormState(status: $status, data: $data, organizationId: $organizationId, error: $error, savedTableId: $savedTableId, facilitatorInvite: $facilitatorInvite, pendingRewind: $pendingRewind)';
   }
 }
 
@@ -448,12 +491,15 @@ abstract mixin class _$TableFormStateCopyWith<$Res>
     ApiException? error,
     String? savedTableId,
     InviteShare? facilitatorInvite,
+    TableInput? pendingRewind,
   });
 
   @override
   $TableFormDataCopyWith<$Res> get data;
   @override
   $InviteShareCopyWith<$Res>? get facilitatorInvite;
+  @override
+  $TableInputCopyWith<$Res>? get pendingRewind;
 }
 
 /// @nodoc
@@ -475,6 +521,7 @@ class __$TableFormStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? savedTableId = freezed,
     Object? facilitatorInvite = freezed,
+    Object? pendingRewind = freezed,
   }) {
     return _then(
       _TableFormState(
@@ -502,6 +549,10 @@ class __$TableFormStateCopyWithImpl<$Res>
             ? _self.facilitatorInvite
             : facilitatorInvite // ignore: cast_nullable_to_non_nullable
                   as InviteShare?,
+        pendingRewind: freezed == pendingRewind
+            ? _self.pendingRewind
+            : pendingRewind // ignore: cast_nullable_to_non_nullable
+                  as TableInput?,
       ),
     );
   }
@@ -527,6 +578,20 @@ class __$TableFormStateCopyWithImpl<$Res>
 
     return $InviteShareCopyWith<$Res>(_self.facilitatorInvite!, (value) {
       return _then(_self.copyWith(facilitatorInvite: value));
+    });
+  }
+
+  /// Create a copy of TableFormState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TableInputCopyWith<$Res>? get pendingRewind {
+    if (_self.pendingRewind == null) {
+      return null;
+    }
+
+    return $TableInputCopyWith<$Res>(_self.pendingRewind!, (value) {
+      return _then(_self.copyWith(pendingRewind: value));
     });
   }
 }
