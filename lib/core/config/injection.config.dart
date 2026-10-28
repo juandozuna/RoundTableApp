@@ -428,6 +428,10 @@ import '../routing/app_shell/cubit/app_shell_cubit.dart' as _i1002;
 import '../routing/feature_router.dart' as _i878;
 import '../services/auth_session/auth_session_module.dart' as _i139;
 import '../services/auth_session/auth_state_source.dart' as _i997;
+import '../services/auth_session/online_verification_store.dart' as _i524;
+import '../services/auth_session/session_verification_source.dart' as _i226;
+import '../services/auth_session/shared_prefs_online_verification_store.dart'
+    as _i112;
 import '../services/auth_session/supabase_auth_session.dart' as _i171;
 import '../services/clock/clock_service.dart' as _i508;
 import '../services/clock/system_clock_service.dart' as _i799;
@@ -547,6 +551,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LoadAppInfoUseCase(gh<_i483.AppInfoService>()),
     );
     gh.lazySingleton<_i246.IdGenerator>(() => _i766.UuidIdGenerator());
+    gh.lazySingleton<_i524.OnlineVerificationStore>(
+      () => _i112.SharedPrefsOnlineVerificationStore(
+        gh<_i460.SharedPreferencesAsync>(),
+      ),
+    );
     gh.factory<_i563.WatchAuthFailuresUseCase>(
       () => _i563.WatchAuthFailuresUseCase(gh<_i59.AuthService>()),
     );
@@ -579,6 +588,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i997.AuthStateSource>(
       () => authSessionModule.authStateSource(gh<_i171.SupabaseAuthSession>()),
+    );
+    gh.lazySingleton<_i226.SessionVerificationSource>(
+      () => authSessionModule.sessionVerificationSource(
+        gh<_i171.SupabaseAuthSession>(),
+      ),
     );
     gh.lazySingleton<_i84.AuthTokenProvider>(
       () =>
@@ -792,15 +806,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i542.AuditService>(
       () => _i1007.AuditServiceImpl(gh<_i625.AuditRemoteDataSource>()),
     );
-    gh.lazySingleton<_i656.AccessSessionService>(
-      () => _i301.AccessSessionServiceImpl(
-        gh<_i997.AuthStateSource>(),
-        gh<_i84.AuthTokenProvider>(),
-        gh<_i887.AccountService>(),
-        gh<_i869.AccessStore>(),
-        gh<_i523.SessionContextService>(),
-      ),
-    );
     gh.factory<_i673.CreateLocationUseCase>(
       () => _i673.CreateLocationUseCase(gh<_i1045.AdminManagementService>()),
     );
@@ -909,6 +914,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i543.LoadTablesUseCase>(
       () => _i543.LoadTablesUseCase(gh<_i680.AdminDirectoryService>()),
+    );
+    gh.lazySingleton<_i656.AccessSessionService>(
+      () => _i301.AccessSessionServiceImpl(
+        gh<_i997.AuthStateSource>(),
+        gh<_i84.AuthTokenProvider>(),
+        gh<_i887.AccountService>(),
+        gh<_i869.AccessStore>(),
+        gh<_i523.SessionContextService>(),
+        gh<_i524.OnlineVerificationStore>(),
+        gh<_i226.SessionVerificationSource>(),
+        gh<_i508.ClockService>(),
+      ),
     );
     gh.factory<_i808.RequestNotificationPermissionUseCase>(
       () => _i808.RequestNotificationPermissionUseCase(

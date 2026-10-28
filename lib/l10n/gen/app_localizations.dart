@@ -6322,6 +6322,18 @@ abstract class AppLocalizations {
   /// **'La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.'**
   String get authAccessOfflineBody;
 
+  /// No description provided for @authOfflineWindowTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Conéctate para volver a entrar'**
+  String get authOfflineWindowTitle;
+
+  /// No description provided for @authOfflineWindowBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Llevas más de 7 días sin conexión. Conéctate a internet y toca Reintentar para confirmar tu sesión. Lo que guardaste en este teléfono sigue aquí y se enviará al conectarte.'**
+  String get authOfflineWindowBody;
+
   /// No description provided for @authNoRoleTitle.
   ///
   /// In es, this message translates to:

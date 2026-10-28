@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../config/app_config.dart';
 import '../../network/auth_token_provider.dart';
 import 'auth_state_source.dart';
+import 'session_verification_source.dart';
 import 'supabase_auth_session.dart';
 
 /// Registers the Supabase session under its two contracts.
@@ -29,6 +30,11 @@ abstract class AuthSessionModule {
 
   @lazySingleton
   AuthStateSource authStateSource(SupabaseAuthSession session) => session;
+
+  @lazySingleton
+  SessionVerificationSource sessionVerificationSource(
+    SupabaseAuthSession session,
+  ) => session;
 
   @lazySingleton
   AuthTokenProvider authTokenProvider(SupabaseAuthSession session) => session;
