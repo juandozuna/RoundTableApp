@@ -89,6 +89,13 @@ stale. The explorer and KPI screens read rollups that `pg_cron` refreshes every 
 "select kpi.refresh_if_dirty()"` to see a change right away. Variables are documented
 in [`.env.example`](.env.example); copy it to `.env` only to override defaults.
 
+### Curriculum import
+
+The 48 values and questions in the seed are placeholders. Load the church's real content with
+`node scripts/import-curriculum.mjs <file.json>` (idempotent, validates 5 modules / 10-10-10-10-8
+values and refuses partial files). Format and rules: `supabase/curriculum/curriculum.example.json`
+and [docs/implementation/curriculum-import.md](docs/implementation/curriculum-import.md).
+
 ### Resetting data
 `bash scripts/dev-reset.sh` (asks for confirmation; `--yes` skips it). It drops PowerSync's storage
 too, because the replication slot is invalid after a database reset. The Supabase stack may be shared
