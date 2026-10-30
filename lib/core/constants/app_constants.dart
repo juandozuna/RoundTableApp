@@ -10,6 +10,9 @@ abstract final class AppLimits {
   /// Minimum length for free-text answers such as a commitment.
   static const int shortTextMinLength = 3;
 
+  /// Minimum length of an email-account password (ADR 0018).
+  static const int passwordMinLength = 8;
+
   /// Unsynced session data older than this triggers a warning (ADR 0009).
   static const Duration unsyncedWarningAfter = Duration(hours: 24);
 

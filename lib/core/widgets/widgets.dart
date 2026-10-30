@@ -17,6 +17,7 @@ export 'empty_state.dart';
 export 'form_fields/app_checkbox_form_field.dart';
 export 'form_fields/app_counter_form_field.dart';
 export 'form_fields/app_dropdown_form_field.dart';
+export 'form_fields/app_password_form_field.dart';
 export 'form_fields/app_score_form_field.dart';
 export 'form_fields/app_text_form_field.dart';
 export 'not_found_page.dart';

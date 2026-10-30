@@ -324,6 +324,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get validationInviteCode => 'El código tiene 6 letras o números.';
 
   @override
+  String validationPasswordTooShort(int min) {
+    return 'La contraseña debe tener al menos $min caracteres.';
+  }
+
+  @override
+  String get validationPasswordMismatch => 'Las contraseñas no coinciden.';
+
+  @override
   String get navHome => 'Inicio';
 
   @override
@@ -3767,7 +3775,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get authBrandBody =>
-      'Entra con Google, Apple o Facebook. Si te invitaron, usa tu código o escanea el QR y confirma a qué te unes.';
+      'Entra con tu cuenta. Si te invitaron, usa tu código o escanea el QR y confirma a qué te unes.';
 
   @override
   String get authBrandFooter =>
@@ -3781,8 +3789,137 @@ class AppLocalizationsEs extends AppLocalizations {
       'Usa la cuenta que ya tienes. Sin contraseñas nuevas.';
 
   @override
-  String get authGateFine =>
-      'Solo Google, Apple o Facebook. No se usa SMS ni teléfono para entrar.';
+  String get authGateFine => 'No se usa SMS ni teléfono para entrar.';
+
+  @override
+  String get authGateSubtitleEmail => 'Escribe tu correo y tu contraseña.';
+
+  @override
+  String get authCreateTitle => 'Crea tu cuenta';
+
+  @override
+  String get authCreateSubtitle =>
+      'Usa tu correo y elige una contraseña. Si te invitaron, después usa tu código.';
+
+  @override
+  String get authResetTitle => 'Recupera tu contraseña';
+
+  @override
+  String get authResetSubtitle =>
+      'Escribe tu correo y te enviamos un enlace para elegir una contraseña nueva.';
+
+  @override
+  String get authEmailLabel => 'Correo';
+
+  @override
+  String get authPasswordLabel => 'Contraseña';
+
+  @override
+  String get authNewPasswordLabel => 'Contraseña nueva';
+
+  @override
+  String get authConfirmPasswordLabel => 'Repite la contraseña';
+
+  @override
+  String get authPasswordHelper => 'Mínimo 8 caracteres.';
+
+  @override
+  String get authSignInAction => 'Entrar';
+
+  @override
+  String get authCreateAction => 'Crear cuenta';
+
+  @override
+  String get authResetAction => 'Enviar enlace';
+
+  @override
+  String get authForgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get authFirstTime => '¿Primera vez? Crear cuenta';
+
+  @override
+  String get authHaveAccount => 'Ya tengo cuenta';
+
+  @override
+  String get authBackToSignIn => 'Volver a entrar';
+
+  @override
+  String get authOrProviders => 'o';
+
+  @override
+  String get authNoticeEmailTakenTitle => 'Ese correo ya tiene una cuenta';
+
+  @override
+  String get authNoticeEmailTakenDetail =>
+      'Entra con tu contraseña o toca «¿Olvidaste tu contraseña?».';
+
+  @override
+  String get authNoticeWeakPasswordTitle => 'Elige una contraseña más segura';
+
+  @override
+  String get authNoticeWeakPasswordDetail =>
+      'Usa al menos 8 caracteres y evita contraseñas muy comunes.';
+
+  @override
+  String get authNoticeRateLimitedTitle => 'Hiciste muchos intentos';
+
+  @override
+  String get authNoticeRateLimitedDetail =>
+      'Espera unos minutos e inténtalo de nuevo.';
+
+  @override
+  String get authNoticeEmailNotConfirmedTitle => 'Falta confirmar tu correo';
+
+  @override
+  String get authNoticeEmailNotConfirmedDetail =>
+      'Abre el mensaje que te enviamos y toca el enlace. Después vuelve a entrar.';
+
+  @override
+  String get authNoticeConfirmEmailSentTitle => 'Revisa tu correo';
+
+  @override
+  String get authNoticeConfirmEmailSentDetail =>
+      'Te enviamos un enlace para confirmar tu cuenta. Después vuelve a entrar.';
+
+  @override
+  String get authNoticeResetSentTitle => 'Revisa tu correo';
+
+  @override
+  String get authNoticeResetSentDetail =>
+      'Si ese correo tiene una cuenta, te enviamos un enlace para elegir una contraseña nueva. Puede tardar unos minutos.';
+
+  @override
+  String get authNoticeLinkExpiredTitle => 'El enlace ya no sirve';
+
+  @override
+  String get authNoticeLinkExpiredDetail =>
+      'Caducó o ya se usó. Pide uno nuevo con «¿Olvidaste tu contraseña?».';
+
+  @override
+  String get authResetPageTitle => 'Elige tu contraseña nueva';
+
+  @override
+  String get authResetPageSubtitle => 'La usarás la próxima vez que entres.';
+
+  @override
+  String get authResetSave => 'Guardar contraseña';
+
+  @override
+  String get authResetDoneTitle => 'Contraseña actualizada';
+
+  @override
+  String get authResetDoneBody =>
+      'Ya puedes seguir. Usa la contraseña nueva la próxima vez que entres.';
+
+  @override
+  String get authResetCancel => 'Ahora no';
+
+  @override
+  String get passwordShow => 'Mostrar contraseña';
+
+  @override
+  String get passwordHide => 'Ocultar contraseña';
 
   @override
   String get authProviderGoogle => 'Google';

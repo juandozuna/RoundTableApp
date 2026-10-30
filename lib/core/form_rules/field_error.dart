@@ -1,4 +1,5 @@
 import '../../l10n/gen/app_localizations.dart';
+import '../constants/app_constants.dart';
 
 /// A validation failure, independent of its localized wording.
 enum FieldError {
@@ -9,7 +10,9 @@ enum FieldError {
   invalidScore,
   scoreFiveNotAllowed,
   tooShort,
-  invalidInviteCode;
+  invalidInviteCode,
+  passwordTooShort,
+  passwordMismatch;
 
   String message(AppLocalizations l10n, {int minLength = 0}) => switch (this) {
     FieldError.required => l10n.validationRequired,
@@ -20,5 +23,9 @@ enum FieldError {
     FieldError.scoreFiveNotAllowed => l10n.validationScoreFive,
     FieldError.tooShort => l10n.validationTooShort(minLength),
     FieldError.invalidInviteCode => l10n.validationInviteCode,
+    FieldError.passwordTooShort => l10n.validationPasswordTooShort(
+      AppLimits.passwordMinLength,
+    ),
+    FieldError.passwordMismatch => l10n.validationPasswordMismatch,
   };
 }

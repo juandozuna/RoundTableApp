@@ -6,6 +6,9 @@ abstract final class FieldTransformers {
 
   static String trimmed(String? raw) => (raw ?? '').trim();
 
+  /// Passwords are stored exactly as typed.
+  static String secret(String? raw) => raw ?? '';
+
   static String email(String? raw) => trimmed(raw).toLowerCase();
 
   /// Collapses inner whitespace: "  ana   lucía " → "ana lucía".

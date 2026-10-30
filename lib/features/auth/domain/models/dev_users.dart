@@ -2,8 +2,9 @@
 /// code guarded by `AppConfig.devAuthCompiledIn`, so release builds drop them.
 abstract final class DevUsers {
   // Folded at compile time: release builds (DEV_AUTH unset) contain no password.
-  static const String password =
-      bool.fromEnvironment('DEV_AUTH') ? 'dev-password-123' : '';
+  static const String password = bool.fromEnvironment('DEV_AUTH')
+      ? 'dev-password-123'
+      : '';
 
   static const List<DevUser> accounts = [
     DevUser(email: 'admin@dev.local', label: 'Administrador'),

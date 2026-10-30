@@ -6,22 +6,31 @@ import '../../../../core/services/auth_session/auth_status.dart';
 import '../../auth_routes.dart';
 import '../../domain/models/access_state.dart';
 import '../../domain/services/access_session_service.dart';
+import '../../domain/services/email_auth_service.dart';
 
 /// Sends a signed-in identity to where its [AccessState] says it belongs:
 /// the loading/blocked page, the context picker, or the app. Runs after the
 /// core sign-in guard (signed-out redirects are not its concern).
 @lazySingleton
 class AccessRedirectGuard {
-  AccessRedirectGuard(this._auth, this._access);
+  AccessRedirectGuard(this._auth, this._access, this._email);
 
   final AuthStateSource _auth;
   final AccessSessionService _access;
+  final EmailAuthService _email;
 
   Stream<Object?> get changes => _access.watch();
+
+  /// Emits when a password-recovery link opens or finishes.
+  Stream<Object?> get recoveryChanges => _email.watchPasswordRecoveryPending();
 
   String? redirect(Uri uri, {required String homeLocation}) {
     if (_auth.status != AuthStatus.authenticated) return null;
     final path = uri.path;
+    // A recovery link signs the person in; they must set a password first.
+    if (_email.isPasswordRecoveryPending) {
+      return path == AuthRoutes.resetPassword ? null : AuthRoutes.resetPassword;
+    }
     if (_isExempt(path)) return null;
 
     // The session exists before the first account lookup starts.

@@ -9,6 +9,8 @@ import 'presentation/cubit/access_cubit.dart';
 import 'presentation/pages/access/access_page.dart';
 import 'presentation/pages/account/account_page.dart';
 import 'presentation/pages/context_picker/context_picker_page.dart';
+import 'presentation/pages/reset_password/cubit/reset_password_cubit.dart';
+import 'presentation/pages/reset_password/reset_password_page.dart';
 import 'presentation/pages/sign_in/cubit/sign_in_cubit.dart';
 import 'presentation/pages/sign_in/sign_in_page.dart';
 import 'presentation/routing/access_redirect_guard.dart';
@@ -33,6 +35,7 @@ class AuthFeatureRouter extends FeatureRouter {
   @override
   List<Stream<Object?>> get redirectRefreshStreams => [
     getIt<AccessRedirectGuard>().changes,
+    getIt<AccessRedirectGuard>().recoveryChanges,
   ];
 
   @override
@@ -44,6 +47,16 @@ class AuthFeatureRouter extends FeatureRouter {
         child: BlocProvider(
           create: (_) => getIt<SignInCubit>(),
           child: const SignInPage(),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AuthRoutes.resetPassword,
+      pageBuilder: (context, state) => AppPageTransitions.fade(
+        state: state,
+        child: BlocProvider(
+          create: (_) => getIt<ResetPasswordCubit>(),
+          child: const ResetPasswordPage(),
         ),
       ),
     ),
