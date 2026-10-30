@@ -573,7 +573,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i82.DevAuthService>(
       () => _i43.DevAuthServiceImpl(gh<_i609.AppConfig>()),
     );
-    gh.lazySingleton<_i508.ClockService>(() => _i799.SystemClockService());
+    gh.lazySingleton<_i508.ClockService>(
+      () => const _i799.SystemClockService(),
+    );
     gh.lazySingleton<_i245.ShareService>(() => _i827.ShareServiceImpl());
     gh.lazySingleton<_i483.AppInfoService>(() => _i90.AppInfoServiceImpl());
     gh.factory<_i569.CreateDevAccountUseCase>(

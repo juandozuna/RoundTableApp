@@ -6,6 +6,7 @@ import 'package:gold_roundtables/core/models/attendance_status.dart';
 import 'package:gold_roundtables/core/models/session_stage.dart';
 import 'package:gold_roundtables/core/models/session_status.dart';
 import 'package:gold_roundtables/core/models/sync_state.dart';
+import 'package:gold_roundtables/core/services/clock/clock_service.dart';
 import 'package:gold_roundtables/core/sync/domain/sync_snapshot.dart';
 import 'package:gold_roundtables/core/theme/app_theme.dart';
 import 'package:gold_roundtables/features/session/domain/models/curriculum_value.dart';
@@ -120,6 +121,19 @@ LiveSession buildSession({
   );
 }
 
+/// Instant the fixtures are "now" at: 20 minutes into [buildSession]'s
+/// session, so the timer never depends on the real date.
+final fixtureNow = DateTime.utc(2026, 10, 29, 23, 20);
+
+class FixtureClock implements ClockService {
+  const FixtureClock([this.now]);
+
+  final DateTime? now;
+
+  @override
+  DateTime nowUtc() => now ?? fixtureNow;
+}
+
 SessionView buildView(
   LiveSession session, {
   bool online = true,
@@ -139,6 +153,7 @@ Future<void> pumpMemberFlow(
   MemberFlowState state = const MemberFlowState(),
   bool embedded = false,
   Size size = const Size(390, 900),
+  ClockService clock = const FixtureClock(),
 }) async {
   whenListen(
     flowCubit,
@@ -166,8 +181,10 @@ Future<void> pumpMemberFlow(
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: embedded
-            ? Scaffold(body: MemberFlowView(view: view, embedded: true))
-            : MemberFlowView(view: view),
+            ? Scaffold(
+                body: MemberFlowView(view: view, embedded: true, clock: clock),
+              )
+            : MemberFlowView(view: view, clock: clock),
       ),
     ),
   );

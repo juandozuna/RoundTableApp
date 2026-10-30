@@ -29,7 +29,7 @@ Future<void> bootstrap() async {
       ErrorReportContext(environment: config.environment.name),
     ),
     const NoErrorReportSink(),
-    SystemClockService(),
+    const SystemClockService(),
   );
   installErrorHandlers(() => reporter);
 
