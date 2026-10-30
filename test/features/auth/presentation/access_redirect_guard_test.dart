@@ -108,20 +108,23 @@ void main() {
     );
   });
 
-  test('a recovery link sends the signed-in person to the new password page', () {
-    expect(
-      redirect(AccessStatus.ready, '/mesas', recovering: true),
-      '/nueva-contrasena',
-    );
-    expect(
-      redirect(AccessStatus.resolving, '/', recovering: true),
-      '/nueva-contrasena',
-    );
-    expect(
-      redirect(AccessStatus.ready, '/nueva-contrasena', recovering: true),
-      isNull,
-    );
-  });
+  test(
+    'a recovery link sends the signed-in person to the new password page',
+    () {
+      expect(
+        redirect(AccessStatus.ready, '/mesas', recovering: true),
+        '/nueva-contrasena',
+      );
+      expect(
+        redirect(AccessStatus.resolving, '/', recovering: true),
+        '/nueva-contrasena',
+      );
+      expect(
+        redirect(AccessStatus.ready, '/nueva-contrasena', recovering: true),
+        isNull,
+      );
+    },
+  );
 
   test('the new password page is never bounced to the access gate', () {
     expect(redirect(AccessStatus.resolving, '/nueva-contrasena'), isNull);

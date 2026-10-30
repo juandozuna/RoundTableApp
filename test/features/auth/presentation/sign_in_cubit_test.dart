@@ -6,8 +6,8 @@ import 'package:gold_roundtables/core/services/connectivity/connectivity_service
 import 'package:gold_roundtables/features/auth/domain/models/auth_failure.dart';
 import 'package:gold_roundtables/features/auth/domain/models/auth_methods.dart';
 import 'package:gold_roundtables/features/auth/domain/models/auth_provider.dart';
-import 'package:gold_roundtables/features/auth/domain/models/signed_in_user.dart';
 import 'package:gold_roundtables/features/auth/domain/models/sign_up_outcome.dart';
+import 'package:gold_roundtables/features/auth/domain/models/signed_in_user.dart';
 import 'package:gold_roundtables/features/auth/domain/services/auth_methods_service.dart';
 import 'package:gold_roundtables/features/auth/domain/services/auth_service.dart';
 import 'package:gold_roundtables/features/auth/domain/services/dev_auth_service.dart';
@@ -144,7 +144,9 @@ void main() {
       build: build,
       act: (cubit) =>
           cubit.signIn(AuthProvider.google, returnPath: '/invitacion/ABC234'),
-      expect: () => [providerState.copyWith(signingInWith: AuthProvider.google)],
+      expect: () => [
+        providerState.copyWith(signingInWith: AuthProvider.google),
+      ],
       verify: (_) {
         expect(auth.lastProvider, AuthProvider.google);
         expect(auth.lastReturnPath, '/invitacion/ABC234');
@@ -187,7 +189,9 @@ void main() {
         await cubit.signIn(AuthProvider.google);
         await cubit.signIn(AuthProvider.apple);
       },
-      expect: () => [providerState.copyWith(signingInWith: AuthProvider.google)],
+      expect: () => [
+        providerState.copyWith(signingInWith: AuthProvider.google),
+      ],
     );
   });
 
@@ -196,12 +200,8 @@ void main() {
       'signs in with email and password',
       build: build,
       act: (cubit) => cubit.signInWithEmail('ana@correo.com', 'secreto-123'),
-      expect: () => [
-        const SignInState(emailBusy: true),
-        const SignInState(),
-      ],
-      verify: (_) =>
-          expect(email.calls, ['signIn:ana@correo.com:secreto-123']),
+      expect: () => [const SignInState(emailBusy: true), const SignInState()],
+      verify: (_) => expect(email.calls, ['signIn:ana@correo.com:secreto-123']),
     );
 
     blocTest<SignInCubit, SignInState>(
@@ -269,7 +269,10 @@ void main() {
     );
 
     for (final (kind, notice) in [
-      (AuthFailureKind.emailAlreadyRegistered, SignInNotice.emailAlreadyRegistered),
+      (
+        AuthFailureKind.emailAlreadyRegistered,
+        SignInNotice.emailAlreadyRegistered,
+      ),
       (AuthFailureKind.weakPassword, SignInNotice.weakPassword),
       (AuthFailureKind.rateLimited, SignInNotice.rateLimited),
       (AuthFailureKind.emailNotConfirmed, SignInNotice.emailNotConfirmed),
