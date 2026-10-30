@@ -48,6 +48,7 @@ abstract final class PostgrestColumns {
   static const String joinedAt = 'joined_at';
   static const String archivedAt = 'archived_at';
   static const String createdAt = 'created_at';
+  static const String deviceCreatedAt = 'device_created_at';
   static const String updatedAt = 'updated_at';
   static const String lastName = 'last_name';
   static const String firstName = 'first_name';
