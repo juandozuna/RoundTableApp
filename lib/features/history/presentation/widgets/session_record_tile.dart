@@ -7,6 +7,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../domain/models/member_history.dart';
 import 'history_format.dart';
+import 'incomplete_session_pill.dart';
 import 'late_synced_pill.dart';
 
 /// A session in a person's history: date, value, attendance, late sync.
@@ -57,6 +58,7 @@ class SessionRecordTile extends StatelessWidget {
                   record.attendance,
                 ),
               ),
+              if (record.incomplete) const IncompleteSessionPill(),
               if (record.syncedLate) const LateSyncedPill(),
             ],
           ),

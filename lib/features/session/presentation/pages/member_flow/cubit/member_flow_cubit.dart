@@ -68,6 +68,7 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
           followUpScore: draft.followUpScore,
           followUpJustification: draft.followUpJustification,
           answers: draft.answers,
+          answerPersonIds: draft.answerPersonIds,
           reflectionScore: draft.reflectionScore,
           reflectionJustification: draft.reflectionJustification,
           commitmentWhat: draft.commitmentWhat,
@@ -86,6 +87,7 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     followUpScore: state.followUpScore,
     followUpJustification: state.followUpJustification,
     answers: state.answers,
+    answerPersonIds: state.answerPersonIds,
     reflectionScore: state.reflectionScore,
     reflectionJustification: state.reflectionJustification,
     commitmentWhat: state.commitmentWhat,
@@ -113,6 +115,9 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
       answers: _sentSteps.contains(MemberStep.reflection)
           ? const {}
           : draft.answers,
+      answerPersonIds: _sentSteps.contains(MemberStep.reflection)
+          ? const {}
+          : draft.answerPersonIds,
       reflectionScore: _sentSteps.contains(MemberStep.reflection)
           ? null
           : draft.reflectionScore,
@@ -201,12 +206,29 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
   void setReflectionJustification(String text) =>
       emit(state.copyWith(reflectionJustification: text));
 
+  /// Typed text: it is a name of someone else, not a picked person.
   void setAnswer(String questionId, String text) => emit(
     state.copyWith(
       answers: {...state.answers, questionId: text},
+      answerPersonIds: {...state.answerPersonIds}..remove(questionId),
       errors: _without(ResponseValidator.answerField(questionId)),
     ),
   );
+
+  /// Picks [personId] (named [name]) as the answer of a `person` question;
+  /// picking the same person again clears the choice.
+  void pickAnswerPerson(String questionId, String personId, String name) {
+    if (state.answerPersonIds[questionId] == personId) {
+      return setAnswer(questionId, '');
+    }
+    emit(
+      state.copyWith(
+        answers: {...state.answers, questionId: name},
+        answerPersonIds: {...state.answerPersonIds, questionId: personId},
+        errors: _without(ResponseValidator.answerField(questionId)),
+      ),
+    );
+  }
 
   void setReflectionScore(int score) => emit(
     state.copyWith(
@@ -268,10 +290,15 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
     if (!_canSubmit(flow, MemberStep.reflection)) return;
     final ids = [for (final q in session.questions) q.id];
     final answers = {for (final id in ids) id: state.answers[id] ?? ''};
+    final answerPersonIds = {
+      for (final id in ids)
+        if (state.answerPersonIds[id] != null) id: state.answerPersonIds[id]!,
+    };
     final errors = ResponseValidator.reflection(
       answers: answers,
       questionIds: ids,
       score: state.reflectionScore,
+      pickedPersonQuestionIds: answerPersonIds.keys.toSet(),
     );
     if (errors.isNotEmpty) return emit(state.copyWith(errors: errors));
     await _save(
@@ -280,6 +307,7 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
         ReflectionSubmission(
           sessionId: session.session.id,
           answers: answers,
+          answerPersonIds: answerPersonIds,
           score: state.reflectionScore!,
           justification: state.reflectionJustification,
         ),

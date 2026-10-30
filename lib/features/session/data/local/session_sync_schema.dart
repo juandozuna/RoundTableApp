@@ -160,6 +160,8 @@ class SessionSyncSchema implements SyncSchemaContribution {
       Column.text('ended_at'),
       Column.text('answers_closed_at'),
       Column.text('cancelled_reason'),
+      Column.text('completion'),
+      Column.text('incomplete_reason'),
       Column.text('kind'),
       Column.text('original_scheduled_at'),
       Column.text('facilitator_person_id'),
@@ -192,6 +194,7 @@ class SessionSyncSchema implements SyncSchemaContribution {
       Column.text('value_id'),
       Column.text('question_id'),
       Column.text('answer_text'),
+      Column.text('answer_person_id'),
     ]),
     Table(SessionTables.memberCommitments, [
       ..._captureColumns,

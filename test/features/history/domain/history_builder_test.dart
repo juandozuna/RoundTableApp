@@ -9,6 +9,56 @@ import '../support/history_fixtures.dart';
 void main() {
   final snapshot = HistoryFixtures.snapshot();
 
+  group('incomplete sessions (RF-50)', () {
+    HistorySnapshot withIncompleteFirstSession() {
+      final base = HistoryFixtures.snapshot();
+      return HistorySnapshot(
+        tableId: base.tableId,
+        tableName: base.tableName,
+        values: base.values,
+        sessions: [
+          for (final s in base.sessions)
+            HistorySession(
+              id: s.id,
+              status: s.status,
+              valueId: s.valueId,
+              followUpValueId: s.followUpValueId,
+              scheduledAt: s.scheduledAt,
+              incomplete: s.id == 's3',
+            ),
+        ],
+        roster: base.roster,
+        attendance: base.attendance,
+        assessments: base.assessments,
+        commitments: base.commitments,
+      );
+    }
+
+    test('a member history marks the session closed early', () {
+      final ana = HistoryBuilder.member(
+        withIncompleteFirstSession(),
+        HistoryFixtures.ana,
+      );
+      expect(
+        {for (final s in ana.sessions) s.sessionId: s.incomplete},
+        {'s4': false, 's3': true},
+      );
+    });
+
+    test('the table history marks it too', () {
+      final table = HistoryBuilder.table(withIncompleteFirstSession());
+      expect(
+        {for (final s in table.sessions) s.sessionId: s.incomplete},
+        {'s4': false, 's3': true},
+      );
+    });
+
+    test('sessions are complete unless the server said otherwise', () {
+      final ana = HistoryBuilder.member(snapshot, HistoryFixtures.ana);
+      expect(ana.sessions.any((s) => s.incomplete), isFalse);
+    });
+  });
+
   group('member history', () {
     final ana = HistoryBuilder.member(snapshot, HistoryFixtures.ana);
 

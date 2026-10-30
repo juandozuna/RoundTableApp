@@ -1071,6 +1071,15 @@
     }
   },
   "kpiSyncedLateDetail": "respuestas cargadas tras la sesión",
+  "kpiSessionsIncomplete": "Sesiones incompletas",
+  "kpiSessionsIncompleteDetail": "de {closed} sesiones cerradas, sin llegar a las respuestas",
+  "@kpiSessionsIncompleteDetail": {
+    "placeholders": {
+      "closed": {
+        "type": "int"
+      }
+    }
+  },
   "kpiSeeDelayed": "Ver retrasadas",
   "kpiSeeTables": "Ver mesas",
   "kpiChartView": "Gráfico",
@@ -2119,6 +2128,9 @@
     }
   },
   "sessionMemberReflectionHelper": "El contenido está en tu folleto; aquí solo anotas tus respuestas.",
+  "sessionMemberPersonPickHelper": "Toca a alguien de tu mesa, o escribe otro nombre abajo.",
+  "sessionMemberPersonOtherLabel": "Otra persona",
+  "sessionMemberPersonOtherHint": "Escribe el nombre si no está en la lista",
   "sessionMemberReflectionScoreLabel": "Tu puntaje inicial en {value}",
   "@sessionMemberReflectionScoreLabel": {
     "placeholders": {
@@ -2891,6 +2903,7 @@
   "historyLateSynced": "Enviado tarde",
   "historySessionsTitle": "Sesiones",
   "historySessionOpenNow": "En curso",
+  "historySessionIncomplete": "Incompleta",
   "historyAttendanceNone": "Sin registro",
   "historySessionTitle": "{date}",
   "@historySessionTitle": {

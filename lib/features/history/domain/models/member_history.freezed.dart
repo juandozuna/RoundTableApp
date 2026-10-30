@@ -1122,6 +1122,9 @@ mixin _$SessionRecord {
   /// Null when no attendance was recorded.
   AttendanceStatus? get attendance;
 
+  /// The session was closed before the answers stage (RF-50).
+  bool get incomplete;
+
   /// Something this person sent for the session reached the server late.
   bool get syncedLate;
 
@@ -1151,6 +1154,8 @@ mixin _$SessionRecord {
                 other.valueName == valueName) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
+            (identical(other.incomplete, incomplete) ||
+                other.incomplete == incomplete) &&
             (identical(other.syncedLate, syncedLate) ||
                 other.syncedLate == syncedLate));
   }
@@ -1164,12 +1169,13 @@ mixin _$SessionRecord {
     valueSequence,
     valueName,
     attendance,
+    incomplete,
     syncedLate,
   );
 
   @override
   String toString() {
-    return 'SessionRecord(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, attendance: $attendance, syncedLate: $syncedLate)';
+    return 'SessionRecord(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, attendance: $attendance, incomplete: $incomplete, syncedLate: $syncedLate)';
   }
 }
 
@@ -1187,6 +1193,7 @@ abstract mixin class $SessionRecordCopyWith<$Res> {
     int? valueSequence,
     String? valueName,
     AttendanceStatus? attendance,
+    bool incomplete,
     bool syncedLate,
   });
 }
@@ -1210,6 +1217,7 @@ class _$SessionRecordCopyWithImpl<$Res>
     Object? valueSequence = freezed,
     Object? valueName = freezed,
     Object? attendance = freezed,
+    Object? incomplete = null,
     Object? syncedLate = null,
   }) {
     return _then(
@@ -1238,6 +1246,10 @@ class _$SessionRecordCopyWithImpl<$Res>
             ? _self.attendance
             : attendance // ignore: cast_nullable_to_non_nullable
                   as AttendanceStatus?,
+        incomplete: null == incomplete
+            ? _self.incomplete
+            : incomplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
         syncedLate: null == syncedLate
             ? _self.syncedLate
             : syncedLate // ignore: cast_nullable_to_non_nullable
@@ -1347,6 +1359,7 @@ extension SessionRecordPatterns on SessionRecord {
       int? valueSequence,
       String? valueName,
       AttendanceStatus? attendance,
+      bool incomplete,
       bool syncedLate,
     )?
     $default, {
@@ -1362,6 +1375,7 @@ extension SessionRecordPatterns on SessionRecord {
           _that.valueSequence,
           _that.valueName,
           _that.attendance,
+          _that.incomplete,
           _that.syncedLate,
         );
       case _:
@@ -1391,6 +1405,7 @@ extension SessionRecordPatterns on SessionRecord {
       int? valueSequence,
       String? valueName,
       AttendanceStatus? attendance,
+      bool incomplete,
       bool syncedLate,
     )
     $default,
@@ -1405,6 +1420,7 @@ extension SessionRecordPatterns on SessionRecord {
           _that.valueSequence,
           _that.valueName,
           _that.attendance,
+          _that.incomplete,
           _that.syncedLate,
         );
       case _:
@@ -1433,6 +1449,7 @@ extension SessionRecordPatterns on SessionRecord {
       int? valueSequence,
       String? valueName,
       AttendanceStatus? attendance,
+      bool incomplete,
       bool syncedLate,
     )?
     $default,
@@ -1447,6 +1464,7 @@ extension SessionRecordPatterns on SessionRecord {
           _that.valueSequence,
           _that.valueName,
           _that.attendance,
+          _that.incomplete,
           _that.syncedLate,
         );
       case _:
@@ -1465,6 +1483,7 @@ class _SessionRecord extends SessionRecord {
     this.valueSequence,
     this.valueName,
     this.attendance,
+    this.incomplete = false,
     this.syncedLate = false,
   }) : super._();
 
@@ -1482,6 +1501,11 @@ class _SessionRecord extends SessionRecord {
   /// Null when no attendance was recorded.
   @override
   final AttendanceStatus? attendance;
+
+  /// The session was closed before the answers stage (RF-50).
+  @override
+  @JsonKey()
+  final bool incomplete;
 
   /// Something this person sent for the session reached the server late.
   @override
@@ -1512,6 +1536,8 @@ class _SessionRecord extends SessionRecord {
                 other.valueName == valueName) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
+            (identical(other.incomplete, incomplete) ||
+                other.incomplete == incomplete) &&
             (identical(other.syncedLate, syncedLate) ||
                 other.syncedLate == syncedLate));
   }
@@ -1525,12 +1551,13 @@ class _SessionRecord extends SessionRecord {
     valueSequence,
     valueName,
     attendance,
+    incomplete,
     syncedLate,
   );
 
   @override
   String toString() {
-    return 'SessionRecord(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, attendance: $attendance, syncedLate: $syncedLate)';
+    return 'SessionRecord(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, attendance: $attendance, incomplete: $incomplete, syncedLate: $syncedLate)';
   }
 }
 
@@ -1550,6 +1577,7 @@ abstract mixin class _$SessionRecordCopyWith<$Res>
     int? valueSequence,
     String? valueName,
     AttendanceStatus? attendance,
+    bool incomplete,
     bool syncedLate,
   });
 }
@@ -1573,6 +1601,7 @@ class __$SessionRecordCopyWithImpl<$Res>
     Object? valueSequence = freezed,
     Object? valueName = freezed,
     Object? attendance = freezed,
+    Object? incomplete = null,
     Object? syncedLate = null,
   }) {
     return _then(
@@ -1601,6 +1630,10 @@ class __$SessionRecordCopyWithImpl<$Res>
             ? _self.attendance
             : attendance // ignore: cast_nullable_to_non_nullable
                   as AttendanceStatus?,
+        incomplete: null == incomplete
+            ? _self.incomplete
+            : incomplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
         syncedLate: null == syncedLate
             ? _self.syncedLate
             : syncedLate // ignore: cast_nullable_to_non_nullable

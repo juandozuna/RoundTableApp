@@ -84,6 +84,7 @@ abstract final class SessionFixture {
         'value_id': Ids.value4,
         'question_text': text,
         'sort_order': order,
+        'response_type': id == Ids.q1 ? 'person' : 'text',
         'status': 'active',
       });
     }

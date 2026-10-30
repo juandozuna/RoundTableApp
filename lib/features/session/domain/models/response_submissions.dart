@@ -25,9 +25,13 @@ abstract class ReflectionSubmission with _$ReflectionSubmission {
   const factory ReflectionSubmission({
     required String sessionId,
 
-    /// Answer text by question id.
+    /// Answer text by question id. A picked person's answer is their name.
     required Map<String, String> answers,
     required int score,
+
+    /// Person picked for a `person` question, by question id (RF-54). A
+    /// question missing here was answered with free text.
+    @Default({}) Map<String, String> answerPersonIds,
 
     /// Optional "¿Por qué ese puntaje?" (RF-52).
     String? justification,

@@ -22,6 +22,9 @@ abstract class KpiTableCounts with _$KpiTableCounts {
 abstract class KpiSummary with _$KpiSummary {
   const factory KpiSummary({
     @Default(0) int sessionsClosed,
+
+    /// Closed sessions that skipped the answers stage (RF-50).
+    @Default(0) int sessionsIncomplete,
     @Default(0) int valuesCompleted,
     @Default(0) int memberValuesCompleted,
     double? attendancePct,

@@ -16,6 +16,7 @@ class SubmitReflectionUseCase {
       answers: submission.answers,
       questionIds: submission.answers.keys,
       score: submission.score,
+      pickedPersonQuestionIds: submission.answerPersonIds.keys.toSet(),
     );
     if (errors.isNotEmpty) throw InvalidResponseException(errors);
     return _responses.submitReflection(submission);

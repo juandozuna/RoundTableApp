@@ -20,6 +20,11 @@ _SessionDraft _$SessionDraftFromJson(Map<String, dynamic> json) =>
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
+      answerPersonIds:
+          (json['answer_person_ids'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
       reflectionScore: (json['reflection_score'] as num?)?.toInt(),
       reflectionJustification:
           json['reflection_justification'] as String? ?? '',
@@ -36,6 +41,7 @@ Map<String, dynamic> _$SessionDraftToJson(_SessionDraft instance) =>
       'follow_up_score': ?instance.followUpScore,
       'follow_up_justification': instance.followUpJustification,
       'answers': instance.answers,
+      'answer_person_ids': instance.answerPersonIds,
       'reflection_score': ?instance.reflectionScore,
       'reflection_justification': instance.reflectionJustification,
       'commitment_what': instance.commitmentWhat,

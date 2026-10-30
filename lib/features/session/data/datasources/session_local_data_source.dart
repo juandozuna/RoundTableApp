@@ -340,12 +340,14 @@ class SessionLocalDataSource {
     required SessionRow session,
     required String personId,
     required Map<String, String> answers,
+    Map<String, String> answerPersonIds = const {},
     required int score,
     String? justification,
     required String nowIso,
     required String Function() newId,
   }) => _db.transaction(() async {
     for (final entry in answers.entries) {
+      final pickedPerson = answerPersonIds[entry.key];
       final existing =
           await (_db.select(_db.memberAnswers)..where(
                 (a) =>
@@ -367,6 +369,7 @@ class SessionLocalDataSource {
                 valueId: Value(session.valueId),
                 questionId: Value(entry.key),
                 answerText: Value(entry.value.trim()),
+                answerPersonId: Value(pickedPerson),
                 deviceCreatedAt: Value(nowIso),
               ),
             );
@@ -376,6 +379,7 @@ class SessionLocalDataSource {
         )..where((a) => a.id.equals(existing.id))).write(
           MemberAnswersCompanion(
             answerText: Value(entry.value.trim()),
+            answerPersonId: Value(pickedPerson),
             deviceModifiedAt: Value(nowIso),
           ),
         );

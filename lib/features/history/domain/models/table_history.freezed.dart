@@ -509,6 +509,7 @@ mixin _$TableSessionSummary {
   bool get isOpen;
   int? get valueSequence;
   String? get valueName;
+  bool get incomplete;
   List<TableSessionEntry> get entries;
 
   /// Create a copy of TableSessionSummary
@@ -535,6 +536,8 @@ mixin _$TableSessionSummary {
                 other.valueSequence == valueSequence) &&
             (identical(other.valueName, valueName) ||
                 other.valueName == valueName) &&
+            (identical(other.incomplete, incomplete) ||
+                other.incomplete == incomplete) &&
             const DeepCollectionEquality().equals(other.entries, entries));
   }
 
@@ -546,12 +549,13 @@ mixin _$TableSessionSummary {
     isOpen,
     valueSequence,
     valueName,
+    incomplete,
     const DeepCollectionEquality().hash(entries),
   );
 
   @override
   String toString() {
-    return 'TableSessionSummary(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, entries: $entries)';
+    return 'TableSessionSummary(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, incomplete: $incomplete, entries: $entries)';
   }
 }
 
@@ -568,6 +572,7 @@ abstract mixin class $TableSessionSummaryCopyWith<$Res> {
     bool isOpen,
     int? valueSequence,
     String? valueName,
+    bool incomplete,
     List<TableSessionEntry> entries,
   });
 }
@@ -590,6 +595,7 @@ class _$TableSessionSummaryCopyWithImpl<$Res>
     Object? isOpen = null,
     Object? valueSequence = freezed,
     Object? valueName = freezed,
+    Object? incomplete = null,
     Object? entries = null,
   }) {
     return _then(
@@ -614,6 +620,10 @@ class _$TableSessionSummaryCopyWithImpl<$Res>
             ? _self.valueName
             : valueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        incomplete: null == incomplete
+            ? _self.incomplete
+            : incomplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
         entries: null == entries
             ? _self.entries
             : entries // ignore: cast_nullable_to_non_nullable
@@ -722,6 +732,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
       bool isOpen,
       int? valueSequence,
       String? valueName,
+      bool incomplete,
       List<TableSessionEntry> entries,
     )?
     $default, {
@@ -736,6 +747,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
           _that.isOpen,
           _that.valueSequence,
           _that.valueName,
+          _that.incomplete,
           _that.entries,
         );
       case _:
@@ -764,6 +776,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
       bool isOpen,
       int? valueSequence,
       String? valueName,
+      bool incomplete,
       List<TableSessionEntry> entries,
     )
     $default,
@@ -777,6 +790,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
           _that.isOpen,
           _that.valueSequence,
           _that.valueName,
+          _that.incomplete,
           _that.entries,
         );
       case _:
@@ -804,6 +818,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
       bool isOpen,
       int? valueSequence,
       String? valueName,
+      bool incomplete,
       List<TableSessionEntry> entries,
     )?
     $default,
@@ -817,6 +832,7 @@ extension TableSessionSummaryPatterns on TableSessionSummary {
           _that.isOpen,
           _that.valueSequence,
           _that.valueName,
+          _that.incomplete,
           _that.entries,
         );
       case _:
@@ -834,6 +850,7 @@ class _TableSessionSummary extends TableSessionSummary {
     required this.isOpen,
     this.valueSequence,
     this.valueName,
+    this.incomplete = false,
     final List<TableSessionEntry> entries = const [],
   }) : _entries = entries,
        super._();
@@ -848,6 +865,9 @@ class _TableSessionSummary extends TableSessionSummary {
   final int? valueSequence;
   @override
   final String? valueName;
+  @override
+  @JsonKey()
+  final bool incomplete;
   final List<TableSessionEntry> _entries;
   @override
   @JsonKey()
@@ -882,6 +902,8 @@ class _TableSessionSummary extends TableSessionSummary {
                 other.valueSequence == valueSequence) &&
             (identical(other.valueName, valueName) ||
                 other.valueName == valueName) &&
+            (identical(other.incomplete, incomplete) ||
+                other.incomplete == incomplete) &&
             const DeepCollectionEquality().equals(other._entries, _entries));
   }
 
@@ -893,12 +915,13 @@ class _TableSessionSummary extends TableSessionSummary {
     isOpen,
     valueSequence,
     valueName,
+    incomplete,
     const DeepCollectionEquality().hash(_entries),
   );
 
   @override
   String toString() {
-    return 'TableSessionSummary(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, entries: $entries)';
+    return 'TableSessionSummary(sessionId: $sessionId, scheduledAt: $scheduledAt, isOpen: $isOpen, valueSequence: $valueSequence, valueName: $valueName, incomplete: $incomplete, entries: $entries)';
   }
 }
 
@@ -917,6 +940,7 @@ abstract mixin class _$TableSessionSummaryCopyWith<$Res>
     bool isOpen,
     int? valueSequence,
     String? valueName,
+    bool incomplete,
     List<TableSessionEntry> entries,
   });
 }
@@ -939,6 +963,7 @@ class __$TableSessionSummaryCopyWithImpl<$Res>
     Object? isOpen = null,
     Object? valueSequence = freezed,
     Object? valueName = freezed,
+    Object? incomplete = null,
     Object? entries = null,
   }) {
     return _then(
@@ -963,6 +988,10 @@ class __$TableSessionSummaryCopyWithImpl<$Res>
             ? _self.valueName
             : valueName // ignore: cast_nullable_to_non_nullable
                   as String?,
+        incomplete: null == incomplete
+            ? _self.incomplete
+            : incomplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
         entries: null == entries
             ? _self._entries
             : entries // ignore: cast_nullable_to_non_nullable

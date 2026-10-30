@@ -64,6 +64,9 @@ abstract class SessionRecord with _$SessionRecord {
     /// Null when no attendance was recorded.
     AttendanceStatus? attendance,
 
+    /// The session was closed before the answers stage (RF-50).
+    @Default(false) bool incomplete,
+
     /// Something this person sent for the session reached the server late.
     @Default(false) bool syncedLate,
   }) = _SessionRecord;

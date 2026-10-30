@@ -3481,6 +3481,28 @@ class $SessionsTable extends Sessions
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _completionMeta = const VerificationMeta(
+    'completion',
+  );
+  @override
+  late final GeneratedColumn<String> completion = GeneratedColumn<String>(
+    'completion',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _incompleteReasonMeta = const VerificationMeta(
+    'incompleteReason',
+  );
+  @override
+  late final GeneratedColumn<String> incompleteReason = GeneratedColumn<String>(
+    'incomplete_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _kindMeta = const VerificationMeta('kind');
   @override
   late final GeneratedColumn<String> kind = GeneratedColumn<String>(
@@ -3570,6 +3592,8 @@ class $SessionsTable extends Sessions
     endedAt,
     answersClosedAt,
     cancelledReason,
+    completion,
+    incompleteReason,
     kind,
     originalScheduledAt,
     facilitatorPersonId,
@@ -3676,6 +3700,21 @@ class $SessionsTable extends Sessions
         cancelledReason.isAcceptableOrUnknown(
           data['cancelled_reason']!,
           _cancelledReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('completion')) {
+      context.handle(
+        _completionMeta,
+        completion.isAcceptableOrUnknown(data['completion']!, _completionMeta),
+      );
+    }
+    if (data.containsKey('incomplete_reason')) {
+      context.handle(
+        _incompleteReasonMeta,
+        incompleteReason.isAcceptableOrUnknown(
+          data['incomplete_reason']!,
+          _incompleteReasonMeta,
         ),
       );
     }
@@ -3787,6 +3826,14 @@ class $SessionsTable extends Sessions
         DriftSqlType.string,
         data['${effectivePrefix}cancelled_reason'],
       ),
+      completion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}completion'],
+      ),
+      incompleteReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}incomplete_reason'],
+      ),
       kind: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}kind'],
@@ -3838,6 +3885,11 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
   final String? answersClosedAt;
   final String? cancelledReason;
 
+  /// `complete` or `incomplete`, set by the server when the session closes
+  /// (RF-50); `incomplete_reason` says why.
+  final String? completion;
+  final String? incompleteReason;
+
   /// `regular` or `extraordinary` (RF-30).
   final String? kind;
 
@@ -3861,6 +3913,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     this.endedAt,
     this.answersClosedAt,
     this.cancelledReason,
+    this.completion,
+    this.incompleteReason,
     this.kind,
     this.originalScheduledAt,
     this.facilitatorPersonId,
@@ -3905,6 +3959,12 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     }
     if (!nullToAbsent || cancelledReason != null) {
       map['cancelled_reason'] = Variable<String>(cancelledReason);
+    }
+    if (!nullToAbsent || completion != null) {
+      map['completion'] = Variable<String>(completion);
+    }
+    if (!nullToAbsent || incompleteReason != null) {
+      map['incomplete_reason'] = Variable<String>(incompleteReason);
     }
     if (!nullToAbsent || kind != null) {
       map['kind'] = Variable<String>(kind);
@@ -3966,6 +4026,12 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       cancelledReason: cancelledReason == null && nullToAbsent
           ? const Value.absent()
           : Value(cancelledReason),
+      completion: completion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completion),
+      incompleteReason: incompleteReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(incompleteReason),
       kind: kind == null && nullToAbsent ? const Value.absent() : Value(kind),
       originalScheduledAt: originalScheduledAt == null && nullToAbsent
           ? const Value.absent()
@@ -4006,6 +4072,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       endedAt: serializer.fromJson<String?>(json['endedAt']),
       answersClosedAt: serializer.fromJson<String?>(json['answersClosedAt']),
       cancelledReason: serializer.fromJson<String?>(json['cancelledReason']),
+      completion: serializer.fromJson<String?>(json['completion']),
+      incompleteReason: serializer.fromJson<String?>(json['incompleteReason']),
       kind: serializer.fromJson<String?>(json['kind']),
       originalScheduledAt: serializer.fromJson<String?>(
         json['originalScheduledAt'],
@@ -4035,6 +4103,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       'endedAt': serializer.toJson<String?>(endedAt),
       'answersClosedAt': serializer.toJson<String?>(answersClosedAt),
       'cancelledReason': serializer.toJson<String?>(cancelledReason),
+      'completion': serializer.toJson<String?>(completion),
+      'incompleteReason': serializer.toJson<String?>(incompleteReason),
       'kind': serializer.toJson<String?>(kind),
       'originalScheduledAt': serializer.toJson<String?>(originalScheduledAt),
       'facilitatorPersonId': serializer.toJson<String?>(facilitatorPersonId),
@@ -4058,6 +4128,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     Value<String?> endedAt = const Value.absent(),
     Value<String?> answersClosedAt = const Value.absent(),
     Value<String?> cancelledReason = const Value.absent(),
+    Value<String?> completion = const Value.absent(),
+    Value<String?> incompleteReason = const Value.absent(),
     Value<String?> kind = const Value.absent(),
     Value<String?> originalScheduledAt = const Value.absent(),
     Value<String?> facilitatorPersonId = const Value.absent(),
@@ -4086,6 +4158,10 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     cancelledReason: cancelledReason.present
         ? cancelledReason.value
         : this.cancelledReason,
+    completion: completion.present ? completion.value : this.completion,
+    incompleteReason: incompleteReason.present
+        ? incompleteReason.value
+        : this.incompleteReason,
     kind: kind.present ? kind.value : this.kind,
     originalScheduledAt: originalScheduledAt.present
         ? originalScheduledAt.value
@@ -4126,6 +4202,12 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
       cancelledReason: data.cancelledReason.present
           ? data.cancelledReason.value
           : this.cancelledReason,
+      completion: data.completion.present
+          ? data.completion.value
+          : this.completion,
+      incompleteReason: data.incompleteReason.present
+          ? data.incompleteReason.value
+          : this.incompleteReason,
       kind: data.kind.present ? data.kind.value : this.kind,
       originalScheduledAt: data.originalScheduledAt.present
           ? data.originalScheduledAt.value
@@ -4159,6 +4241,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
           ..write('endedAt: $endedAt, ')
           ..write('answersClosedAt: $answersClosedAt, ')
           ..write('cancelledReason: $cancelledReason, ')
+          ..write('completion: $completion, ')
+          ..write('incompleteReason: $incompleteReason, ')
           ..write('kind: $kind, ')
           ..write('originalScheduledAt: $originalScheduledAt, ')
           ..write('facilitatorPersonId: $facilitatorPersonId, ')
@@ -4171,7 +4255,7 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     organizationId,
     roundTableId,
@@ -4184,6 +4268,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     endedAt,
     answersClosedAt,
     cancelledReason,
+    completion,
+    incompleteReason,
     kind,
     originalScheduledAt,
     facilitatorPersonId,
@@ -4191,7 +4277,7 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
     archivedAt,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4208,6 +4294,8 @@ class SessionRow extends DataClass implements Insertable<SessionRow> {
           other.endedAt == this.endedAt &&
           other.answersClosedAt == this.answersClosedAt &&
           other.cancelledReason == this.cancelledReason &&
+          other.completion == this.completion &&
+          other.incompleteReason == this.incompleteReason &&
           other.kind == this.kind &&
           other.originalScheduledAt == this.originalScheduledAt &&
           other.facilitatorPersonId == this.facilitatorPersonId &&
@@ -4230,6 +4318,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
   final Value<String?> endedAt;
   final Value<String?> answersClosedAt;
   final Value<String?> cancelledReason;
+  final Value<String?> completion;
+  final Value<String?> incompleteReason;
   final Value<String?> kind;
   final Value<String?> originalScheduledAt;
   final Value<String?> facilitatorPersonId;
@@ -4251,6 +4341,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     this.endedAt = const Value.absent(),
     this.answersClosedAt = const Value.absent(),
     this.cancelledReason = const Value.absent(),
+    this.completion = const Value.absent(),
+    this.incompleteReason = const Value.absent(),
     this.kind = const Value.absent(),
     this.originalScheduledAt = const Value.absent(),
     this.facilitatorPersonId = const Value.absent(),
@@ -4273,6 +4365,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     this.endedAt = const Value.absent(),
     this.answersClosedAt = const Value.absent(),
     this.cancelledReason = const Value.absent(),
+    this.completion = const Value.absent(),
+    this.incompleteReason = const Value.absent(),
     this.kind = const Value.absent(),
     this.originalScheduledAt = const Value.absent(),
     this.facilitatorPersonId = const Value.absent(),
@@ -4295,6 +4389,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     Expression<String>? endedAt,
     Expression<String>? answersClosedAt,
     Expression<String>? cancelledReason,
+    Expression<String>? completion,
+    Expression<String>? incompleteReason,
     Expression<String>? kind,
     Expression<String>? originalScheduledAt,
     Expression<String>? facilitatorPersonId,
@@ -4317,6 +4413,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
       if (endedAt != null) 'ended_at': endedAt,
       if (answersClosedAt != null) 'answers_closed_at': answersClosedAt,
       if (cancelledReason != null) 'cancelled_reason': cancelledReason,
+      if (completion != null) 'completion': completion,
+      if (incompleteReason != null) 'incomplete_reason': incompleteReason,
       if (kind != null) 'kind': kind,
       if (originalScheduledAt != null)
         'original_scheduled_at': originalScheduledAt,
@@ -4343,6 +4441,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     Value<String?>? endedAt,
     Value<String?>? answersClosedAt,
     Value<String?>? cancelledReason,
+    Value<String?>? completion,
+    Value<String?>? incompleteReason,
     Value<String?>? kind,
     Value<String?>? originalScheduledAt,
     Value<String?>? facilitatorPersonId,
@@ -4365,6 +4465,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
       endedAt: endedAt ?? this.endedAt,
       answersClosedAt: answersClosedAt ?? this.answersClosedAt,
       cancelledReason: cancelledReason ?? this.cancelledReason,
+      completion: completion ?? this.completion,
+      incompleteReason: incompleteReason ?? this.incompleteReason,
       kind: kind ?? this.kind,
       originalScheduledAt: originalScheduledAt ?? this.originalScheduledAt,
       facilitatorPersonId: facilitatorPersonId ?? this.facilitatorPersonId,
@@ -4415,6 +4517,12 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
     if (cancelledReason.present) {
       map['cancelled_reason'] = Variable<String>(cancelledReason.value);
     }
+    if (completion.present) {
+      map['completion'] = Variable<String>(completion.value);
+    }
+    if (incompleteReason.present) {
+      map['incomplete_reason'] = Variable<String>(incompleteReason.value);
+    }
     if (kind.present) {
       map['kind'] = Variable<String>(kind.value);
     }
@@ -4461,6 +4569,8 @@ class SessionsCompanion extends UpdateCompanion<SessionRow> {
           ..write('endedAt: $endedAt, ')
           ..write('answersClosedAt: $answersClosedAt, ')
           ..write('cancelledReason: $cancelledReason, ')
+          ..write('completion: $completion, ')
+          ..write('incompleteReason: $incompleteReason, ')
           ..write('kind: $kind, ')
           ..write('originalScheduledAt: $originalScheduledAt, ')
           ..write('facilitatorPersonId: $facilitatorPersonId, ')
@@ -6496,6 +6606,17 @@ class $MemberAnswersTable extends MemberAnswers
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _answerPersonIdMeta = const VerificationMeta(
+    'answerPersonId',
+  );
+  @override
+  late final GeneratedColumn<String> answerPersonId = GeneratedColumn<String>(
+    'answer_person_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6513,6 +6634,7 @@ class $MemberAnswersTable extends MemberAnswers
     valueId,
     questionId,
     answerText,
+    answerPersonId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6627,6 +6749,15 @@ class $MemberAnswersTable extends MemberAnswers
         answerText.isAcceptableOrUnknown(data['answer_text']!, _answerTextMeta),
       );
     }
+    if (data.containsKey('answer_person_id')) {
+      context.handle(
+        _answerPersonIdMeta,
+        answerPersonId.isAcceptableOrUnknown(
+          data['answer_person_id']!,
+          _answerPersonIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -6696,6 +6827,10 @@ class $MemberAnswersTable extends MemberAnswers
         DriftSqlType.string,
         data['${effectivePrefix}answer_text'],
       ),
+      answerPersonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}answer_person_id'],
+      ),
     );
   }
 
@@ -6721,6 +6856,10 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
   final String? valueId;
   final String? questionId;
   final String? answerText;
+
+  /// The person picked for a `person` question (RF-54); `answerText` keeps
+  /// their name. Null for free text.
+  final String? answerPersonId;
   const AnswerRow({
     required this.id,
     this.organizationId,
@@ -6737,6 +6876,7 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
     this.valueId,
     this.questionId,
     this.answerText,
+    this.answerPersonId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6783,6 +6923,9 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
     }
     if (!nullToAbsent || answerText != null) {
       map['answer_text'] = Variable<String>(answerText);
+    }
+    if (!nullToAbsent || answerPersonId != null) {
+      map['answer_person_id'] = Variable<String>(answerPersonId);
     }
     return map;
   }
@@ -6832,6 +6975,9 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
       answerText: answerText == null && nullToAbsent
           ? const Value.absent()
           : Value(answerText),
+      answerPersonId: answerPersonId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(answerPersonId),
     );
   }
 
@@ -6856,6 +7002,7 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
       valueId: serializer.fromJson<String?>(json['valueId']),
       questionId: serializer.fromJson<String?>(json['questionId']),
       answerText: serializer.fromJson<String?>(json['answerText']),
+      answerPersonId: serializer.fromJson<String?>(json['answerPersonId']),
     );
   }
   @override
@@ -6877,6 +7024,7 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
       'valueId': serializer.toJson<String?>(valueId),
       'questionId': serializer.toJson<String?>(questionId),
       'answerText': serializer.toJson<String?>(answerText),
+      'answerPersonId': serializer.toJson<String?>(answerPersonId),
     };
   }
 
@@ -6896,6 +7044,7 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
     Value<String?> valueId = const Value.absent(),
     Value<String?> questionId = const Value.absent(),
     Value<String?> answerText = const Value.absent(),
+    Value<String?> answerPersonId = const Value.absent(),
   }) => AnswerRow(
     id: id ?? this.id,
     organizationId: organizationId.present
@@ -6918,6 +7067,9 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
     valueId: valueId.present ? valueId.value : this.valueId,
     questionId: questionId.present ? questionId.value : this.questionId,
     answerText: answerText.present ? answerText.value : this.answerText,
+    answerPersonId: answerPersonId.present
+        ? answerPersonId.value
+        : this.answerPersonId,
   );
   AnswerRow copyWithCompanion(MemberAnswersCompanion data) {
     return AnswerRow(
@@ -6954,6 +7106,9 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
       answerText: data.answerText.present
           ? data.answerText.value
           : this.answerText,
+      answerPersonId: data.answerPersonId.present
+          ? data.answerPersonId.value
+          : this.answerPersonId,
     );
   }
 
@@ -6974,7 +7129,8 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
           ..write('updatedAt: $updatedAt, ')
           ..write('valueId: $valueId, ')
           ..write('questionId: $questionId, ')
-          ..write('answerText: $answerText')
+          ..write('answerText: $answerText, ')
+          ..write('answerPersonId: $answerPersonId')
           ..write(')'))
         .toString();
   }
@@ -6996,6 +7152,7 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
     valueId,
     questionId,
     answerText,
+    answerPersonId,
   );
   @override
   bool operator ==(Object other) =>
@@ -7015,7 +7172,8 @@ class AnswerRow extends DataClass implements Insertable<AnswerRow> {
           other.updatedAt == this.updatedAt &&
           other.valueId == this.valueId &&
           other.questionId == this.questionId &&
-          other.answerText == this.answerText);
+          other.answerText == this.answerText &&
+          other.answerPersonId == this.answerPersonId);
 }
 
 class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
@@ -7034,6 +7192,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
   final Value<String?> valueId;
   final Value<String?> questionId;
   final Value<String?> answerText;
+  final Value<String?> answerPersonId;
   final Value<int> rowid;
   const MemberAnswersCompanion({
     this.id = const Value.absent(),
@@ -7051,6 +7210,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
     this.valueId = const Value.absent(),
     this.questionId = const Value.absent(),
     this.answerText = const Value.absent(),
+    this.answerPersonId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MemberAnswersCompanion.insert({
@@ -7069,6 +7229,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
     this.valueId = const Value.absent(),
     this.questionId = const Value.absent(),
     this.answerText = const Value.absent(),
+    this.answerPersonId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id);
   static Insertable<AnswerRow> custom({
@@ -7087,6 +7248,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
     Expression<String>? valueId,
     Expression<String>? questionId,
     Expression<String>? answerText,
+    Expression<String>? answerPersonId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7105,6 +7267,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
       if (valueId != null) 'value_id': valueId,
       if (questionId != null) 'question_id': questionId,
       if (answerText != null) 'answer_text': answerText,
+      if (answerPersonId != null) 'answer_person_id': answerPersonId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7125,6 +7288,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
     Value<String?>? valueId,
     Value<String?>? questionId,
     Value<String?>? answerText,
+    Value<String?>? answerPersonId,
     Value<int>? rowid,
   }) {
     return MemberAnswersCompanion(
@@ -7143,6 +7307,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
       valueId: valueId ?? this.valueId,
       questionId: questionId ?? this.questionId,
       answerText: answerText ?? this.answerText,
+      answerPersonId: answerPersonId ?? this.answerPersonId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7195,6 +7360,9 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
     if (answerText.present) {
       map['answer_text'] = Variable<String>(answerText.value);
     }
+    if (answerPersonId.present) {
+      map['answer_person_id'] = Variable<String>(answerPersonId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7219,6 +7387,7 @@ class MemberAnswersCompanion extends UpdateCompanion<AnswerRow> {
           ..write('valueId: $valueId, ')
           ..write('questionId: $questionId, ')
           ..write('answerText: $answerText, ')
+          ..write('answerPersonId: $answerPersonId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10653,6 +10822,8 @@ typedef $$SessionsTableCreateCompanionBuilder =
       Value<String?> endedAt,
       Value<String?> answersClosedAt,
       Value<String?> cancelledReason,
+      Value<String?> completion,
+      Value<String?> incompleteReason,
       Value<String?> kind,
       Value<String?> originalScheduledAt,
       Value<String?> facilitatorPersonId,
@@ -10676,6 +10847,8 @@ typedef $$SessionsTableUpdateCompanionBuilder =
       Value<String?> endedAt,
       Value<String?> answersClosedAt,
       Value<String?> cancelledReason,
+      Value<String?> completion,
+      Value<String?> incompleteReason,
       Value<String?> kind,
       Value<String?> originalScheduledAt,
       Value<String?> facilitatorPersonId,
@@ -10752,6 +10925,16 @@ class $$SessionsTableFilterComposer
 
   ColumnFilters<String> get cancelledReason => $composableBuilder(
     column: $table.cancelledReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get completion => $composableBuilder(
+    column: $table.completion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get incompleteReason => $composableBuilder(
+    column: $table.incompleteReason,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10860,6 +11043,16 @@ class $$SessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get completion => $composableBuilder(
+    column: $table.completion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get incompleteReason => $composableBuilder(
+    column: $table.incompleteReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnOrderings(column),
@@ -10953,6 +11146,16 @@ class $$SessionsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get completion => $composableBuilder(
+    column: $table.completion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get incompleteReason => $composableBuilder(
+    column: $table.incompleteReason,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get kind =>
       $composableBuilder(column: $table.kind, builder: (column) => column);
 
@@ -11026,6 +11229,8 @@ class $$SessionsTableTableManager
                 Value<String?> endedAt = const Value.absent(),
                 Value<String?> answersClosedAt = const Value.absent(),
                 Value<String?> cancelledReason = const Value.absent(),
+                Value<String?> completion = const Value.absent(),
+                Value<String?> incompleteReason = const Value.absent(),
                 Value<String?> kind = const Value.absent(),
                 Value<String?> originalScheduledAt = const Value.absent(),
                 Value<String?> facilitatorPersonId = const Value.absent(),
@@ -11047,6 +11252,8 @@ class $$SessionsTableTableManager
                 endedAt: endedAt,
                 answersClosedAt: answersClosedAt,
                 cancelledReason: cancelledReason,
+                completion: completion,
+                incompleteReason: incompleteReason,
                 kind: kind,
                 originalScheduledAt: originalScheduledAt,
                 facilitatorPersonId: facilitatorPersonId,
@@ -11070,6 +11277,8 @@ class $$SessionsTableTableManager
                 Value<String?> endedAt = const Value.absent(),
                 Value<String?> answersClosedAt = const Value.absent(),
                 Value<String?> cancelledReason = const Value.absent(),
+                Value<String?> completion = const Value.absent(),
+                Value<String?> incompleteReason = const Value.absent(),
                 Value<String?> kind = const Value.absent(),
                 Value<String?> originalScheduledAt = const Value.absent(),
                 Value<String?> facilitatorPersonId = const Value.absent(),
@@ -11091,6 +11300,8 @@ class $$SessionsTableTableManager
                 endedAt: endedAt,
                 answersClosedAt: answersClosedAt,
                 cancelledReason: cancelledReason,
+                completion: completion,
+                incompleteReason: incompleteReason,
                 kind: kind,
                 originalScheduledAt: originalScheduledAt,
                 facilitatorPersonId: facilitatorPersonId,
@@ -11999,6 +12210,7 @@ typedef $$MemberAnswersTableCreateCompanionBuilder =
       Value<String?> valueId,
       Value<String?> questionId,
       Value<String?> answerText,
+      Value<String?> answerPersonId,
       Value<int> rowid,
     });
 typedef $$MemberAnswersTableUpdateCompanionBuilder =
@@ -12018,6 +12230,7 @@ typedef $$MemberAnswersTableUpdateCompanionBuilder =
       Value<String?> valueId,
       Value<String?> questionId,
       Value<String?> answerText,
+      Value<String?> answerPersonId,
       Value<int> rowid,
     });
 
@@ -12102,6 +12315,11 @@ class $$MemberAnswersTableFilterComposer
 
   ColumnFilters<String> get answerText => $composableBuilder(
     column: $table.answerText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get answerPersonId => $composableBuilder(
+    column: $table.answerPersonId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -12189,6 +12407,11 @@ class $$MemberAnswersTableOrderingComposer
     column: $table.answerText,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get answerPersonId => $composableBuilder(
+    column: $table.answerPersonId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MemberAnswersTableAnnotationComposer
@@ -12262,6 +12485,11 @@ class $$MemberAnswersTableAnnotationComposer
     column: $table.answerText,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get answerPersonId => $composableBuilder(
+    column: $table.answerPersonId,
+    builder: (column) => column,
+  );
 }
 
 class $$MemberAnswersTableTableManager
@@ -12316,6 +12544,7 @@ class $$MemberAnswersTableTableManager
                 Value<String?> valueId = const Value.absent(),
                 Value<String?> questionId = const Value.absent(),
                 Value<String?> answerText = const Value.absent(),
+                Value<String?> answerPersonId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MemberAnswersCompanion(
                 id: id,
@@ -12333,6 +12562,7 @@ class $$MemberAnswersTableTableManager
                 valueId: valueId,
                 questionId: questionId,
                 answerText: answerText,
+                answerPersonId: answerPersonId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12352,6 +12582,7 @@ class $$MemberAnswersTableTableManager
                 Value<String?> valueId = const Value.absent(),
                 Value<String?> questionId = const Value.absent(),
                 Value<String?> answerText = const Value.absent(),
+                Value<String?> answerPersonId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MemberAnswersCompanion.insert(
                 id: id,
@@ -12369,6 +12600,7 @@ class $$MemberAnswersTableTableManager
                 valueId: valueId,
                 questionId: questionId,
                 answerText: answerText,
+                answerPersonId: answerPersonId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

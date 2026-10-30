@@ -131,6 +131,7 @@ abstract final class HistoryBuilder {
           valueSequence: value?.sequence,
           valueName: value?.name,
           attendance: attendance?.status,
+          incomplete: session.incomplete,
           syncedLate: late,
         ),
       );
@@ -209,6 +210,7 @@ abstract final class HistoryBuilder {
           isOpen: session.status == SessionStatus.open,
           valueSequence: value?.sequence,
           valueName: value?.name,
+          incomplete: session.incomplete,
           entries: entries,
         ),
       );

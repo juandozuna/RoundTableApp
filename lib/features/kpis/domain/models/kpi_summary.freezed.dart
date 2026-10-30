@@ -437,6 +437,9 @@ class __$KpiTableCountsCopyWithImpl<$Res>
 /// @nodoc
 mixin _$KpiSummary {
   int get sessionsClosed;
+
+  /// Closed sessions that skipped the answers stage (RF-50).
+  int get sessionsIncomplete;
   int get valuesCompleted;
   int get memberValuesCompleted;
   double? get attendancePct;
@@ -468,6 +471,8 @@ mixin _$KpiSummary {
             other is KpiSummary &&
             (identical(other.sessionsClosed, sessionsClosed) ||
                 other.sessionsClosed == sessionsClosed) &&
+            (identical(other.sessionsIncomplete, sessionsIncomplete) ||
+                other.sessionsIncomplete == sessionsIncomplete) &&
             (identical(other.valuesCompleted, valuesCompleted) ||
                 other.valuesCompleted == valuesCompleted) &&
             (identical(other.memberValuesCompleted, memberValuesCompleted) ||
@@ -500,6 +505,7 @@ mixin _$KpiSummary {
   int get hashCode => Object.hash(
     runtimeType,
     sessionsClosed,
+    sessionsIncomplete,
     valuesCompleted,
     memberValuesCompleted,
     attendancePct,
@@ -517,7 +523,7 @@ mixin _$KpiSummary {
 
   @override
   String toString() {
-    return 'KpiSummary(sessionsClosed: $sessionsClosed, valuesCompleted: $valuesCompleted, memberValuesCompleted: $memberValuesCompleted, attendancePct: $attendancePct, initialAvg: $initialAvg, followUpAvg: $followUpAvg, improvementAvg: $improvementAvg, improvementPairs: $improvementPairs, syncedLateRows: $syncedLateRows, syncedLateSessions: $syncedLateSessions, tables: $tables, peopleActive: $peopleActive, programProgressPct: $programProgressPct, computedAt: $computedAt)';
+    return 'KpiSummary(sessionsClosed: $sessionsClosed, sessionsIncomplete: $sessionsIncomplete, valuesCompleted: $valuesCompleted, memberValuesCompleted: $memberValuesCompleted, attendancePct: $attendancePct, initialAvg: $initialAvg, followUpAvg: $followUpAvg, improvementAvg: $improvementAvg, improvementPairs: $improvementPairs, syncedLateRows: $syncedLateRows, syncedLateSessions: $syncedLateSessions, tables: $tables, peopleActive: $peopleActive, programProgressPct: $programProgressPct, computedAt: $computedAt)';
   }
 }
 
@@ -530,6 +536,7 @@ abstract mixin class $KpiSummaryCopyWith<$Res> {
   @useResult
   $Res call({
     int sessionsClosed,
+    int sessionsIncomplete,
     int valuesCompleted,
     int memberValuesCompleted,
     double? attendancePct,
@@ -561,6 +568,7 @@ class _$KpiSummaryCopyWithImpl<$Res> implements $KpiSummaryCopyWith<$Res> {
   @override
   $Res call({
     Object? sessionsClosed = null,
+    Object? sessionsIncomplete = null,
     Object? valuesCompleted = null,
     Object? memberValuesCompleted = null,
     Object? attendancePct = freezed,
@@ -580,6 +588,10 @@ class _$KpiSummaryCopyWithImpl<$Res> implements $KpiSummaryCopyWith<$Res> {
         sessionsClosed: null == sessionsClosed
             ? _self.sessionsClosed
             : sessionsClosed // ignore: cast_nullable_to_non_nullable
+                  as int,
+        sessionsIncomplete: null == sessionsIncomplete
+            ? _self.sessionsIncomplete
+            : sessionsIncomplete // ignore: cast_nullable_to_non_nullable
                   as int,
         valuesCompleted: null == valuesCompleted
             ? _self.valuesCompleted
@@ -743,6 +755,7 @@ extension KpiSummaryPatterns on KpiSummary {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
       int sessionsClosed,
+      int sessionsIncomplete,
       int valuesCompleted,
       int memberValuesCompleted,
       double? attendancePct,
@@ -765,6 +778,7 @@ extension KpiSummaryPatterns on KpiSummary {
       case _KpiSummary() when $default != null:
         return $default(
           _that.sessionsClosed,
+          _that.sessionsIncomplete,
           _that.valuesCompleted,
           _that.memberValuesCompleted,
           _that.attendancePct,
@@ -801,6 +815,7 @@ extension KpiSummaryPatterns on KpiSummary {
   TResult when<TResult extends Object?>(
     TResult Function(
       int sessionsClosed,
+      int sessionsIncomplete,
       int valuesCompleted,
       int memberValuesCompleted,
       double? attendancePct,
@@ -822,6 +837,7 @@ extension KpiSummaryPatterns on KpiSummary {
       case _KpiSummary():
         return $default(
           _that.sessionsClosed,
+          _that.sessionsIncomplete,
           _that.valuesCompleted,
           _that.memberValuesCompleted,
           _that.attendancePct,
@@ -857,6 +873,7 @@ extension KpiSummaryPatterns on KpiSummary {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
       int sessionsClosed,
+      int sessionsIncomplete,
       int valuesCompleted,
       int memberValuesCompleted,
       double? attendancePct,
@@ -878,6 +895,7 @@ extension KpiSummaryPatterns on KpiSummary {
       case _KpiSummary() when $default != null:
         return $default(
           _that.sessionsClosed,
+          _that.sessionsIncomplete,
           _that.valuesCompleted,
           _that.memberValuesCompleted,
           _that.attendancePct,
@@ -903,6 +921,7 @@ extension KpiSummaryPatterns on KpiSummary {
 class _KpiSummary implements KpiSummary {
   const _KpiSummary({
     this.sessionsClosed = 0,
+    this.sessionsIncomplete = 0,
     this.valuesCompleted = 0,
     this.memberValuesCompleted = 0,
     this.attendancePct,
@@ -923,6 +942,11 @@ class _KpiSummary implements KpiSummary {
   @override
   @JsonKey()
   final int sessionsClosed;
+
+  /// Closed sessions that skipped the answers stage (RF-50).
+  @override
+  @JsonKey()
+  final int sessionsIncomplete;
   @override
   @JsonKey()
   final int valuesCompleted;
@@ -977,6 +1001,8 @@ class _KpiSummary implements KpiSummary {
             other is _KpiSummary &&
             (identical(other.sessionsClosed, sessionsClosed) ||
                 other.sessionsClosed == sessionsClosed) &&
+            (identical(other.sessionsIncomplete, sessionsIncomplete) ||
+                other.sessionsIncomplete == sessionsIncomplete) &&
             (identical(other.valuesCompleted, valuesCompleted) ||
                 other.valuesCompleted == valuesCompleted) &&
             (identical(other.memberValuesCompleted, memberValuesCompleted) ||
@@ -1009,6 +1035,7 @@ class _KpiSummary implements KpiSummary {
   int get hashCode => Object.hash(
     runtimeType,
     sessionsClosed,
+    sessionsIncomplete,
     valuesCompleted,
     memberValuesCompleted,
     attendancePct,
@@ -1026,7 +1053,7 @@ class _KpiSummary implements KpiSummary {
 
   @override
   String toString() {
-    return 'KpiSummary(sessionsClosed: $sessionsClosed, valuesCompleted: $valuesCompleted, memberValuesCompleted: $memberValuesCompleted, attendancePct: $attendancePct, initialAvg: $initialAvg, followUpAvg: $followUpAvg, improvementAvg: $improvementAvg, improvementPairs: $improvementPairs, syncedLateRows: $syncedLateRows, syncedLateSessions: $syncedLateSessions, tables: $tables, peopleActive: $peopleActive, programProgressPct: $programProgressPct, computedAt: $computedAt)';
+    return 'KpiSummary(sessionsClosed: $sessionsClosed, sessionsIncomplete: $sessionsIncomplete, valuesCompleted: $valuesCompleted, memberValuesCompleted: $memberValuesCompleted, attendancePct: $attendancePct, initialAvg: $initialAvg, followUpAvg: $followUpAvg, improvementAvg: $improvementAvg, improvementPairs: $improvementPairs, syncedLateRows: $syncedLateRows, syncedLateSessions: $syncedLateSessions, tables: $tables, peopleActive: $peopleActive, programProgressPct: $programProgressPct, computedAt: $computedAt)';
   }
 }
 
@@ -1041,6 +1068,7 @@ abstract mixin class _$KpiSummaryCopyWith<$Res>
   @useResult
   $Res call({
     int sessionsClosed,
+    int sessionsIncomplete,
     int valuesCompleted,
     int memberValuesCompleted,
     double? attendancePct,
@@ -1073,6 +1101,7 @@ class __$KpiSummaryCopyWithImpl<$Res> implements _$KpiSummaryCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? sessionsClosed = null,
+    Object? sessionsIncomplete = null,
     Object? valuesCompleted = null,
     Object? memberValuesCompleted = null,
     Object? attendancePct = freezed,
@@ -1092,6 +1121,10 @@ class __$KpiSummaryCopyWithImpl<$Res> implements _$KpiSummaryCopyWith<$Res> {
         sessionsClosed: null == sessionsClosed
             ? _self.sessionsClosed
             : sessionsClosed // ignore: cast_nullable_to_non_nullable
+                  as int,
+        sessionsIncomplete: null == sessionsIncomplete
+            ? _self.sessionsIncomplete
+            : sessionsIncomplete // ignore: cast_nullable_to_non_nullable
                   as int,
         valuesCompleted: null == valuesCompleted
             ? _self.valuesCompleted

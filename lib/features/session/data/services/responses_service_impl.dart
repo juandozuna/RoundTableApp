@@ -38,6 +38,7 @@ class ResponsesServiceImpl implements ResponsesService {
       session: session,
       personId: await _me(session),
       answers: submission.answers,
+      answerPersonIds: submission.answerPersonIds,
       score: submission.score,
       justification: _blankToNull(submission.justification),
       nowIso: _now,

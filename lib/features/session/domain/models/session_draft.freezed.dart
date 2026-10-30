@@ -18,6 +18,9 @@ mixin _$SessionDraft {
   int? get followUpScore;
   String get followUpJustification;
   Map<String, String> get answers;
+
+  /// Person picked for a `person` question, by question id.
+  Map<String, String> get answerPersonIds;
   int? get reflectionScore;
   String get reflectionJustification;
   String get commitmentWhat;
@@ -51,6 +54,10 @@ mixin _$SessionDraft {
             (identical(other.followUpJustification, followUpJustification) ||
                 other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other.answers, answers) &&
+            const DeepCollectionEquality().equals(
+              other.answerPersonIds,
+              answerPersonIds,
+            ) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
             (identical(
@@ -75,6 +82,7 @@ mixin _$SessionDraft {
     followUpScore,
     followUpJustification,
     const DeepCollectionEquality().hash(answers),
+    const DeepCollectionEquality().hash(answerPersonIds),
     reflectionScore,
     reflectionJustification,
     commitmentWhat,
@@ -84,7 +92,7 @@ mixin _$SessionDraft {
 
   @override
   String toString() {
-    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
+    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, answerPersonIds: $answerPersonIds, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
   }
 }
 
@@ -101,6 +109,7 @@ abstract mixin class $SessionDraftCopyWith<$Res> {
     int? followUpScore,
     String followUpJustification,
     Map<String, String> answers,
+    Map<String, String> answerPersonIds,
     int? reflectionScore,
     String reflectionJustification,
     String commitmentWhat,
@@ -126,6 +135,7 @@ class _$SessionDraftCopyWithImpl<$Res> implements $SessionDraftCopyWith<$Res> {
     Object? followUpScore = freezed,
     Object? followUpJustification = null,
     Object? answers = null,
+    Object? answerPersonIds = null,
     Object? reflectionScore = freezed,
     Object? reflectionJustification = null,
     Object? commitmentWhat = null,
@@ -153,6 +163,10 @@ class _$SessionDraftCopyWithImpl<$Res> implements $SessionDraftCopyWith<$Res> {
         answers: null == answers
             ? _self.answers
             : answers // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
+        answerPersonIds: null == answerPersonIds
+            ? _self.answerPersonIds
+            : answerPersonIds // ignore: cast_nullable_to_non_nullable
                   as Map<String, String>,
         reflectionScore: freezed == reflectionScore
             ? _self.reflectionScore
@@ -278,6 +292,7 @@ extension SessionDraftPatterns on SessionDraft {
       int? followUpScore,
       String followUpJustification,
       Map<String, String> answers,
+      Map<String, String> answerPersonIds,
       int? reflectionScore,
       String reflectionJustification,
       String commitmentWhat,
@@ -296,6 +311,7 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpScore,
           _that.followUpJustification,
           _that.answers,
+          _that.answerPersonIds,
           _that.reflectionScore,
           _that.reflectionJustification,
           _that.commitmentWhat,
@@ -328,6 +344,7 @@ extension SessionDraftPatterns on SessionDraft {
       int? followUpScore,
       String followUpJustification,
       Map<String, String> answers,
+      Map<String, String> answerPersonIds,
       int? reflectionScore,
       String reflectionJustification,
       String commitmentWhat,
@@ -345,6 +362,7 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpScore,
           _that.followUpJustification,
           _that.answers,
+          _that.answerPersonIds,
           _that.reflectionScore,
           _that.reflectionJustification,
           _that.commitmentWhat,
@@ -376,6 +394,7 @@ extension SessionDraftPatterns on SessionDraft {
       int? followUpScore,
       String followUpJustification,
       Map<String, String> answers,
+      Map<String, String> answerPersonIds,
       int? reflectionScore,
       String reflectionJustification,
       String commitmentWhat,
@@ -393,6 +412,7 @@ extension SessionDraftPatterns on SessionDraft {
           _that.followUpScore,
           _that.followUpJustification,
           _that.answers,
+          _that.answerPersonIds,
           _that.reflectionScore,
           _that.reflectionJustification,
           _that.commitmentWhat,
@@ -414,12 +434,14 @@ class _SessionDraft extends SessionDraft {
     this.followUpScore,
     this.followUpJustification = '',
     final Map<String, String> answers = const {},
+    final Map<String, String> answerPersonIds = const {},
     this.reflectionScore,
     this.reflectionJustification = '',
     this.commitmentWhat = '',
     this.commitmentWhen,
     this.commitmentHow,
   }) : _answers = answers,
+       _answerPersonIds = answerPersonIds,
        super._();
   factory _SessionDraft.fromJson(Map<String, dynamic> json) =>
       _$SessionDraftFromJson(json);
@@ -441,6 +463,18 @@ class _SessionDraft extends SessionDraft {
     if (_answers is EqualUnmodifiableMapView) return _answers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_answers);
+  }
+
+  /// Person picked for a `person` question, by question id.
+  final Map<String, String> _answerPersonIds;
+
+  /// Person picked for a `person` question, by question id.
+  @override
+  @JsonKey()
+  Map<String, String> get answerPersonIds {
+    if (_answerPersonIds is EqualUnmodifiableMapView) return _answerPersonIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_answerPersonIds);
   }
 
   @override
@@ -483,6 +517,10 @@ class _SessionDraft extends SessionDraft {
             (identical(other.followUpJustification, followUpJustification) ||
                 other.followUpJustification == followUpJustification) &&
             const DeepCollectionEquality().equals(other._answers, _answers) &&
+            const DeepCollectionEquality().equals(
+              other._answerPersonIds,
+              _answerPersonIds,
+            ) &&
             (identical(other.reflectionScore, reflectionScore) ||
                 other.reflectionScore == reflectionScore) &&
             (identical(
@@ -507,6 +545,7 @@ class _SessionDraft extends SessionDraft {
     followUpScore,
     followUpJustification,
     const DeepCollectionEquality().hash(_answers),
+    const DeepCollectionEquality().hash(_answerPersonIds),
     reflectionScore,
     reflectionJustification,
     commitmentWhat,
@@ -516,7 +555,7 @@ class _SessionDraft extends SessionDraft {
 
   @override
   String toString() {
-    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
+    return 'SessionDraft(followUpStatus: $followUpStatus, followUpNote: $followUpNote, followUpScore: $followUpScore, followUpJustification: $followUpJustification, answers: $answers, answerPersonIds: $answerPersonIds, reflectionScore: $reflectionScore, reflectionJustification: $reflectionJustification, commitmentWhat: $commitmentWhat, commitmentWhen: $commitmentWhen, commitmentHow: $commitmentHow)';
   }
 }
 
@@ -535,6 +574,7 @@ abstract mixin class _$SessionDraftCopyWith<$Res>
     int? followUpScore,
     String followUpJustification,
     Map<String, String> answers,
+    Map<String, String> answerPersonIds,
     int? reflectionScore,
     String reflectionJustification,
     String commitmentWhat,
@@ -561,6 +601,7 @@ class __$SessionDraftCopyWithImpl<$Res>
     Object? followUpScore = freezed,
     Object? followUpJustification = null,
     Object? answers = null,
+    Object? answerPersonIds = null,
     Object? reflectionScore = freezed,
     Object? reflectionJustification = null,
     Object? commitmentWhat = null,
@@ -588,6 +629,10 @@ class __$SessionDraftCopyWithImpl<$Res>
         answers: null == answers
             ? _self._answers
             : answers // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
+        answerPersonIds: null == answerPersonIds
+            ? _self._answerPersonIds
+            : answerPersonIds // ignore: cast_nullable_to_non_nullable
                   as Map<String, String>,
         reflectionScore: freezed == reflectionScore
             ? _self.reflectionScore

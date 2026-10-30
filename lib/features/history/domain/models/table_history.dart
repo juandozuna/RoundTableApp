@@ -26,6 +26,7 @@ abstract class TableSessionSummary with _$TableSessionSummary {
     required bool isOpen,
     int? valueSequence,
     String? valueName,
+    @Default(false) bool incomplete,
     @Default([]) List<TableSessionEntry> entries,
   }) = _TableSessionSummary;
 

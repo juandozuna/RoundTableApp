@@ -13,6 +13,7 @@ import 'history_format.dart';
 import 'history_section_title.dart';
 import 'history_stat_tile.dart';
 import 'history_window_note.dart';
+import 'incomplete_session_pill.dart';
 import 'late_synced_pill.dart';
 import 'score_comparison_chart.dart';
 
@@ -213,9 +214,17 @@ class TableHistoryView extends StatelessWidget {
             AppSpacing.lg,
             AppSpacing.md,
           ),
-          title: Text(
-            l10n.historySessionTitle(session.scheduledAt.toLocal()),
-            style: context.textTheme.titleMedium,
+          title: Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                l10n.historySessionTitle(session.scheduledAt.toLocal()),
+                style: context.textTheme.titleMedium,
+              ),
+              if (session.incomplete) const IncompleteSessionPill(),
+            ],
           ),
           subtitle: Text(
             [

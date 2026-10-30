@@ -35,6 +35,7 @@ class HistorySession {
     this.valueId,
     this.followUpValueId,
     this.scheduledAt,
+    this.incomplete = false,
   });
 
   final String id;
@@ -42,6 +43,9 @@ class HistorySession {
   final String? valueId;
   final String? followUpValueId;
   final DateTime? scheduledAt;
+
+  /// The session was closed before the answers stage (RF-50).
+  final bool incomplete;
 }
 
 @immutable

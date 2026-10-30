@@ -12,6 +12,7 @@ import 'package:gold_roundtables/features/session/data/services/live_session_ser
 import 'package:gold_roundtables/features/session/data/services/responses_service_impl.dart';
 import 'package:gold_roundtables/features/session/domain/models/live_session.dart';
 import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
+import 'package:gold_roundtables/features/session/domain/models/value_question.dart';
 
 import '../support/counter_id_generator.dart';
 import '../support/session_fixture.dart';
@@ -54,6 +55,14 @@ void main() {
 
   group('as a member', () {
     setUp(() => SessionFixture.seed(db));
+
+    test('exposes the response type of each question', () async {
+      final session = await current();
+      expect(session.questions.map((q) => q.responseType), [
+        QuestionResponseType.person,
+        QuestionResponseType.text,
+      ]);
+    });
 
     test(
       'assembles the table, value, roster and previous commitment',
@@ -116,6 +125,47 @@ void main() {
       expect(put['round_table_id'], Ids.table);
       expect(put['device_created_at'], clock.now.toIso8601String());
     });
+
+    test(
+      'stores a picked person next to the name and clears it later',
+      () async {
+        final service = ResponsesServiceImpl(local, clock, ids);
+        await service.submitReflection(
+          const ReflectionSubmission(
+            sessionId: Ids.session,
+            answers: {Ids.q1: 'Luis Prueba', Ids.q2: 'Cumplo casi siempre'},
+            answerPersonIds: {Ids.q1: Ids.luis},
+            score: 8,
+          ),
+        );
+        final picked = (await db.queuedEntries())
+            .where((e) => e['type'] == 'member_answers')
+            .map((e) => e['data'] as Map<String, dynamic>)
+            .singleWhere((d) => d['question_id'] == Ids.q1);
+        expect(picked['answer_text'], 'Luis Prueba');
+        expect(picked['answer_person_id'], Ids.luis);
+        expect(
+          (await current()).myResponses.reflection?.answers[Ids.q1],
+          'Luis Prueba',
+        );
+
+        await service.submitReflection(
+          const ReflectionSubmission(
+            sessionId: Ids.session,
+            answers: {Ids.q1: 'Mi tía Rosa', Ids.q2: 'Cumplo casi siempre'},
+            score: 8,
+          ),
+        );
+        final rows = await db.sync.powerSync.getAll(
+          'SELECT answer_text, answer_person_id FROM member_answers '
+          'WHERE question_id = ?',
+          [Ids.q1],
+        );
+        expect(rows, hasLength(1));
+        expect(rows.single['answer_text'], 'Mi tía Rosa');
+        expect(rows.single['answer_person_id'], isNull);
+      },
+    );
 
     test('saves reflection and commitment with device ids', () async {
       final service = ResponsesServiceImpl(local, clock, ids);
