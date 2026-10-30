@@ -13,7 +13,9 @@ import '../models/home_records.dart';
 /// Reads a table's home through PostgREST under RLS (ADR 0019): its pending
 /// session, seats and last closed session, plus a member's latest commitment
 /// and progress. Every read is filtered by the table or the person, and
-/// session-domain rows by `archived_at IS NULL` as the device's window was.
+/// session-domain rows by `archived_at IS NULL` as the device's window was,
+/// except progress: completed values count archived assessments too, so the
+/// count does not drop when the nightly job archives old sessions.
 @lazySingleton
 class HomeTableRemoteDataSource {
   HomeTableRemoteDataSource(this._client, this._curriculum);
@@ -133,7 +135,6 @@ class HomeTableRemoteDataSource {
             PostgrestColumns.kind: PostgrestFilter.eq(
               AssessmentKind.initial.wireValue,
             ),
-            PostgrestColumns.archivedAt: PostgrestFilter.isNull(),
           },
           order: [PostgrestOrder.asc(PostgrestColumns.id)],
         );

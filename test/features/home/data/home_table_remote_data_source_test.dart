@@ -228,7 +228,9 @@ void main() {
         initial.filter(PostgrestColumns.kind),
         'eq.${AssessmentKind.initial.wireValue}',
       );
-      expect(initial.filter(PostgrestColumns.archivedAt), 'is.null');
+      // Progress counts archived values too, so it never drops when old
+      // sessions are archived.
+      expect(initial.filter(PostgrestColumns.archivedAt), isNull);
     });
 
     test('translated module names show in the progress', () async {
