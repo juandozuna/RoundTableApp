@@ -51,16 +51,18 @@ begin
   else
     alter role powersync_role with replication bypassrls login password '${password}';
   end if;
+  -- Inside the block: \`supabase db query --db-url\` runs a single statement per file.
+  grant usage on schema public to powersync_role;
+  grant select on all tables in schema public to powersync_role;
+  alter default privileges in schema public grant select on tables to powersync_role;
 end
 \$\$;
-grant usage on schema public to powersync_role;
-grant select on all tables in schema public to powersync_role;
-alter default privileges in schema public grant select on tables to powersync_role;
 SQL
 }
 
 if $hosted; then
   require_cmd supabase
+  require_cmd jq
   if [[ -z "${SUPABASE_DB_URL:-}" ]]; then hosted_ensure_link; fi
   hosted_tmpdir
   info "Configuring replication role powersync_role on project $SUPABASE_PROJECT_REF"
@@ -68,7 +70,8 @@ if $hosted; then
   hosted_sql_file "$HOSTED_TMP/replication.sql" >/dev/null || fail "Could not create the replication role on the hosted database."
   echo "select count(*) as publication_tables from pg_publication_tables where pubname = 'powersync';" >"$HOSTED_TMP/publication.sql"
   count_output="$(hosted_sql_file "$HOSTED_TMP/publication.sql")" || fail "Could not read the publication."
-  publication_tables="$(grep -Eo '[0-9]+' <<<"$count_output" | tail -n1 || true)"
+  # The CLI prints JSON ({"rows": [...]}, plus a boundary token with digits); read the row itself.
+  publication_tables="$(jq -r '.rows[0].publication_tables // empty' <<<"$count_output" 2>/dev/null || true)"
   if [[ -z "$publication_tables" || "$publication_tables" -lt 1 ]]; then
     fail "Publication 'powersync' is missing or empty. Apply the migrations first: bash scripts/deploy-hosted.sh --only link,db"
   fi

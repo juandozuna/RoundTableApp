@@ -131,23 +131,33 @@ step_link() {
   hosted_ensure_link
 }
 
+# SUPABASE_DB_URL targets the database directly, so migrations work without a link or access token.
+db_target() {
+  if [[ -n "${SUPABASE_DB_URL:-}" ]]; then printf '%s\n' --db-url "$SUPABASE_DB_URL"; else printf '%s\n' --linked; fi
+}
+
 step_db() {
   info "db: migrations"
+  local target=()
+  while IFS= read -r arg; do target+=("$arg"); done < <(db_target)
   if $dry_run; then
-    (cd "$repo_root" && supabase db push --linked --dry-run --skip-vault) \
+    (cd "$repo_root" && supabase db push "${target[@]}" --dry-run --skip-vault) \
       || fail "supabase db push --dry-run failed. Check the link, SUPABASE_DB_PASSWORD and that the database is reachable."
     return
   fi
   hosted_tmpdir
   # The migrations guard these two (a failure is only a NOTICE and the cron jobs would be silently
   # skipped), so enable them first and fail loudly if the project cannot.
+  # One statement per file: `supabase db query --db-url` runs a single prepared statement.
   printf '%s\n' \
-    'create extension if not exists pg_cron;' \
-    'create extension if not exists pg_net with schema extensions;' >"$HOSTED_TMP/extensions.sql"
+    'do $ext$ begin' \
+    '  create extension if not exists pg_cron;' \
+    '  create extension if not exists pg_net with schema extensions;' \
+    'end $ext$;' >"$HOSTED_TMP/extensions.sql"
   hosted_sql_file "$HOSTED_TMP/extensions.sql" >/dev/null \
     || fail "Could not enable pg_cron / pg_net. Enable them in the dashboard (Database → Extensions) and re-run."
   ok "pg_cron and pg_net enabled"
-  (cd "$repo_root" && supabase db push --linked --skip-vault) || fail "supabase db push failed."
+  (cd "$repo_root" && supabase db push "${target[@]}" --skip-vault) || fail "supabase db push failed."
   ok "Migrations applied (supabase/seed.sql is not run)"
 }
 
@@ -233,11 +243,10 @@ step_verify() {
     return
   fi
   hosted_tmpdir
-  cat >"$HOSTED_TMP/verify.sql" <<'SQL'
-select jobname, schedule, active from cron.job where jobname like 'gr-%' order by jobname;
-select name from vault.secrets where name in ('functions_base_url', 'cron_secret') order by name;
-SQL
-  hosted_sql_file "$HOSTED_TMP/verify.sql" || warn "Could not run the verification queries."
+  echo "select jobname, schedule, active from cron.job where jobname like 'gr-%' order by jobname;" >"$HOSTED_TMP/verify-cron.sql"
+  echo "select name from vault.secrets where name in ('functions_base_url', 'cron_secret') order by name;" >"$HOSTED_TMP/verify-vault.sql"
+  hosted_sql_file "$HOSTED_TMP/verify-cron.sql" || warn "Could not list the cron jobs."
+  hosted_sql_file "$HOSTED_TMP/verify-vault.sql" || warn "Could not list the Vault secrets."
   echo "   Expected cron jobs: gr-apply-schedule gr-archive-sessions gr-commitment-nudges gr-invites-expire gr-kpi-refresh-dirty gr-kpi-refresh-hourly gr-pending-sessions gr-session-reminders gr-table-alerts"
   echo "   Expected Vault secrets: cron_secret functions_base_url"
 }
@@ -350,7 +359,7 @@ CHECKLIST
 validate_settings
 if $dry_run; then info "Dry run: nothing on project $SUPABASE_PROJECT_REF is changed"; fi
 # A dry run still needs the link (db push --dry-run reads the remote migration history).
-if wants link || { $dry_run && wants db; }; then step_link; fi
+if wants link || { $dry_run && wants db && [[ -z "${SUPABASE_DB_URL:-}" ]]; }; then step_link; fi
 for step in db functions secrets vault verify admin auth; do
   if wants "$step"; then "step_$step"; fi
 done
