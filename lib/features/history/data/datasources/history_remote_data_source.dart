@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/curriculum_names.dart';
 import '../../../../core/data/paged_read.dart';
+import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/network/api_guard.dart';
 import '../../../../core/network/postgrest/postgrest.dart';
 import '../../domain/models/history_snapshot.dart';
@@ -66,7 +67,7 @@ class HistoryRemoteDataSource {
       readAllPages(_client.sessionAttendance, filters: answers, order: byId),
       readAllPages(_client.memberAssessments, filters: answers, order: byId),
       readAllPages(_client.memberCommitments, filters: answers, order: byId),
-    ).wait;
+    ).waitUnwrapped;
 
     return HistorySnapshot(
       tableId: tableId,

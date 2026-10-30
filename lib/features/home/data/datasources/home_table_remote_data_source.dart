@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/data/curriculum_names.dart';
 import '../../../../core/data/paged_read.dart';
 import '../../../../core/data/records/records.dart';
+import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/network/api_guard.dart';
 import '../../../../core/network/postgrest/postgrest.dart';
@@ -43,7 +44,7 @@ class HomeTableRemoteDataSource {
       _readTable(tableId, locale: locale),
       _latestCommitment(personId),
       _initialAssessments(personId),
-    ).wait;
+    ).waitUnwrapped;
     final names = rows.$4;
     return HomeMemberRecord(
       table: _toRecord(rows),
@@ -100,7 +101,7 @@ class HomeTableRemoteDataSource {
         ),
       ),
       _curriculum.load(locale: locale),
-    ).wait;
+    ).waitUnwrapped;
   }
 
   Future<List<MemberCommitmentRecord>> _latestCommitment(String? personId) =>

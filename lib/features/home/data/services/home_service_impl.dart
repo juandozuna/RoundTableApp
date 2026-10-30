@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/data_scope.dart';
 import '../../../../core/data/remote_watch.dart';
+import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/user_role.dart';
 import '../../../../core/services/clock/clock_service.dart';
 import '../../../../core/services/logging/app_log.dart';
@@ -83,7 +84,7 @@ class HomeServiceImpl implements HomeService {
       _remote.fetchKpis(organizationId),
       _remote.countPendingInvites(organizationId),
       _remote.fetchTableAlerts(organizationId),
-    ).wait;
+    ).waitUnwrapped;
     return HomeOverview.manager(
       context: context,
       kpis: kpis,

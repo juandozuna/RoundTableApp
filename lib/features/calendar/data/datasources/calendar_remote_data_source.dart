@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/paged_read.dart';
 import '../../../../core/data/records/records.dart';
+import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/session_status.dart';
 import '../../../../core/models/user_role.dart';
 import '../../../../core/network/postgrest/postgrest.dart';
@@ -90,7 +91,7 @@ class CalendarRemoteDataSource {
         },
         order: [PostgrestOrder.asc(PostgrestColumns.scheduledAt), ..._byId],
       ),
-    ).wait;
+    ).waitUnwrapped;
 
     final tablesById = {for (final table in tables) table.id: table};
     final locationNames = {for (final l in locations) l.id: l.name};

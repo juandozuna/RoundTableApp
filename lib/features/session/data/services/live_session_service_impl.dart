@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/data/data_scope.dart';
 import '../../../../core/data/records/records.dart';
 import '../../../../core/data/remote_watch.dart';
+import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/session_status.dart';
 import '../../../../core/services/clock/clock_service.dart';
 import '../../../settings/domain/models/content_language.dart';
@@ -75,7 +76,7 @@ class LiveSessionServiceImpl implements LiveSessionService {
       _reads.organization(table.organizationId),
       _reads.questions(session.valueId),
       _reads.roster(table.id),
-    ).wait;
+    ).waitUnwrapped;
     final (
       attendance,
       assessments,
@@ -93,7 +94,7 @@ class LiveSessionServiceImpl implements LiveSessionService {
               tableId: table.id,
               valueId: followUpValueId,
             ),
-    ).wait;
+    ).waitUnwrapped;
 
     final text = await _curriculumText(
       locale: await language.code(),
