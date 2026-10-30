@@ -1,7 +1,9 @@
 /// Seeded users of the local stack (api-contract.md §1). Referenced only from
 /// code guarded by `AppConfig.devAuthCompiledIn`, so release builds drop them.
 abstract final class DevUsers {
-  static const String password = 'dev-password-123';
+  // Folded at compile time: release builds (DEV_AUTH unset) contain no password.
+  static const String password =
+      bool.fromEnvironment('DEV_AUTH') ? 'dev-password-123' : '';
 
   static const List<DevUser> accounts = [
     DevUser(email: 'admin@dev.local', label: 'Administrador'),
