@@ -1,42 +1,21 @@
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/sync/data/sync_database.dart';
-import '../../../../core/sync/data/sync_schema.dart';
-
-/// Reads the synced content languages and the device's choice from the local
-/// database (ADR 0017). Never touches the network.
+/// Keeps the content language chosen on this device (ADR 0017). Never touches
+/// the network; the list of available languages comes from the remote data
+/// source.
 @lazySingleton
 class ContentLanguageLocalDataSource {
-  ContentLanguageLocalDataSource(this._database);
+  ContentLanguageLocalDataSource(this._prefs);
 
-  final SyncDatabase _database;
+  /// Shared with whatever resolves curriculum text for the chosen language.
+  static const String selectedKey = 'settings.content_language';
 
-  static const String _languagesSql =
-      '''
-SELECT l.code, l.name, l.is_default,
-  (SELECT ${CoreSyncTables.valueColumn} FROM ${CoreSyncTables.localSyncState}
-     WHERE id = '${CoreSyncTables.contentLocaleKey}') AS selected
-FROM content_locales l WHERE l.status = 'active'
-ORDER BY l.is_default DESC, l.code''';
+  final SharedPreferencesAsync _prefs;
 
-  Stream<List<Map<String, Object?>>> watchLanguages() =>
-      _database.powerSync.watch(_languagesSql);
+  Future<String?> readSelected() => _prefs.getString(selectedKey);
 
-  Future<void> saveSelected(String code) =>
-      _database.powerSync.writeTransaction((tx) async {
-        await tx.execute(
-          'DELETE FROM ${CoreSyncTables.localSyncState} WHERE id = ?',
-          [CoreSyncTables.contentLocaleKey],
-        );
-        await tx.execute(
-          'INSERT INTO ${CoreSyncTables.localSyncState} '
-          '(id, ${CoreSyncTables.keyColumn}, ${CoreSyncTables.valueColumn}) '
-          'VALUES (?, ?, ?)',
-          [
-            CoreSyncTables.contentLocaleKey,
-            CoreSyncTables.contentLocaleKey,
-            code,
-          ],
-        );
-      });
+  Future<void> saveSelected(String code) => _prefs.setString(selectedKey, code);
+
+  Future<void> clearSelected() => _prefs.remove(selectedKey);
 }
