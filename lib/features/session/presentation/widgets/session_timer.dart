@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/build_context_x.dart';
+import '../../../../core/services/clock/clock_service.dart';
+import '../../../../core/services/clock/system_clock_service.dart';
 import '../../../../core/theme/app_spacing.dart';
 
 /// Elapsed meeting time against the table's limit. Informative only: it
@@ -13,11 +15,15 @@ class SessionTimer extends StatefulWidget {
     required this.startedAt,
     required this.limitMinutes,
     this.endedAt,
+    this.clock = const SystemClockService(),
   });
 
   final DateTime? startedAt;
   final DateTime? endedAt;
   final int limitMinutes;
+
+  /// Source of "now" while the session is running; replaced in tests.
+  final ClockService clock;
 
   @override
   State<SessionTimer> createState() => _SessionTimerState();
@@ -44,7 +50,7 @@ class _SessionTimerState extends State<SessionTimer> {
   Duration get _elapsed {
     final started = widget.startedAt;
     if (started == null) return Duration.zero;
-    final end = widget.endedAt ?? DateTime.now().toUtc();
+    final end = widget.endedAt ?? widget.clock.nowUtc();
     final elapsed = end.difference(started);
     return elapsed.isNegative ? Duration.zero : elapsed;
   }

@@ -422,6 +422,20 @@ void main() {
     expect(find.text('La mesa está en:'), findsNothing);
   });
 
+  testWidgets('header fits a very long elapsed time at phone width', (
+    tester,
+  ) async {
+    await pumpMemberFlow(
+      tester,
+      view: buildView(buildSession()),
+      flowCubit: flowCubit,
+      size: const Size(320, 900),
+      clock: FixtureClock(fixtureNow.add(const Duration(days: 40))),
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.byType(MemberRoomHeader), findsOneWidget);
+  });
+
   testWidgets('keeps a readable column on tablets', (tester) async {
     await pumpMemberFlow(
       tester,

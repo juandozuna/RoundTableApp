@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/build_context_x.dart';
+import '../../../../../core/services/clock/clock_service.dart';
+import '../../../../../core/services/clock/system_clock_service.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
@@ -33,9 +35,17 @@ import 'widgets/reflection_panel.dart';
 /// lives here for their own answers ("Mis respuestas", ADR 0014), with
 /// [embedded] set so the host supplies the page chrome.
 class MemberFlowView extends StatefulWidget {
-  const MemberFlowView({super.key, required this.view, this.embedded = false});
+  const MemberFlowView({
+    super.key,
+    required this.view,
+    this.embedded = false,
+    this.clock = const SystemClockService(),
+  });
 
   final SessionView view;
+
+  /// Source of "now" for the elapsed-time timer; replaced in tests.
+  final ClockService clock;
 
   /// Rendered inside the facilitator's tab: no scaffold, no room header.
   final bool embedded;
@@ -140,7 +150,7 @@ class _MemberFlowViewState extends State<MemberFlowView> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: MemberRoomHeader(view: widget.view),
+              child: MemberRoomHeader(view: widget.view, clock: widget.clock),
             ),
             const SizedBox(height: AppSpacing.sm),
             Expanded(child: SingleChildScrollView(child: content)),

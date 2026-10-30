@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/extensions/build_context_x.dart';
+import '../../../../../../core/services/clock/clock_service.dart';
+import '../../../../../../core/services/clock/system_clock_service.dart';
 import '../../../../../../core/theme/app_spacing.dart';
 import '../../../../domain/models/facilitator_stage.dart';
 import '../../../widgets/session_connection_pill.dart';
@@ -11,9 +13,14 @@ import 'member_peers_strip.dart';
 /// Presence strip of the member phone: connection, "La mesa está en: …" (or
 /// "A tu ritmo" when self-paced), elapsed time and who is at the table.
 class MemberRoomHeader extends StatelessWidget {
-  const MemberRoomHeader({super.key, required this.view});
+  const MemberRoomHeader({
+    super.key,
+    required this.view,
+    this.clock = const SystemClockService(),
+  });
 
   final SessionView view;
+  final ClockService clock;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +33,13 @@ class MemberRoomHeader extends StatelessWidget {
           children: [
             Flexible(child: SessionConnectionPill(view: view)),
             const Spacer(),
-            SessionTimer(
-              startedAt: session.session.startedAt,
-              endedAt: session.session.endedAt,
-              limitMinutes: session.table.durationMinutes,
+            Flexible(
+              child: SessionTimer(
+                startedAt: session.session.startedAt,
+                endedAt: session.session.endedAt,
+                limitMinutes: session.table.durationMinutes,
+                clock: clock,
+              ),
             ),
           ],
         ),
