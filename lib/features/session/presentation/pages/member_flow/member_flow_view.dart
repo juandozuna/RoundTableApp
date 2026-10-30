@@ -14,6 +14,7 @@ import '../../../domain/models/member_flow.dart';
 import '../../../domain/models/member_step.dart';
 import '../../../session_routes.dart';
 import '../../widgets/session_formatters.dart';
+import '../../widgets/session_write_error_text.dart';
 import '../session/cubit/session_cubit.dart';
 import '../session/cubit/session_state.dart';
 import 'cubit/member_flow_cubit.dart';
@@ -112,7 +113,11 @@ class _MemberFlowViewState extends State<MemberFlowView> {
     if (state.failure != null) {
       AppToast.show(
         context,
-        l10n.sessionMemberToastFailed,
+        sessionWriteErrorText(
+          l10n,
+          state.failure!,
+          fallback: l10n.sessionMemberToastFailed,
+        ),
         kind: AppToastKind.error,
       );
     } else if (state.justSaved != null) {
