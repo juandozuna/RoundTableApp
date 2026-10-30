@@ -8,7 +8,6 @@ class AppConfig {
   const AppConfig({
     required this.supabaseUrl,
     required this.supabaseAnonKey,
-    required this.powerSyncUrl,
     required this.devAuthEnabled,
     required this.environment,
     this.authMethods = defaultAuthMethods,
@@ -19,7 +18,6 @@ class AppConfig {
   factory AppConfig.fromEnvironment() => AppConfig(
     supabaseUrl: _supabaseUrl,
     supabaseAnonKey: _supabaseAnonKey,
-    powerSyncUrl: _powerSyncUrl,
     devAuthEnabled: devAuthCompiledIn,
     environment: AppEnvironment.parse(_appEnv),
     authMethods: _authMethods,
@@ -40,7 +38,6 @@ class AppConfig {
 
   static const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-  static const _powerSyncUrl = String.fromEnvironment('POWERSYNC_URL');
   static const _errorReportUrl = String.fromEnvironment('ERROR_REPORT_URL');
   static const _authMethods = String.fromEnvironment(
     authMethodsKey,
@@ -64,7 +61,6 @@ class AppConfig {
 
   final String supabaseUrl;
   final String supabaseAnonKey;
-  final String powerSyncUrl;
   final bool devAuthEnabled;
   final AppEnvironment environment;
 
@@ -79,8 +75,6 @@ class AppConfig {
 
   bool get hasErrorReporting =>
       Uri.tryParse(errorReportUrl)?.hasScheme ?? false;
-
-  bool get hasPowerSync => powerSyncUrl.isNotEmpty;
 
   bool get isProduction => environment == AppEnvironment.production;
 

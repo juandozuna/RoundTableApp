@@ -14,7 +14,6 @@ class MockGoTrue extends Mock implements supabase.GoTrueClient {}
 const _config = AppConfig(
   supabaseUrl: 'http://localhost',
   supabaseAnonKey: 'anon',
-  powerSyncUrl: '',
   devAuthEnabled: false,
   environment: AppEnvironment.local,
 );
