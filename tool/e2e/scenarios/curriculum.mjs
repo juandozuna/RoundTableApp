@@ -171,7 +171,7 @@ export async function curriculum(browser) {
     await member.click('Ajustes', { role: 'button' });
     await member.click('English', { role: 'button' });
     await member.click('Inicio', { role: 'button' });
-    check('member: switching back to English is immediate and works offline', await member.seen(/Valor 4 · E2E Responsibility/, 20_000));
+    check('member: switching back to English shows the English texts again', await member.seen(/Valor 4 · E2E Responsibility/, 20_000));
   } finally {
     await member.close();
   }
