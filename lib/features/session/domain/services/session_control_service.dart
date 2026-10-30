@@ -5,13 +5,13 @@ enum ControlDelivery {
   /// Sent now through the sessions function; members see it live.
   online,
 
-  /// Saved on the device (no connection); uploads when back online.
+  /// Saved on the device to upload later. Online-only writes never return
+  /// it; it is the seam of a future outbox.
   savedOnDevice,
 }
 
-/// Facilitator controls over today's session. Online they go through the
-/// `sessions` function (push, audit); offline the same change is saved
-/// locally and uploaded with the rest (verbal-guide mode).
+/// Facilitator controls over today's session, through the `sessions`
+/// function (push, audit). Offline they fail with `SessionWriteFailure`.
 abstract interface class SessionControlService {
   Future<ControlDelivery> open(String sessionId);
 

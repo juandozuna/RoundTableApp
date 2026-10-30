@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/models/session_status.dart';
@@ -17,7 +16,9 @@ import '../local/session_sync_schema.dart';
 /// Reads and writes the session-domain tables in the local PowerSync
 /// database through Drift. Writes queue an upload automatically (PowerSync
 /// triggers); this class never touches the network.
-@lazySingleton
+///
+/// Unused and unregistered since the online-only data layer (ADR 0019); kept
+/// until the PowerSync/Drift removal deletes it.
 class SessionLocalDataSource {
   SessionLocalDataSource(this._db, this._sync);
 
