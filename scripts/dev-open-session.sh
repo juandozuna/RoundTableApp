@@ -6,7 +6,7 @@
 # Idempotent. It also wipes whatever a previous run captured for that session (attendance,
 # follow-up and assessment scores, reflection answers, commitments, follow-up reports made in it),
 # drops the session the server scheduled after it was closed, and rewinds the table's current value.
-# Changes go through Postgres, so PowerSync replicates them to connected devices.
+# Changes go through Postgres; connected screens pick them up on their next refresh.
 #
 #   bash scripts/dev-open-session.sh
 set -euo pipefail

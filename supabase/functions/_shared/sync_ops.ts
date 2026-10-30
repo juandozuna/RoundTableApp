@@ -1,5 +1,5 @@
-// PowerSync upload batch normalization (pure). The client's uploadData sends CrudEntry objects;
-// we accept both PowerSync's JSON shape ({op, type, id, data}) and ours ({op, table, id, data}).
+// Upload batch normalization (pure). Clients send {op, table, id, data}; the {op, type, id, data}
+// CrudEntry shape of the former PowerSync client is still accepted.
 import { ApiError } from "./errors.ts";
 import { isUuid, scoreError } from "./validation.ts";
 
@@ -80,7 +80,7 @@ export function normalizeBatch(body: unknown): NormalizedBatch {
     for (const [key, value] of Object.entries(rawData)) {
       if (key !== "id" && !SERVER_COLUMNS.has(key)) data[key] = value;
     }
-    // PowerSync stores integers in SQLite; scores may arrive as numeric strings.
+    // SQLite-backed clients may send scores as numeric strings.
     if (table === "member_assessments" && "score" in data) {
       const score = typeof data.score === "string" ? Number(data.score) : data.score;
       const error = scoreError(score);

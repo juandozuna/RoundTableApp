@@ -5,7 +5,7 @@
 #
 # Reads deploy/hosted.env (template: deploy/hosted.env.example), never the local `.env`, and passes
 # every `String.fromEnvironment` key of lib/core/config/app_config.dart as a --dart-define:
-#   SUPABASE_URL, SUPABASE_ANON_KEY, POWERSYNC_URL, APP_ENV, DEV_AUTH (always false),
+#   SUPABASE_URL, SUPABASE_ANON_KEY, APP_ENV, DEV_AUTH (always false),
 #   AUTH_METHODS (comma list of email,google,apple,facebook; default email),
 #   ERROR_REPORT_URL, FIREBASE_API_KEY, FIREBASE_APP_ID, FIREBASE_MESSAGING_SENDER_ID,
 #   FIREBASE_PROJECT_ID, FIREBASE_VAPID_KEY
@@ -33,8 +33,6 @@ load_hosted_env
 
 [[ "${DEV_AUTH:-false}" == "false" ]] || fail "DEV_AUTH must not be enabled in a hosted build (it compiles in the email + password dev sign-in). Remove it from ${hosted_env_file#"$repo_root"/}."
 require_https_url SUPABASE_URL
-require_https_url POWERSYNC_URL
-POWERSYNC_URL="${POWERSYNC_URL%/}"
 case "$APP_ENV" in local|staging|production) ;; *) fail "APP_ENV must be local, staging or production (got '$APP_ENV')." ;; esac
 AUTH_METHODS="${AUTH_METHODS:-email}"
 AUTH_METHODS="${AUTH_METHODS// /}"
@@ -65,7 +63,6 @@ fi
 defines=(
   "--dart-define=SUPABASE_URL=$SUPABASE_URL"
   "--dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
-  "--dart-define=POWERSYNC_URL=$POWERSYNC_URL"
   "--dart-define=APP_ENV=$APP_ENV"
   "--dart-define=DEV_AUTH=false"
   "--dart-define=AUTH_METHODS=$AUTH_METHODS"
@@ -103,11 +100,11 @@ JS
 fi
 
 # Post-build sanity checks.
-for file in index.html main.dart.js flutter_bootstrap.js sqlite3.wasm powersync_db.worker.js firebase-messaging-sw.js _headers _redirects 404.html; do
+for file in index.html main.dart.js flutter_bootstrap.js firebase-messaging-sw.js _headers _redirects 404.html; do
   [[ -f "build/web/$file" ]] || warn "build/web/$file is missing."
 done
 if ! grep -qF "$SUPABASE_URL" build/web/main.dart.js; then
   warn "The Supabase URL was not found in build/web/main.dart.js; check the --dart-define values."
 fi
-ok "Built build/web ($(du -sh build/web | cut -f1)) for $SUPABASE_URL, PowerSync $POWERSYNC_URL, DEV_AUTH=false, AUTH_METHODS=$AUTH_METHODS"
+ok "Built build/web ($(du -sh build/web | cut -f1)) for $SUPABASE_URL, DEV_AUTH=false, AUTH_METHODS=$AUTH_METHODS"
 echo "   Deploy: see docs/deployment.md (Cloudflare Pages: npx wrangler pages deploy build/web --project-name <name>)"

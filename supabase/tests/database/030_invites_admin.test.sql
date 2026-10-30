@@ -107,7 +107,7 @@ select is((select phone from public.people where auth_user_id = pg_temp.id('t:ne
           'profile edits are applied on redeem');
 select is((select auth_user_id from public.table_members
            where person_id = (select (j->'person'->>'id')::uuid from t_redeem)), pg_temp.id('t:new-user'),
-          'roster copy carries the bound auth user (PowerSync bucket parameter)');
+          'roster copy carries the bound auth user (denormalized for RLS and client reads)');
 select is((api.invite_redeem(pg_temp.id('t:new-user'), null,
            jsonb_build_object('code', (select j->>'code' from t_invite))))->>'already_redeemed', 'true',
           're-redeeming with the same account is idempotent');
