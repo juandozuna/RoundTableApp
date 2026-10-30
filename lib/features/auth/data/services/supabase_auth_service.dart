@@ -10,11 +10,13 @@ import '../../domain/models/auth_failure.dart';
 import '../../domain/models/auth_provider.dart';
 import '../../domain/models/signed_in_user.dart';
 import '../../domain/services/auth_service.dart';
+import 'auth_failure_mapper.dart';
+import 'auth_redirect.dart';
 
 /// [AuthService] over Supabase Auth OAuth (Google, Apple, Facebook).
 ///
-/// Mobile returns through the `io.goldroundtables.app://login-callback`
-/// deep link; web comes back to the app URL. Native Google/Apple SDK flows
+/// Mobile returns through the [AuthRedirect.mobile] deep link; web comes back
+/// to the app URL. Native Google/Apple SDK flows
 /// would need extra plugins and are not wired; the browser flow works for
 /// all three providers.
 @LazySingleton(as: AuthService)
@@ -33,9 +35,6 @@ class SupabaseAuthService implements AuthService {
       );
     }
   }
-
-  static const String mobileRedirect =
-      'io.goldroundtables.app://login-callback';
 
   final AppConfig _config;
   final StreamController<AuthFailure> _failures =
@@ -88,7 +87,7 @@ class SupabaseAuthService implements AuthService {
     try {
       final launched = await auth.signInWithOAuth(
         _oauthProvider(provider),
-        redirectTo: _redirectTo(returnPath),
+        redirectTo: AuthRedirect.to(returnPath),
         authScreenLaunchMode: kIsWeb
             ? supabase.LaunchMode.platformDefault
             : supabase.LaunchMode.externalApplication,
@@ -106,12 +105,6 @@ class SupabaseAuthService implements AuthService {
     } on supabase.AuthException catch (error) {
       throw _failureFrom(error);
     }
-  }
-
-  String _redirectTo(String? returnPath) {
-    if (!kIsWeb) return mobileRedirect;
-    final path = returnPath ?? '/';
-    return '${Uri.base.origin}/#$path';
   }
 
   static supabase.OAuthProvider _oauthProvider(AuthProvider provider) =>
@@ -137,22 +130,8 @@ class SupabaseAuthService implements AuthService {
     );
   }
 
-  static AuthFailure _failureFrom(Object error) {
-    final text = error is supabase.AuthException
-        ? '${error.message} ${error.code ?? ''}'.toLowerCase()
-        : error.toString().toLowerCase();
-    if (text.contains('access_denied') ||
-        text.contains('cancel') ||
-        text.contains('denied')) {
-      return AuthFailure(AuthFailureKind.cancelled, message: '$error');
-    }
-    if (text.contains('socket') ||
-        text.contains('network') ||
-        text.contains('failed host lookup')) {
-      return AuthFailure(AuthFailureKind.offline, message: '$error');
-    }
-    return AuthFailure(AuthFailureKind.unknown, message: '$error');
-  }
+  static AuthFailure _failureFrom(Object error) =>
+      AuthFailureMapper.from(error);
 
   /// On web, a provider that was cancelled sends the person back with
   /// `?error=access_denied` in the URL.
@@ -173,7 +152,10 @@ class SupabaseAuthService implements AuthService {
     final error = params['error'];
     if (error == null) return null;
     return _failureFrom(
-      supabase.AuthException(params['error_description'] ?? error, code: error),
+      supabase.AuthException(
+        params['error_description'] ?? error,
+        code: params['error_code'] ?? error,
+      ),
     );
   }
 }

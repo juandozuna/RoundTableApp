@@ -136,6 +136,8 @@ import '../../features/auth/data/datasources/account_remote_data_source.dart'
 import '../../features/auth/data/services/access_session_service_impl.dart'
     as _i301;
 import '../../features/auth/data/services/account_service_impl.dart' as _i958;
+import '../../features/auth/data/services/auth_methods_service_impl.dart'
+    as _i309;
 import '../../features/auth/data/services/auth_sign_out_service.dart' as _i854;
 import '../../features/auth/data/services/dev_auth_service_impl.dart' as _i43;
 import '../../features/auth/data/services/local_data_service_impl.dart'
@@ -145,12 +147,16 @@ import '../../features/auth/data/services/persisted_session_context_service.dart
 import '../../features/auth/data/services/shared_prefs_access_store.dart'
     as _i481;
 import '../../features/auth/data/services/supabase_auth_service.dart' as _i738;
+import '../../features/auth/data/services/supabase_email_auth_service.dart'
+    as _i794;
 import '../../features/auth/domain/services/access_session_service.dart'
     as _i656;
 import '../../features/auth/domain/services/access_store.dart' as _i869;
 import '../../features/auth/domain/services/account_service.dart' as _i887;
+import '../../features/auth/domain/services/auth_methods_service.dart' as _i530;
 import '../../features/auth/domain/services/auth_service.dart' as _i59;
 import '../../features/auth/domain/services/dev_auth_service.dart' as _i82;
+import '../../features/auth/domain/services/email_auth_service.dart' as _i631;
 import '../../features/auth/domain/services/local_data_service.dart' as _i785;
 import '../../features/auth/domain/use_cases/access/refresh_access_use_case.dart'
     as _i648;
@@ -160,8 +166,18 @@ import '../../features/auth/domain/use_cases/access/watch_access_state_use_case.
     as _i662;
 import '../../features/auth/domain/use_cases/sign_in/create_dev_account_use_case.dart'
     as _i569;
+import '../../features/auth/domain/use_cases/sign_in/create_email_account_use_case.dart'
+    as _i746;
+import '../../features/auth/domain/use_cases/sign_in/get_enabled_auth_methods_use_case.dart'
+    as _i947;
+import '../../features/auth/domain/use_cases/sign_in/request_password_reset_use_case.dart'
+    as _i631;
+import '../../features/auth/domain/use_cases/sign_in/set_new_password_use_case.dart'
+    as _i863;
 import '../../features/auth/domain/use_cases/sign_in/sign_in_with_dev_password_use_case.dart'
     as _i314;
+import '../../features/auth/domain/use_cases/sign_in/sign_in_with_email_use_case.dart'
+    as _i767;
 import '../../features/auth/domain/use_cases/sign_in/sign_in_with_provider_use_case.dart'
     as _i492;
 import '../../features/auth/domain/use_cases/sign_in/watch_auth_failures_use_case.dart'
@@ -173,6 +189,8 @@ import '../../features/auth/domain/use_cases/sign_out/sign_out_and_erase_local_d
 import '../../features/auth/domain/use_cases/sign_out/sign_out_use_case.dart'
     as _i349;
 import '../../features/auth/presentation/cubit/access_cubit.dart' as _i660;
+import '../../features/auth/presentation/pages/reset_password/cubit/reset_password_cubit.dart'
+    as _i259;
 import '../../features/auth/presentation/pages/sign_in/cubit/sign_in_cubit.dart'
     as _i596;
 import '../../features/auth/presentation/pages/sign_out/cubit/sign_out_cubit.dart'
@@ -558,6 +576,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i460.SharedPreferencesAsync>(),
       ),
     );
+    gh.singleton<_i631.EmailAuthService>(
+      () => _i794.SupabaseEmailAuthService(gh<_i609.AppConfig>()),
+    );
     gh.lazySingleton<_i914.ClipboardService>(
       () => _i41.FlutterClipboardService(),
     );
@@ -668,6 +689,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i627.ReadClipboardTextUseCase>(
       () => _i627.ReadClipboardTextUseCase(gh<_i914.ClipboardService>()),
     );
+    gh.lazySingleton<_i530.AuthMethodsService>(
+      () => _i309.AuthMethodsServiceImpl(gh<_i609.AppConfig>()),
+    );
     gh.factory<_i200.OpenWhatsAppUseCase>(
       () => _i200.OpenWhatsAppUseCase(gh<_i162.ExternalLinkService>()),
     );
@@ -685,6 +709,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i648.ShareInviteTextUseCase>(
       () => _i648.ShareInviteTextUseCase(gh<_i245.ShareService>()),
+    );
+    gh.factory<_i947.GetEnabledAuthMethodsUseCase>(
+      () => _i947.GetEnabledAuthMethodsUseCase(gh<_i530.AuthMethodsService>()),
     );
     gh.lazySingleton<_i428.SignOutService>(
       () => _i854.AuthSignOutService(gh<_i59.AuthService>()),
@@ -728,6 +755,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i17.WatchConnectivityUseCase>(
       () => _i17.WatchConnectivityUseCase(gh<_i1015.ConnectivityService>()),
     );
+    gh.factory<_i746.CreateEmailAccountUseCase>(
+      () => _i746.CreateEmailAccountUseCase(
+        gh<_i631.EmailAuthService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
+    gh.factory<_i631.RequestPasswordResetUseCase>(
+      () => _i631.RequestPasswordResetUseCase(
+        gh<_i631.EmailAuthService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
+    gh.factory<_i863.SetNewPasswordUseCase>(
+      () => _i863.SetNewPasswordUseCase(
+        gh<_i631.EmailAuthService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
+    gh.factory<_i767.SignInWithEmailUseCase>(
+      () => _i767.SignInWithEmailUseCase(
+        gh<_i631.EmailAuthService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.edgeFunctionsDio(
         gh<_i609.AppConfig>(),
@@ -750,14 +801,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1002.AppShellCubit>(
       () => _i1002.AppShellCubit(gh<_i434.WatchSessionContextUseCase>()),
-    );
-    gh.factory<_i596.SignInCubit>(
-      () => _i596.SignInCubit(
-        gh<_i492.SignInWithProviderUseCase>(),
-        gh<_i314.SignInWithDevPasswordUseCase>(),
-        gh<_i569.CreateDevAccountUseCase>(),
-        gh<_i563.WatchAuthFailuresUseCase>(),
-      ),
     );
     gh.lazySingleton<_i558.InviteDirectoryRemoteDataSource>(
       () => _i558.InviteDirectoryRemoteDataSource(
@@ -830,6 +873,24 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i215.SessionRemoteDataSource(
         gh<_i946.SessionSyncClient>(),
         gh<_i625.SessionControlClient>(),
+      ),
+    );
+    gh.factory<_i259.ResetPasswordCubit>(
+      () => _i259.ResetPasswordCubit(
+        gh<_i863.SetNewPasswordUseCase>(),
+        gh<_i349.SignOutUseCase>(),
+      ),
+    );
+    gh.factory<_i596.SignInCubit>(
+      () => _i596.SignInCubit(
+        gh<_i492.SignInWithProviderUseCase>(),
+        gh<_i767.SignInWithEmailUseCase>(),
+        gh<_i746.CreateEmailAccountUseCase>(),
+        gh<_i631.RequestPasswordResetUseCase>(),
+        gh<_i314.SignInWithDevPasswordUseCase>(),
+        gh<_i569.CreateDevAccountUseCase>(),
+        gh<_i563.WatchAuthFailuresUseCase>(),
+        gh<_i947.GetEnabledAuthMethodsUseCase>(),
       ),
     );
     gh.lazySingleton<_i838.InviteDirectoryService>(
@@ -1083,12 +1144,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
-    gh.lazySingleton<_i393.AccessRedirectGuard>(
-      () => _i393.AccessRedirectGuard(
-        gh<_i997.AuthStateSource>(),
-        gh<_i656.AccessSessionService>(),
-      ),
-    );
     gh.lazySingleton<_i785.LocalDataService>(
       () => _i375.LocalDataServiceImpl(gh<_i924.SyncDatabase>()),
     );
@@ -1122,6 +1177,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i141.CalendarRemoteDataSource>(),
         gh<_i508.ClockService>(),
         gh<_i640.TableWallClock>(),
+      ),
+    );
+    gh.lazySingleton<_i393.AccessRedirectGuard>(
+      () => _i393.AccessRedirectGuard(
+        gh<_i997.AuthStateSource>(),
+        gh<_i656.AccessSessionService>(),
+        gh<_i631.EmailAuthService>(),
       ),
     );
     gh.factory<_i710.TableFormCubit>(

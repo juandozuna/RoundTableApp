@@ -11,7 +11,7 @@ finds controls by their visible Spanish text. Screenshots of key states land in 
 ## Run
 
 ```bash
-bash scripts/dev-up.sh --local-web      # stack + web build with DEV_AUTH=true (repo root)
+bash scripts/dev-up.sh --local-web      # stack + web build with DEV_AUTH=true and every AUTH_METHODS (repo root)
 bash scripts/smoke.sh                   # optional: stack sanity check
 
 cd tool/e2e
@@ -31,7 +31,7 @@ Run `scripts/dev-reset.sh --yes` again afterwards to remove what they created.
 
 | Name | Covers |
 |---|---|
-| `sign-in` | Dev sign-in as admin, facilitator and three members: home, navigation tabs, context chip; coordinator role picker and context switching; sign-out; redirect guard for signed-out visitors and "Sin permiso" for a member on `/admin` |
+| `sign-in` | Dev sign-in as admin, facilitator and three members: home, navigation tabs, context chip; coordinator role picker and context switching; sign-out; redirect guard for signed-out visitors and "Sin permiso" for a member on `/admin`; email + password form: validation, sign-up (signed in at once), wrong password, sign-in, reset request (ADR 0018) |
 | `invites` | Facilitator and coordinator create invitations; a brand-new account previews and redeems one and lands in the invited context; expired, revoked, used and unknown codes; role matrix (ADR 0016): denied API cases (`invite_role_forbidden`, `invite_table_forbidden`) and locked role options in the form per inviter |
 | `live-session` | Two browsers (facilitator + member): open session, attendance, follow-up, reflection, score 5 blocked, a `person` question answered by picking a table member (RF-54) or typing another name, commitment by the member **and** the facilitator-as-participant, draft survives a reload, close answers, close session, summaries, server rows, KPIs afterwards |
 | `offline` | Member goes offline mid-session and answers everything; facilitator closes the session; member reconnects with uploads held back (the downloaded server state must not overwrite unsynced rows), then uploads → rows flagged `synced_late` and "Sincronizado tarde" |

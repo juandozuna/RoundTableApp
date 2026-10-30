@@ -22,6 +22,7 @@ if $build; then
   load_supabase_keys
   : "${POWERSYNC_URL:=http://127.0.0.1:${POWERSYNC_PORT}}"
   : "${DEV_AUTH:=true}"
+  : "${AUTH_METHODS:=email,google,apple,facebook}"
   : "${APP_ENV:=local}"
   info "flutter build web (${WEB_BUILD_MODE:-release}) → build/web"
   defines=(
@@ -29,6 +30,7 @@ if $build; then
     "--dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
     "--dart-define=POWERSYNC_URL=$POWERSYNC_URL"
     "--dart-define=DEV_AUTH=$DEV_AUTH"
+    "--dart-define=AUTH_METHODS=$AUTH_METHODS"
     "--dart-define=APP_ENV=$APP_ENV"
   )
   for name in FIREBASE_API_KEY FIREBASE_APP_ID FIREBASE_WEB_APP_ID FIREBASE_MESSAGING_SENDER_ID FIREBASE_PROJECT_ID FIREBASE_STORAGE_BUCKET FIREBASE_VAPID_KEY; do

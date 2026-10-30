@@ -19,6 +19,15 @@ enum AppFieldKind {
   shortText,
   inviteCode,
 
+  /// The password of an existing account: required, never length-checked.
+  currentPassword,
+
+  /// A password being chosen: at least [AppLimits.passwordMinLength].
+  newPassword,
+
+  /// Repeat of [newPassword]; pass `matchValue` to the validator.
+  confirmPassword,
+
   /// Free-text filter boxes: no capitalization, no validation.
   search;
 
@@ -27,7 +36,10 @@ enum AppFieldKind {
     AppFieldKind.phone => TextInputType.phone,
     AppFieldKind.personName => TextInputType.name,
     AppFieldKind.shortText => TextInputType.multiline,
-    AppFieldKind.inviteCode => TextInputType.visiblePassword,
+    AppFieldKind.inviteCode ||
+    AppFieldKind.currentPassword ||
+    AppFieldKind.newPassword ||
+    AppFieldKind.confirmPassword => TextInputType.visiblePassword,
     AppFieldKind.text || AppFieldKind.search => TextInputType.text,
   };
 
@@ -37,6 +49,9 @@ enum AppFieldKind {
     AppFieldKind.inviteCode => TextCapitalization.characters,
     AppFieldKind.email ||
     AppFieldKind.phone ||
+    AppFieldKind.currentPassword ||
+    AppFieldKind.newPassword ||
+    AppFieldKind.confirmPassword ||
     AppFieldKind.search => TextCapitalization.none,
   };
 
@@ -44,8 +59,17 @@ enum AppFieldKind {
     AppFieldKind.email => const [AutofillHints.email],
     AppFieldKind.phone => const [AutofillHints.telephoneNumber],
     AppFieldKind.personName => const [AutofillHints.name],
+    AppFieldKind.currentPassword => const [AutofillHints.password],
+    AppFieldKind.newPassword ||
+    AppFieldKind.confirmPassword => const [AutofillHints.newPassword],
     _ => null,
   };
+
+  /// The value is hidden by default and gets a show/hide control.
+  bool get isSecret =>
+      this == AppFieldKind.currentPassword ||
+      this == AppFieldKind.newPassword ||
+      this == AppFieldKind.confirmPassword;
 
   List<TextInputFormatter> get inputFormatters => switch (this) {
     AppFieldKind.phone => [FieldFormatters.phone],
@@ -61,6 +85,9 @@ enum AppFieldKind {
     AppFieldKind.phone => FieldTransformers.phoneE164(raw),
     AppFieldKind.personName => FieldTransformers.personName(raw),
     AppFieldKind.inviteCode => FieldTransformers.inviteCode(raw),
+    AppFieldKind.currentPassword ||
+    AppFieldKind.newPassword ||
+    AppFieldKind.confirmPassword => FieldTransformers.secret(raw),
     AppFieldKind.shortText ||
     AppFieldKind.text ||
     AppFieldKind.search => FieldTransformers.trimmed(raw),
@@ -70,9 +97,12 @@ enum AppFieldKind {
     String? raw, {
     bool required = false,
     int minLength = AppLimits.shortTextMinLength,
+    String? matchValue,
   }) {
     if (required) {
-      final missing = FieldValidators.required(raw);
+      final missing = isSecret
+          ? FieldValidators.requiredSecret(raw)
+          : FieldValidators.required(raw);
       if (missing != null) return missing;
     }
     return switch (this) {
@@ -80,11 +110,15 @@ enum AppFieldKind {
       AppFieldKind.phone => FieldValidators.phone(raw),
       AppFieldKind.personName => FieldValidators.personName(raw),
       AppFieldKind.inviteCode => FieldValidators.inviteCode(raw),
+      AppFieldKind.newPassword => FieldValidators.newPassword(raw),
+      AppFieldKind.confirmPassword => FieldValidators.matches(raw, matchValue),
       AppFieldKind.shortText => FieldValidators.shortText(
         raw,
         minLength: minLength,
       ),
-      AppFieldKind.text || AppFieldKind.search => null,
+      AppFieldKind.currentPassword ||
+      AppFieldKind.text ||
+      AppFieldKind.search => null,
     };
   }
 
@@ -93,11 +127,13 @@ enum AppFieldKind {
     AppLocalizations l10n, {
     bool required = false,
     int minLength = AppLimits.shortTextMinLength,
+    ValueGetter<String?>? matchValue,
   }) {
     return (raw) => validate(
       raw,
       required: required,
       minLength: minLength,
+      matchValue: matchValue?.call(),
     )?.message(l10n, minLength: minLength);
   }
 }

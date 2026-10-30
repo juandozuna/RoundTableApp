@@ -30,6 +30,9 @@ class AppTextFormField extends StatelessWidget {
     this.errorText,
     this.autofocus = false,
     this.dense = false,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.matchValue,
   });
 
   final String name;
@@ -62,6 +65,13 @@ class AppTextFormField extends StatelessWidget {
   /// Compact height for toolbars (search boxes).
   final bool dense;
 
+  /// Hides the characters (passwords); see `AppPasswordFormField`.
+  final bool obscureText;
+  final Widget? suffixIcon;
+
+  /// Current value this field must repeat ([AppFieldKind.confirmPassword]).
+  final ValueGetter<String?>? matchValue;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
@@ -70,7 +80,8 @@ class AppTextFormField extends StatelessWidget {
       controller: controller,
       enabled: enabled,
       autofocus: autofocus,
-      maxLines: maxLines,
+      maxLines: obscureText ? 1 : maxLines,
+      obscureText: obscureText,
       minLines: maxLines > 1 ? 2 : null,
       maxLength: maxLength,
       keyboardType: maxLines > 1 ? TextInputType.multiline : kind.keyboardType,
@@ -88,6 +99,7 @@ class AppTextFormField extends StatelessWidget {
         errorText: errorText,
         errorMaxLines: errorText == null ? null : 3,
         prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+        suffixIcon: suffixIcon,
         isDense: dense ? true : null,
         contentPadding: dense
             ? const EdgeInsets.symmetric(
@@ -100,6 +112,7 @@ class AppTextFormField extends StatelessWidget {
         context.l10n,
         required: required,
         minLength: minLength,
+        matchValue: matchValue,
       ),
       valueTransformer: kind.transform,
     );

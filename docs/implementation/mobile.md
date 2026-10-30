@@ -18,6 +18,7 @@ flutter pub get
 | `SUPABASE_ANON_KEY` | `supabase status -o env` → `ANON_KEY` | same |
 | `POWERSYNC_URL` | `http://10.0.2.2:8080` | `http://127.0.0.1:8080` |
 | `DEV_AUTH` | `true` (local only; tree-shaken when absent) | same |
+| `AUTH_METHODS` | comma list of `email`, `google`, `apple`, `facebook`; default `email` (ADR 0018) | same |
 | `APP_ENV` | `local` \| `staging` \| `production` | same |
 
 `10.0.2.2` is the emulator's alias for the host machine. A physical device needs the host's LAN IP

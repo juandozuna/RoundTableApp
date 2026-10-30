@@ -11,9 +11,12 @@ import 'package:gold_roundtables/core/services/clock/clock_service.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account_context.dart';
 import 'package:gold_roundtables/features/auth/domain/models/account_person.dart';
+import 'package:gold_roundtables/features/auth/domain/models/auth_failure.dart';
 import 'package:gold_roundtables/features/auth/domain/models/person_status.dart';
+import 'package:gold_roundtables/features/auth/domain/models/sign_up_outcome.dart';
 import 'package:gold_roundtables/features/auth/domain/services/access_store.dart';
 import 'package:gold_roundtables/features/auth/domain/services/account_service.dart';
+import 'package:gold_roundtables/features/auth/domain/services/email_auth_service.dart';
 
 class FakeAuthState implements AuthStateSource, AuthTokenProvider {
   FakeAuthState({
@@ -148,4 +151,45 @@ class TestClock implements ClockService {
 
   @override
   DateTime nowUtc() => now;
+}
+
+class FakeEmailAuth implements EmailAuthService {
+  AuthFailure? failure;
+  SignUpOutcome outcome = SignUpOutcome.signedIn;
+  final List<String> calls = [];
+  final StreamController<bool> recoveryController =
+      StreamController<bool>.broadcast();
+  bool recoveryPending = false;
+
+  Future<void> _record(String call) async {
+    calls.add(call);
+    final error = failure;
+    if (error != null) throw error;
+  }
+
+  @override
+  Future<void> signIn(String email, String password) =>
+      _record('signIn:$email:$password');
+
+  @override
+  Future<SignUpOutcome> createAccount(String email, String password) async {
+    await _record('createAccount:$email:$password');
+    return outcome;
+  }
+
+  @override
+  Future<void> requestPasswordReset(
+    String email, {
+    required String returnPath,
+  }) => _record('reset:$email:$returnPath');
+
+  @override
+  Future<void> updatePassword(String newPassword) =>
+      _record('updatePassword:$newPassword');
+
+  @override
+  bool get isPasswordRecoveryPending => recoveryPending;
+
+  @override
+  Stream<bool> watchPasswordRecoveryPending() => recoveryController.stream;
 }

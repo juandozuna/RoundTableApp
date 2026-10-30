@@ -8,8 +8,23 @@ enum AuthFailureKind {
   /// The backend is not configured in this build.
   notConfigured,
 
-  /// Wrong email/password (dev sign-in only).
+  /// Wrong email or password.
   invalidCredentials,
+
+  /// Sign-up with an email that already has an account.
+  emailAlreadyRegistered,
+
+  /// The password is rejected by the server's rules.
+  weakPassword,
+
+  /// Too many emails requested; try again later.
+  rateLimited,
+
+  /// The account exists but its email was never confirmed.
+  emailNotConfirmed,
+
+  /// The emailed link expired or was already used.
+  linkExpired,
 
   unknown,
 }

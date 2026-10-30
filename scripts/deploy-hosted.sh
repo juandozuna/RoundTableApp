@@ -327,6 +327,9 @@ SQL
 
 # Management API (PATCH/GET /v1/projects/{ref}/config/auth). Field names follow the public API
 # reference; they are read back and compared so a mismatch is reported instead of silently ignored.
+# ADR 0018: production signs in with email + password. The Email provider is on, sign-up is open and
+# "Confirm email" is off (mailer_autoconfirm) because the built-in mailer is rate limited, so a new
+# account is signed in immediately. Turn mailer_autoconfirm off once custom SMTP is configured.
 step_auth() {
   info "auth (Management API)"
   local token="${SUPABASE_ACCESS_TOKEN:-}"
@@ -337,7 +340,8 @@ step_auth() {
       site_url: $site, uri_allow_list: $redirects,
       jwt_exp: 3600,
       refresh_token_rotation_enabled: true, security_refresh_token_reuse_interval: 10,
-      external_email_enabled: false
+      external_email_enabled: true, disable_signup: false,
+      mailer_autoconfirm: true, password_min_length: 8
     }')"
   if $dry_run; then
     ok "would PATCH $url with: $(jq -c . <<<"$body")"
@@ -349,7 +353,7 @@ step_auth() {
   api -X PATCH "$url" -d "$body" >/dev/null || fail "PATCH of the Auth config failed (token without access to the project?)."
   local current key mismatch=false
   current="$(api "$url")" || fail "Could not read the Auth config back."
-  for key in site_url uri_allow_list jwt_exp refresh_token_rotation_enabled security_refresh_token_reuse_interval external_email_enabled; do
+  for key in site_url uri_allow_list jwt_exp refresh_token_rotation_enabled security_refresh_token_reuse_interval external_email_enabled disable_signup mailer_autoconfirm password_min_length; do
     if [[ "$(jq -c --arg k "$key" '.[$k]' <<<"$current")" != "$(jq -c --arg k "$key" '.[$k]' <<<"$body")" ]]; then
       warn "Auth setting $key differs from the requested value: $(jq -c --arg k "$key" '.[$k]' <<<"$current")"
       mismatch=true
@@ -373,9 +377,14 @@ Manual steps this script cannot do (dashboard: https://supabase.com/dashboard/pr
 Authentication → URL Configuration
   [ ] Site URL: ${app}
   [ ] Redirect URLs: ${app}, ${app}/**, io.goldroundtables.app://login-callback
-Authentication → Providers (callback URL shown there: ${SUPABASE_URL}/auth/v1/callback)
-  [ ] Google, Apple and Facebook enabled with their client ids / secrets (Apple secret expires in <= 6 months)
-  [ ] Email: "Allow new users to sign up" off (no email sign-in in production)
+      (the password-reset link returns to ${app}/#/nueva-contrasena, covered by ${app}/**)
+Authentication → Providers → Email (ADR 0018: email + password is the production sign-in)
+  [ ] Email provider enabled
+  [ ] "Allow new users to sign up" on (members create their own account)
+  [ ] "Confirm email" OFF for now (the built-in mailer is rate limited; turn it on after custom SMTP)
+  [ ] Minimum password length 8
+Authentication → Providers → Google / Apple / Facebook (only when the build sets AUTH_METHODS to include them)
+  [ ] Client ids / secrets (callback URL shown there: ${SUPABASE_URL}/auth/v1/callback; Apple secret expires in <= 6 months)
 Authentication → Sessions / Settings (docs/implementation/offline-window.md, "Required production Supabase settings")
   [ ] JWT expiry 3600 s (do not raise it)
   [ ] Refresh token rotation on, reuse interval >= 10 s

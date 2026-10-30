@@ -19,6 +19,10 @@ abstract final class FieldValidators {
   static FieldError? required(String? raw) =>
       FieldTransformers.trimmed(raw).isEmpty ? FieldError.required : null;
 
+  /// Passwords keep their spaces, so "required" does not trim them.
+  static FieldError? requiredSecret(String? raw) =>
+      (raw ?? '').isEmpty ? FieldError.required : null;
+
   static FieldError? email(String? raw) {
     final value = FieldTransformers.email(raw);
     if (value.isEmpty) return null;
@@ -50,6 +54,22 @@ abstract final class FieldValidators {
     final value = FieldTransformers.inviteCode(raw);
     if (value.isEmpty) return null;
     return _inviteCode.hasMatch(value) ? null : FieldError.invalidInviteCode;
+  }
+
+  /// A new password: at least [AppLimits.passwordMinLength] characters.
+  /// Not trimmed; spaces are part of a password.
+  static FieldError? newPassword(String? raw) {
+    final value = raw ?? '';
+    if (value.isEmpty) return null;
+    return value.length < AppLimits.passwordMinLength
+        ? FieldError.passwordTooShort
+        : null;
+  }
+
+  /// The confirmation must repeat [original] exactly.
+  static FieldError? matches(String? raw, String? original) {
+    if ((raw ?? '').isEmpty) return null;
+    return raw == original ? null : FieldError.passwordMismatch;
   }
 
   /// Validates a picked score; `null` means "not picked yet".

@@ -652,6 +652,18 @@ abstract class AppLocalizations {
   /// **'El código tiene 6 letras o números.'**
   String get validationInviteCode;
 
+  /// No description provided for @validationPasswordTooShort.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener al menos {min} caracteres.'**
+  String validationPasswordTooShort(int min);
+
+  /// No description provided for @validationPasswordMismatch.
+  ///
+  /// In es, this message translates to:
+  /// **'Las contraseñas no coinciden.'**
+  String get validationPasswordMismatch;
+
   /// No description provided for @navHome.
   ///
   /// In es, this message translates to:
@@ -6229,7 +6241,7 @@ abstract class AppLocalizations {
   /// No description provided for @authBrandBody.
   ///
   /// In es, this message translates to:
-  /// **'Entra con Google, Apple o Facebook. Si te invitaron, usa tu código o escanea el QR y confirma a qué te unes.'**
+  /// **'Entra con tu cuenta. Si te invitaron, usa tu código o escanea el QR y confirma a qué te unes.'**
   String get authBrandBody;
 
   /// No description provided for @authBrandFooter.
@@ -6253,8 +6265,248 @@ abstract class AppLocalizations {
   /// No description provided for @authGateFine.
   ///
   /// In es, this message translates to:
-  /// **'Solo Google, Apple o Facebook. No se usa SMS ni teléfono para entrar.'**
+  /// **'No se usa SMS ni teléfono para entrar.'**
   String get authGateFine;
+
+  /// No description provided for @authGateSubtitleEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu correo y tu contraseña.'**
+  String get authGateSubtitleEmail;
+
+  /// No description provided for @authCreateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu cuenta'**
+  String get authCreateTitle;
+
+  /// No description provided for @authCreateSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa tu correo y elige una contraseña. Si te invitaron, después usa tu código.'**
+  String get authCreateSubtitle;
+
+  /// No description provided for @authResetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recupera tu contraseña'**
+  String get authResetTitle;
+
+  /// No description provided for @authResetSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu correo y te enviamos un enlace para elegir una contraseña nueva.'**
+  String get authResetSubtitle;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get authEmailLabel;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authNewPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña nueva'**
+  String get authNewPasswordLabel;
+
+  /// No description provided for @authConfirmPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Repite la contraseña'**
+  String get authConfirmPasswordLabel;
+
+  /// No description provided for @authPasswordHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo 8 caracteres.'**
+  String get authPasswordHelper;
+
+  /// No description provided for @authSignInAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar'**
+  String get authSignInAction;
+
+  /// No description provided for @authCreateAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get authCreateAction;
+
+  /// No description provided for @authResetAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar enlace'**
+  String get authResetAction;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get authForgotPassword;
+
+  /// No description provided for @authFirstTime.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Primera vez? Crear cuenta'**
+  String get authFirstTime;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tengo cuenta'**
+  String get authHaveAccount;
+
+  /// No description provided for @authBackToSignIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a entrar'**
+  String get authBackToSignIn;
+
+  /// No description provided for @authOrProviders.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get authOrProviders;
+
+  /// No description provided for @authNoticeEmailTakenTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese correo ya tiene una cuenta'**
+  String get authNoticeEmailTakenTitle;
+
+  /// No description provided for @authNoticeEmailTakenDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Entra con tu contraseña o toca «¿Olvidaste tu contraseña?».'**
+  String get authNoticeEmailTakenDetail;
+
+  /// No description provided for @authNoticeWeakPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una contraseña más segura'**
+  String get authNoticeWeakPasswordTitle;
+
+  /// No description provided for @authNoticeWeakPasswordDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa al menos 8 caracteres y evita contraseñas muy comunes.'**
+  String get authNoticeWeakPasswordDetail;
+
+  /// No description provided for @authNoticeRateLimitedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hiciste muchos intentos'**
+  String get authNoticeRateLimitedTitle;
+
+  /// No description provided for @authNoticeRateLimitedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Espera unos minutos e inténtalo de nuevo.'**
+  String get authNoticeRateLimitedDetail;
+
+  /// No description provided for @authNoticeEmailNotConfirmedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta confirmar tu correo'**
+  String get authNoticeEmailNotConfirmedTitle;
+
+  /// No description provided for @authNoticeEmailNotConfirmedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre el mensaje que te enviamos y toca el enlace. Después vuelve a entrar.'**
+  String get authNoticeEmailNotConfirmedDetail;
+
+  /// No description provided for @authNoticeConfirmEmailSentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu correo'**
+  String get authNoticeConfirmEmailSentTitle;
+
+  /// No description provided for @authNoticeConfirmEmailSentDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un enlace para confirmar tu cuenta. Después vuelve a entrar.'**
+  String get authNoticeConfirmEmailSentDetail;
+
+  /// No description provided for @authNoticeResetSentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu correo'**
+  String get authNoticeResetSentTitle;
+
+  /// No description provided for @authNoticeResetSentDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Si ese correo tiene una cuenta, te enviamos un enlace para elegir una contraseña nueva. Puede tardar unos minutos.'**
+  String get authNoticeResetSentDetail;
+
+  /// No description provided for @authNoticeLinkExpiredTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace ya no sirve'**
+  String get authNoticeLinkExpiredTitle;
+
+  /// No description provided for @authNoticeLinkExpiredDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Caducó o ya se usó. Pide uno nuevo con «¿Olvidaste tu contraseña?».'**
+  String get authNoticeLinkExpiredDetail;
+
+  /// No description provided for @authResetPageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige tu contraseña nueva'**
+  String get authResetPageTitle;
+
+  /// No description provided for @authResetPageSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'La usarás la próxima vez que entres.'**
+  String get authResetPageSubtitle;
+
+  /// No description provided for @authResetSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar contraseña'**
+  String get authResetSave;
+
+  /// No description provided for @authResetDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña actualizada'**
+  String get authResetDoneTitle;
+
+  /// No description provided for @authResetDoneBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes seguir. Usa la contraseña nueva la próxima vez que entres.'**
+  String get authResetDoneBody;
+
+  /// No description provided for @authResetCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get authResetCancel;
+
+  /// No description provided for @passwordShow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar contraseña'**
+  String get passwordShow;
+
+  /// No description provided for @passwordHide.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar contraseña'**
+  String get passwordHide;
 
   /// No description provided for @authProviderGoogle.
   ///

@@ -49,4 +49,45 @@ void main() {
     expect(AppFieldKind.search.transform('  luz '), 'luz');
     expect(AppFieldKind.search.textCapitalization, TextCapitalization.none);
   });
+
+  group('passwords', () {
+    test('a new password needs at least 8 characters', () {
+      final validate = AppFieldKind.newPassword.validator(l10n, required: true);
+      expect(validate(''), l10n.validationRequired);
+      expect(
+        validate('corta12'),
+        'La contraseña debe tener al menos 8 caracteres.',
+      );
+      expect(validate('suficiente'), isNull);
+    });
+
+    test('a current password is only required, never length-checked', () {
+      final validate = AppFieldKind.currentPassword.validator(
+        l10n,
+        required: true,
+      );
+      expect(validate(''), l10n.validationRequired);
+      expect(validate('x'), isNull);
+    });
+
+    test('the confirmation must repeat the password', () {
+      final validate = AppFieldKind.confirmPassword.validator(
+        l10n,
+        required: true,
+        matchValue: () => 'secreto-123',
+      );
+      expect(validate('secreto-124'), l10n.validationPasswordMismatch);
+      expect(validate('secreto-123'), isNull);
+    });
+
+    test('passwords keep spaces and are hidden by default', () {
+      expect(AppFieldKind.newPassword.transform('  a b  '), '  a b  ');
+      expect(
+        AppFieldKind.newPassword.validate('        ', required: true),
+        isNull,
+      );
+      expect(AppFieldKind.currentPassword.isSecret, isTrue);
+      expect(AppFieldKind.email.isSecret, isFalse);
+    });
+  });
 }

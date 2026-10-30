@@ -11,7 +11,7 @@ Source requirements: the RoundTables Obsidian vault (notes 00–07).
 | [0004](0004-powersync-drift-sync.md) | PowerSync + Drift for local persistence and sync | Accepted |
 | [0005](0005-sync-conflict-rules.md) | Late sync, attendance and offline-window rules | Accepted |
 | [0006](0006-multitenancy-and-roles.md) | Shared-schema multi-tenancy, roles per scope | Accepted |
-| [0007](0007-identity-and-invites.md) | Social login only, phone stored unverified, invite binding | Accepted |
+| [0007](0007-identity-and-invites.md) | Social login only, phone stored unverified, invite binding (sign-in method superseded by 0018) | Accepted, partly superseded |
 | [0008](0008-remote-access-split.md) | supabase_flutter for Auth, Retrofit for Edge Functions and PostgREST | Accepted |
 | [0009](0009-push-notifications-fcm.md) | Firebase Cloud Messaging for four notification types | Accepted |
 | [0010](0010-kpis-sql-rollups.md) | KPIs from Postgres rollups, rendered in-app | Accepted |
@@ -22,6 +22,7 @@ Source requirements: the RoundTables Obsidian vault (notes 00–07).
 | [0015](0015-login-and-admin-design-directions.md) | Login "Puerta única" and admin "Explorador de mesas" design directions | Accepted |
 | [0016](0016-role-matrix-and-curriculum-import.md) | Role matrix (coordinator adds members) and curriculum import path | Accepted |
 | [0017](0017-curriculum-admin-and-content-languages.md) | Curriculum administration in the backoffice and content languages (translations per locale, Spanish fallback) | Accepted |
+| [0018](0018-email-password-sign-in.md) | Email + password sign-in in production; social login behind `AUTH_METHODS` | Accepted |
 
 Constraints that shaped every decision: one part-time developer, NGO budget under ~US$100/month,
 multiple countries from the pilot, thousands of users across 6+ organizations.

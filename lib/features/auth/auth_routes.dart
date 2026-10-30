@@ -6,6 +6,10 @@ abstract final class AuthRoutes {
 
   static const String signIn = '/ingresar';
 
+  /// "Nueva contraseña": opened by the emailed recovery link (ADR 0018). Not
+  /// public: the link signs the person in first.
+  static const String resetPassword = '/nueva-contrasena';
+
   /// Loading and blocked states of a signed-in identity (no role, deactivated…).
   static const String access = '/acceso';
   static const String contextPicker = '/contexto';
@@ -17,5 +21,9 @@ abstract final class AuthRoutes {
   static const String inviteScan = '/invitacion/escanear';
 
   /// Locations the access guard never redirects away from.
-  static const List<String> exemptFromAccessGate = [inviteCode, '/dev'];
+  static const List<String> exemptFromAccessGate = [
+    inviteCode,
+    resetPassword,
+    '/dev',
+  ];
 }

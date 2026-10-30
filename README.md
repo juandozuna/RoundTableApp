@@ -55,8 +55,11 @@ allowed by Supabase Auth redirects and CORS). The app uses hash routing, so deep
 
 ### Signing in
 Google, Apple and Facebook cannot work locally without provider credentials (see below). The web
-build made by these scripts is compiled with `DEV_AUTH=true`, which adds an email + password
-sign-in. Password for every dev user: `dev-password-123`.
+build made by these scripts is compiled with `DEV_AUTH=true`, which adds the quick-login chips for
+the dev users, and with `AUTH_METHODS=email,google,apple,facebook` so every sign-in method is on
+screen (production builds default to `AUTH_METHODS=email`, ADR 0018). Email + password works locally
+too: create an account from the sign-in screen (local Supabase auto-confirms; reset emails land in
+Mailpit). Password for every dev user: `dev-password-123`.
 
 | Email | Role |
 |---|---|
@@ -176,9 +179,13 @@ equivalent.
    select id, 'platform_admin', null from staff;
    ```
 3. **Auth providers** (Authentication → Providers): Google, Apple, Facebook with their client ids and
-   secrets (see [Social sign-in credentials](#social-sign-in-credentials)). Site URL = the web app's
-   public URL; additional redirect URLs = the web origin and `io.goldroundtables.app://login-callback`
-   (mobile). Disable "Allow new users to sign up with email" and do not build with `DEV_AUTH=true`.
+   secrets (see [Social sign-in credentials](#social-sign-in-credentials)); they are only needed for
+   the methods listed in `AUTH_METHODS`. Production signs in with **email + password** (ADR 0018):
+   Authentication → Providers → Email enabled, "Allow new users to sign up" **on**, "Confirm email"
+   **off** until custom SMTP exists, minimum password length 8. Site URL = the web app's public URL;
+   additional redirect URLs = the web origin (`<origin>/**` also covers the password-reset link
+   `<origin>/#/nueva-contrasena`) and `io.goldroundtables.app://login-callback` (mobile). Do not
+   build with `DEV_AUTH=true`.
 4. **PowerSync.** PowerSync Cloud or self-hosted (`docker/powersync/powersync.yaml` is the template):
    point it at the Supabase **direct** Postgres connection, create the replication role and the
    `powersync` publication (the migrations create the publication; the role is

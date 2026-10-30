@@ -32,10 +32,12 @@ void main() {
     AccessStatus status,
     String location, {
     AuthStatus auth = AuthStatus.authenticated,
+    bool recovering = false,
   }) {
     final guard = AccessRedirectGuard(
       FakeAuthState(status: auth),
       FakeAccess(AccessState(status: status)),
+      FakeEmailAuth()..recoveryPending = recovering,
     );
     return guard.redirect(Uri.parse(location), homeLocation: home);
   }
@@ -104,5 +106,28 @@ void main() {
       redirect(AccessStatus.needsContext, '/acceso?from=%2Fmesas'),
       '/contexto?from=%2Fmesas',
     );
+  });
+
+  test(
+    'a recovery link sends the signed-in person to the new password page',
+    () {
+      expect(
+        redirect(AccessStatus.ready, '/mesas', recovering: true),
+        '/nueva-contrasena',
+      );
+      expect(
+        redirect(AccessStatus.resolving, '/', recovering: true),
+        '/nueva-contrasena',
+      );
+      expect(
+        redirect(AccessStatus.ready, '/nueva-contrasena', recovering: true),
+        isNull,
+      );
+    },
+  );
+
+  test('the new password page is never bounced to the access gate', () {
+    expect(redirect(AccessStatus.resolving, '/nueva-contrasena'), isNull);
+    expect(redirect(AccessStatus.unknownAccount, '/nueva-contrasena'), isNull);
   });
 }

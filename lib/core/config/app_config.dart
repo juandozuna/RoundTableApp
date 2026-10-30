@@ -11,6 +11,7 @@ class AppConfig {
     required this.powerSyncUrl,
     required this.devAuthEnabled,
     required this.environment,
+    this.authMethods = defaultAuthMethods,
     this.firebase = const FirebaseConfig(),
     this.errorReportUrl = '',
   });
@@ -21,6 +22,7 @@ class AppConfig {
     powerSyncUrl: _powerSyncUrl,
     devAuthEnabled: devAuthCompiledIn,
     environment: AppEnvironment.parse(_appEnv),
+    authMethods: _authMethods,
     errorReportUrl: _errorReportUrl,
     firebase: const FirebaseConfig(
       apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
@@ -40,10 +42,21 @@ class AppConfig {
   static const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
   static const _powerSyncUrl = String.fromEnvironment('POWERSYNC_URL');
   static const _errorReportUrl = String.fromEnvironment('ERROR_REPORT_URL');
+  static const _authMethods = String.fromEnvironment(
+    authMethodsKey,
+    defaultValue: defaultAuthMethods,
+  );
   static const _appEnv = String.fromEnvironment(
     'APP_ENV',
     defaultValue: 'local',
   );
+
+  /// `--dart-define` key listing the sign-in methods the build offers, e.g.
+  /// `AUTH_METHODS=email,google,apple,facebook` (ADR 0018).
+  static const String authMethodsKey = 'AUTH_METHODS';
+
+  /// Production default: email + password only.
+  static const String defaultAuthMethods = 'email';
 
   /// Compile-time constant so code guarded by it is tree-shaken from builds
   /// without `--dart-define=DEV_AUTH=true`.
@@ -54,6 +67,9 @@ class AppConfig {
   final String powerSyncUrl;
   final bool devAuthEnabled;
   final AppEnvironment environment;
+
+  /// Raw comma-separated [authMethodsKey] value.
+  final String authMethods;
   final FirebaseConfig firebase;
 
   /// Optional HTTP endpoint receiving error reports; empty disables it.
