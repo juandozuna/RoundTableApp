@@ -12,7 +12,8 @@ const LUIS = "md5('gold-roundtables:person:luis')::uuid";
 // refusal of a write, which reuses the network error `errorNetwork`.
 const OFFLINE_STATE = /Sin conexión/;
 const WRITE_REFUSED = /No hay conexión con el servidor|Revisa tu internet/;
-const NOTE = 'Offline: lo cumplí';
+// No accents: puppeteer's typing drops them in Flutter's text field on this setup.
+const NOTE = 'Offline: lo cumpli casi todo';
 
 const luisRows = (table) => Number(sql(`select count(*) from ${table} where session_id = ${SESSION} and person_id = ${LUIS}`));
 const lateRows = () =>
@@ -65,7 +66,7 @@ export async function offline(browser) {
     await luis.click('Puntaje 9', { role: 'button' });
     await luis.click('Enviar seguimiento', { role: 'button' });
     check('the write is refused with a plain message', await luis.seen(WRITE_REFUSED, 15_000), (await luis.text()).slice(0, 500));
-    check('the typed text is still in the form', (await luis.text()).includes(NOTE));
+    check('the typed text is still in the form', (await luis.fieldValue('Cuéntanos en una frase')) === NOTE);
     check('server: nothing was written', luisRows('member_assessments') === 0 && luisRows('member_answers') === 0);
     await luis.shot('d-02-write-refused');
 
@@ -74,7 +75,7 @@ export async function offline(browser) {
     await sleep(12_000); // two polls and any retry a hidden queue would have made
     check('nothing was queued: still no rows after reconnecting', luisRows('member_assessments') === 0 && luisRows('member_answers') === 0 && luisRows('member_commitments') === 0);
     check('the offline state goes away on its own', await untilAsync(async () => !(await luis.has(OFFLINE_STATE)), 20_000));
-    check('the draft survived the outage', (await luis.text()).includes(NOTE));
+    check('the draft survived the outage', (await luis.fieldValue('Cuéntanos en una frase')) === NOTE);
 
     await luis.click('Enviar seguimiento', { role: 'button' });
     check('the same write succeeds online (follow-up score stored)',
