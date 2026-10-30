@@ -2,10 +2,11 @@
  * Web push service worker (ADR 0009). Shows background notifications through
  * Firebase Cloud Messaging and opens the right screen when one is tapped.
  *
- * Firebase options are not compiled in: deploy a `firebase-config.js` next to
- * this file that assigns `self.FIREBASE_CONFIG = { apiKey, appId,
- * messagingSenderId, projectId }` (see `firebase-config.sample.js`). Without
- * it this worker only handles taps and the app runs without push.
+ * Firebase options are not compiled in: `scripts/generate-firebase-sw.sh`
+ * writes a `firebase-config.js` next to this file that assigns
+ * `self.FIREBASE_CONFIG = { apiKey, appId, messagingSenderId, projectId }`
+ * (see `firebase-config.sample.js`). Without it this worker only handles
+ * taps and the app runs without push.
  */
 
 // Keep in step with `supportedFirebaseJsSdkVersion` of firebase_core_web.

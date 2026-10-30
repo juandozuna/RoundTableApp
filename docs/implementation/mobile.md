@@ -80,20 +80,67 @@ The app signs in with Supabase Auth (Google, Apple, Facebook); mobile returns th
 
 ## Firebase / FCM (optional)
 
-The app starts and works without Firebase (`FirebaseBootstrap` catches the missing-config failure and disables push;
-no Firebase config files are committed — both are git-ignored). To enable push:
+The app starts and works without Firebase: `FirebaseBootstrap` disables push (a logged no-op) when the defines for the
+running platform are incomplete.
 
-1. Create the Firebase project; register the Android app (`com.goldroundtables.gold_roundtables`) and iOS app
-   (`com.goldroundtables.goldRoundtables`).
-2. **Android**: place `google-services.json` at `android/app/google-services.json`, then add the Google services
-   plugin: in `android/settings.gradle.kts` plugins `id("com.google.gms.google-services") version "4.4.2" apply false`,
-   and in `android/app/build.gradle.kts` plugins `id("com.google.gms.google-services")`. (Not applied by default so the
-   build works without the file.)
-3. **iOS**: place `GoogleService-Info.plist` at `ios/Runner/GoogleService-Info.plist` and add it to the Runner target
-   in Xcode (*Add Files to "Runner"*, tick the target). Upload the APNs auth key (`.p8`) in Firebase → Cloud Messaging.
-   Run `cd ios && pod install` (also done by `flutter build ios`).
-4. Keep the Edge Function side configured with the Firebase service account (see `supabase/functions`).
-5. Web uses the `FIREBASE_*` dart-defines instead (see `AppConfig`).
+**Approach: `FirebaseOptions` from `--dart-define`s on every platform** (`AppConfig.firebase`,
+`firebaseOptionsFor` in `firebase_bootstrap_impl.dart`). We chose it over `google-services.json` /
+`GoogleService-Info.plist` plus the Gradle google-services plugin because CI and local builds need no secret or
+git-ignored files, the same mechanism configures web, Android and iOS, and the Gradle/Xcode projects stay untouched
+(no plugin to apply, no plist to add to the Runner target). The values identify the Firebase project and are not secret.
+Each platform has its own app id; mixing them up makes token registration fail.
+
+Project `roundtable-v1`:
+
+| Define | Value | Used on |
+|---|---|---|
+| `FIREBASE_API_KEY` | `AIzaSyCa6RIC5Unhh5Gnmf1MKxOkOhMKEcbmCm8` (client key) | all |
+| `FIREBASE_MESSAGING_SENDER_ID` | `1050044136194` | all |
+| `FIREBASE_PROJECT_ID` | `roundtable-v1` | all |
+| `FIREBASE_STORAGE_BUCKET` | `roundtable-v1.firebasestorage.app` (optional) | all |
+| `FIREBASE_WEB_APP_ID` | `1:1050044136194:web:39e80c80d6424fe84f201b` | web |
+| `FIREBASE_ANDROID_APP_ID` | `1:1050044136194:android:a1c43d284267f7074f201b` | Android |
+| `FIREBASE_IOS_APP_ID` | *(copy from Firebase console, see below)* | iOS |
+| `FIREBASE_IOS_BUNDLE_ID` | `io.goldroundtables.app` | iOS |
+| `FIREBASE_VAPID_KEY` | `BJf0HeickOk5AqhHZLwk786WFUHO-WWyUr0gAjeeZmZLYhUg09FtSVIafzpnIJXshn9H5JAEUPZD2soyZiFPPNk` (public) | web |
+
+`FIREBASE_APP_ID` (the old single define) is still read, as the web app id only; prefer `FIREBASE_WEB_APP_ID`.
+
+**Android** — defines: shared + `FIREBASE_ANDROID_APP_ID`. No `google-services.json`, no Gradle plugin. An existing
+local `android/app/google-services.json` is git-ignored and unused. The manifest declares `POST_NOTIFICATIONS`
+(Android 13+; requested at runtime by `requestPermission`) and the default FCM channel
+`gold_roundtables_default` ("Avisos de la mesa"), created in `MainActivity` and referenced through
+`com.google.firebase.messaging.default_notification_channel_id`.
+
+```
+flutter build apk --debug \
+  --dart-define=FIREBASE_API_KEY=... --dart-define=FIREBASE_MESSAGING_SENDER_ID=1050044136194 \
+  --dart-define=FIREBASE_PROJECT_ID=roundtable-v1 --dart-define=FIREBASE_ANDROID_APP_ID=1:1050044136194:android:a1c43d284267f7074f201b
+```
+
+**iOS** — defines: shared + `FIREBASE_IOS_APP_ID` + `FIREBASE_IOS_BUNDLE_ID`. The Runner already has
+`UIBackgroundModes: remote-notification` and the `aps-environment` entitlement (Release/Profile only; debug builds
+are unsigned for push). Needs a real device and a paid Apple Developer team with the *Push Notifications* capability
+on the App ID. `FirebaseAppDelegateProxy` stays enabled (default) so APNs tokens reach FCM.
+
+**Web** — defines: shared + `FIREBASE_WEB_APP_ID` + `FIREBASE_VAPID_KEY`. The service worker
+`web/firebase-messaging-sw.js` cannot read dart-defines, so run `scripts/generate-firebase-sw.sh` with the same
+`FIREBASE_*` environment *before* `flutter build web`; it writes the git-ignored `web/firebase-config.js`, which
+Flutter copies into `build/web`. (Or pass `build/web` as its argument after the build.) With incomplete variables
+it removes any stale file and the worker only handles notification taps. The web build script must call it, e.g.
+`scripts/generate-firebase-sw.sh && flutter build web --dart-define=...`.
+
+**Remaining user actions**
+
+1. **iOS app id**: Firebase console → Project settings → *Your apps* → iOS app → copy the App ID
+   (`1:1050044136194:ios:...`) and set `FIREBASE_IOS_APP_ID` for iOS builds.
+2. **APNs key**: Apple Developer → Keys → create a key with *Apple Push Notifications service (APNs)*; download the
+   `.p8`; Firebase console → Project settings → *Cloud Messaging* → *Apple app configuration* → upload it with the Key
+   ID and Team ID (`8D3RNM335D`). Without it iOS (and iOS FCM tokens) cannot deliver.
+3. **Server credentials**: Firebase console → Project settings → *Service accounts* → *Generate new private key*;
+   put the JSON on one line in the `FCM_SERVICE_ACCOUNT_JSON` secret of the `notifications` Edge Function (see
+   `.env.example` / `supabase/functions`).
+4. Provide the `FIREBASE_*` values to the build/deploy environments for each platform (CI secrets or variables).
 
 ## Release checklist
 
