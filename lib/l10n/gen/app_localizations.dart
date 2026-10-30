@@ -4615,7 +4615,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionSharedUnavailableMessage.
   ///
   /// In es, this message translates to:
-  /// **'Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.'**
+  /// **'Conéctate a internet para ver tu mesa y la sesión de esta semana.'**
   String get sessionSharedUnavailableMessage;
 
   /// No description provided for @sessionSharedNotTodayTitle.
@@ -4831,7 +4831,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionBoardOfflineSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Sin internet: ves lo tuyo; el resto llega al sincronizar'**
+  /// **'Sin internet: no puedes ver ni enviar cambios hasta que vuelva la conexión'**
   String get sessionBoardOfflineSubtitle;
 
   /// No description provided for @sessionBoardNoLiveData.
@@ -6031,7 +6031,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSavedOffline.
   ///
   /// In es, this message translates to:
-  /// **'Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.'**
+  /// **'No se pudo enviar. Lo que escribiste sigue aquí; inténtalo cuando tengas internet.'**
   String get sessionMemberSavedOffline;
 
   /// No description provided for @sessionMemberRecapKickerFinished.
@@ -6061,7 +6061,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberRecapTitleOffline.
   ///
   /// In es, this message translates to:
-  /// **'Todo guardado en tu teléfono'**
+  /// **'Falta enviar tus respuestas'**
   String get sessionMemberRecapTitleOffline;
 
   /// No description provided for @sessionMemberRecapTitlePending.
@@ -6073,7 +6073,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberRecapOfflineInfo.
   ///
   /// In es, this message translates to:
-  /// **'Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.'**
+  /// **'Sin internet tus respuestas no se envían. Conéctate y vuelve a enviarlas.'**
   String get sessionMemberRecapOfflineInfo;
 
   /// No description provided for @sessionMemberRecapAnswersClosed.
@@ -6145,7 +6145,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncPendingDetailOffline.
   ///
   /// In es, this message translates to:
-  /// **'Se enviará cuando tengas internet.'**
+  /// **'Se podrá enviar cuando tengas internet.'**
   String get sessionMemberSyncPendingDetailOffline;
 
   /// No description provided for @sessionMemberSyncSyncedDetail.
@@ -6163,7 +6163,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncOfflineTitle.
   ///
   /// In es, this message translates to:
-  /// **'Sin internet · todo se guarda en este teléfono'**
+  /// **'Sin internet · no se pueden enviar respuestas'**
   String get sessionMemberSyncOfflineTitle;
 
   /// No description provided for @sessionMemberSyncOfflineFacilitator.
@@ -6175,7 +6175,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncOfflineMember.
   ///
   /// In es, this message translates to:
-  /// **'Tu facilitador te guía de palabra. Sigue a tu ritmo.'**
+  /// **'Lo que escribas sigue aquí; envíalo cuando vuelva la conexión.'**
   String get sessionMemberSyncOfflineMember;
 
   /// No description provided for @sessionMemberAutoPendingTitle.
@@ -6223,7 +6223,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberOfflineBannerDetail.
   ///
   /// In es, this message translates to:
-  /// **'todo se guarda en este teléfono'**
+  /// **'tus respuestas se envían cuando vuelva la conexión'**
   String get sessionMemberOfflineBannerDetail;
 
   /// No description provided for @navAccount.
@@ -6589,7 +6589,7 @@ abstract class AppLocalizations {
   /// No description provided for @authNoticeOfflineDetail.
   ///
   /// In es, this message translates to:
-  /// **'El primer inicio de sesión en este teléfono requiere conexión. Después, tu sesión de mesa sigue funcionando sin internet.'**
+  /// **'Para entrar necesitas conexión a internet.'**
   String get authNoticeOfflineDetail;
 
   /// No description provided for @authNoticeCredentialsTitle.
@@ -6667,7 +6667,7 @@ abstract class AppLocalizations {
   /// No description provided for @authAccessOfflineBody.
   ///
   /// In es, this message translates to:
-  /// **'La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.'**
+  /// **'Para entrar necesitas conexión a internet. Conéctate y vuelve a intentarlo.'**
   String get authAccessOfflineBody;
 
   /// No description provided for @authOfflineWindowTitle.
@@ -8107,7 +8107,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyOfflineDetail.
   ///
   /// In es, this message translates to:
-  /// **'estás viendo lo guardado en este dispositivo'**
+  /// **'conéctate a internet para ver el historial actualizado'**
   String get historyOfflineDetail;
 
   /// No description provided for @historyUnavailableTitle.

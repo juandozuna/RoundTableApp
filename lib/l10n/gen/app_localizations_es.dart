@@ -2730,7 +2730,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionSharedUnavailableMessage =>
-      'Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.';
+      'Conéctate a internet para ver tu mesa y la sesión de esta semana.';
 
   @override
   String get sessionSharedNotTodayTitle => 'Hoy no hay sesión';
@@ -2890,7 +2890,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionBoardOfflineSubtitle =>
-      'Sin internet: ves lo tuyo; el resto llega al sincronizar';
+      'Sin internet: no puedes ver ni enviar cambios hasta que vuelva la conexión';
 
   @override
   String get sessionBoardNoLiveData => 'Sin datos en vivo';
@@ -3649,7 +3649,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberSavedOffline =>
-      'Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.';
+      'No se pudo enviar. Lo que escribiste sigue aquí; inténtalo cuando tengas internet.';
 
   @override
   String get sessionMemberRecapKickerFinished => 'Terminaste';
@@ -3665,14 +3665,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionMemberRecapTitleLive => 'Esperando el cierre de la mesa';
 
   @override
-  String get sessionMemberRecapTitleOffline => 'Todo guardado en tu teléfono';
+  String get sessionMemberRecapTitleOffline => 'Falta enviar tus respuestas';
 
   @override
   String get sessionMemberRecapTitlePending => 'Tienes etapas pendientes';
 
   @override
   String get sessionMemberRecapOfflineInfo =>
-      'Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.';
+      'Sin internet tus respuestas no se envían. Conéctate y vuelve a enviarlas.';
 
   @override
   String get sessionMemberRecapAnswersClosed =>
@@ -3717,7 +3717,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberSyncPendingDetailOffline =>
-      'Se enviará cuando tengas internet.';
+      'Se podrá enviar cuando tengas internet.';
 
   @override
   String get sessionMemberSyncSyncedDetail =>
@@ -3729,7 +3729,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberSyncOfflineTitle =>
-      'Sin internet · todo se guarda en este teléfono';
+      'Sin internet · no se pueden enviar respuestas';
 
   @override
   String get sessionMemberSyncOfflineFacilitator =>
@@ -3737,7 +3737,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberSyncOfflineMember =>
-      'Tu facilitador te guía de palabra. Sigue a tu ritmo.';
+      'Lo que escribas sigue aquí; envíalo cuando vuelva la conexión.';
 
   @override
   String get sessionMemberAutoPendingTitle => 'Te marcaron Ausente.';
@@ -3766,7 +3766,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberOfflineBannerDetail =>
-      'todo se guarda en este teléfono';
+      'tus respuestas se envían cuando vuelva la conexión';
 
   @override
   String get navAccount => 'Cuenta';
@@ -3970,7 +3970,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get authNoticeOfflineDetail =>
-      'El primer inicio de sesión en este teléfono requiere conexión. Después, tu sesión de mesa sigue funcionando sin internet.';
+      'Para entrar necesitas conexión a internet.';
 
   @override
   String get authNoticeCredentialsTitle => 'Correo o contraseña incorrectos.';
@@ -4015,7 +4015,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get authAccessOfflineBody =>
-      'La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.';
+      'Para entrar necesitas conexión a internet. Conéctate y vuelve a intentarlo.';
 
   @override
   String get authOfflineWindowTitle => 'Conéctate para volver a entrar';
@@ -4915,7 +4915,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get historyOfflineDetail =>
-      'estás viendo lo guardado en este dispositivo';
+      'conéctate a internet para ver el historial actualizado';
 
   @override
   String get historyUnavailableTitle => 'Aquí verás tu progreso';
