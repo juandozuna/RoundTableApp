@@ -1001,6 +1001,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i817.SessionWriteGateway>(
       () => _i817.SessionWriteGateway(
         gh<_i215.SessionRemoteDataSource>(),
+        gh<_i302.SessionReadsRemoteDataSource>(),
         gh<_i1015.ConnectivityService>(),
         gh<_i767.DataChangeSignal>(),
       ),

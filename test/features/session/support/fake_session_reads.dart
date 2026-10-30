@@ -7,6 +7,11 @@ import 'package:gold_roundtables/features/session/data/datasources/session_reads
 /// way the server would for the signed-in person (filtered by session, table
 /// or person) and counts the reads of the moving tables.
 class FakeSessionReads implements SessionReadsRemoteDataSource {
+  int cacheClears = 0;
+
+  @override
+  void clearReferenceCache() => cacheClears++;
+
   /// The signed-in person; null means no seat.
   String? mePersonId;
 

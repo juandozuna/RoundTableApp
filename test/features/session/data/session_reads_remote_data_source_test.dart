@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/data/records/records.dart';
 import 'package:gold_roundtables/core/models/assessment_kind.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
@@ -107,6 +108,43 @@ void main() {
       clock.now = clock.now.add(SessionReadsRemoteDataSource.referenceTtl);
       await reads.myMembership();
       expect(client.readsOf(PostgrestTables.tableMembers), hasLength(2));
+    });
+
+    test('clearing the cache makes the next read ask again', () async {
+      client.seed(PostgrestTables.tableMembers, [
+        SessionFixture.member('tm-1', Ids.ana, UserRole.member, 'Ana', 'M'),
+      ]);
+      await reads.myMembership();
+
+      reads.clearReferenceCache();
+      await reads.myMembership();
+
+      expect(client.readsOf(PostgrestTables.tableMembers), hasLength(2));
+    });
+
+    test('another person never sees what the previous one read', () async {
+      client.seed(PostgrestTables.roundTables, [
+        const RoundTableRecord(
+          id: Ids.table,
+          organizationId: Ids.org,
+          locationId: 'loc-1',
+          name: 'Mesa Esperanza 03',
+          code: 'LUZ-03',
+          weekday: 4,
+          startTime: '19:00:00',
+          timezone: 'America/Santo_Domingo',
+          durationMinutes: 30,
+          status: 'active',
+        ),
+      ]);
+      await reads.roundTable(Ids.table);
+      await reads.roundTable(Ids.table);
+      expect(client.readsOf(PostgrestTables.roundTables), hasLength(1));
+
+      tokens.userId = 'user-b';
+      await reads.roundTable(Ids.table);
+
+      expect(client.readsOf(PostgrestTables.roundTables), hasLength(2));
     });
 
     test('no seat yet is asked again next time', () async {

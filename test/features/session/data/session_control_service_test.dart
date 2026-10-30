@@ -11,6 +11,7 @@ import 'package:gold_roundtables/features/session/domain/services/session_contro
 import 'package:mocktail/mocktail.dart';
 
 import '../support/fake_connectivity.dart';
+import '../support/fake_session_reads.dart';
 import '../support/fixed_clock.dart';
 import '../support/session_fixture.dart';
 
@@ -37,7 +38,7 @@ void main() {
     signal.changes.listen(notified.add);
     control = SessionControlServiceImpl(
       remote,
-      SessionWriteGateway(remote, connectivity, signal),
+      SessionWriteGateway(remote, FakeSessionReads(), connectivity, signal),
       FixedClock(now),
     );
   });

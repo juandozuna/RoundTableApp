@@ -32,8 +32,21 @@ class SessionReadsRemoteDataSource {
   final AuthTokenProvider _tokens;
   final ClockService _clock;
   final Map<String, ({DateTime at, Future<Object?> value})> _reference = {};
+  String? _cacheOwner;
+
+  /// Forgets the remembered seat, table and curriculum. Called after a write
+  /// the server refused for authorization, when what was remembered may no
+  /// longer be true.
+  void clearReferenceCache() => _reference.clear();
 
   Future<T> _cached<T>(String key, Future<T> Function() load) {
+    // Reference data belongs to whoever read it: a sign-out or another
+    // person signing in starts from nothing.
+    final owner = _tokens.userId;
+    if (owner != _cacheOwner) {
+      _reference.clear();
+      _cacheOwner = owner;
+    }
     final now = _clock.nowUtc();
     final hit = _reference[key];
     if (hit != null && now.difference(hit.at) < referenceTtl) {

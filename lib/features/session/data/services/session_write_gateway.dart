@@ -6,6 +6,7 @@ import '../../../../core/network/api_exception.dart';
 import '../../../../core/services/connectivity/connectivity_service.dart';
 import '../../../../core/services/logging/app_log.dart';
 import '../../domain/models/session_write_failure.dart';
+import '../datasources/session_reads_remote_data_source.dart';
 import '../datasources/session_remote_data_source.dart';
 import '../models/session_write_operation.dart';
 
@@ -18,9 +19,22 @@ import '../models/session_write_operation.dart';
 /// A future outbox would queue here instead of throwing.
 @lazySingleton
 class SessionWriteGateway {
-  SessionWriteGateway(this._remote, this._connectivity, this._signal);
+  SessionWriteGateway(
+    this._remote,
+    this._reads,
+    this._connectivity,
+    this._signal,
+  );
+
+  /// `sync-upload` result codes meaning the person may no longer do this.
+  static const Set<String> _authorizationCodes = {
+    'unauthenticated',
+    'forbidden',
+    'not_table_participant',
+  };
 
   final SessionRemoteDataSource _remote;
+  final SessionReadsRemoteDataSource _reads;
   final ConnectivityService _connectivity;
   final DataChangeSignal _signal;
 
@@ -74,6 +88,9 @@ class SessionWriteGateway {
           final result = response.results[i];
           if (!result.isRejected) continue;
           anyRejected = true;
+          if (_authorizationCodes.contains(result.code)) {
+            _reads.clearReferenceCache();
+          }
           AppLog.warning(
             'session',
             'Server rejected ${chunk[i].table}/${chunk[i].id}: ${result.code}',
@@ -97,11 +114,16 @@ class SessionWriteGateway {
       return await call();
     } on ApiException catch (error) {
       if (_isUnreachable(error)) throw const SessionWriteFailure.offline();
+      if (_isUnauthorized(error)) _reads.clearReferenceCache();
       rethrow;
     }
   }
 
   void _notify(Set<DataScope> scopes) => scopes.forEach(_signal.notify);
+
+  static bool _isUnauthorized(ApiException error) =>
+      error.kind == ApiErrorKind.unauthorized ||
+      error.kind == ApiErrorKind.forbidden;
 
   static bool _isUnreachable(ApiException error) =>
       error.kind == ApiErrorKind.network || error.kind == ApiErrorKind.timeout;

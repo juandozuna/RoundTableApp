@@ -44,7 +44,7 @@ void main() {
     notified = [];
     signal.changes.listen(notified.add);
     clock = FixedClock(DateTime.utc(2026, 10, 29, 22, 30));
-    gateway = SessionWriteGateway(remote, connectivity, signal);
+    gateway = SessionWriteGateway(remote, reads, connectivity, signal);
     sent = [];
     when(() => remote.uploadBatch(any())).thenAnswer((invocation) async {
       final batch = invocation.positionalArguments.first as List<_Op>;

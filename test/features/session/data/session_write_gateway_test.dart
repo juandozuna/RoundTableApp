@@ -10,6 +10,7 @@ import 'package:gold_roundtables/features/session/domain/models/session_write_fa
 import 'package:mocktail/mocktail.dart';
 
 import '../support/fake_connectivity.dart';
+import '../support/fake_session_reads.dart';
 
 class _MockRemote extends Mock implements SessionRemoteDataSource {}
 
@@ -35,6 +36,7 @@ void main() {
   late FakeConnectivity connectivity;
   late DataChangeSignal signal;
   late List<DataScope> notified;
+  late FakeSessionReads reads;
   late SessionWriteGateway gateway;
 
   setUp(() {
@@ -43,7 +45,8 @@ void main() {
     signal = DataChangeSignal();
     notified = [];
     signal.changes.listen(notified.add);
-    gateway = SessionWriteGateway(remote, connectivity, signal);
+    reads = FakeSessionReads();
+    gateway = SessionWriteGateway(remote, reads, connectivity, signal);
   });
 
   tearDown(() => signal.dispose());
@@ -230,4 +233,51 @@ void main() {
       );
     },
   );
+
+  test(
+    'a write refused for authorization forgets the remembered seat',
+    () async {
+      when(() => remote.uploadBatch(any())).thenThrow(
+        const ApiException(kind: ApiErrorKind.forbidden, statusCode: 403),
+      );
+
+      await expectLater(gateway.upload([op(1)]), throwsA(isA<ApiException>()));
+
+      expect(reads.cacheClears, 1);
+    },
+  );
+
+  test('a rejected result for authorization forgets it too', () async {
+    when(() => remote.uploadBatch(any())).thenAnswer(
+      (_) async => const SyncUploadResponse(
+        rejected: 1,
+        results: [SyncUploadResult(status: 'rejected', code: 'forbidden')],
+      ),
+    );
+
+    await expectLater(
+      gateway.upload([op(1)]),
+      throwsA(isA<SessionWriteFailure>()),
+    );
+
+    expect(reads.cacheClears, 1);
+  });
+
+  test('other failures keep the remembered seat', () async {
+    when(() => remote.uploadBatch(any())).thenAnswer(
+      (_) async => const SyncUploadResponse(
+        rejected: 1,
+        results: [
+          SyncUploadResult(status: 'rejected', code: 'validation_failed'),
+        ],
+      ),
+    );
+
+    await expectLater(
+      gateway.upload([op(1)]),
+      throwsA(isA<SessionWriteFailure>()),
+    );
+
+    expect(reads.cacheClears, 0);
+  });
 }

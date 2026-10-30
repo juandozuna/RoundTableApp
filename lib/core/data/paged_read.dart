@@ -1,8 +1,9 @@
 import '../network/api_guard.dart';
 import '../network/postgrest/postgrest.dart';
 
-/// PostgREST answers at most this many rows per request (the project's
-/// max-rows default); a longer list needs several pages.
+/// PostgREST answers at most this many rows per request. Keep it equal to
+/// `max_rows` in `supabase/config.toml` (the hosted project's API setting
+/// too); a longer list needs several pages.
 const int postgrestPageSize = 1000;
 
 /// Reads every row of a list that can outgrow one response: [read] receives
