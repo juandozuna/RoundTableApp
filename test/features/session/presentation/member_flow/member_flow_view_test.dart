@@ -342,7 +342,7 @@ void main() {
       expect(find.text('A tu ritmo'), findsOneWidget);
       expect(find.textContaining('La mesa está en:'), findsNothing);
       expect(
-        find.text('Sin internet · todo se guarda en este teléfono'),
+        find.text('Sin internet · no se pueden enviar respuestas'),
         findsOneWidget,
       );
       expect(find.text('Sin internet'), findsWidgets);
