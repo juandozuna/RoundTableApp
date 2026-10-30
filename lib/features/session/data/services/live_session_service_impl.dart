@@ -2,88 +2,208 @@ import 'dart:async';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/data/data_scope.dart';
+import '../../../../core/data/records/records.dart';
+import '../../../../core/data/remote_watch.dart';
+import '../../../../core/models/session_status.dart';
 import '../../../../core/services/clock/clock_service.dart';
-import '../../../../core/sync/domain/sync_status_service.dart';
+import '../../../settings/domain/models/content_language.dart';
+import '../../../settings/domain/services/content_language_service.dart';
 import '../../domain/models/live_session.dart';
+import '../../domain/models/today_session_selector.dart';
 import '../../domain/services/live_session_service.dart';
-import '../datasources/session_local_data_source.dart';
-import '../local/live_session_assembler.dart';
+import '../assembly/curriculum_text.dart';
+import '../assembly/live_session_assembler.dart';
+import '../assembly/session_record_mappers.dart';
+import '../assembly/session_records.dart';
+import '../datasources/session_reads_remote_data_source.dart';
 
+/// Live screens poll while somebody listens; the app's own writes refetch at
+/// once through `DataChangeSignal`.
 @LazySingleton(as: LiveSessionService)
 class LiveSessionServiceImpl implements LiveSessionService {
-  LiveSessionServiceImpl(this._local, this._status, this._clock);
+  LiveSessionServiceImpl(
+    this._reads,
+    this._contentLanguage,
+    this._watch,
+    this._clock,
+  );
 
-  /// "Today" depends on the clock, so re-evaluate even without data changes.
-  static const Duration clockCheckInterval = Duration(minutes: 1);
+  static const Duration pollInterval = Duration(seconds: 5);
 
-  final SessionLocalDataSource _local;
-  final SyncStatusService _status;
+  final SessionReadsRemoteDataSource _reads;
+  final ContentLanguageService _contentLanguage;
+  final RemoteWatch _watch;
   final ClockService _clock;
 
   @override
-  Stream<LiveSession?> watch({String? tableId}) {
-    late final StreamController<LiveSession?> controller;
-    StreamSubscription<void>? changes;
-    StreamSubscription<Object?>? status;
-    Timer? ticker;
-    var uploading = false;
-    var running = false;
-    var rerun = false;
-    var emitted = false;
-    LiveSession? last;
-
-    Future<void> refresh() async {
-      if (running) {
-        rerun = true;
-        return;
-      }
-      running = true;
-      try {
-        do {
-          rerun = false;
-          final now = _clock.nowUtc();
-          final data = await _local.load(now: now, tableId: tableId);
-          final next = data == null
-              ? null
-              : LiveSessionAssembler.assemble(
-                  data,
-                  uploading: uploading,
-                  now: now,
-                );
-          if (controller.isClosed) return;
-          if (!emitted || next != last) {
-            emitted = true;
-            last = next;
-            controller.add(next);
-          }
-        } while (rerun);
-      } on Object catch (error, stackTrace) {
-        if (!controller.isClosed) controller.addError(error, stackTrace);
-      } finally {
-        running = false;
-      }
+  Stream<LiveSession?> watch({String? tableId}) async* {
+    // One subscription for the whole watch: asking the service on every poll
+    // would read the language list from the server each time.
+    final language = _SelectedLanguage(_contentLanguage.watch());
+    try {
+      yield* _watch<LiveSession?>(
+        () => _load(tableId, language),
+        scopes: const {DataScope.session, DataScope.contentLanguage},
+        pollInterval: pollInterval,
+      );
+    } finally {
+      await language.cancel();
     }
+  }
 
-    controller = StreamController<LiveSession?>(
-      onListen: () {
-        changes = _local.watchChanges().listen((_) => unawaited(refresh()));
-        status = _status.watch().listen((snapshot) {
-          if (snapshot.uploading == uploading) return;
-          uploading = snapshot.uploading;
-          unawaited(refresh());
-        });
-        ticker = Timer.periodic(
-          clockCheckInterval,
-          (_) => unawaited(refresh()),
-        );
-        unawaited(refresh());
+  Future<LiveSession?> _load(
+    String? tableId,
+    _SelectedLanguage language,
+  ) async {
+    final now = _clock.nowUtc();
+    final membership = await _reads.myMembership(tableId: tableId);
+    if (membership == null) return null;
+    final table = await _reads.roundTable(membership.roundTableId);
+    if (table == null) return null;
+
+    final selected = await _selectSession(table.id, now);
+    if (selected == null) return null;
+    final session = selected.record;
+
+    final followUpValueId = session.followUpValueId;
+    final values = await _reads.values([session.valueId, ?followUpValueId]);
+    final baseValue = values[session.valueId];
+    if (baseValue == null) return null;
+
+    final (organization, questions, roster) = await (
+      _reads.organization(table.organizationId),
+      _reads.questions(session.valueId),
+      _reads.roster(table.id),
+    ).wait;
+    final (
+      attendance,
+      assessments,
+      answers,
+      commitments,
+      previousCommitments,
+    ) = await (
+      _reads.attendance(session.id),
+      _reads.assessments(session.id),
+      _reads.answers(session.id),
+      _reads.commitments(session.id),
+      followUpValueId == null
+          ? Future.value(const <MemberCommitmentRecord>[])
+          : _reads.commitmentsOfValue(
+              tableId: table.id,
+              valueId: followUpValueId,
+            ),
+    ).wait;
+
+    final text = await _curriculumText(
+      locale: await language.code(),
+      valueIds: values.keys,
+      questionIds: [for (final q in questions) q.id],
+    );
+    final followUpBase = followUpValueId == null
+        ? null
+        : values[followUpValueId];
+
+    final records = SessionRecords(
+      myPersonId: membership.personId,
+      table: table,
+      organizationName: organization?.name ?? '',
+      selectedSession: session,
+      isToday: selected.isToday,
+      value: text.value(baseValue),
+      followUpValue: followUpBase == null ? null : text.value(followUpBase),
+      questions: [for (final q in questions) text.question(q)],
+      roster: roster.where((m) => m.leftAt == null).toList(),
+      attendance: attendance,
+      assessments: assessments,
+      answers: answers,
+      commitments: commitments,
+      previousCommitments: previousCommitments,
+    );
+    return LiveSessionAssembler.assemble(records);
+  }
+
+  /// Picks the session to show with [TodaySessionSelector]; null when the
+  /// table has none yet.
+  Future<({SessionRecord record, bool isToday})?> _selectSession(
+    String tableId,
+    DateTime now,
+  ) async {
+    final pending = _pendingFirst(await _reads.pendingSessions(tableId));
+    // An open session is shown whatever else exists, so skip the second read.
+    final lastClosed = pending?.status == SessionStatus.open
+        ? null
+        : await _reads.lastClosedSession(tableId);
+    final selected = TodaySessionSelector.select(
+      pending: pending?.toInfo(),
+      lastClosed: lastClosed?.toInfo(),
+      now: now,
+    );
+    if (selected == null) return null;
+    final record = [
+      pending,
+      lastClosed,
+    ].nonNulls.firstWhere((r) => r.id == selected.info.id);
+    return (record: record, isToday: selected.isToday);
+  }
+
+  /// The open session, else the earliest scheduled one.
+  static SessionRecord? _pendingFirst(List<SessionRecord> sessions) {
+    final pending = sessions.where((s) => !s.status.isFinal).toList()
+      ..sort((a, b) {
+        final aOpen = a.status == SessionStatus.open;
+        if (aOpen != (b.status == SessionStatus.open)) return aOpen ? -1 : 1;
+        return a.scheduledAt.compareTo(b.scheduledAt);
+      });
+    return pending.firstOrNull;
+  }
+
+  /// Translations in [locale]; none for the Spanish base text.
+  Future<CurriculumText> _curriculumText({
+    required String locale,
+    required Iterable<String> valueIds,
+    required Iterable<String> questionIds,
+  }) async {
+    if (locale == ContentLanguageChoice.baseCode) {
+      return CurriculumText(const []);
+    }
+    return CurriculumText(
+      await _reads.translations(
+        locale: locale,
+        entityIds: [...valueIds, ...questionIds],
+      ),
+    );
+  }
+}
+
+/// The content language code in use, following the service's stream. Falls
+/// back to the Spanish base text while the choice is unknown (the language
+/// list could not be read).
+class _SelectedLanguage {
+  _SelectedLanguage(Stream<ContentLanguageChoice> choices) {
+    _subscription = choices.listen(
+      (choice) {
+        _code = choice.selected;
+        if (!_first.isCompleted) _first.complete();
       },
-      onCancel: () async {
-        ticker?.cancel();
-        await changes?.cancel();
-        await status?.cancel();
+      onError: (Object _) {
+        if (!_first.isCompleted) _first.complete();
       },
     );
-    return controller.stream;
   }
+
+  static const Duration _wait = Duration(seconds: 3);
+
+  final Completer<void> _first = Completer<void>();
+  late final StreamSubscription<ContentLanguageChoice> _subscription;
+  String _code = ContentLanguageChoice.baseCode;
+
+  Future<String> code() async {
+    if (!_first.isCompleted) {
+      await _first.future.timeout(_wait, onTimeout: () {});
+    }
+    return _code;
+  }
+
+  Future<void> cancel() => _subscription.cancel();
 }
