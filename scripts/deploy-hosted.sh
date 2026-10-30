@@ -171,8 +171,11 @@ step_functions() {
     ok "would deploy: ${names[*]} (verify_jwt per supabase/config.toml)"
     return
   fi
-  (cd "$repo_root" && supabase functions deploy "${names[@]}" --project-ref "$SUPABASE_PROJECT_REF" "${flags[@]+"${flags[@]}"}") \
-    || fail "supabase functions deploy failed."
+  # One function per call: a multi-function --use-api deploy fails with TransportError on hosted.
+  for name in "${names[@]}"; do
+    (cd "$repo_root" && supabase functions deploy "$name" --project-ref "$SUPABASE_PROJECT_REF" "${flags[@]+"${flags[@]}"}") \
+      || fail "supabase functions deploy $name failed."
+  done
   ok "Deployed: ${names[*]}"
 }
 
