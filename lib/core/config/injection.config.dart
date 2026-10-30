@@ -582,7 +582,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i83.AppLifecycleService>(
       () => _i860.WidgetsAppLifecycleService(),
-      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i309.CsvExportService>(() => _i58.CsvExportServiceImpl());
     gh.lazySingleton<_i523.SessionContextService>(

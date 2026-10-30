@@ -41,7 +41,8 @@ class WidgetsAppLifecycleService
     _ => true,
   };
 
-  @disposeMethod
+  /// Not a `@disposeMethod`: it is registered as the [AppLifecycleService]
+  /// interface, and the app keeps it for its whole lifetime.
   Future<void> dispose() async {
     WidgetsBinding.instance.removeObserver(this);
     await _changes.close();
