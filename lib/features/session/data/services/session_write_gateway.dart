@@ -1,108 +1,98 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/data/data_change_signal.dart';
+import '../../../../core/data/data_scope.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/services/connectivity/connectivity_service.dart';
 import '../../../../core/services/logging/app_log.dart';
-import '../../../../core/sync/data/sync_upload_batch.dart';
-import '../../../../core/sync/data/sync_uploader.dart';
+import '../../domain/models/session_write_failure.dart';
 import '../datasources/session_remote_data_source.dart';
-import '../models/sync_upload_response.dart';
+import '../models/session_write_operation.dart';
 
-/// Posts queued local changes to the `sync-upload` Edge Function.
+/// Delivers session writes to the server right away. Offline, or when the
+/// server cannot be reached, the write fails with [SessionWriteFailure] and
+/// nothing is kept: the person retries.
 ///
-/// The function answers 200 with a result per operation. Rejected operations
-/// are permanent (the server copy syncs down and replaces the local row), so
-/// they surface as [SyncUploadRejected]: the connector records them and
-/// completes the transaction. Only transport failures, 401 and 5xx are
-/// retried; they surface as thrown [ApiException]s that PowerSync retries
-/// later (resending is safe: uploads are idempotent by id).
-@LazySingleton(as: SyncUploader)
-class SessionSyncUploader implements SyncUploader {
-  SessionSyncUploader(this._remote);
+/// After the server accepted a write it tells the live watches
+/// (`DataChangeSignal`) so they refetch at once instead of on the next poll.
+/// A future outbox would queue here instead of throwing.
+@lazySingleton
+class SessionWriteGateway {
+  SessionWriteGateway(this._remote, this._connectivity, this._signal);
 
   final SessionRemoteDataSource _remote;
+  final ConnectivityService _connectivity;
+  final DataChangeSignal _signal;
 
-  @override
-  Future<void> upload(SyncUploadBatch batch) async {
-    final operations = batch.operations;
-    final rejections = <SyncRejection>[];
-    for (
-      var start = 0;
-      start < operations.length;
-      start += SessionRemoteDataSource.maxBatch
-    ) {
-      final end = (start + SessionRemoteDataSource.maxBatch).clamp(
-        0,
-        operations.length,
-      );
-      final chunk = operations.sublist(start, end);
-      rejections.addAll(_rejectionsOf(chunk, await _send(chunk)));
-    }
-    if (rejections.isEmpty) return;
-    throw SyncUploadRejected(
-      '${rejections.length} change(s) refused by the server',
-      rejections: rejections,
-    );
+  static const Set<DataScope> _defaultScopes = {DataScope.session};
+
+  /// Runs one server call (a facilitator control), then notifies [scopes].
+  Future<T> run<T>(
+    Future<T> Function() call, {
+    Set<DataScope> scopes = _defaultScopes,
+  }) async {
+    final result = await _deliver(call);
+    _notify(scopes);
+    return result;
   }
 
-  Future<SyncUploadResponse> _send(List<SyncOperation> chunk) async {
+  /// Sends [operations] to `sync-upload` in batches of at most
+  /// [SessionRemoteDataSource.maxBatch]. Throws
+  /// [SessionWriteFailure.rejected] when the server refused any of them.
+  Future<void> upload(
+    List<SessionWriteOperation> operations, {
+    Set<DataScope> scopes = _defaultScopes,
+  }) async {
+    if (operations.isEmpty) return;
+    final messages = <String>[];
+    var anyRejected = false;
+    await _deliver(() async {
+      for (
+        var start = 0;
+        start < operations.length;
+        start += SessionRemoteDataSource.maxBatch
+      ) {
+        final end = (start + SessionRemoteDataSource.maxBatch).clamp(
+          0,
+          operations.length,
+        );
+        final chunk = operations.sublist(start, end);
+        final response = await _remote.uploadBatch([
+          for (final operation in chunk) operation.toJson(),
+        ]);
+        for (var i = 0; i < response.results.length && i < chunk.length; i++) {
+          final result = response.results[i];
+          if (!result.isRejected) continue;
+          anyRejected = true;
+          AppLog.warning(
+            'session',
+            'Server rejected ${chunk[i].table}/${chunk[i].id}: ${result.code}',
+          );
+          final message = result.message;
+          if (message != null && message.isNotEmpty) messages.add(message);
+        }
+        _notify(scopes);
+      }
+    });
+    if (anyRejected) {
+      throw SessionWriteFailure.rejected(messages.toSet().toList());
+    }
+  }
+
+  Future<T> _deliver<T>(Future<T> Function() call) async {
+    if (!await _connectivity.isOnline()) {
+      throw const SessionWriteFailure.offline();
+    }
     try {
-      return await _remote.uploadBatch([
-        for (final operation in chunk) _toJson(operation),
-      ]);
+      return await call();
     } on ApiException catch (error) {
-      if (_isTransient(error)) rethrow;
-      throw SyncUploadRejected(
-        error.code ?? error.kind.name,
-        rejections: [
-          for (final operation in chunk)
-            SyncRejection(
-              table: operation.table,
-              id: operation.id,
-              code: error.code,
-            ),
-        ],
-      );
+      if (_isUnreachable(error)) throw const SessionWriteFailure.offline();
+      rethrow;
     }
   }
 
-  static bool _isTransient(ApiException error) =>
-      error.isRetryable ||
-      error.kind == ApiErrorKind.unauthorized ||
-      error.kind == ApiErrorKind.cancelled;
+  void _notify(Set<DataScope> scopes) => scopes.forEach(_signal.notify);
 
-  static Map<String, Object?> _toJson(SyncOperation operation) => {
-    'op': switch (operation.type) {
-      SyncOperationType.put => 'PUT',
-      SyncOperationType.patch => 'PATCH',
-      SyncOperationType.delete => 'DELETE',
-    },
-    'type': operation.table,
-    'id': operation.id,
-    'opData': operation.data,
-  };
-
-  static List<SyncRejection> _rejectionsOf(
-    List<SyncOperation> chunk,
-    SyncUploadResponse response,
-  ) {
-    final rejections = <SyncRejection>[];
-    for (var i = 0; i < response.results.length && i < chunk.length; i++) {
-      final result = response.results[i];
-      if (!result.isRejected) continue;
-      final operation = chunk[i];
-      AppLog.warning(
-        'sync',
-        'Server rejected ${operation.table}/${operation.id}: ${result.code}',
-      );
-      rejections.add(
-        SyncRejection(
-          table: operation.table,
-          id: operation.id,
-          code: result.code,
-          message: result.message,
-        ),
-      );
-    }
-    return rejections;
-  }
+  static bool _isUnreachable(ApiException error) =>
+      error.kind == ApiErrorKind.network || error.kind == ApiErrorKind.timeout;
 }
