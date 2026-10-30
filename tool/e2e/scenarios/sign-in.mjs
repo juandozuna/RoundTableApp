@@ -97,6 +97,7 @@ export async function signIn(browser) {
 async function emailAccount(browser) {
   const email = `correo.${Date.now()}@e2e.local`;
   const password = 'clave-segura-123';
+  const newPassword = 'clave-nueva-456';
   const app = await App.open(browser, 'correo');
   try {
     await app.seen('Entra a tu mesa', 20_000);
@@ -140,7 +141,50 @@ async function emailAccount(browser) {
     await app.click('Enviar enlace', { role: 'button' });
     check('the reset request is confirmed on the sign-in screen', await app.seen('Revisa tu correo', 20_000));
     await app.shot('a-07-reset-sent');
+
+    // The emailed link signs the person in (PKCE, same browser) and opens the new-password page.
+    const code = await recoveryCode(email);
+    check('the reset email carries a recovery link', Boolean(code));
+    await app.goto(`/?code=${code}#/nueva-contrasena`);
+    check('the recovery link opens "Elige tu contraseña nueva"', await app.seen('Elige tu contraseña nueva', 25_000), (await app.text()).slice(0, 300));
+    await app.fill('Contraseña nueva *', 'corta');
+    await app.fill('Repite la contraseña *', 'corta');
+    await app.click('Guardar contraseña', { role: 'button' });
+    check('a short new password is rejected', await app.seen('al menos 8 caracteres', 5000));
+    await app.fill('Contraseña nueva *', newPassword);
+    await app.fill('Repite la contraseña *', newPassword);
+    await app.click('Guardar contraseña', { role: 'button' });
+    check('the new password is saved', await app.seen('Contraseña actualizada', 20_000));
+    await app.shot('a-08-password-updated');
+    await app.click('Continuar', { role: 'button' });
+    check('continuing leaves the page for the access gate', await app.seen('No encontramos tu cuenta', 25_000));
+    await app.click('Cerrar sesión', { role: 'button' });
+    await app.click('Cerrar sesión', { role: 'button', last: true });
+    await app.seen('Entra a tu mesa', 15_000);
+    await app.fill('Correo *', email);
+    await app.fill('Contraseña *', newPassword);
+    await app.click('Entrar', { role: 'button' });
+    check('the new password signs in', await app.seen('No encontramos tu cuenta', 25_000));
   } finally {
     await app.close();
   }
+}
+
+/** Opens the latest recovery email's link against the local Auth server and returns the PKCE `code` it redirects with. */
+async function recoveryCode(email) {
+  const mail = process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324';
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const list = await (await fetch(`${mail}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`)).json();
+    const id = list.messages?.[0]?.ID;
+    if (id) {
+      const message = await (await fetch(`${mail}/api/v1/message/${id}`)).json();
+      const link = /\(\s*(http[^ )]+\/auth\/v1\/verify[^ )]+)\s*\)/.exec(message.Text ?? '')?.[1];
+      if (!link) return null;
+      const response = await fetch(link, { redirect: 'manual' });
+      const location = response.headers.get('location') ?? '';
+      return new URL(location).searchParams.get('code');
+    }
+    await sleep(500);
+  }
+  return null;
 }
