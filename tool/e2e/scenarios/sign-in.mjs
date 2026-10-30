@@ -3,7 +3,7 @@
 import { App, check, sleep } from '../lib.mjs';
 
 const ROLES = [
-  { account: 'admin', chip: 'Estás como Administrador, Plataforma', tabs: ['Inicio', 'Calendario', 'Mesas', 'Informes', 'Auditoría', 'Invitaciones', 'Ajustes'], absent: [] },
+  { account: 'admin', chip: 'Estás como Administrador, Plataforma', tabs: ['Inicio', 'Calendario', 'Mesas', 'Informes', 'Auditoría', 'Currículo', 'Invitaciones', 'Ajustes'], absent: [] },
   { account: 'facil', chip: 'Estás como Facilitador, Mesa Esperanza 03', tabs: ['Inicio', 'Sesión', 'Calendario', 'Progreso', 'Invitaciones', 'Ajustes'], absent: ['Informes', 'Auditoría'] },
   { account: 'ana', chip: 'Estás como Miembro, Mesa Esperanza 03', tabs: ['Inicio', 'Sesión', 'Progreso', 'Ajustes'], absent: ['Informes', 'Auditoría', 'Invitaciones', 'Calendario'] },
   { account: 'luis', chip: 'Estás como Miembro, Mesa Esperanza 03', tabs: ['Inicio', 'Sesión', 'Progreso', 'Ajustes'], absent: ['Informes'] },

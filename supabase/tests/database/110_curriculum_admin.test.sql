@@ -71,7 +71,7 @@ select is(pg_temp.err($$update public.curriculum_modules set name = 'x'$$) is nu
 reset role;
 
 -- ── Idempotent upload ────────────────────────────────────────────────────────────────────
-create temp table t_start as select now() as at;
+create temp table t_start as select now() as at, (select count(*) from public.audit_events where event_type = 'curriculum.imported') as imports;
 select is(jsonb_array_length(pg_temp.import(pg_temp.export(), true)->'changes'), 0,
           'the stored curriculum as a file has no changes (preview)');
 select is((pg_temp.import(pg_temp.export(), false)->>'applied')::boolean, false,
@@ -251,7 +251,7 @@ reset role;
 -- ── Audit ────────────────────────────────────────────────────────────────────────────────
 select ok((select count(distinct event_type) from public.audit_events where event_type like 'curriculum.%') >= 5,
           'imports, edits, translations and languages are audit-logged');
-select is((select count(*)::int from public.audit_events where event_type = 'curriculum.imported'), 1,
+select is((select count(*)::int from public.audit_events where event_type = 'curriculum.imported') - (select imports::int from t_start), 1,
           'only uploads that changed something are logged (preview, no-op and refused ones are not)');
 
 select * from finish();
