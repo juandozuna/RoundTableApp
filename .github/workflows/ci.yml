@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  flutter:
+    name: Flutter (codegen, analyze, test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.1
+          cache: true
+      - run: flutter pub get
+      - name: Codegen is up to date
+        run: |
+          bash tool/codegen.sh
+          git diff --exit-code
+      - run: flutter analyze
+      - run: flutter test
+
+  supabase:
+    name: Supabase (pgTAP, sync rules)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      # Postgres + GoTrue are what the migrations, seed and pgTAP tests need.
+      - name: Start local Supabase
+        run: >
+          supabase start
+          -x realtime,storage-api,imgproxy,mailpit,studio,edge-runtime,logflare,vector,supavisor,postgres-meta
+      - name: pgTAP
+        run: supabase test db
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: PowerSync sync rules (compile + per-user simulation)
+        run: bash powersync/tools/validate.sh
+
+  deno:
+    name: Edge Function tests (Deno)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 2.1.4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/deno
+          key: deno-${{ runner.os }}-${{ hashFiles('supabase/functions/**/*.ts') }}
+          restore-keys: deno-${{ runner.os }}-
+      # curriculum_test.ts imports scripts/lib/curriculum.mjs, hence the repo-wide read access.
+      - run: deno test --allow-env --allow-read _shared/
+        working-directory: supabase/functions
+
+  node:
+    name: Node script tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test scripts/test/*.test.mjs
