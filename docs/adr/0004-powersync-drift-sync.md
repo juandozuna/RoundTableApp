@@ -1,5 +1,9 @@
 # 0004 — PowerSync + Drift for local persistence and sync
 
+**Status: superseded by [0019](0019-online-only-supabase-data-layer.md).** PowerSync and Drift were
+removed; the app is online only. Kept for history and as the starting point of the future offline
+design.
+
 ## Context
 The session domain is offline-first (ADR 0003). The client architecture mandates Drift for
 reactive relational persistence. Building and hardening a custom sync protocol is a large risk for
