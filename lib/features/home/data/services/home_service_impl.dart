@@ -16,9 +16,10 @@ import '../datasources/home_remote_data_source.dart';
 import '../datasources/home_table_remote_data_source.dart';
 import '../models/home_records.dart';
 
-/// The home is not a live screen: it refetches when a write signals one of
-/// the scopes it shows (the session, the schedule, administration, the
-/// content language) and when the app returns to the foreground; no poll.
+/// The home refetches when a write signals one of the scopes it shows (the
+/// session, the schedule, administration, the content language), when the app
+/// returns to the foreground or reconnects, and every [slowPollInterval]
+/// while open and in the foreground, so other people's changes show up.
 @LazySingleton(as: HomeService)
 class HomeServiceImpl implements HomeService {
   HomeServiceImpl(
@@ -45,7 +46,11 @@ class HomeServiceImpl implements HomeService {
 
   @override
   Stream<HomeOverview> watchOverview(SessionContext context) =>
-      _watch<HomeOverview>(() => _load(context), scopes: _scopes);
+      _watch<HomeOverview>(
+        () => _load(context),
+        scopes: _scopes,
+        pollInterval: slowPollInterval,
+      );
 
   Future<HomeOverview> _load(SessionContext context) => switch (context.role) {
     UserRole.facilitator => _loadFacilitator(context),

@@ -1,5 +1,7 @@
+import 'package:fake_async/fake_async.dart'; // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/data/data_scope.dart';
+import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/services/clock/clock_service.dart';
 import 'package:gold_roundtables/core/services/session_context/session_context.dart';
@@ -12,6 +14,7 @@ import 'package:gold_roundtables/features/calendar/domain/models/upcoming_sessio
 import 'package:mocktail/mocktail.dart';
 
 import '../../../core/data/support/online_data_stubs.dart';
+import '../../support/spy_remote_watch.dart';
 
 class _MockRemote extends Mock implements CalendarRemoteDataSource {}
 
@@ -165,8 +168,46 @@ void main() {
       }
     });
 
-    test('a history-only change does not, and nothing polls', () async {
+    test('a history-only change does not', () async {
       expect(await refreshesAfter(DataScope.history), 1);
+    });
+  });
+
+  group('polling', () {
+    UpcomingSessionsServiceImpl withSpy(SpyRemoteWatch spy) =>
+        UpcomingSessionsServiceImpl(
+          remote,
+          _FixedClock(),
+          TableWallClock(),
+          spy,
+        );
+
+    test('facilitator and manager calendars poll every 30 seconds', () {
+      final spy = SpyRemoteWatch(harness.signal, harness.lifecycle);
+      final polling = withSpy(spy);
+
+      polling.watch(facilitator);
+      polling.watch(coordinator);
+
+      expect(spy.pollIntervals, [slowPollInterval, slowPollInterval]);
+      expect(slowPollInterval, const Duration(seconds: 30));
+    });
+
+    test('a 30 second tick refetches other people\'s changes', () {
+      fakeAsync((async) {
+        var reads = 0;
+        when(() => remote.fetch(now: now, tableId: 't1')).thenAnswer((_) async {
+          reads++;
+          return [_record()];
+        });
+        final sub = service.watch(facilitator).listen((_) {});
+        async.flushMicrotasks();
+        expect(reads, 1);
+
+        async.elapse(slowPollInterval);
+        expect(reads, 2);
+        sub.cancel();
+      });
     });
   });
 

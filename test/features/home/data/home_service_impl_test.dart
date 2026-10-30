@@ -1,5 +1,7 @@
+import 'package:fake_async/fake_async.dart'; // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/data/data_scope.dart';
+import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/models/health_status.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
@@ -19,6 +21,7 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../core/data/support/online_data_stubs.dart';
 import '../../settings/support/stub_selected_language.dart';
+import '../../support/spy_remote_watch.dart';
 
 class _MockTables extends Mock implements HomeTableRemoteDataSource {}
 
@@ -284,6 +287,51 @@ void main() {
       ]) {
         expect(await refreshesAfter(scope), 2, reason: '$scope');
       }
+    });
+
+    test('every role polls every 30 seconds', () {
+      final spy = SpyRemoteWatch(harness.signal, harness.lifecycle);
+      final polling = HomeServiceImpl(
+        tables,
+        remote,
+        language,
+        _FixedClock(),
+        spy,
+      );
+
+      for (final role in UserRole.values) {
+        polling.watchOverview(SessionContext(role: role, tableId: 'table-1'));
+      }
+
+      expect(spy.pollIntervals, everyElement(slowPollInterval));
+      expect(spy.pollIntervals, hasLength(UserRole.values.length));
+      expect(slowPollInterval, const Duration(seconds: 30));
+    });
+
+    test('a 30 second tick refetches other people\'s changes', () {
+      fakeAsync((async) {
+        var reads = 0;
+        when(() => tables.fetchTable('table-1', locale: null)).thenAnswer((
+          _,
+        ) async {
+          reads++;
+          return HomeTableRecord(
+            tableId: 'table-1',
+            tableName: 'Mesa',
+            tableIsActive: true,
+            seats: reads,
+            sessionId: 's',
+            scheduledAt: upcoming,
+          );
+        });
+        final sub = service.watchOverview(facilitator).listen((_) {});
+        async.flushMicrotasks();
+        expect(reads, 1);
+
+        async.elapse(slowPollInterval);
+        expect(reads, 2);
+        sub.cancel();
+      });
     });
 
     test('a history-only change does not', () async {

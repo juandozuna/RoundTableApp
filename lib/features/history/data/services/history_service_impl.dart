@@ -10,9 +10,10 @@ import '../../domain/models/table_history.dart';
 import '../../domain/services/history_service.dart';
 import '../datasources/history_remote_data_source.dart';
 
-/// History is not a live screen: it refetches when a session write, a closed
-/// session or a content-language change signals, and when the app returns to
-/// the foreground; there is no poll.
+/// History refetches when a session write, a closed session or a
+/// content-language change signals, when the app returns to the foreground or
+/// reconnects, and every [slowPollInterval] while open and in the foreground,
+/// so other people's changes show up.
 @LazySingleton(as: HistoryService)
 class HistoryServiceImpl implements HistoryService {
   HistoryServiceImpl(this._remote, this._language, this._watch);
@@ -41,6 +42,7 @@ class HistoryServiceImpl implements HistoryService {
       personId,
     ),
     scopes: _scopes,
+    pollInterval: slowPollInterval,
   );
 
   @override
@@ -53,6 +55,7 @@ class HistoryServiceImpl implements HistoryService {
           ),
         ),
         scopes: _scopes,
+        pollInterval: slowPollInterval,
       );
 
   /// The chosen content language, or null for the Spanish base text. Read

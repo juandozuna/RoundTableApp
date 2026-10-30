@@ -7,6 +7,12 @@ import '../services/connectivity/connectivity_service.dart';
 import 'data_change_signal.dart';
 import 'data_scope.dart';
 
+/// How often the screens that are not live (home, calendar, history) look for
+/// other people's changes while they are open. The running session polls
+/// faster (`LiveSessionServiceImpl.pollInterval`, 5 s); everything else
+/// refetches only on the app's own writes, the foreground and reconnecting.
+const Duration slowPollInterval = Duration(seconds: 30);
+
 /// Turns a one-shot remote read into the `Stream` shape of the domain
 /// contracts, for the online-only data layer (see
 /// `docs/implementation/online-data-layer.md`).

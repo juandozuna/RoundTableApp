@@ -42,12 +42,22 @@ Cubit → use case → domain service contract (Stream<Model>)
    given scopes) and on the poll interval, pauses polling while the app is in
    the background, skips results equal to the previous one, reports a failed
    fetch as a stream error while it keeps watching, and cancels its timer when
-   the listener cancels. One-shot screens omit `pollInterval`.
+   the listener cancels. Every active watch also refetches when the app returns
+   to the foreground and when the connection comes back; screens without a
+   `pollInterval` need no tap to recover.
 
-Polling is the only way other people's changes arrive (no Realtime). Use
-`pollInterval` (~5 s) just for live screens (the running session, the
-facilitator board); lists and admin screens refetch on the app's own writes and
-on pull-to-refresh/re-entry.
+Polling is the only way other people's changes arrive (no Realtime). Pick the
+interval by how live the screen is:
+
+| Screens | `pollInterval` |
+|---|---|
+| Running session, facilitator board | 5 s (`LiveSessionServiceImpl.pollInterval`) |
+| Home (all roles), calendar, history | 30 s (`slowPollInterval` in `remote_watch.dart`) |
+| Content languages, admin lists, other screens | none |
+
+Besides the poll, every screen refetches on the app's own writes
+(`DataChangeSignal`), when the app returns to the foreground and when the
+connection returns. Polling pauses while the app is in the background.
 
 ### Table notes
 
@@ -81,8 +91,10 @@ on pull-to-refresh/re-entry.
   `SyncStatusService`: `connected`/`offline` from `ConnectivityService`,
   `pendingCount` always 0. The sync indicator, sign-out guard and unsynced
   alert keep compiling and show nothing pending.
-- Reads fail with a stream error while offline and recover on the next signal,
-  poll tick or return to the foreground.
+- Reads fail with a stream error while offline. They recover by themselves on
+  the next signal, poll tick (5 s live session, 30 s home/calendar/history),
+  return to the foreground or reconnect. Screens that already show content
+  keep it on such an error; only a first load that fails shows the error.
 - Writes while offline fail with the offline error; the UI shows it and the
   person retries. Nothing is stored for later.
 

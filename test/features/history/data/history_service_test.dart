@@ -1,6 +1,8 @@
+import 'package:fake_async/fake_async.dart'; // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/data/curriculum_names.dart';
 import 'package:gold_roundtables/core/data/data_scope.dart';
+import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/models/assessment_kind.dart';
 import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
@@ -14,6 +16,7 @@ import '../../../core/data/support/online_data_stubs.dart';
 import '../../../core/data/support/record_builders.dart';
 import '../../../core/data/support/recording_table_reads_client.dart';
 import '../../settings/support/stub_selected_language.dart';
+import '../../support/spy_remote_watch.dart';
 
 /// History read through PostgREST: what the server holds for the table, the
 /// filters sent, and when it refetches.
@@ -245,7 +248,38 @@ void main() {
       expect(emitted.map((h) => h.values.single.initialScore), [6, 9, 2]);
     });
 
-    test('ignores signals of other areas and does not poll', () async {
+    test('member and table histories poll every 30 seconds', () {
+      final spy = SpyRemoteWatch(harness.signal, harness.lifecycle);
+      final polling = HistoryServiceImpl(
+        HistoryRemoteDataSource(client, CurriculumNamesReader(client)),
+        language,
+        spy,
+      );
+
+      polling.watchMemberHistory(tableId: table, personId: ana);
+      polling.watchTableHistory(table);
+
+      expect(spy.pollIntervals, [slowPollInterval, slowPollInterval]);
+      expect(slowPollInterval, const Duration(seconds: 30));
+    });
+
+    test('a 30 second tick refetches other people\'s changes', () {
+      fakeAsync((async) {
+        final emitted = <MemberHistory>[];
+        final sub = history
+            .watchMemberHistory(tableId: table, personId: ana)
+            .listen(emitted.add);
+        async.flushMicrotasks();
+        expect(client.readsOf(PostgrestTables.sessions), hasLength(1));
+
+        async.elapse(slowPollInterval);
+        async.flushMicrotasks();
+        expect(client.readsOf(PostgrestTables.sessions), hasLength(2));
+        sub.cancel();
+      });
+    });
+
+    test('ignores signals of other areas', () async {
       final emitted = await listen(() async {
         harness.signal.notify(DataScope.calendar);
         harness.signal.notify(DataScope.admin);

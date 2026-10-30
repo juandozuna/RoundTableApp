@@ -12,8 +12,9 @@ import '../datasources/calendar_remote_data_source.dart';
 import '../models/upcoming_session_record.dart';
 import 'table_wall_clock.dart';
 
-/// The calendar is not a live screen: it refetches when a schedule or
-/// session write signals, and when the app returns to the foreground; no poll.
+/// The calendar refetches when a schedule or session write signals, when the
+/// app returns to the foreground or reconnects, and every [slowPollInterval]
+/// while open and in the foreground, so other people's changes show up.
 @LazySingleton(as: UpcomingSessionsService)
 class UpcomingSessionsServiceImpl implements UpcomingSessionsService {
   UpcomingSessionsServiceImpl(
@@ -40,11 +41,13 @@ class UpcomingSessionsServiceImpl implements UpcomingSessionsService {
         UserRole.facilitator => _watch<UpcomingSessions>(
           () => _loadFacilitator(context),
           scopes: _scopes,
+          pollInterval: slowPollInterval,
         ),
         UserRole.coordinator ||
         UserRole.administrator => _watch<UpcomingSessions>(
           () => _loadManager(context),
           scopes: _scopes,
+          pollInterval: slowPollInterval,
         ),
         UserRole.member => Stream.value(
           const UpcomingSessions(scope: UpcomingScope.unavailable),
