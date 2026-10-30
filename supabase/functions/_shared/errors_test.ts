@@ -24,6 +24,7 @@ Deno.test("http status per code family", () => {
   assertEquals(new ApiError("invite_expired").status, 410);
   assertEquals(new ApiError("score_five_not_allowed").status, 422);
   assertEquals(new ApiError("value_rewind_confirmation_required").status, 409);
+  assertEquals(new ApiError("answer_person_not_at_table").status, 422);
   assertEquals(new ApiError("slot_taken").status, 409);
   assertEquals(new ApiError("session_in_progress").status, 409);
   assertEquals(new ApiError("schedule_in_past").status, 422);

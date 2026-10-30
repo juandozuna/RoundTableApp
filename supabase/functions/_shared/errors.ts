@@ -22,6 +22,7 @@ export const ERRORS = {
   score_out_of_range: [422, "El puntaje debe ser un número entero del 1 al 10."],
   score_five_not_allowed: [422, "El 5 no está permitido: elige si estás más cerca del 4 o del 6."],
   question_mismatch: [422, "La pregunta no corresponde al valor de esta sesión."],
+  answer_person_not_at_table: [422, "Elige a una persona de tu mesa o escribe otro nombre."],
   follow_up_not_available: [422, "Esta sesión no tiene seguimiento."],
   follow_up_session_mismatch: [422, "El seguimiento se registra en la sesión siguiente de la misma mesa."],
   follow_up_already_recorded: [409, "El seguimiento de este compromiso ya se registró."],
