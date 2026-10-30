@@ -36,6 +36,16 @@ Widget → Cubit → Use case → Service contract → Service impl → SessionL
   until the synced row catches up), `MemberFlowCubit` (drafts and saving), `FacilitatorBoardCubit`
   (tab, viewed stage, attendance).
 
+## Incomplete sessions and person answers
+
+- The server marks a closed session `incomplete` (`closed_early`) when it was closed before the
+  answers stage (RF-50); the history shows an "Incompleta" pill (`sessions.completion` syncs down, so it
+  works offline) and the reports headline counts them. The facilitator UI steps through the stages, so
+  this normally comes from API/offline closes; there is no server auto-close yet.
+- A `person` question (RF-54) shows the table's people (from the synced roster, everyone but the
+  member) as chips and a free-text "Otra persona" box. A picked person is saved as `answer_person_id`
+  next to the name in `answer_text`; typing replaces the pick. Draft persistence keeps the pick.
+
 ## Routes
 
 `/sesion` (user's active table) and `/mesas/:tableId/sesion`, full-screen, plus a "Sesión" shell

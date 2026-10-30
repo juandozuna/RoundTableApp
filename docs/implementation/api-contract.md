@@ -131,7 +131,7 @@ switcher.
 | 405 | `method_not_allowed` |
 | 409 | `table_full`, `table_has_facilitator`, `table_not_active`, `already_member`, `membership_inactive`, `cannot_move_facilitator`, `cannot_remove_facilitator`, `person_inactive`, `person_already_linked`, `duplicate_id`, `duplicate_assessment`, `duplicate_follow_up`, `duplicate_answer`, `duplicate_commitment`, `duplicate_attendance`, `duplicate_table_code`, `duplicate_organization`, `duplicate_location`, `duplicate_token`, `conflict`, `session_closed`, `session_cancelled`, `session_finalized`, `session_pending_exists`, `invalid_session_transition`, `follow_up_already_recorded`, `value_change_blocked`, `value_rewind_confirmation_required`, `session_in_progress`, `slot_taken`, `extra_session_exists`, `organization_inactive`, `last_platform_admin`, `invite_already_used`, `invite_pending_exists`, `person_linked_elsewhere`, `identity_linked_elsewhere`, `no_person`, `operation_not_allowed` |
 | 410 | `invite_expired`, `invite_revoked` |
-| 422 | `validation_failed`, `invalid_reference`, `immutable_field`, `invalid_timezone`, `unsupported_table`, `score_out_of_range`, `score_five_not_allowed`, `question_mismatch`, `follow_up_not_available`, `follow_up_session_mismatch`, `facilitator_required` |
+| 422 | `validation_failed`, `invalid_reference`, `immutable_field`, `invalid_timezone`, `unsupported_table`, `score_out_of_range`, `score_five_not_allowed`, `question_mismatch`, `answer_person_not_at_table`, `follow_up_not_available`, `follow_up_session_mismatch`, `facilitator_required` |
 | 429 | `rate_limited` (anonymous invite preview; `Retry-After` header and `retry_after_seconds`) |
 | 500 | `internal_error` |
 
@@ -222,7 +222,14 @@ rollups (private `kpi` schema, read via RPCs).
   `follow_up_session_id` (= the next session), `follow_up_status`, `follow_up_note`,
   `follow_up_device_at`. It can be edited in that session, never moved to another
   (`follow_up_already_recorded`).
-- **Answers**: `question_id` must belong to the session's value (`question_mismatch`).
+- **Answers**: `question_id` must belong to the session's value (`question_mismatch`). For a question with
+  `response_type = 'person'` the answer may carry `answer_person_id`, which must be an active member of the
+  session's table (`answer_person_not_at_table`; the same code is returned for a person id on a text question);
+  `answer_text` then holds the person's name (a snapshot). Free text leaves `answer_person_id` null.
+- **Incomplete sessions (RF-50)**: when a session closes the server sets `completion`: `complete` if the
+  stage before closing was `value`/`commitment` (the answers stage was reached), otherwise `incomplete` with
+  `incomplete_reason = 'closed_early'`. Not writable by clients; final once closed. The `session.closed` audit
+  event payload includes `completion` and `incomplete_reason`; the follow-up rule is unaffected.
 - **Participation**: a person may write only for sessions of a table they belonged to at that time
   (`not_table_participant`).
 - **Late sync (ADR 0005)**: rows captured on the device before the session's `ended_at` (+15 min clock
@@ -313,10 +320,10 @@ Allowed operations:
 
 | Table | Ops | Who | Writable fields |
 |---|---|---|---|
-| `sessions` | PATCH | active facilitator of the table | `status`, `stage`, `started_at`, `ended_at`, `answers_closed_at`, `cancelled_reason`, `device_modified_at` |
+| `sessions` | PATCH | active facilitator of the table | `status`, `stage`, `started_at`, `ended_at`, `answers_closed_at`, `cancelled_reason`, `device_modified_at` (`completion` / `incomplete_reason` are server-derived on close and ignored if sent) |
 | `session_attendance` | PUT, PATCH | active facilitator of the table | `session_id`, `person_id`, `status`, `device_created_at`, `device_modified_at` |
 | `member_assessments` | PUT, PATCH | the person themself | `session_id`, `person_id`, `kind`, `score`, `justification`, `device_*` |
-| `member_answers` | PUT, PATCH | the person themself | `session_id`, `person_id`, `question_id`, `answer_text`, `device_*` |
+| `member_answers` | PUT, PATCH | the person themself | `session_id`, `person_id`, `question_id`, `answer_text`, `answer_person_id` (a `person` question only; sending `null` clears it), `device_*` |
 | `member_commitments` | PUT, PATCH | the person themself | `session_id`, `person_id`, `action_text`, `measure_text`, `follow_up_session_id`, `follow_up_status`, `follow_up_note`, `follow_up_device_at`, `device_*` |
 
 Anything else → `unsupported_table`; DELETE → `operation_not_allowed`.
@@ -661,7 +668,7 @@ rows flagged `synced_late`; **health**: `completed`; `inactive` (paused/closed, 
 `kpi_summary` example (admin, seed):
 
 ```json
-{ "sessions_closed": 115, "values_completed": 115, "member_values_completed": 739,
+{ "sessions_closed": 115, "sessions_incomplete": 0, "values_completed": 115, "member_values_completed": 739,
   "attendance_pct": 86.1, "initial_avg": 4.75, "follow_up_avg": 5.34,
   "improvement_avg": 0.70, "improvement_pairs": 522,
   "synced_late_rows": 180, "synced_late_sessions": 21,
@@ -817,6 +824,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `value_id` | uuid |  |  |
 | `question_id` | uuid |  |  |
 | `answer_text` | text |  |  |
+| `answer_person_id` | uuid | yes |  |
 | `device_created_at` | timestamp with time zone |  | now() |
 | `device_modified_at` | timestamp with time zone | yes |  |
 | `received_at` | timestamp with time zone |  | now() |
@@ -974,6 +982,8 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `ended_at` | timestamp with time zone | yes |  |
 | `answers_closed_at` | timestamp with time zone | yes |  |
 | `cancelled_reason` | text | yes |  |
+| `completion` | session_completion | yes |  |
+| `incomplete_reason` | text | yes |  |
 | `kind` | text |  | 'regular' |
 | `original_scheduled_at` | timestamp with time zone | yes |  |
 | `facilitator_person_id` | uuid | yes |  |
