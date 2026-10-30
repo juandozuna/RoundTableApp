@@ -31,7 +31,7 @@ if $build; then
     "--dart-define=DEV_AUTH=$DEV_AUTH"
     "--dart-define=APP_ENV=$APP_ENV"
   )
-  for name in FIREBASE_API_KEY FIREBASE_APP_ID FIREBASE_MESSAGING_SENDER_ID FIREBASE_PROJECT_ID FIREBASE_VAPID_KEY; do
+  for name in FIREBASE_API_KEY FIREBASE_APP_ID FIREBASE_WEB_APP_ID FIREBASE_MESSAGING_SENDER_ID FIREBASE_PROJECT_ID FIREBASE_STORAGE_BUCKET FIREBASE_VAPID_KEY; do
     [[ -n "${!name:-}" ]] && defines+=("--dart-define=$name=${!name}")
   done
   (cd "$repo_root" && flutter pub get >/dev/null && flutter build web "--${WEB_BUILD_MODE:-release}" --base-href / "${defines[@]}")

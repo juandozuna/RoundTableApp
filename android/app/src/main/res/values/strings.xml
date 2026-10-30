@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default FCM channel (ADR 0009); created in MainActivity, referenced from the manifest. -->
+    <string name="default_notification_channel_id">gold_roundtables_default</string>
+    <string name="default_notification_channel_name">Avisos de la mesa</string>
+</resources>

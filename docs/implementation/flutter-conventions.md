@@ -26,9 +26,9 @@ flutter run -d chrome --web-port 3000 \
 
 Every define is optional. Without `SUPABASE_*` the app starts signed out and remote calls fail
 with a clear `StateError`. Without `POWERSYNC_URL` the local database still opens, but nothing
-replicates. Firebase web push needs `FIREBASE_API_KEY`, `FIREBASE_APP_ID`,
-`FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID` and `FIREBASE_VAPID_KEY`. Android and iOS read
-`google-services.json` / `GoogleService-Info.plist`. Without them push is off and the app still
+replicates. Firebase push (all platforms) needs `FIREBASE_API_KEY`, `FIREBASE_MESSAGING_SENDER_ID`,
+`FIREBASE_PROJECT_ID`, the platform's app id (`FIREBASE_WEB_APP_ID`, `FIREBASE_ANDROID_APP_ID`,
+`FIREBASE_IOS_APP_ID`) and, on web, `FIREBASE_VAPID_KEY` (details in `mobile.md`). Without them push is off and the app still
 starts (`FirebaseBootstrap.isAvailable == false`).
 
 `AppConfig` (`lib/core/config/app_config.dart`) is the only reader of `--dart-define`. Use

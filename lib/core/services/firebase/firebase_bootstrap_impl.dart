@@ -21,22 +21,17 @@ class FirebaseBootstrapImpl implements FirebaseBootstrap {
   Future<bool> initialize() => _initialization ??= _initialize();
 
   Future<bool> _initialize() async {
-    final web = _config.firebase;
-    if (kIsWeb && !web.isComplete) {
-      AppLog.info('firebase', 'Firebase web config missing; push disabled.');
+    final options = firebaseOptionsFor(
+      _config.firebase,
+      isWeb: kIsWeb,
+      platform: defaultTargetPlatform,
+    );
+    if (options == null) {
+      AppLog.info('firebase', 'Firebase config missing; push disabled.');
       return false;
     }
     try {
-      await Firebase.initializeApp(
-        options: kIsWeb
-            ? FirebaseOptions(
-                apiKey: web.apiKey,
-                appId: web.appId,
-                messagingSenderId: web.messagingSenderId,
-                projectId: web.projectId,
-              )
-            : null,
-      );
+      await Firebase.initializeApp(options: options);
       _available = true;
     } on Object catch (error) {
       AppLog.warning('firebase', 'Firebase unavailable; push disabled.', error);
@@ -44,4 +39,25 @@ class FirebaseBootstrapImpl implements FirebaseBootstrap {
     }
     return _available;
   }
+}
+
+/// The [FirebaseOptions] for the running platform, or `null` when the
+/// dart-defines for it are incomplete (push stays off).
+@visibleForTesting
+FirebaseOptions? firebaseOptionsFor(
+  FirebaseConfig config, {
+  required bool isWeb,
+  required TargetPlatform platform,
+}) {
+  if (!config.isCompleteFor(isWeb: isWeb, platform: platform)) return null;
+  return FirebaseOptions(
+    apiKey: config.apiKey,
+    appId: config.appIdFor(isWeb: isWeb, platform: platform),
+    messagingSenderId: config.messagingSenderId,
+    projectId: config.projectId,
+    storageBucket: config.storageBucket.isEmpty ? null : config.storageBucket,
+    iosBundleId: !isWeb && platform == TargetPlatform.iOS
+        ? (config.iosBundleId.isEmpty ? null : config.iosBundleId)
+        : null,
+  );
 }
