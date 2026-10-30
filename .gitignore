@@ -58,3 +58,6 @@ tool/e2e/node_modules/
 # Hosted deployment secrets (deploy/hosted.env.example is tracked)
 /deploy/*.env
 /deploy/*.json
+
+# Firebase Hosting deploy cache
+.firebase/

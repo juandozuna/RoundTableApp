@@ -1,0 +1,24 @@
+{
+  "hosting": {
+    "site": "roundtable-v1",
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "_headers", "_redirects"],
+    "cleanUrls": false,
+    "redirects": [
+      { "source": "/invite/:code", "destination": "/#/invite/:code", "type": 302 }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Strict-Transport-Security", "value": "max-age=31536000" },
+          { "key": "Permissions-Policy", "value": "camera=(self), microphone=(), geolocation=(), payment=()" }
+        ]
+      }
+    ]
+  }
+}

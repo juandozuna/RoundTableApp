@@ -9,13 +9,13 @@ unaffected by anything here (`README.md` → "Running locally").
 | Piece | Where it runs | Recommended | Alternative |
 |---|---|---|---|
 | Database, Auth, Edge Functions | Supabase project | supabase.com (hosted) | — |
-| Web app (static files) | CDN | **Cloudflare Pages** (direct upload) | `docker/web` nginx image |
+| Web app (static files) | CDN | **Firebase Hosting**, project `roundtable-v1` → https://roundtable-v1.web.app | Cloudflare Pages, `docker/web` nginx image |
 | Push | Firebase Cloud Messaging, project `roundtable-v1` (sender id `1050044136194`) | — | — |
 
 ## 0. Before you start
 
 Tools on the machine that deploys: Supabase CLI ≥ 2.115, `jq`, `curl`, `openssl`, Flutter 3.41.x
-(web build), Node ≥ 18 (`npx wrangler`). No Docker is needed (functions are bundled server-side).
+(web build), Node ≥ 18 and `firebase-tools` (`firebase login` as an owner of `roundtable-v1`). No Docker is needed (functions are bundled server-side).
 `psql` is not needed either: SQL steps go through the Supabase CLI.
 
 You create these by hand (they cannot be scripted):
@@ -23,10 +23,11 @@ You create these by hand (they cannot be scripted):
    **project ref** (the 20 letters in `supabase.com/dashboard/project/<ref>`) and, under Project
    Settings → API, the **anon / publishable key**. Create an **access token** (Account → Access
    Tokens).
-2. A **Cloudflare Pages** project, so the web URL exists before it is needed in secrets:
-   `npx wrangler login` (or `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`) then
-   `npx wrangler pages project create <name> --production-branch main`. The URL is
-   `https://<name>.pages.dev` until a custom domain is attached.
+2. The web host. Production uses the Firebase Hosting site `roundtable-v1` of the Firebase
+   project that also sends push (`firebase.json`, `.firebaserc`); its URL
+   `https://roundtable-v1.web.app` is `APP_PUBLIC_URL`, and `ALLOWED_ORIGINS` also lists
+   `https://roundtable-v1.firebaseapp.com`. Supabase cannot host the app: Storage serves `.html`
+   as `text/plain`.
 
 Then create the settings file (git-ignored, see `.gitignore`; every variable is documented in the
 template):
@@ -185,7 +186,20 @@ service worker when they are complete. A change in any value needs a rebuild.
 Flutter's output is plain static files; the app uses hash routing (`/#/…`), so the host only ever
 serves `/`.
 
-### 4.1 Cloudflare Pages (recommended)
+### 4.1 Firebase Hosting (production)
+
+```bash
+firebase deploy --only hosting --project roundtable-v1
+```
+
+`firebase.json` publishes `build/web` with the same response headers as `web/_headers`
+(`no-cache` everywhere plus the security headers), the `/invite/:code → /#/invite/:code` redirect
+of `web/_redirects`, and Firebase's own `404.html` handling (missing assets are real 404s). The
+Cloudflare-only `_headers` / `_redirects` files are not uploaded. Hosting compresses text assets
+itself. A custom domain is attached in the Firebase console (Hosting → Add custom domain); then
+update `APP_PUBLIC_URL` / `ALLOWED_ORIGINS` and re-run `bash scripts/deploy-hosted.sh --only secrets,auth`.
+
+### 4.1b Cloudflare Pages (alternative)
 
 ```bash
 npx wrangler pages deploy build/web --project-name <name> --branch main
@@ -283,7 +297,7 @@ Neither is meant for the hosted environment:
 
 Order (operations.md §5): migrations → Edge Functions → web build → mobile builds. In practice:
 `bash scripts/deploy-hosted.sh --dry-run`, then the same without `--dry-run`, `bash
-scripts/build-web.sh && npx wrangler pages deploy build/web …`, then `smoke-hosted.sh`.
+scripts/build-web.sh && firebase deploy --only hosting --project roundtable-v1`, then `smoke-hosted.sh`.
 Migrations are forward-only and must stay compatible with the previous app version (old mobile
 builds stay in use for days).
 
@@ -301,8 +315,8 @@ builds stay in use for days).
   (`--only secrets`, no trailing slash, `https`).
 - **Stale web release**: `no-cache` makes the next load revalidate; a hard reload clears any older
   caching worker. Missing push on web: `build/web/firebase-config.js` absent (incomplete `FIREBASE_*`).
-- **Invite links open the home screen**: the `/invite/*` redirect (`web/_redirects`) only exists on
-  Cloudflare Pages; on another host add the equivalent redirect to `/#/invite/<code>`.
+- **Invite links open the home screen**: the `/invite/*` redirect (`web/_redirects`) exists on
+  Firebase Hosting (`firebase.json`) and Cloudflare Pages; on another host add the equivalent redirect to `/#/invite/<code>`.
 
 ## 9. Not verified yet
 

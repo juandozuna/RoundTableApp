@@ -84,12 +84,12 @@ fi
 info "Web ($web_url)"
 check "index.html served" bash -c "curl -fsS --max-time 15 '$web_url/' | grep -q flutter_bootstrap"
 check "index.html is revalidated (Cache-Control: no-cache)" expect_header '^cache-control: .*no-cache' "$web_url/"
-soft "security headers (nosniff, HSTS; web/_headers on Cloudflare Pages, add them in your proxy when self-hosting)" bash -c \
+soft "security headers (nosniff, HSTS; firebase.json / web/_headers, add them in your proxy when self-hosting)" bash -c \
   "h=\$(curl -sI --max-time 15 '$web_url/' | tr -d '\r'); grep -iq '^x-content-type-options: nosniff' <<<\"\$h\" && grep -iq '^strict-transport-security:' <<<\"\$h\""
 check "main.dart.js served" expect_status 200 "$web_url/main.dart.js"
 check "flutter_service_worker.js is revalidated" expect_header '^cache-control: .*no-cache' "$web_url/flutter_service_worker.js"
 check "missing asset is a real 404" expect_status 404 "$web_url/does-not-exist.js"
-soft "path-style invite links redirect to the hash route (web/_redirects; Cloudflare Pages only)" \
+soft "path-style invite links redirect to the hash route (firebase.json / web/_redirects)" \
   expect_header '^location: .*#/invite/' "$web_url/invite/ABC123"
 
 echo

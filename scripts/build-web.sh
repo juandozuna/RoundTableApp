@@ -11,7 +11,7 @@
 #   FIREBASE_PROJECT_ID, FIREBASE_VAPID_KEY
 # When the four required Firebase values are set it also writes build/web/firebase-config.js for the
 # push service worker (web/firebase-messaging-sw.js). web/_headers, web/_redirects and web/404.html
-# (Cloudflare Pages) are copied into build/web by Flutter.
+# (Cloudflare Pages) are copied into build/web by Flutter; firebase.json mirrors them for Firebase Hosting.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=scripts/lib/hosted.sh
@@ -107,4 +107,4 @@ if ! grep -qF "$SUPABASE_URL" build/web/main.dart.js; then
   warn "The Supabase URL was not found in build/web/main.dart.js; check the --dart-define values."
 fi
 ok "Built build/web ($(du -sh build/web | cut -f1)) for $SUPABASE_URL, DEV_AUTH=false, AUTH_METHODS=$AUTH_METHODS"
-echo "   Deploy: see docs/deployment.md (Cloudflare Pages: npx wrangler pages deploy build/web --project-name <name>)"
+echo "   Deploy: see docs/deployment.md (Firebase Hosting: firebase deploy --only hosting --project roundtable-v1)"

@@ -152,7 +152,7 @@ variable names.
 
 **Scripted path:** [docs/deployment.md](docs/deployment.md) is the end-to-end runbook (Supabase →
 secrets → web → auth providers → smoke test) with `scripts/deploy-hosted.sh`,
-`scripts/build-web.sh` (Cloudflare Pages or the
+`scripts/build-web.sh` (Firebase Hosting `roundtable-v1.web.app`, Cloudflare Pages or the
 `docker/web` image) and `scripts/smoke-hosted.sh`, all driven by `deploy/hosted.env`
 (template: [`deploy/hosted.env.example`](deploy/hosted.env.example)). The list below is the manual
 equivalent.
