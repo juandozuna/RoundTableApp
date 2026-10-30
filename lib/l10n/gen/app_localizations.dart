@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlineDetailSavedLocally.
   ///
   /// In es, this message translates to:
-  /// **'lo que respondas se guarda en este teléfono'**
+  /// **'los cambios no se pueden enviar hasta que vuelva la conexión'**
   String get offlineDetailSavedLocally;
 
   /// No description provided for @syncPending.
@@ -375,6 +375,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sincronizado tarde'**
   String get syncSyncedLate;
+
+  /// No description provided for @syncOfflineDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Los cambios no se pueden enviar hasta que vuelva la conexión.'**
+  String get syncOfflineDetail;
 
   /// No description provided for @syncUnavailable.
   ///

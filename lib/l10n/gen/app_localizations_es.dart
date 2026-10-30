@@ -143,7 +143,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlineDetailSavedLocally =>
-      'lo que respondas se guarda en este teléfono';
+      'los cambios no se pueden enviar hasta que vuelva la conexión';
 
   @override
   String get syncPending => 'Pendiente';
@@ -156,6 +156,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get syncSyncedLate => 'Sincronizado tarde';
+
+  @override
+  String get syncOfflineDetail =>
+      'Los cambios no se pueden enviar hasta que vuelva la conexión.';
 
   @override
   String get syncUnavailable => 'Sincronización no configurada';

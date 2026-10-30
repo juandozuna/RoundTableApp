@@ -29,3 +29,4 @@ export 'skeleton.dart';
 export 'status_border.dart';
 export 'status_pill.dart';
 export 'sync_pill.dart';
+export 'sync_status_pill.dart';

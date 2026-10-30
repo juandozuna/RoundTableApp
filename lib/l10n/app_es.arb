@@ -49,11 +49,12 @@
     }
   },
   "offlineDetailOnlineOnly": "esta sección necesita internet",
-  "offlineDetailSavedLocally": "lo que respondas se guarda en este teléfono",
+  "offlineDetailSavedLocally": "los cambios no se pueden enviar hasta que vuelva la conexión",
   "syncPending": "Pendiente",
   "syncSyncing": "Sincronizando",
   "syncSynced": "Sincronizado",
   "syncSyncedLate": "Sincronizado tarde",
+  "syncOfflineDetail": "Los cambios no se pueden enviar hasta que vuelva la conexión.",
   "syncUnavailable": "Sincronización no configurada",
   "syncNever": "Aún no se ha sincronizado",
   "syncPendingCount": "{count, plural, =0{Nada pendiente} =1{1 cambio pendiente} other{{count} cambios pendientes}}",
