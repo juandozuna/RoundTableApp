@@ -33,16 +33,28 @@ begin
   end loop;
 
   if exists (select 1 from pg_catalog.pg_roles where rolname = 'powersync_role') then
+    -- Mirror of the setup, one step at a time: a refused step must not roll back the others.
+    -- No `drop owned by`: it needs membership in the role, which `postgres` lacks on Supabase,
+    -- and the role owns nothing (the setup only granted it privileges).
     begin
-      -- Mirror of the setup: usage on public, select on all tables and as a default privilege.
       alter default privileges in schema public revoke select on tables from powersync_role;
+    exception when others then
+      raise warning 'could not revoke default privileges from powersync_role: %', sqlerrm;
+    end;
+    begin
       revoke select on all tables in schema public from powersync_role;
+    exception when others then
+      raise warning 'could not revoke table privileges from powersync_role: %', sqlerrm;
+    end;
+    begin
       revoke usage on schema public from powersync_role;
-      -- Anything left (other schemas, default ACLs set by other owners); owns nothing.
-      drop owned by powersync_role;
+    exception when others then
+      raise warning 'could not revoke schema usage from powersync_role: %', sqlerrm;
+    end;
+    begin
       drop role powersync_role;
-    exception when insufficient_privilege then
-      raise warning 'could not drop role powersync_role: % (drop it by hand with: drop owned by powersync_role; drop role powersync_role;)', sqlerrm;
+    exception when others then
+      raise warning 'could not drop role powersync_role: % (drop it by hand as a superuser: drop owned by powersync_role; drop role powersync_role;)', sqlerrm;
     end;
   end if;
 end;
