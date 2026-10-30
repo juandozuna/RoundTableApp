@@ -41,6 +41,11 @@ export async function memberFollowUp(app, { outcome = 'Lo cumplí', note = 'Cump
  */
 export async function memberValue(app, { why, who, whoPick, situation, score = 7 }) {
   await app.waitFor('VALOR ACTUAL', { timeout: 30_000 });
+  // The form is long (people chips): start from the top so the first field is not under the sticky header.
+  const { height, width } = app.page.viewport();
+  await app.page.mouse.move(width / 2, height / 2);
+  await app.page.mouse.wheel({ deltaY: -5000 });
+  await sleep(400);
   await app.fill('¿Por qué te diste', why);
   if (whoPick) await app.click(whoPick, { role: 'button' });
   else await app.fill('Otra persona', who);

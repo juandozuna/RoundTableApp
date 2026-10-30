@@ -190,6 +190,14 @@ void main() {
       expect(cubit.state.answers['q1'], 'Mi abuela');
     });
 
+    test('the text field echoing the picked name keeps the pick', () {
+      cubit
+        ..pickAnswerPerson('q1', 'sofia', 'Sofía Prueba')
+        ..setAnswer('q1', 'Sofía Prueba');
+
+      expect(cubit.state.answerPersonIds, {'q1': 'sofia'});
+    });
+
     test('free text keeps its minimum length', () async {
       cubit
         ..setReflectionScore(8)

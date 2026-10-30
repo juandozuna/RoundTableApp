@@ -206,14 +206,20 @@ class MemberFlowCubit extends Cubit<MemberFlowState> {
   void setReflectionJustification(String text) =>
       emit(state.copyWith(reflectionJustification: text));
 
-  /// Typed text: it is a name of someone else, not a picked person.
-  void setAnswer(String questionId, String text) => emit(
-    state.copyWith(
-      answers: {...state.answers, questionId: text},
-      answerPersonIds: {...state.answerPersonIds}..remove(questionId),
-      errors: _without(ResponseValidator.answerField(questionId)),
-    ),
-  );
+  /// Typed text: it is a name of someone else, not a picked person. The text
+  /// field echoes a picked name back unchanged, which keeps the pick.
+  void setAnswer(String questionId, String text) {
+    final echo = state.answers[questionId] == text;
+    emit(
+      state.copyWith(
+        answers: {...state.answers, questionId: text},
+        answerPersonIds: echo
+            ? state.answerPersonIds
+            : ({...state.answerPersonIds}..remove(questionId)),
+        errors: _without(ResponseValidator.answerField(questionId)),
+      ),
+    );
+  }
 
   /// Picks [personId] (named [name]) as the answer of a `person` question;
   /// picking the same person again clears the choice.
