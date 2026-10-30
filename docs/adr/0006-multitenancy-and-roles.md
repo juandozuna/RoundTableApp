@@ -13,6 +13,6 @@ such as "Coordinator @ Org A" and "Member @ Table 3". The app offers a context s
 administrators are a separate global role checked in RLS, never stored as an organization role.
 
 ## Consequences
-- RLS and PowerSync sync rules derive scope from the same membership tables.
+- RLS derives scope from the membership tables (PowerSync sync rules did too until ADR 0019).
 - National reports run through security-definer functions or rollups (ADR 0010), not raw tenant
   reads.

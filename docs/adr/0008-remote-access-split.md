@@ -4,8 +4,8 @@
 | Concern | Path |
 |---|---|
 | Sign-in (Google, Apple, Facebook), sign-out, token refresh | `supabase_flutter` Auth, hidden behind an `AuthService` domain contract |
-| Offline session reads | PowerSync → Drift watch streams (no app HTTP) |
-| Offline session uploads | PowerSync `uploadData` → service impl → remote data source → Retrofit → `sync-upload` Edge Function |
+| Session reads | Retrofit → PostgREST under RLS, polled (ADR 0019; originally PowerSync → Drift) |
+| Session writes | service impl → remote data source → Retrofit → `sync-upload` Edge Function, sent immediately (ADR 0019; originally queued by PowerSync `uploadData`) |
 | Admin writes (organizations, coordinators, invites, roles) | Retrofit → Edge Functions |
 | Online reads (admin lists, KPI rollups) | Retrofit → PostgREST tables, views and RPC functions under RLS |
 

@@ -1,13 +1,13 @@
 # API contract — Gold Roundtables backend
 
-Authoritative contract between the Supabase backend (`supabase/`, `powersync/`) and the Flutter
+Authoritative contract between the Supabase backend (`supabase/`) and the Flutter
 client. If code and this document disagree, the SQL in `supabase/migrations/` wins and this file
 is the bug — report it.
 
 - [1. Environments, keys and dev users](#1-environments-keys-and-dev-users)
 - [2. Auth, headers and errors](#2-auth-headers-and-errors)
 - [3. Data model and domain rules](#3-data-model-and-domain-rules)
-- [4. Offline sync (PowerSync)](#4-offline-sync-powersync)
+- [4. Session data: PostgREST reads and sync-upload](#4-session-data-postgrest-reads-and-sync-upload)
 - [5. Edge Functions](#5-edge-functions)
 - [6. PostgREST reads (RLS) and RPCs](#6-postgrest-reads-rls-and-rpcs)
 - [7. KPIs](#7-kpis)
@@ -21,9 +21,9 @@ Access paths (ADR 0008):
 | Concern | Path |
 |---|---|
 | Sign-in / sign-out / refresh | `supabase_flutter` Auth only |
-| Offline session reads | PowerSync → Drift (no HTTP) |
-| Offline session writes | PowerSync `uploadData` → Retrofit → `POST /functions/v1/sync-upload` |
-| Online facilitator controls | Retrofit → `/functions/v1/sessions/...` (offline: same change via sync-upload) |
+| Session reads | Retrofit → PostgREST under RLS (live screens poll ~5 s and refetch after own writes; ADR 0019) |
+| Session writes | Retrofit → `POST /functions/v1/sync-upload` (op batch, sent immediately; offline = refused, nothing queued) |
+| Online facilitator controls | Retrofit → `/functions/v1/sessions/...` |
 | Admin writes, invites, reveal, device tokens | Retrofit → Edge Functions |
 | Online reads (admin lists, KPIs, audit) | Retrofit → PostgREST `/rest/v1/<table or view>` and `/rest/v1/rpc/<fn>` under RLS |
 
@@ -41,14 +41,13 @@ Local stack (`supabase start`, project id `gold-roundtables`):
 | Auth JWKS (ES256) | `http://127.0.0.1:54321/auth/v1/.well-known/jwks.json` |
 | Postgres | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
 | Studio | `http://127.0.0.1:54323` |
-| PowerSync (Docker phase) | `http://127.0.0.1:8080` |
 
 Keys: `supabase status -o env` prints `ANON_KEY` (legacy JWT, use as `SUPABASE_ANON_KEY` and
 `apikey` header) and `SERVICE_ROLE_KEY` (server only — never in the app). The local defaults are
 public CLI demo keys; production keys come from the environment.
 
-Flutter `--dart-define`s (PLAN.md): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `POWERSYNC_URL`,
-`DEV_AUTH`, `APP_ENV`.
+Flutter `--dart-define`s (PLAN.md): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `DEV_AUTH`,
+`AUTH_METHODS`, `APP_ENV`.
 
 Edge Function environment ([`supabase/functions/.env.example`](../../supabase/functions/.env.example)):
 
@@ -142,8 +141,7 @@ The full list with default Spanish messages lives in
 
 ## 3. Data model and domain rules
 
-All ids are UUIDs (devices generate them for session-domain rows; PowerSync carries them as
-`TEXT`). Timestamps are UTC `timestamptz` (ISO-8601 strings on the wire). Nothing is hard-deleted:
+All ids are UUIDs (devices generate them for session-domain rows). Timestamps are UTC `timestamptz` (ISO-8601 strings on the wire). Nothing is hard-deleted:
 statuses, `left_at`, `revoked_at` and `archived_at` keep history. Every tenant table has
 `organization_id`; child rows reference parents with composite `(id, organization_id)` foreign keys,
 so a row can never point into another organization.
@@ -174,7 +172,7 @@ so a row can never point into another organization.
 
 ### Tables (column details in [Appendix A](#appendix-a-table-reference))
 
-Synced to devices (PowerSync, filtered per user — §4): `curriculum_modules`, `curriculum_values`,
+Session-domain tables the app reads through PostgREST (RLS filters per user — §4): `curriculum_modules`, `curriculum_values`,
 `value_questions`, `organizations`, `locations`, `people`, `role_assignments`, `round_tables`,
 `table_members`, `sessions`, `session_attendance`, `member_assessments`, `member_answers`,
 `member_commitments`.
@@ -187,7 +185,7 @@ rollups (private `kpi` schema, read via RPCs).
 | Role | Stored in | Scope |
 |---|---|---|
 | Platform admin | `role_assignments(role='platform_admin', organization_id NULL)` on a staff person (`people.organization_id NULL`) | everything |
-| Coordinator | `role_assignments(role='coordinator', organization_id)` | the **whole organization**. `location_id` is informational in v1: it is stored (and must belong to the same organization, else `validation_failed`) but does **not** narrow RLS, sync rules, KPIs or admin functions; enforcing it would touch every policy and PowerSync bucket and is deferred |
+| Coordinator | `role_assignments(role='coordinator', organization_id)` | the **whole organization**. `location_id` is informational in v1: it is stored (and must belong to the same organization, else `validation_failed`) but does **not** narrow RLS, KPIs or admin functions; enforcing it would touch every policy and is deferred |
 | Facilitator | `table_members(role='facilitator', status='active')` | the table |
 | Member | `table_members(role='member', status='active')` | the table; own answers only |
 
@@ -249,43 +247,35 @@ Server-owned columns (ignored if a client sends them): `organization_id`, `round
 
 ---
 
-## 4. Offline sync (PowerSync)
+## 4. Session data: PostgREST reads and sync-upload
 
-Rules: [`powersync/sync-rules.yaml`](../../powersync/sync-rules.yaml) — Sync Streams (edition 3),
-all `auto_subscribe`. Requires PowerSync Service ≥ 1.20 and Flutter `powersync` ≥ 1.16. Details and
-service wiring: [`powersync/README.md`](../../powersync/README.md).
+ADR 0019 removed PowerSync: the app is online only. The session domain is read from PostgREST with
+the user's JWT; **RLS is the only access control** (there are no sync rules). Live screens poll
+about every 5 s and refetch after the user's own writes; there is no Realtime subscription.
 
-| Stream | Rows on the device |
+| Tables the session screens read | Visible to |
 |---|---|
-| `curriculum` | all modules, values, questions |
-| `my_identity` | own `people` rows, own `table_members` rows (history) |
-| `my_rows` | own `role_assignments`, assessments, answers, commitments, attendance |
-| `table_shared` | for each active table of the user: `round_tables`, roster `table_members` (names only), `sessions`, `session_attendance`, its `organizations` row and `locations` |
-| `table_facilitator` | for each table the user facilitates: everyone's assessments, answers, commitments |
+| `curriculum_modules`, `curriculum_values`, `value_questions`, `content_locales`, `curriculum_translations` | every signed-in user |
+| `people` (own row; roster names of the user's tables), `table_members` | own rows + roster of own active tables; coordinators/admins by scope |
+| `role_assignments` | own rows |
+| `organizations`, `locations`, `round_tables`, `sessions`, `session_attendance` | members of the table / its organization (RLS) |
+| `member_assessments`, `member_answers`, `member_commitments` | own rows; the facilitator also sees everyone's at tables they facilitate |
 
-Column subsets on the device: `people(id, organization_id, first_name, last_name, position, email,
-phone, status)`; `table_members(id, organization_id, round_table_id, person_id, role, joined_at,
-left_at, left_reason, status, first_name, last_name)`; `round_tables(id, organization_id,
-location_id, name, code, weekday, start_time, timezone, duration_minutes, status,
-current_value_id)`; `organizations(id, name, kind, country_code, country_name, region, status)`;
-`locations(id, organization_id, name, city, region, status)`; `role_assignments(id, person_id, role,
-organization_id, location_id, status)`; curriculum tables without timestamps; session-domain tables
-with all columns. Booleans arrive as `INTEGER` 0/1.
-
-Window: rows of sessions closed more than 8 weeks ago leave the device (`archived_at`), except each
-table's latest closed session.
-
-Useful local queries for the app:
-- pending session of a table: `sessions WHERE round_table_id = ? AND status IN ('scheduled','open')`;
-- previous commitment for the follow-up: own `member_commitments WHERE round_table_id = ? AND
-  value_id = <pending session>.follow_up_value_id`;
+Useful reads for the app:
+- pending session of a table: `GET /sessions?round_table_id=eq.<id>&status=in.(scheduled,open)`;
+- previous commitment for the follow-up: own `member_commitments` with `round_table_id=eq.<id>` and
+  `value_id=eq.<pending session>.follow_up_value_id`;
 - "no tienes compromiso previo": no such row (person was absent last week).
+
+Rows of sessions closed more than 8 weeks ago carry `archived_at`; reads that want only recent
+history filter `archived_at=is.null` (the server keeps them).
 
 ### sync-upload
 
-`POST /functions/v1/sync-upload` — the PowerSync `uploadData` target.
+`POST /functions/v1/sync-upload` — the write endpoint of the session domain. The app sends a batch
+right away; a future offline outbox (ADR 0019) replays queued batches here.
 
-Request (max 500 ops; PowerSync `CrudEntry` JSON is accepted as is):
+Request (max 500 ops; the former PowerSync `CrudEntry` JSON shape is still accepted):
 
 ```json
 {
@@ -340,7 +330,8 @@ Client rules:
 4. Rejected ops are permanent: call `transaction.complete()` anyway; the server copy syncs down and
    replaces the local row. Surface the Spanish `message` where it helps (e.g. "Sincronizado tarde",
    "La sesión ya se cerró"). Retry only on network errors, 401 (after refresh) and 5xx.
-5. Pending state comes from PowerSync's upload queue / sync status, never from a column.
+5. Pending state does not exist today (writes are sent immediately, nothing is queued); a future
+   outbox derives it from its own queue, never from a column.
 6. `synced_late` on the synced-down row drives the "Sincronizado tarde" pill; the same rule is
    available client-side in [`_shared/late_sync.ts`](../../supabase/functions/_shared/late_sync.ts).
 
@@ -492,9 +483,7 @@ Schedule history and exceptions (RF-23, RF-30; migration `20261027200000_schedul
   `GET /sessions?status=eq.cancelled&archived_at=is.null&scheduled_at=gte.<now>` (RLS `sessions_read`). Cancelled
   sessions whose `cancelled_reason` starts with `table_` (a closed or paused table) are not listed. Location,
   facilitator and table filters are applied on the client.
-- Facilitators (offline-first, ADR 0004): read from the PowerSync tables `sessions`, `round_tables`, `locations` and
-  `table_members` already synced by `table_shared` (no sync-rule change). Falls back to the PostgREST reads above for
-  their table when nothing has synced yet.
+- Facilitators (ADR 0019): the same PostgREST reads, scoped to their table by RLS.
 - Times are instants (UTC) converted on the device to the table's IANA `timezone` (bundled tz database), so the
   clock shown is the table's wall clock whatever the viewer's zone.
 
@@ -724,7 +713,7 @@ Scheduling rules (pgTAP `060_notification_schedule`):
 - **Facilitator is not a role assignment**; it is `table_members.role = 'facilitator'` (ADR 0014: the
   facilitator row counts toward the 9 seats).
 - `table_members` carries denormalized `first_name`, `last_name`, `auth_user_id` (trigger-maintained)
-  so sync rules and rosters need no joins and members never receive peers' contact data.
+  so rosters and RLS need no joins and members never receive peers' contact data.
 - Session-domain child rows carry `organization_id` and `round_table_id` (set from the session,
   checked by composite FK) for RLS and per-table sync.
 - **Sessions are server-generated** (one pending per table); added `stage = commitment`,
@@ -754,8 +743,7 @@ docker run --rm -v "$PWD":/repo -w /repo/supabase/functions denoland/deno:2.1.4 
 cp supabase/functions/.env.example supabase/functions/.env
 supabase functions serve --env-file supabase/functions/.env &
 bash supabase/tests/functions/smoke.sh   # curl flows with the dev users (run after a reset)
-bash powersync/tools/validate.sh         # sync rules: compile + per-user simulation
-bash scripts/dev-up.sh && bash scripts/smoke.sh   # whole stack incl. PowerSync (see README)
+bash scripts/dev-up.sh && bash scripts/smoke.sh   # whole stack (see README)
 (cd tool/e2e && npm i && node run.mjs)            # browser end-to-end scenarios (tool/e2e/README.md)
 supabase stop
 ```
@@ -770,7 +758,7 @@ provider identity — redemption depends only on the verified auth user id.
 
 Generated from the local database (`information_schema`). Defaults shown as in Postgres.
 
-#### `curriculum_modules` — synced (PowerSync)
+#### `curriculum_modules` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -783,7 +771,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `curriculum_values` — synced (PowerSync)
+#### `curriculum_values` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -798,7 +786,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `locations` — synced (PowerSync)
+#### `locations` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -812,7 +800,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `member_answers` — synced (PowerSync)
+#### `member_answers` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -833,7 +821,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `member_assessments` — synced (PowerSync)
+#### `member_assessments` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -854,7 +842,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `member_commitments` — synced (PowerSync)
+#### `member_commitments` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -880,7 +868,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `organizations` — synced (PowerSync)
+#### `organizations` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -897,7 +885,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `people` — synced (PowerSync)
+#### `people` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -913,7 +901,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `role_assignments` — synced (PowerSync)
+#### `role_assignments` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -928,7 +916,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `round_tables` — synced (PowerSync)
+#### `round_tables` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -946,7 +934,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `session_attendance` — synced (PowerSync)
+#### `session_attendance` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -966,7 +954,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `sessions` — synced (PowerSync)
+#### `sessions` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -992,7 +980,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `table_members` — synced (PowerSync)
+#### `table_members` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|
@@ -1012,7 +1000,7 @@ Generated from the local database (`information_schema`). Defaults shown as in P
 | `created_at` | timestamp with time zone |  | now() |
 | `updated_at` | timestamp with time zone |  | now() |
 
-#### `value_questions` — synced (PowerSync)
+#### `value_questions` — read via PostgREST (RLS)
 
 | column | type | null | default |
 |---|---|---|---|

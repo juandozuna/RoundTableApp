@@ -2,13 +2,13 @@
 
 A multi-tenant app for running weekly "mesas redondas", the values-formation program of
 Iglesia Casa del Altísimo. Facilitators run sessions and members record attendance, self-scores,
-reflections and commitments on their own phones, even without internet. Organizations, the church
+reflections and commitments on their own phones (online for now; offline capture is planned, ADR 0019). Organizations, the church
 and coordinators follow progress through KPI dashboards.
 
 ## Status
-The app is implemented end to end (auth and invites, live session with offline sync, administration,
+The app is implemented end to end (auth and invites, live session, administration,
 KPIs, audit, notifications, settings) and verified in the browser against the full local stack
-(Supabase + PowerSync + the Flutter web build). Real social sign-in, push delivery and the Android /
+(Supabase + the Flutter web build). Real social sign-in, push delivery and the Android /
 iOS builds still need provider credentials or devices; see [Deploying](#deploying).
 
 - Architecture decisions: [docs/adr](docs/adr/README.md)
@@ -18,19 +18,20 @@ iOS builds still need provider credentials or devices; see [Deploying](#deployin
 - End-to-end browser tests: [tool/e2e](tool/e2e/README.md)
 
 ## Stack
-Flutter (Android, iOS, web) · Supabase (Postgres + RLS, Auth, Edge Functions) · PowerSync + Drift
-for offline session sync · Firebase Cloud Messaging.
+Flutter (Android, iOS, web) · Supabase (Postgres + RLS, Auth, Edge Functions) · Firebase Cloud Messaging. The app is online
+only for now: PostgREST reads under RLS, writes through the `sync-upload` Edge Function, an offline
+outbox later (ADR 0019).
 
 ## Running locally
 
 The whole app runs on your machine: Supabase (Postgres, Auth, Edge Functions) through the Supabase
-CLI, plus PowerSync and the Flutter web build in Docker (`docker-compose.yml`). Supabase is **not**
+CLI, plus the Flutter web build in Docker (`docker-compose.yml`). Supabase is **not**
 in the compose file.
 
 ### Prerequisites
 - Docker (Desktop on macOS/Windows, Engine on Linux) with `docker compose` v2.
 - [Supabase CLI](https://supabase.com/docs/guides/cli) ≥ 2.
-- `curl`, and Node ≥ 18 for the sync check in `scripts/smoke.sh` (optional).
+- `curl`, and Node ≥ 18 for `tool/e2e` (optional).
 - Flutter 3.41.x on the host only for `--local-web` / `flutter run`; the Docker web build brings its
   own Flutter.
 
@@ -38,14 +39,12 @@ in the compose file.
 ```bash
 bash scripts/dev-up.sh
 ```
-It starts Supabase if needed (migrations + seed on first start), creates the PowerSync replication
-role, starts PowerSync and its storage, builds the web app in Docker and serves it. The first run
-pulls images and takes a few minutes; later runs take about a minute.
+It starts Supabase if needed (migrations + seed on first start), builds the web app in Docker and
+serves it. The first run pulls images and takes a few minutes; later runs take about a minute.
 
 | What | URL |
 |---|---|
 | Web app | http://127.0.0.1:3000 |
-| PowerSync Service | http://127.0.0.1:8080 (`/probes/liveness`) |
 | Supabase API (Auth, REST, Edge Functions) | http://127.0.0.1:54321 |
 | Supabase Studio · Mailpit | http://127.0.0.1:54323 · http://127.0.0.1:54324 |
 
@@ -76,10 +75,10 @@ Seeded invite codes: `MESA34` (pending member), `VENC22` (expired), `REVK23` (re
 ### Everyday commands
 | Command | Does |
 |---|---|
-| `bash scripts/dev-status.sh` | containers, endpoints and PowerSync replication slot |
-| `bash scripts/smoke.sh` | Supabase REST + Edge Functions + dev login, PowerSync liveness/CORS and a real sync stream for `facil@dev.local` (must contain Mesa Esperanza 03), web assets (`.wasm`, worker) |
-| `bash scripts/dev-down.sh` | stops web + PowerSync (`--purge` also deletes PowerSync storage, `--with-supabase` stops Supabase) |
-| `bash scripts/dev-reset.sh` | **wipes** the local database (`supabase db reset`), re-seeds, resets PowerSync |
+| `bash scripts/dev-status.sh` | containers and endpoints |
+| `bash scripts/smoke.sh` | Supabase REST (under RLS, as `facil@dev.local`) + Edge Functions + dev login, web assets |
+| `bash scripts/dev-down.sh` | stops the web containers (`--purge` also removes compose volumes, `--with-supabase` stops Supabase) |
+| `bash scripts/dev-reset.sh` | **wipes** the local database (`supabase db reset`), re-seeds |
 | `bash scripts/dev-up.sh --local-web` | build the web app with the host Flutter instead of Docker |
 | `bash scripts/web-dev-serve.sh` | rebuild with the host Flutter and re-serve (fastest loop); `--no-build` only restarts nginx |
 | `bash scripts/dev-open-session.sh` | puts **Mesa Esperanza 03**'s demo session back to *scheduled · lobby* at the current time (wipes what a previous run captured), so the live flow can be tried again at any moment, no reset needed |
@@ -100,21 +99,17 @@ values and refuses partial files). Format and rules: `supabase/curriculum/curric
 and [docs/implementation/curriculum-import.md](docs/implementation/curriculum-import.md).
 
 ### Resetting data
-`bash scripts/dev-reset.sh` (asks for confirmation; `--yes` skips it). It drops PowerSync's storage
-too, because the replication slot is invalid after a database reset. The Supabase stack may be shared
-between worktrees: tell the others before you reset it.
+`bash scripts/dev-reset.sh` (asks for confirmation; `--yes` skips it). The Supabase stack may be
+shared between worktrees: tell the others before you reset it.
 
 ### How the pieces connect
-- **PowerSync** (`journeyapps/powersync-service`, ≥ 1.20 for Sync Streams) replicates the
-  `powersync` publication of the Supabase database with the `powersync_role` replication role
-  (`scripts/setup-powersync-replication.sh`, idempotent). Its own bucket storage is a separate
-  Postgres container (`powersync-storage`, volume `powersync-storage-data`).
-- Client tokens are Supabase JWTs validated through the local Auth **JWKS** (ES256, audience
-  `authenticated`). The sync rules are mounted from `powersync/sync-rules.yaml`.
+- The app reads through PostgREST with the user's Supabase JWT (RLS decides what is visible) and
+  writes through the `sync-upload` and admin Edge Functions (ADR 0008, 0019). There is no
+  replication service and no local database.
 - The web image (`docker/web/Dockerfile`) builds `flutter build web --release` with the
   `--dart-define`s `SUPABASE_URL`, `SUPABASE_ANON_KEY` (read from `supabase status -o env`),
-  `POWERSYNC_URL`, `DEV_AUTH`, `APP_ENV` and serves it with nginx (gzip, `application/wasm`, SPA
-  fallback, real 404s for missing assets so a broken worker/wasm path is visible).
+  `DEV_AUTH`, `APP_ENV` and serves it with nginx (gzip, SPA fallback, real 404s for missing
+  assets so a broken asset path is visible).
 - Flutter's CanvasKit renderer and fonts are fetched from Google's CDN on first load, so the browser
   needs internet access.
 
@@ -143,7 +138,7 @@ Open http://127.0.0.1:3000, pick a dev account on the sign-in screen ("Acceso de
 | **Administrador** (`admin@dev.local`) | *Mesas*: explorer with views ("Mesas retrasadas"), filters, *Guardar vista*, *Crear* → mesa / organización / invitar persona; open a table → *Agregar miembro*, *Cambiar facilitador*, *Ver respuestas de…* (audited); *Informes* (filters, drill-down, CSV); *Auditoría*; the chip shows "Administrador · Plataforma" |
 | **Coordinador · Miembro** (`coord@dev.local`) | Pick a role on first access; the chip switches between "Coordinador · Fundación Luz" and "Miembro · Mesa Fe 01"; sees only Fundación Luz (no other organization anywhere); *Invitaciones* → *Invitar* |
 | **Facilitador** (`facil@dev.local`) | Run `bash scripts/dev-open-session.sh`, then *Inicio* → *Abrir sesión*: pass attendance (*Marcar a todos Presente*), *Abrir seguimiento*, answer yours with *Responder yo*, *Abrir valor actual*, *Cerrar respuestas*, *Cerrar sesión* |
-| **Miembro (Ana / Luis / Marta)** | In a second browser profile or private window: *Sesión* follows the facilitator live; answer follow-up, reflection (score 5 is blocked) and commitment; turn the network off in DevTools (Network → Offline) and keep answering, then go back online: the answers upload and, if the session was already closed, show "Sincronizado tarde" |
+| **Miembro (Ana / Luis / Marta)** | In a second browser profile or private window: *Sesión* follows the facilitator live; answer follow-up, reflection (score 5 is blocked) and commitment; turn the network off in DevTools (Network → Offline): the app says it is offline and refuses the write without losing what you typed; go back online and send it again |
 | **Crear cuenta de prueba nueva** | A signed-in account without an invitation: *Tengo un código de invitación* → `MESA34` (member of Esperanza 03; only the first account to use it succeeds). `VENC22` / `REVK23` / `ACEP24` show the expired / revoked / used messages |
 
 Use two different browsers (or one normal and one private window) for facilitator + member: both keep
@@ -156,8 +151,8 @@ secrets, build-time `--dart-define`s or provider consoles. [`.env.example`](.env
 variable names.
 
 **Scripted path:** [docs/deployment.md](docs/deployment.md) is the end-to-end runbook (Supabase →
-secrets → PowerSync → web → auth providers → smoke test) with `scripts/deploy-hosted.sh`,
-`scripts/setup-powersync-replication.sh --hosted`, `scripts/build-web.sh` (Cloudflare Pages or the
+secrets → web → auth providers → smoke test) with `scripts/deploy-hosted.sh`,
+`scripts/build-web.sh` (Cloudflare Pages or the
 `docker/web` image) and `scripts/smoke-hosted.sh`, all driven by `deploy/hosted.env`
 (template: [`deploy/hosted.env.example`](deploy/hosted.env.example)). The list below is the manual
 equivalent.
@@ -186,47 +181,33 @@ equivalent.
    additional redirect URLs = the web origin (`<origin>/**` also covers the password-reset link
    `<origin>/#/nueva-contrasena`) and `io.goldroundtables.app://login-callback` (mobile). Do not
    build with `DEV_AUTH=true`.
-4. **PowerSync.** PowerSync Cloud or self-hosted (`docker/powersync/powersync.yaml` is the template):
-   point it at the Supabase **direct** Postgres connection, create the replication role and the
-   `powersync` publication (the migrations create the publication; the role is
-   `scripts/setup-powersync-replication.sh` with a real password), upload `powersync/sync-rules.yaml`,
-   and set the client-auth JWKS to `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`
-   (audience `authenticated`). Its public URL becomes `POWERSYNC_URL` in the web/mobile build.
-5. **Edge Function secrets** (`supabase secrets set …`): `APP_PUBLIC_URL` (invite links),
+4. **Edge Function secrets** (`supabase secrets set …`): `APP_PUBLIC_URL` (invite links),
    `ALLOWED_ORIGINS` (the web origin, not `*`), `CRON_SECRET` (long random; the cron jobs send it as
    `x-cron-secret`), `FCM_SERVICE_ACCOUNT_JSON` (one line). The anonymous invite preview is rate
    limited server-side (20 per address and 300 in total per minute, `429` + `Retry-After`).
-6. **Push (FCM).** A Firebase project: web app config (`FIREBASE_*` defines + VAPID key), Android
+5. **Push (FCM).** A Firebase project: web app config (`FIREBASE_*` defines + VAPID key), Android
    `google-services.json`, iOS `GoogleService-Info.plist` and APNs key; the service account JSON from
-   step 5. Without it notifications are skipped, the rest works.
-7. **Web hosting.** `flutter build web --release --base-href / --dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=… --dart-define=POWERSYNC_URL=… --dart-define=APP_ENV=production` (optional `--dart-define=ERROR_REPORT_URL=…`, see [docs/operations.md](docs/operations.md))
+   step 4. Without it notifications are skipped, the rest works.
+6. **Web hosting.** `flutter build web --release --base-href / --dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=… --dart-define=APP_ENV=production` (optional `--dart-define=ERROR_REPORT_URL=…`, see [docs/operations.md](docs/operations.md))
    (the anon key is public; never the service-role key). Serve `build/web` over HTTPS with the
-   headers of `docker/web/nginx.conf` (`application/wasm`, no SPA fallback for assets, no-cache for
+   headers of `docker/web/nginx.conf` (no SPA fallback for assets, no-cache for
    `index.html` and the service worker). The compose `web` image builds exactly that.
-8. **Mobile.** `flutter build apk|appbundle|ipa` with the same defines, signing keys, and the OAuth
+7. **Mobile.** `flutter build apk|appbundle|ipa` with the same defines, signing keys, and the OAuth
    native client ids (Google Android/iOS client ids, Apple Sign in capability, Facebook app id).
-9. **Before go-live**: run `scripts/smoke.sh`-style checks against the deployed URLs, create the first
+8. **Before go-live**: run `scripts/smoke.sh`-style checks against the deployed URLs, create the first
    organization and coordinator from the admin screens, test an invitation on a real phone.
 
 ### Troubleshooting
-- **PowerSync cannot reach Supabase** (`ECONNREFUSED`, `ENOTFOUND host.docker.internal`): on Docker
-  Desktop `host.docker.internal` works out of the box; on Linux the compose file adds it through
-  `extra_hosts`. If your setup differs set `DOCKER_HOST_ALIAS` and `POWERSYNC_JWKS_URI` in `.env`
-  (e.g. `172.17.0.1`). Test from a container:
-  `docker compose exec powersync node -e "fetch(process.env.PS_JWKS_URI).then(r=>console.log(r.status))"`.
-- **`password authentication failed for user "powersync_role"`**: run
-  `bash scripts/setup-powersync-replication.sh` (it re-applies the password from `.env`).
-- **Port already in use** (3000, 8080, 54321–54324): stop the other process or change
-  `WEB_PORT` / `POWERSYNC_PORT` in `.env`. If you change `WEB_PORT`, Supabase Auth only accepts
+- **Port already in use** (3000, 54321–54324): stop the other process or change
+  `WEB_PORT` in `.env`. If you change `WEB_PORT`, Supabase Auth only accepts
   redirects for 3000 unless you add the origin to `additional_redirect_urls`.
-- **PowerSync says the replication slot is gone/invalid or replication is stuck** (typically after
-  `supabase db reset` run by hand): `bash scripts/dev-down.sh --purge && bash scripts/dev-up.sh`.
-  To drop a stale slot manually:
-  `docker exec supabase_db_gold-roundtables psql -U postgres -c "select pg_drop_replication_slot(slot_name) from pg_replication_slots where slot_name like 'powersync%' and not active"`.
-  Inactive slots retain WAL; `scripts/dev-status.sh` shows how much.
-- **Sync works but the app shows no data**: `bash scripts/smoke.sh` runs the same stream the app
-  opens. If it passes, the problem is in the client (token, `POWERSYNC_URL` compiled into the build).
-  Rebuild after changing `.env` (`dev-up.sh`).
+- **The app shows no data**: `bash scripts/smoke.sh` checks the same PostgREST read the app does as
+  `facil@dev.local`. If it passes, the problem is in the client (token, `SUPABASE_URL` compiled into
+  the build). Rebuild after changing `.env` (`dev-up.sh`).
+- **Hosted database still has `powersync_role`** (older deployments): migration
+  `20261101000000_drop_powersync.sql` drops it with the `powersync` publication; if `postgres` is
+  not allowed to, run `drop owned by powersync_role; drop role powersync_role;` in the SQL editor
+  and delete any PowerSync Cloud instance.
 - **Old web bundle in the browser**: assets are served with `Cache-Control: no-cache`; if a rebuild still
   looks stale, hard-reload the tab.
 - **Docker web build is slow or fails**: use `bash scripts/dev-up.sh --local-web`. The Flutter image is

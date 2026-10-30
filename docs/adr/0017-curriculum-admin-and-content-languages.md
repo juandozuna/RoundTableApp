@@ -25,8 +25,9 @@ questions) and keep it in **several languages**.
     the base rows.
   - Only the text is translated. Codes, order, response type, booklet reference and the 1–48
     numbering are language-independent.
-- **Syncing.** Both tables join the `curriculum` PowerSync stream (reference data, readable by every
-  signed-in user; RLS select-only, no write grants). Devices receive translations like any other
+- **Syncing.** Both tables are reference data readable by every signed-in user (RLS select-only, no write
+  grants); the app reads them through PostgREST (ADR 0019 replaced the PowerSync stream this ADR
+  originally used). Devices receive translations like any other
   curriculum change, with no release.
 - **Resolution on the device.** The app resolves text with SQL: the translation of the selected
   content language, else the Spanish base. The selection is a content-language setting kept in the
@@ -73,8 +74,8 @@ questions) and keep it in **several languages**.
   text; a missing translation shows "Sin traducir" and users see Spanish.
 
 ## Consequences
-- New migration `20261030000000_curriculum_admin.sql`; new sync-rules lines (the stream stays
-  security-neutral: reference data only); the PowerSync service must reload its rules.
+- New migration `20261030000000_curriculum_admin.sql` (the PowerSync sync-rule
+  changes of the original decision no longer apply, ADR 0019).
 - The admin gets a "Currículo" section (platform administrators); coordinators do not see it.
 - Adding a language is data, not a release. A language with a few texts is usable immediately;
   completeness tells the church what is left.

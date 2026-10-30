@@ -19,7 +19,7 @@ Requirements: the RoundTables Obsidian vault (notes 00–07) and the ADRs. Spani
 ## Ownership map
 | Area | Paths | Phase |
 |---|---|---|
-| Backend | `supabase/`, `powersync/` , `docs/implementation/api-contract.md` | 1 |
+| Backend | `supabase/`, `docs/implementation/api-contract.md` | 1 |
 | Flutter foundation | `pubspec.yaml`, `analysis_options.yaml`, `lib/main*.dart`, `lib/core/**`, `lib/l10n/**`, `web/`, `android/`, `ios/`, `test/core/**`, `tool/` | 1 |
 | Feature: auth + invites + context | `lib/features/auth/**`, `lib/features/invites/**`, `test/features/auth/**`, `test/features/invites/**` | 2 |
 | Feature: session (facilitator board + member flow, offline) | `lib/features/session/**`, `lib/core/sync/**` (extend), `test/features/session/**` | 2 |
@@ -30,12 +30,11 @@ Requirements: the RoundTables Obsidian vault (notes 00–07) and the ADRs. Spani
 ## Local stack conventions (all phases must agree)
 - Supabase local via Supabase CLI (`supabase start`): API `http://127.0.0.1:54321`, DB
   `postgresql://postgres:postgres@127.0.0.1:54322/postgres`, Studio `54323`.
-- PowerSync service (self-hosted, Docker): `http://127.0.0.1:8080`; reads the Supabase Postgres via
-  logical replication (publication `powersync`); validates the Supabase JWT through the local Auth
-  JWKS (`/auth/v1/.well-known/jwks.json`, ES256 — user tokens are not HS256-signed).
+- No PowerSync service (removed, ADR 0019): the app reads PostgREST under RLS and writes through
+  Edge Functions. User tokens are ES256-signed (`/auth/v1/.well-known/jwks.json`), not HS256.
 - Flutter web build served on `http://127.0.0.1:3000`.
 - Config reaches the Flutter app only through `--dart-define` values: `SUPABASE_URL`,
-  `SUPABASE_ANON_KEY`, `POWERSYNC_URL`, `DEV_AUTH` (true only for local testing), `APP_ENV`.
+  `SUPABASE_ANON_KEY`, `DEV_AUTH` (true only for local testing), `APP_ENV`.
 - Social login (Google/Apple/Facebook) cannot be exercised locally without provider credentials.
   Local testing uses a **dev sign-in** (Supabase email+password users seeded per role) that is
   compiled in only when `DEV_AUTH=true`. The real provider buttons stay in the UI and call
@@ -45,7 +44,7 @@ Requirements: the RoundTables Obsidian vault (notes 00–07) and the ADRs. Spani
   "Mesa Esperanza 03"), `ana@dev.local`, `luis@dev.local`, `marta@dev.local` (members).
 
 ## Phases
-1. Backend (schema, RLS, constraints, rollups, seed, edge functions, PowerSync sync rules, API
+1. Backend (schema, RLS, constraints, rollups, seed, edge functions, API
    contract) and Flutter foundation, in parallel.
 2. Feature tracks in parallel, against the backend contract.
 3. Docker/local stack, then end-to-end browser testing and fixes.

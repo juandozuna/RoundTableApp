@@ -16,13 +16,12 @@ flutter pub get
 |---|---|---|
 | `SUPABASE_URL` | `http://10.0.2.2:54321` | `http://127.0.0.1:54321` |
 | `SUPABASE_ANON_KEY` | `supabase status -o env` → `ANON_KEY` | same |
-| `POWERSYNC_URL` | `http://10.0.2.2:8080` | `http://127.0.0.1:8080` |
 | `DEV_AUTH` | `true` (local only; tree-shaken when absent) | same |
 | `AUTH_METHODS` | comma list of `email`, `google`, `apple`, `facebook`; default `email` (ADR 0018) | same |
 | `APP_ENV` | `local` \| `staging` \| `production` | same |
 
 `10.0.2.2` is the emulator's alias for the host machine. A physical device needs the host's LAN IP
-instead (and Supabase/PowerSync must listen on it). Dart's `dart:io` HTTP stack is not subject to Android's cleartext policy, so
+instead (and Supabase must listen on it). Dart's `dart:io` HTTP stack is not subject to Android's cleartext policy, so
 `http://` works locally; production must still use HTTPS.
 
 ## Build / run
@@ -33,13 +32,13 @@ K=$(supabase status -o env | grep ANON_KEY | cut -d'"' -f2)
 # Android
 flutter run -d emulator-5554 \
   --dart-define=SUPABASE_URL=http://10.0.2.2:54321 --dart-define=SUPABASE_ANON_KEY=$K \
-  --dart-define=POWERSYNC_URL=http://10.0.2.2:8080 --dart-define=DEV_AUTH=true --dart-define=APP_ENV=local
+  --dart-define=DEV_AUTH=true --dart-define=APP_ENV=local
 flutter build apk --debug   <same defines>
 
 # iOS simulator
 flutter run -d <simulator-id> \
   --dart-define=SUPABASE_URL=http://127.0.0.1:54321 --dart-define=SUPABASE_ANON_KEY=$K \
-  --dart-define=POWERSYNC_URL=http://127.0.0.1:8080 --dart-define=DEV_AUTH=true --dart-define=APP_ENV=local
+  --dart-define=DEV_AUTH=true --dart-define=APP_ENV=local
 flutter build ios --debug --no-codesign   <same defines>
 ```
 
@@ -149,7 +148,7 @@ it removes any stale file and the worker only handles notification taps. The web
 1. Generate an upload keystore: `keytool -genkeypair -v -keystore ~/gold-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload`.
 2. Create `android/key.properties` (git-ignored) with `storeFile` (path relative to `android/`), `storePassword`,
    `keyAlias`, `keyPassword`. `build.gradle.kts` uses it for `release`; without it release falls back to the debug key.
-3. `flutter build appbundle --release` with production defines (HTTPS `SUPABASE_URL`, `POWERSYNC_URL`,
+3. `flutter build appbundle --release` with production defines (HTTPS `SUPABASE_URL`,
    `APP_ENV=production`, **no** `DEV_AUTH`). Bump `version:` in `pubspec.yaml` (`name+build`).
 4. Play Console: enrol in Play App Signing, upload the AAB to Internal testing first, complete Data safety + the
    camera/notification declarations, register release SHA-1/SHA-256 with Google OAuth and Firebase.
@@ -172,7 +171,7 @@ it removes any stale file and the worker only handles notification taps. The web
 | `flutter build apk --release` (debug-key fallback) | OK, 88.9 MB |
 | `flutter build ios --debug --no-codesign` | OK |
 | `flutter build ios --release --no-codesign` (entitlements wired) | OK |
-| Android emulator (Pixel_8) against local stack | starts; dev sign-in as *Administrador* works; settings show "Sincronizado — Nada pendiente" (PowerSync connected) |
+| Android emulator (Pixel_8) against local stack | starts; dev sign-in as *Administrador* works; settings show the connection state (online) |
 | iOS simulator (iPhone 15, iOS 17.2) against local stack | starts with no GetIt errors and renders the sign-in page |
 
 Screenshots: `screenshots/mobile-android-sign-in.png`, `screenshots/mobile-android-dev-admin.png`,

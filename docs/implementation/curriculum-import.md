@@ -136,7 +136,7 @@ DATABASE_URL=postgres://… node scripts/import-curriculum.mjs file.json # any d
   rewritten, so answers and sessions that reference them stay valid.
 - A question dropped from the file is set `inactive`, never deleted (answers reference it); it
   reactivates if it returns. Modules and values are fixed in number, so they are never removed.
-- Edited rows sync to devices through the `curriculum` PowerSync stream; no app release is needed.
+- Edited rows reach the app through PostgREST reads (`curriculum_*` tables); no app release is needed.
 
 ## Seed
 

@@ -1,11 +1,17 @@
 # Offline window and sync window (issue #10, audit G-10/G-11)
 
+> **Suspended (ADR 0019).** The app is online only for now: there is no local database, no
+> PowerSync and no sync window, so none of the guarantees below are active. The Supabase Auth
+> settings still apply. This document is the starting point for the future offline outbox (Drift +
+> own queue replayed to `sync-upload`); statements about PowerSync, `ps_crud` and
+> the former sync rules describe the removed implementation and must be redesigned then.
+
 Two different windows exist; do not confuse them.
 
 | Window | Value | What it limits | Enforced by |
 |---|---|---|---|
 | **Offline window** (ADR 0005) | 7 days | How long a device may work without the server confirming its sign-in | `AppLimits.offlineWindow`, `OfflineWindow`, `AccessSessionServiceImpl` |
-| **Sync window** | 56 days (8 weeks) | How old a closed session may be before it leaves the device | `app.archive_old_session_data` + `archived_at IS NULL` in `powersync/sync-rules.yaml` |
+| **Sync window** | 56 days (8 weeks) | How old a closed session may be before it leaves the device | `app.archive_old_session_data` + `archived_at IS NULL` in the former PowerSync sync rules |
 | **Unsynced warning** (ADR 0009) | 24 h | When waiting local changes raise a warning | `AppLimits.unsyncedWarningAfter`, `UnsyncedChangesPolicy` |
 
 ## Offline window guarantees (7 days)
@@ -66,7 +72,7 @@ Settings) before launch.
   abstraction (fake clock), never `DateTime.now`.
 - `test/core/sync/domain/unsynced_changes_policy_test.dart`: 23 h 59 min → no warning, 24 h →
   warning, nothing pending → no warning; boundary of `OfflineWindow`.
-- `test/core/sync/powersync_sync_database_test.dart`: end-to-end `hasStalePending` from the
+- (removed with PowerSync) `test/core/sync/powersync_sync_database_test.dart`: end-to-end `hasStalePending` from the
   persisted `pendingSince`.
 - Not covered: a real device with an expired JWT writing offline and syncing later in the
   browser (`tool/e2e/scenarios/offline.mjs`); to be exercised during manual E2E.
@@ -98,4 +104,4 @@ next follow-up).
   decision.
 - Changing the window means changing both `app.archive_old_session_data(p_window)` and
   `AppLimits.sessionSyncWindow` (documentation constant), plus the header of
-  `powersync/sync-rules.yaml`.
+  the former PowerSync sync rules.
