@@ -1,5 +1,9 @@
 # 0007 — Social login, phone number stored unverified, invite binding
 
+> Partly superseded by [ADR 0018](0018-email-password-sign-in.md): production signs in with email +
+> password; social login stays implemented but is off unless `AUTH_METHODS` enables it. The phone
+> and invite-binding decisions below still stand.
+
 ## Decision
 - Supabase Auth with Google, Apple and Facebook as the only sign-in methods in v1.
 - No phone-number login and no SMS verification, to avoid per-message costs. The phone number

@@ -55,6 +55,7 @@ values (`DEV_AUTH=true`, `127.0.0.1`) cannot leak into a hosted build.
 | `POWERSYNC_URL` | build, smoke | public URL of PowerSync as the browser reaches it |
 | `POWERSYNC_DB_PASSWORD` | replication | password of `powersync_role` |
 | `APP_ENV`, `ERROR_REPORT_URL`, `FIREBASE_*` | build | `--dart-define` values; `DEV_AUTH` is always compiled `false` |
+| `AUTH_METHODS` | build | sign-in methods the app offers: comma list of `email`, `google`, `apple`, `facebook` (default `email`, ADR 0018) |
 | `FUNCTIONS_USE_API` | deploy | `true` (default) bundles functions server-side, `false` uses local Docker |
 
 ## 1. Supabase: database, functions, secrets
@@ -123,7 +124,18 @@ the Management API exposes and compares them with what the project reports, but 
 
 - URL Configuration: **Site URL** = `APP_PUBLIC_URL`; **Redirect URLs** = `APP_PUBLIC_URL`,
   `APP_PUBLIC_URL/**`, `io.goldroundtables.app://login-callback` (mobile).
-- Providers: Google, Apple, Facebook (section 5). Email sign-up **off**.
+- Providers → **Email** (ADR 0018, the production sign-in): provider **on**, "Allow new users to
+  sign up" **on**, "Confirm email" **off** for now, minimum password length 8. Supabase's built-in
+  mailer is rate limited (a few emails per hour), so confirmation emails would block sign-ups;
+  with confirmation off a new account is signed in immediately. Turn "Confirm email" on once a
+  custom SMTP sender is configured. The password-reset email still goes through the built-in
+  mailer, so expect that limit when many people reset at once. `--with-auth` sets
+  `external_email_enabled`, `disable_signup=false`, `mailer_autoconfirm=true` and
+  `password_min_length=8`.
+- Password reset: the emailed link returns to `APP_PUBLIC_URL/#/nueva-contrasena`, which the
+  `APP_PUBLIC_URL/**` redirect URL already covers. It must be opened in the same browser that asked
+  for it (PKCE).
+- Providers → Google, Apple, Facebook: only needed when `AUTH_METHODS` includes them (section 5).
 - Sessions: **JWT expiry 3600 s** (do not raise it), refresh-token rotation **on**, reuse interval
   **≥ 10 s**, **time-box disabled or ≥ 30 days**, **inactivity timeout disabled or ≥ 8 days**
   (Pro plan), single session per user **off**. A shorter time-box or inactivity timeout logs a
@@ -203,7 +215,8 @@ bash scripts/build-web.sh      # → build/web
 
 It reads `deploy/hosted.env` and passes every `String.fromEnvironment` key of
 `lib/core/config/app_config.dart`: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `POWERSYNC_URL`, `APP_ENV`,
-`DEV_AUTH` (always `false`; the script refuses a settings file that enables it),
+`DEV_AUTH` (always `false`; the script refuses a settings file that enables it), `AUTH_METHODS`
+(default `email`; the script rejects unknown names),
 `ERROR_REPORT_URL` and the five `FIREBASE_*` values. It refuses a service-role/secret key, warns
 when the Firebase web options are incomplete, and writes `build/web/firebase-config.js` for the push
 service worker when they are complete. A change in any value needs a rebuild.
@@ -251,7 +264,10 @@ proxy if you need them. Web push needs `web/firebase-config.js` in the build con
 `web/firebase-config.sample.js`; it is git-ignored). The Dockerfile build was not run as part of
 this runbook; `scripts/build-web.sh` + any static server is equivalent.
 
-## 5. Auth providers
+## 5. Auth providers (social sign-in, optional)
+
+Production currently uses email + password only (ADR 0018, `AUTH_METHODS=email`). Everything below
+is needed only when you add `google`, `apple` or `facebook` to `AUTH_METHODS`.
 
 Callback URL for every provider: `https://<ref>.supabase.co/auth/v1/callback`. Enter client ids and
 secrets in Authentication → Providers (never in git). Details of each console are in the README
@@ -339,7 +355,7 @@ vendors' documentation, not against a live project:
 - `supabase db query --linked -f` (used for extensions, Vault, first admin, replication role) and the
   `auth` step's Management API field names (`site_url`, `uri_allow_list`, `jwt_exp`,
   `refresh_token_rotation_enabled`, `security_refresh_token_reuse_interval`,
-  `external_email_enabled`; the script reads them back and warns on a mismatch).
+  `external_email_enabled`, `disable_signup`, `mailer_autoconfirm`, `password_min_length`; the script reads them back and warns on a mismatch).
 - `supabase functions deploy --use-api` bundling the shared `_shared/` imports.
 - PowerSync Cloud connectivity to Supabase's direct (IPv6) host, and the sync-rules deploy flow.
 - The `docker/web` build with the new optional build args.

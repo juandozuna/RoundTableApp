@@ -78,6 +78,7 @@ services:
         SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
         POWERSYNC_URL: ${POWERSYNC_URL:-http://127.0.0.1:8080}
         DEV_AUTH: ${DEV_AUTH:-true}
+        AUTH_METHODS: ${AUTH_METHODS:-email,google,apple,facebook}
         APP_ENV: ${APP_ENV:-local}
     image: gold-roundtables-web:local
     restart: unless-stopped

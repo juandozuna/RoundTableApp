@@ -8,7 +8,8 @@ in [docs/adr](docs/adr/README.md). Requirements live in the RoundTables Obsidian
 - One Flutter app for Android, iOS and web (ADR 0001), role-based navigation for Administrator,
   Coordinator, Facilitator and Member.
 - Backend: Supabase — Postgres + RLS, Auth, Edge Functions (TypeScript), pg_cron (ADR 0002).
-- Sign-in: Google, Apple and Facebook only; no phone/SMS login (ADR 0007).
+- Sign-in: email + password in production (ADR 0018); Google, Apple and Facebook stay implemented
+  behind `AUTH_METHODS` (ADR 0007); no phone/SMS login.
 - Offline-first only for the session domain; administration, invites and KPI dashboards are
   documented online-only exceptions (ADR 0003).
 - Local persistence and sync: PowerSync + Drift on mobile and web (ADR 0004).

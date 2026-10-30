@@ -524,6 +524,12 @@ phones, anchored menu on tablet/desktop, static with one context. Put it in `App
 `showSignOutSheet(context)` runs the unsynced-data warning (sync first / keep / erase); settings'
 `SignOutService` delegates to `AuthService.signOut`.
 
+**Sign-in methods.** `--dart-define=AUTH_METHODS=email,google,…` (default `email`, ADR 0018)
+chooses what the gate shows: an email + password form (sign in, "Crear cuenta", "¿Olvidaste tu
+contraseña?") and/or the provider buttons. Email flows go through `EmailAuthService`; the reset
+email links to `/#/nueva-contrasena` (`ResetPasswordPage`), which the access guard keeps the person
+on while a recovery is pending.
+
 **Dev sign-in.** With `--dart-define=DEV_AUTH=true` the gate shows chips for the seeded users and
 "Crear cuenta de prueba nueva" (a fresh email/password account that stands in for a new provider
 identity when redeeming invites locally). Real provider buttons use `signInWithOAuth`; they need the

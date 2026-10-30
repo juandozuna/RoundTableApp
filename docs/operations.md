@@ -194,7 +194,7 @@ Before tagging:
 - [ ] Edge Function tests: `deno test` in `supabase/functions`.
 - [ ] New migrations applied to a scratch copy of production data; RLS and
       `powersync/sync-rules.yaml` re-checked per role (no cross-organization read).
-- [ ] Build with production defines only: `APP_ENV=production`, **no** `DEV_AUTH`, anon key (not
+- [ ] Build with production defines only: `APP_ENV=production`, **no** `DEV_AUTH`, `AUTH_METHODS=email`, anon key (not
       service role), `ERROR_REPORT_URL` if used.
 - [ ] Version/build number bumped in `pubspec.yaml`.
 - [ ] Translations (Spanish) complete; no placeholder text.
