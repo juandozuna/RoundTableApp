@@ -14,7 +14,8 @@ class TableRead {
 }
 
 /// In-memory [TableReadsClient]: returns the rows seeded per table (honoring
-/// `limit` and `offset`, so paging can be exercised) and records every query
+/// `eq.` and `in.(…)` column filters like PostgREST, and `limit` and `offset`,
+/// so paging can be exercised) and records every query
 /// so tests can assert what was asked of PostgREST.
 class RecordingTableReadsClient implements TableReadsClient {
   final Map<String, List<Object>> _rows = {};
@@ -39,7 +40,9 @@ class RecordingTableReadsClient implements TableReadsClient {
     reads.add(TableRead(table, query));
     final error = failure;
     if (error != null) throw error;
-    final rows = (_rows[table] ?? const <Object>[]).cast<T>();
+    final rows = (_rows[table] ?? const <Object>[])
+        .where((row) => _matches(row, query))
+        .cast<T>();
     final offset = int.tryParse('${query[PostgrestParams.offset] ?? 0}') ?? 0;
     final limit = int.tryParse('${query[PostgrestParams.limit] ?? ''}');
     final page = rows.skip(offset);
@@ -118,4 +121,22 @@ class RecordingTableReadsClient implements TableReadsClient {
   Future<List<MemberCommitmentRecord>> memberCommitments(
     Map<String, dynamic> query,
   ) => _read(PostgrestTables.memberCommitments, query);
+
+  /// Applies the `eq.` and `in.(…)` filters to a record's JSON; other
+  /// operators are not evaluated (the query is still recorded for asserts).
+  static bool _matches(Object row, Map<String, dynamic> query) {
+    final json = (row as dynamic).toJson() as Map<String, dynamic>;
+    for (final MapEntry(:key, :value) in query.entries) {
+      if (value is! String || !json.containsKey(key)) continue;
+      final actual = '${json[key]}';
+      if (value.startsWith('eq.') && actual != value.substring(3)) {
+        return false;
+      }
+      if (value.startsWith('in.(') && value.endsWith(')')) {
+        final allowed = value.substring(4, value.length - 1).split(',');
+        if (!allowed.contains(actual)) return false;
+      }
+    }
+    return true;
+  }
 }
