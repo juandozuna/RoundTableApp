@@ -74,7 +74,8 @@ What it does, in order:
 |---|---|
 | `link` | `supabase link --project-ref …` |
 | `db` | enables `pg_cron` and `pg_net`, then `supabase db push` (**migrations only**; `supabase/seed.sql` is development data and never runs). The migrations schedule the `gr-*` cron jobs; `pg_cron`/`pg_net` are enabled first because the migrations only log a NOTICE when they are unavailable and would silently skip the jobs |
-| `functions` | `supabase functions deploy` for every directory of `supabase/functions` (`admin`, `answers-reveal`, `invites`, `notifications`, `sessions`, `sync-upload`). `verify_jwt = false` comes from `supabase/config.toml`: the functions verify tokens themselves |
+| `api` | exposes the Data API schemas of `supabase/config.toml` (`public, graphql_public, api`) through the Management API. Hosted projects expose only `public, graphql_public` by default; without `api` every Edge Function call fails with `PGRST106 Invalid schema: api` |
+| `functions` | `supabase functions deploy`, one call per function (a multi-function deploy fails with `TransportError`), for every directory of `supabase/functions` (`admin`, `answers-reveal`, `invites`, `notifications`, `sessions`, `sync-upload`). `verify_jwt = false` comes from `supabase/config.toml`: the functions verify tokens themselves |
 | `secrets` | `supabase secrets set`: `APP_PUBLIC_URL` (invite links), `ALLOWED_ORIGINS` (`*` is refused), `CRON_SECRET`, `FCM_SERVICE_ACCOUNT_JSON` (when `FCM_SERVICE_ACCOUNT_FILE` is set; without it push is skipped and the rest works). `SUPABASE_URL` and the keys are injected by the platform |
 | `vault` | writes the two **Vault** secrets the cron job needs (below) |
 | `verify` | prints the `gr-*` cron jobs and the Vault secret names (nine jobs are expected) |

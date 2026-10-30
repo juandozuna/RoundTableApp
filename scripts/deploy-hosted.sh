@@ -10,6 +10,7 @@
 # Steps (default order):
 #   link       supabase link to the project
 #   db         enable pg_cron/pg_net, then supabase db push (migrations only; seed.sql never runs)
+#   api        expose the Data API schemas of supabase/config.toml ([api] schemas, incl. `api`)
 #   functions  supabase functions deploy for every directory in supabase/functions
 #   secrets    supabase secrets set: APP_PUBLIC_URL, ALLOWED_ORIGINS, CRON_SECRET, FCM_SERVICE_ACCOUNT_JSON
 #   vault      Vault secrets functions_base_url + cron_secret read by app.dispatch_notifications_http()
@@ -30,7 +31,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=scripts/lib/hosted.sh
 source "$here/lib/hosted.sh"
 
-all_steps=(link db functions secrets vault verify admin auth)
+all_steps=(link db api functions secrets vault verify admin auth)
 dry_run=false
 only=""
 skip=""
@@ -104,10 +105,19 @@ validate_settings() {
     require_var FIRST_ADMIN_FIRST_NAME
     require_var FIRST_ADMIN_LAST_NAME
   fi
-  if wants auth; then
+  if wants auth || wants api; then
     require_cmd jq
     require_cmd curl
   fi
+  if wants auth || wants api; then
+    [[ -n "${SUPABASE_ACCESS_TOKEN:-}" ]] || $dry_run || fail "SUPABASE_ACCESS_TOKEN is required for the api/auth steps (Management API)."
+  fi
+}
+
+# Management API call; the token goes through curl's stdin config so it never appears in the process list.
+management_api() {
+  printf 'header = "Authorization: Bearer %s"\n' "$SUPABASE_ACCESS_TOKEN" \
+    | curl -fsS -K - -H 'Content-Type: application/json' "$@"
 }
 
 function_names() {
@@ -159,6 +169,26 @@ step_db() {
   ok "pg_cron and pg_net enabled"
   (cd "$repo_root" && supabase db push "${target[@]}" --skip-vault) || fail "supabase db push failed."
   ok "Migrations applied (supabase/seed.sql is not run)"
+}
+
+# Hosted projects expose only public + graphql_public; the Edge Functions call the `api` schema
+# (service-role only, docs/implementation/api-contract.md), so mirror config.toml's [api] schemas.
+step_api() {
+  info "api: exposed schemas"
+  local schemas
+  schemas="$(sed -n '/^\[api\]/,/^\[/{s/^schemas *= *\[\(.*\)\]/\1/p;}' "$repo_root/supabase/config.toml" | tr -d '" ' )"
+  [[ -n "$schemas" ]] || fail "Could not read [api] schemas from supabase/config.toml."
+  local url="https://api.supabase.com/v1/projects/${SUPABASE_PROJECT_REF}/postgrest"
+  if $dry_run; then
+    ok "would PATCH $url with db_schema=$schemas"
+    return
+  fi
+  management_api -X PATCH "$url" -d "$(jq -n --arg s "$schemas" '{db_schema: $s}')" >/dev/null \
+    || fail "Could not update the exposed Data API schemas."
+  local current
+  current="$(management_api "$url" | jq -r '.db_schema')" || fail "Could not read the Data API config back."
+  [[ "$current" == "$schemas" ]] || fail "Data API schemas are '$current', expected '$schemas'."
+  ok "Data API exposes: $schemas"
 }
 
 step_functions() {
@@ -363,7 +393,7 @@ validate_settings
 if $dry_run; then info "Dry run: nothing on project $SUPABASE_PROJECT_REF is changed"; fi
 # A dry run still needs the link (db push --dry-run reads the remote migration history).
 if wants link || { $dry_run && wants db && [[ -z "${SUPABASE_DB_URL:-}" ]]; }; then step_link; fi
-for step in db functions secrets vault verify admin auth; do
+for step in db api functions secrets vault verify admin auth; do
   if wants "$step"; then "step_$step"; fi
 done
 print_checklist
