@@ -1,0 +1,24 @@
+# Cloudflare Pages response headers (https://developers.cloudflare.com/pages/configuration/headers/).
+# Ignored by other hosts; docker/web/nginx.conf is the self-hosted equivalent.
+#
+# Permissions-Policy allows `camera` for the invite QR scanner. There is no CSP: Flutter loads
+# CanvasKit/fonts from gstatic and needs wasm-unsafe-eval, so a CSP must be tested against the
+# real build before enabling.
+#
+# One rule on purpose: Pages joins repeated headers from overlapping rules with a comma instead of
+# replacing them, so a second rule for static assets would corrupt Cache-Control.
+#
+# Caching: Flutter web files are not content-hashed (main.dart.js, flutter_bootstrap.js, assets/*,
+# version.json, firebase-*.js keep their names across releases). `no-cache` makes the browser
+# revalidate with the ETag Pages sends (a cheap 304 when nothing changed), so a new release is
+# picked up on the next load. Flutter 3.41's flutter_service_worker.js is only a stub that
+# unregisters older caching workers (the app has no offline asset cache; offline data is
+# PowerSync/SQLite), and web/firebase-messaging-sw.js must also stay revalidated: the browser
+# checks service worker scripts for updates, and a stale copy would pin an old push handler.
+/*
+  Cache-Control: no-cache
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=()

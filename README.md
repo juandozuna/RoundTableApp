@@ -152,6 +152,13 @@ What has to exist before a real environment works. Nothing here is committed: va
 secrets, build-time `--dart-define`s or provider consoles. [`.env.example`](.env.example) lists the
 variable names.
 
+**Scripted path:** [docs/deployment.md](docs/deployment.md) is the end-to-end runbook (Supabase →
+secrets → PowerSync → web → auth providers → smoke test) with `scripts/deploy-hosted.sh`,
+`scripts/setup-powersync-replication.sh --hosted`, `scripts/build-web.sh` (Cloudflare Pages or the
+`docker/web` image) and `scripts/smoke-hosted.sh`, all driven by `deploy/hosted.env`
+(template: [`deploy/hosted.env.example`](deploy/hosted.env.example)). The list below is the manual
+equivalent.
+
 1. **Supabase project** (hosted). `supabase link --project-ref <ref>` then `supabase db push`
    (migrations only: `supabase/seed.sql` is development data and must not run in production). Enable
    `pg_cron` and `pg_net` (the KPI refresh and notification jobs are scheduled by the migrations).

@@ -2,7 +2,8 @@
 
 Backups, monitoring, incident response and releases for a hosted deployment (Supabase project +
 PowerSync Service + web host + FCM). Covers RNF-21, RNF-23 and RNF-25. Setup of the services
-themselves is in the README ("Deploying"); decisions are in [docs/adr](adr/README.md).
+themselves is in [deployment.md](deployment.md) (runbook and scripts) and the README
+("Deploying"); decisions are in [docs/adr](adr/README.md).
 
 ## 1. Error reporting in the app
 
@@ -203,7 +204,8 @@ store builds. Migrations first, and backwards compatible with the previous app v
 old mobile builds stay in use for days (offline window, ADR 0005).
 
 After deploying:
-- [ ] Smoke test against the live URLs (sign in, open a table, submit a score, pending→synced).
+- [ ] `bash scripts/smoke-hosted.sh`, then a manual pass against the live URLs (sign in, open a
+      table, submit a score, pending→synced).
 - [ ] Monitoring section 3: no new errors for 30 minutes.
 - [ ] Cron jobs still scheduled; replication slot active.
 - [ ] Note the release (version, date, migrations) in the team log.
