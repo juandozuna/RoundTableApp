@@ -88,7 +88,7 @@ class CommitmentPanel extends StatelessWidget {
             tone: StatusTone.ok,
             title: flow.isLive && !flow.session.iAmFacilitator
                 ? l10n.sessionMemberSentWaitingFacilitator
-                : l10n.sessionMemberSavedOffline,
+                : l10n.sessionMemberSent,
           ),
         ],
       ),

@@ -1817,7 +1817,7 @@
       }
     }
   },
-  "sessionBoardVerbalClosing": "Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.",
+  "sessionBoardVerbalClosing": "Cerramos respuestas. Envíen lo que falte, con conexión a internet. Ahora cierro la sesión.",
   "sessionBoardAttendanceMissing": "Falta marcar asistencia: {names}.",
   "@sessionBoardAttendanceMissing": {
     "placeholders": {
@@ -2187,9 +2187,8 @@
   "sessionMemberDockSentWaiting": "Enviado · esperando a la mesa",
   "sessionMemberDockReadyWaiting": "Listo · esperando a la mesa",
   "sessionMemberDockClosed": "Cerrado",
-  "sessionMemberSentLive": "Enviado.",
+  "sessionMemberSent": "Enviado.",
   "sessionMemberSentWaitingFacilitator": "Enviado. Falta que el facilitador cierre las respuestas.",
-  "sessionMemberSavedOffline": "No se pudo enviar. Lo que escribiste sigue aquí; inténtalo cuando tengas internet.",
   "sessionMemberRecapKickerFinished": "Terminaste",
   "sessionMemberRecapKickerPending": "Resumen",
   "sessionMemberRecapTitleFacilitator": "Tus respuestas están completas",
@@ -2235,7 +2234,7 @@
   "sessionMemberAbsentInfo": "Estás marcado como Ausente. Si respondes, pasarás a Presente al sincronizar.",
   "sessionMemberToastSent": "Enviado",
   "sessionMemberToastFailed": "No se pudo guardar. Inténtalo de nuevo.",
-  "sessionMemberOfflineBannerDetail": "tus respuestas se envían cuando vuelva la conexión",
+  "sessionMemberOfflineBannerDetail": "no se pueden enviar respuestas hasta que vuelva la conexión",
   "navAccount": "Cuenta",
   "authAppTagline": "Mesas de valores",
   "authBrandHeadline": "Una sola puerta para todas tus mesas.",
@@ -2819,7 +2818,7 @@
   },
   "historyHomeLinkMember": "Ver mi progreso",
   "historyHomeLinkFacilitator": "Ver el progreso de la mesa",
-  "historyWindowNote": "Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.",
+  "historyWindowNote": "Ves las últimas 8 semanas. Lo anterior sigue a salvo en el servidor.",
   "historyOfflineDetail": "conéctate a internet para ver el historial actualizado",
   "historyUnavailableTitle": "Aquí verás tu progreso",
   "historyUnavailableMessage": "Cuando te unas a una mesa, tus puntajes y compromisos aparecerán aquí.",
@@ -3035,7 +3034,7 @@
     }
   },
   "historyNoCommitment": "Sin compromiso",
-  "historyLoadError": "No pudimos leer tu historial en este dispositivo.",
+  "historyLoadError": "No pudimos leer tu historial. Revisa tu conexión e inténtalo de nuevo.",
   "adminSessionsTitle": "Próxima sesión",
   "adminSessionNone": "Esta mesa no tiene una sesión pendiente.",
   "adminSessionExtraBadge": "Extraordinaria",
@@ -3178,7 +3177,7 @@
   },
   "curriculumNav": "Currículo",
   "curriculumTitle": "Currículo",
-  "curriculumIntro": "Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.",
+  "curriculumIntro": "Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies se ve en todos los dispositivos al guardar.",
   "curriculumDeniedMessage": "Solo la administración de la plataforma puede ver y editar el currículo.",
   "curriculumLanguageBase": "{name} (base)",
   "@curriculumLanguageBase": {

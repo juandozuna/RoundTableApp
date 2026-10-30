@@ -3068,7 +3068,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionBoardVerbalClosing =>
-      'Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.';
+      'Cerramos respuestas. Envíen lo que falte, con conexión a internet. Ahora cierro la sesión.';
 
   @override
   String sessionBoardAttendanceMissing(String names) {
@@ -3641,15 +3641,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionMemberDockClosed => 'Cerrado';
 
   @override
-  String get sessionMemberSentLive => 'Enviado.';
+  String get sessionMemberSent => 'Enviado.';
 
   @override
   String get sessionMemberSentWaitingFacilitator =>
       'Enviado. Falta que el facilitador cierre las respuestas.';
-
-  @override
-  String get sessionMemberSavedOffline =>
-      'No se pudo enviar. Lo que escribiste sigue aquí; inténtalo cuando tengas internet.';
 
   @override
   String get sessionMemberRecapKickerFinished => 'Terminaste';
@@ -3766,7 +3762,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sessionMemberOfflineBannerDetail =>
-      'tus respuestas se envían cuando vuelva la conexión';
+      'no se pueden enviar respuestas hasta que vuelva la conexión';
 
   @override
   String get navAccount => 'Cuenta';
@@ -4911,7 +4907,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get historyWindowNote =>
-      'Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.';
+      'Ves las últimas 8 semanas. Lo anterior sigue a salvo en el servidor.';
 
   @override
   String get historyOfflineDetail =>
@@ -5121,7 +5117,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get historyLoadError =>
-      'No pudimos leer tu historial en este dispositivo.';
+      'No pudimos leer tu historial. Revisa tu conexión e inténtalo de nuevo.';
 
   @override
   String get adminSessionsTitle => 'Próxima sesión';
@@ -5351,7 +5347,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get curriculumIntro =>
-      'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.';
+      'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies se ve en todos los dispositivos al guardar.';
 
   @override
   String get curriculumDeniedMessage =>

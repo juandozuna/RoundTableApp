@@ -5125,7 +5125,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionBoardVerbalClosing.
   ///
   /// In es, this message translates to:
-  /// **'Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.'**
+  /// **'Cerramos respuestas. Envíen lo que falte, con conexión a internet. Ahora cierro la sesión.'**
   String get sessionBoardVerbalClosing;
 
   /// No description provided for @sessionBoardAttendanceMissing.
@@ -6016,23 +6016,17 @@ abstract class AppLocalizations {
   /// **'Cerrado'**
   String get sessionMemberDockClosed;
 
-  /// No description provided for @sessionMemberSentLive.
+  /// No description provided for @sessionMemberSent.
   ///
   /// In es, this message translates to:
   /// **'Enviado.'**
-  String get sessionMemberSentLive;
+  String get sessionMemberSent;
 
   /// No description provided for @sessionMemberSentWaitingFacilitator.
   ///
   /// In es, this message translates to:
   /// **'Enviado. Falta que el facilitador cierre las respuestas.'**
   String get sessionMemberSentWaitingFacilitator;
-
-  /// No description provided for @sessionMemberSavedOffline.
-  ///
-  /// In es, this message translates to:
-  /// **'No se pudo enviar. Lo que escribiste sigue aquí; inténtalo cuando tengas internet.'**
-  String get sessionMemberSavedOffline;
 
   /// No description provided for @sessionMemberRecapKickerFinished.
   ///
@@ -6223,7 +6217,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberOfflineBannerDetail.
   ///
   /// In es, this message translates to:
-  /// **'tus respuestas se envían cuando vuelva la conexión'**
+  /// **'no se pueden enviar respuestas hasta que vuelva la conexión'**
   String get sessionMemberOfflineBannerDetail;
 
   /// No description provided for @navAccount.
@@ -8101,7 +8095,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyWindowNote.
   ///
   /// In es, this message translates to:
-  /// **'Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.'**
+  /// **'Ves las últimas 8 semanas. Lo anterior sigue a salvo en el servidor.'**
   String get historyWindowNote;
 
   /// No description provided for @historyOfflineDetail.
@@ -8412,7 +8406,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyLoadError.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos leer tu historial en este dispositivo.'**
+  /// **'No pudimos leer tu historial. Revisa tu conexión e inténtalo de nuevo.'**
   String get historyLoadError;
 
   /// No description provided for @adminSessionsTitle.
@@ -8790,7 +8784,7 @@ abstract class AppLocalizations {
   /// No description provided for @curriculumIntro.
   ///
   /// In es, this message translates to:
-  /// **'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.'**
+  /// **'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies se ve en todos los dispositivos al guardar.'**
   String get curriculumIntro;
 
   /// No description provided for @curriculumDeniedMessage.
