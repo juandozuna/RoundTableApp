@@ -31,6 +31,10 @@ streams:
       - SELECT id, number, name, description, value_count, status FROM curriculum_modules
       - SELECT id, module_id, number_in_module, sequence, name, description, booklet_reference, status FROM curriculum_values
       - SELECT id, value_id, question_code, question_text, sort_order, response_type, status FROM value_questions
+      # Content languages and the per-language text; the app falls back to the Spanish base
+      # text above when a translation (or one of its fields) is missing (ADR 0017).
+      - SELECT id, code, name, is_default, status FROM content_locales
+      - SELECT id, locale, entity_type, entity_id, name, description, question_text FROM curriculum_translations
 
   # The signed-in user's own person rows (one per organization) and memberships (history too).
   my_identity:

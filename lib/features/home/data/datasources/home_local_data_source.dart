@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/sync/data/content_text_sql.dart';
 import '../../../../core/sync/data/sync_database.dart';
 import '../../domain/models/home_commitment.dart';
 import '../../domain/models/home_progress.dart';
@@ -21,7 +22,8 @@ class HomeLocalDataSource {
 
   final SyncDatabase _database;
 
-  static const String _tableSelect = '''
+  static final String _tableSelect =
+      '''
 SELECT t.id AS table_id, t.name AS table_name, t.status AS table_status,
   (SELECT COUNT(*) FROM table_members m
      WHERE m.round_table_id = t.id AND m.status = 'active') AS seats,
@@ -37,8 +39,8 @@ SELECT t.id AS table_id, t.name AS table_name, t.status AS table_status,
   ) AS cancelled_slot,
   s.id AS session_id, s.status AS session_status, s.scheduled_at,
   s.kind AS session_kind, s.original_scheduled_at,
-  v.name AS value_name, v.sequence AS value_sequence,
-  fv.name AS follow_up_name''';
+  ${ContentTextSql.name('value', 'v')} AS value_name, v.sequence AS value_sequence,
+  ${ContentTextSql.name('value', 'fv')} AS follow_up_name''';
 
   static const String _tableFrom = '''
 FROM round_tables t
@@ -49,11 +51,11 @@ LEFT JOIN sessions s ON s.id = (
 LEFT JOIN curriculum_values v ON v.id = s.value_id
 LEFT JOIN curriculum_values fv ON fv.id = s.follow_up_value_id''';
 
-  static const String _facilitatorSql =
+  static final String _facilitatorSql =
       '$_tableSelect $_tableFrom WHERE t.id = ?';
 
   // `people` only holds the signed-in user's own rows (my_identity stream).
-  static const String _memberSql =
+  static final String _memberSql =
       '''
 SELECT b.*, 
   (SELECT cm.action_text FROM member_commitments cm
@@ -65,12 +67,12 @@ SELECT b.*,
   (SELECT cm.follow_up_status FROM member_commitments cm
      WHERE cm.person_id IN (SELECT id FROM people)
      ORDER BY cm.device_created_at DESC LIMIT 1) AS commitment_outcome,
-  (SELECT cv.name FROM member_commitments cm
+  (SELECT ${ContentTextSql.name('value', 'cv')} FROM member_commitments cm
      JOIN curriculum_values cv ON cv.id = cm.value_id
      WHERE cm.person_id IN (SELECT id FROM people)
      ORDER BY cm.device_created_at DESC LIMIT 1) AS commitment_value,
   (SELECT json_group_array(json_object(
-      'number', m.number, 'name', m.name, 'total', m.value_count,
+      'number', m.number, 'name', ${ContentTextSql.name('module', 'm')}, 'total', m.value_count,
       'completed', (SELECT COUNT(DISTINCT a.value_id)
         FROM member_assessments a
         JOIN curriculum_values cv ON cv.id = a.value_id

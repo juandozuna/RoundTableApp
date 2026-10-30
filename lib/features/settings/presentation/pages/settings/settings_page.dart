@@ -19,6 +19,7 @@ import '../../../../auth/presentation/widgets/context_switcher.dart';
 import '../../../../home/home_routes.dart';
 import '../../../../notifications/notifications_routes.dart';
 import '../../../settings_routes.dart';
+import '../../widgets/content_language_card.dart';
 import 'cubit/settings_cubit.dart';
 import 'cubit/settings_state.dart';
 
@@ -45,6 +46,7 @@ class SettingsPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
             _buildLinks(context),
             const SizedBox(height: AppSpacing.lg),
+            const ContentLanguageCard(),
             _buildSync(context, state),
             const SizedBox(height: AppSpacing.lg),
             _buildAbout(context, state),

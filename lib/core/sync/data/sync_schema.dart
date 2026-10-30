@@ -13,6 +13,10 @@ abstract final class CoreSyncTables {
   /// Row key holding the id of the user whose data is on this device.
   static const String ownerUserIdKey = 'owner_user_id';
 
+  /// Row key holding the language code the curriculum text is shown in
+  /// (ADR 0017). The queries read it, so changing it re-emits every watch.
+  static const String contentLocaleKey = 'content_locale';
+
   /// Changes the server refused permanently, kept so the person can be told
   /// why (for example "La sesión ya se cerró").
   static const String uploadRejections = 'sync_upload_rejections';

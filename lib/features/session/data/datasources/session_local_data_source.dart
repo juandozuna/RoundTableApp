@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/models/session_status.dart';
+import '../../../../core/sync/data/content_text_sql.dart';
 import '../../../../core/sync/data/sync_database.dart';
 import '../../../../core/sync/data/sync_schema.dart';
 import '../../domain/models/today_session_selector.dart';
@@ -30,6 +31,8 @@ class SessionLocalDataSource {
       .onChange([
         SessionTables.curriculumValues,
         SessionTables.valueQuestions,
+        SessionTables.curriculumTranslations,
+        CoreSyncTables.localSyncState,
         SessionTables.organizations,
         SessionTables.people,
         SessionTables.roundTables,
@@ -93,15 +96,15 @@ class SessionLocalDataSource {
       followUpValue: followUpValueId == null
           ? null
           : await _valueById(followUpValueId),
-      questions:
-          await (_db.select(_db.valueQuestions)
-                ..where(
-                  (q) =>
-                      q.valueId.equals(value.id) &
-                      q.status.equals(_activeStatus),
-                )
-                ..orderBy([(q) => OrderingTerm.asc(q.sortOrder)]))
-              .get(),
+      questions: await _translatedQuestions(
+        await (_db.select(_db.valueQuestions)
+              ..where(
+                (q) =>
+                    q.valueId.equals(value.id) & q.status.equals(_activeStatus),
+              )
+              ..orderBy([(q) => OrderingTerm.asc(q.sortOrder)]))
+            .get(),
+      ),
       roster: await _activeRoster(table.id),
       attendance: await (_db.select(
         _db.sessionAttendance,
@@ -200,9 +203,46 @@ class SessionLocalDataSource {
     _db.roundTables,
   )..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  Future<ValueRow?> _valueById(String id) => (_db.select(
-    _db.curriculumValues,
-  )..where((v) => v.id.equals(id))).getSingleOrNull();
+  /// The value in the user's content language (Spanish where untranslated).
+  Future<ValueRow?> _valueById(String id) async {
+    final row = await (_db.select(
+      _db.curriculumValues,
+    )..where((v) => v.id.equals(id))).getSingleOrNull();
+    if (row == null) return null;
+    final translated = await _sync.powerSync.getOptional(
+      'SELECT ${ContentTextSql.name('value', 'v')} AS name, '
+      "COALESCE((SELECT NULLIF(TRIM(tr.description), '') FROM "
+      "curriculum_translations tr WHERE tr.entity_type = 'value' AND "
+      'tr.entity_id = v.id AND tr.locale = ${ContentTextSql.locale}), '
+      'v.description) AS description '
+      'FROM curriculum_values v WHERE v.id = ?',
+      [id],
+    );
+    return row.copyWith(
+      name: Value(translated?['name'] as String? ?? row.name),
+      description: Value(
+        translated?['description'] as String? ?? row.description,
+      ),
+    );
+  }
+
+  Future<List<QuestionRow>> _translatedQuestions(List<QuestionRow> rows) async {
+    if (rows.isEmpty) return rows;
+    final translated = await _sync.powerSync.getAll(
+      'SELECT q.id AS id, '
+      '${ContentTextSql.text(entityType: 'question', alias: 'q', field: 'question_text', base: 'q.question_text')} '
+      'AS text FROM value_questions q WHERE q.id IN '
+      '(${List.filled(rows.length, '?').join(', ')})',
+      [for (final row in rows) row.id],
+    );
+    final byId = {for (final r in translated) r['id']! as String: r['text']};
+    return [
+      for (final row in rows)
+        row.copyWith(
+          questionText: Value(byId[row.id] as String? ?? row.questionText),
+        ),
+    ];
+  }
 
   Future<OrganizationRow?> _organizationById(String id) => (_db.select(
     _db.organizations,

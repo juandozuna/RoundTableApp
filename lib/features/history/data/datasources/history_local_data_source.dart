@@ -4,7 +4,9 @@ import '../../../../core/models/assessment_kind.dart';
 import '../../../../core/models/attendance_status.dart';
 import '../../../../core/models/commitment_follow_up_status.dart';
 import '../../../../core/models/session_status.dart';
+import '../../../../core/sync/data/content_text_sql.dart';
 import '../../../../core/sync/data/sync_database.dart';
+import '../../../../core/sync/data/sync_schema.dart';
 import '../../domain/models/history_snapshot.dart';
 
 /// Reads a table's history from the synced tables (ADR 0004), so it works
@@ -21,6 +23,8 @@ class HistoryLocalDataSource {
   static const List<String> _watched = [
     'curriculum_modules',
     'curriculum_values',
+    'curriculum_translations',
+    CoreSyncTables.localSyncState,
     'round_tables',
     'table_members',
     'sessions',
@@ -45,7 +49,8 @@ class HistoryLocalDataSource {
     );
     final values = await db.getAll(
       '''
-SELECT v.id, v.sequence, v.name, m.number AS module_number, m.name AS module_name
+SELECT v.id, v.sequence, ${ContentTextSql.name('value', 'v')} AS name,
+  m.number AS module_number, ${ContentTextSql.name('module', 'm')} AS module_name
 FROM curriculum_values v LEFT JOIN curriculum_modules m ON m.id = v.module_id''',
     );
     final sessions = await db.getAll(

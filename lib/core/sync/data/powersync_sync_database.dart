@@ -76,6 +76,7 @@ class PowerSyncSyncDatabase implements SyncDatabase {
     final userId = _tokens.userId;
     if (userId == null) return;
     await _claimForUser(userId);
+    await _ensureContentLocale();
     if (!_config.hasPowerSync) return;
     await powerSync.connect(
       connector: SupabasePowerSyncConnector(
@@ -105,6 +106,27 @@ class PowerSyncSyncDatabase implements SyncDatabase {
       '(id, ${CoreSyncTables.keyColumn}, ${CoreSyncTables.valueColumn}) '
       'VALUES (?, ?, ?)',
       [CoreSyncTables.ownerUserIdKey, CoreSyncTables.ownerUserIdKey, userId],
+    );
+  }
+
+  /// First run on this device: show the curriculum in the device language
+  /// (text without a translation stays in Spanish). The person can change it
+  /// in Settings; the choice lives in the local-only state table.
+  Future<void> _ensureContentLocale() async {
+    final stored = await powerSync.getOptional(
+      'SELECT id FROM ${CoreSyncTables.localSyncState} WHERE id = ?',
+      [CoreSyncTables.contentLocaleKey],
+    );
+    if (stored != null) return;
+    await powerSync.execute(
+      'INSERT INTO ${CoreSyncTables.localSyncState} '
+      '(id, ${CoreSyncTables.keyColumn}, ${CoreSyncTables.valueColumn}) '
+      'VALUES (?, ?, ?)',
+      [
+        CoreSyncTables.contentLocaleKey,
+        CoreSyncTables.contentLocaleKey,
+        PlatformDispatcher.instance.locale.languageCode.toLowerCase(),
+      ],
     );
   }
 

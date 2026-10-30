@@ -193,6 +193,35 @@ import '../../features/calendar/domain/use_cases/watch/watch_upcoming_sessions_u
     as _i168;
 import '../../features/calendar/presentation/pages/upcoming/cubit/upcoming_cubit.dart'
     as _i480;
+import '../../features/curriculum/data/client/curriculum_client.dart' as _i277;
+import '../../features/curriculum/data/datasources/curriculum_remote_data_source.dart'
+    as _i749;
+import '../../features/curriculum/data/services/curriculum_admin_service_impl.dart'
+    as _i918;
+import '../../features/curriculum/domain/services/curriculum_admin_service.dart'
+    as _i806;
+import '../../features/curriculum/domain/use_cases/curriculum/add_curriculum_question_use_case.dart'
+    as _i1;
+import '../../features/curriculum/domain/use_cases/curriculum/edit_curriculum_item_use_case.dart'
+    as _i225;
+import '../../features/curriculum/domain/use_cases/curriculum/load_curriculum_use_case.dart'
+    as _i202;
+import '../../features/curriculum/domain/use_cases/curriculum/share_curriculum_export_use_case.dart'
+    as _i695;
+import '../../features/curriculum/domain/use_cases/languages/add_content_language_use_case.dart'
+    as _i1029;
+import '../../features/curriculum/domain/use_cases/languages/set_content_language_active_use_case.dart'
+    as _i114;
+import '../../features/curriculum/domain/use_cases/upload/apply_curriculum_upload_use_case.dart'
+    as _i9;
+import '../../features/curriculum/domain/use_cases/upload/pick_curriculum_file_use_case.dart'
+    as _i355;
+import '../../features/curriculum/domain/use_cases/upload/preview_curriculum_upload_use_case.dart'
+    as _i487;
+import '../../features/curriculum/presentation/pages/curriculum/cubit/curriculum_cubit.dart'
+    as _i823;
+import '../../features/curriculum/presentation/pages/curriculum_upload/cubit/curriculum_upload_cubit.dart'
+    as _i269;
 import '../../features/history/data/datasources/history_local_data_source.dart'
     as _i437;
 import '../../features/history/data/services/history_service_impl.dart'
@@ -412,23 +441,35 @@ import '../../features/session/presentation/pages/member_flow/cubit/member_flow_
 import '../../features/session/presentation/pages/session/cubit/session_cubit.dart'
     as _i817;
 import '../../features/settings/data/client/settings_client.dart' as _i47;
+import '../../features/settings/data/datasources/content_language_local_data_source.dart'
+    as _i263;
 import '../../features/settings/data/datasources/settings_remote_data_source.dart'
     as _i188;
 import '../../features/settings/data/services/app_info_service_impl.dart'
     as _i90;
+import '../../features/settings/data/services/content_language_service_impl.dart'
+    as _i973;
 import '../../features/settings/data/services/profile_service_impl.dart'
     as _i945;
 import '../../features/settings/domain/services/app_info_service.dart' as _i483;
+import '../../features/settings/domain/services/content_language_service.dart'
+    as _i548;
 import '../../features/settings/domain/services/profile_service.dart' as _i895;
 import '../../features/settings/domain/services/sign_out_service.dart' as _i428;
 import '../../features/settings/domain/use_cases/account/sign_out_use_case.dart'
     as _i185;
+import '../../features/settings/domain/use_cases/language/select_content_language_use_case.dart'
+    as _i940;
+import '../../features/settings/domain/use_cases/language/watch_content_language_use_case.dart'
+    as _i725;
 import '../../features/settings/domain/use_cases/profile/load_app_info_use_case.dart'
     as _i752;
 import '../../features/settings/domain/use_cases/profile/load_profile_use_case.dart'
     as _i869;
 import '../../features/settings/domain/use_cases/profile/update_profile_use_case.dart'
     as _i325;
+import '../../features/settings/presentation/cubit/content_language_cubit.dart'
+    as _i195;
 import '../../features/settings/presentation/pages/profile_edit/cubit/profile_edit_cubit.dart'
     as _i177;
 import '../../features/settings/presentation/pages/settings/cubit/settings_cubit.dart'
@@ -458,6 +499,8 @@ import '../services/error_reporting/error_reporting_module.dart' as _i439;
 import '../services/error_reporting/logging_error_reporter.dart' as _i967;
 import '../services/external_links/external_link_service.dart' as _i162;
 import '../services/external_links/external_link_service_impl.dart' as _i146;
+import '../services/file_pick/file_pick_service.dart' as _i245;
+import '../services/file_pick/file_pick_service_impl.dart' as _i144;
 import '../services/firebase/firebase_bootstrap.dart' as _i1068;
 import '../services/firebase/firebase_bootstrap_impl.dart' as _i326;
 import '../services/id/id_generator.dart' as _i246;
@@ -548,6 +591,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i363.SaveSessionDraftUseCase>(
       () => _i363.SaveSessionDraftUseCase(gh<_i369.SessionDraftService>()),
     );
+    gh.lazySingleton<_i245.FilePickService>(() => _i144.FilePickServiceImpl());
     gh.lazySingleton<_i59.AuthService>(
       () => _i738.SupabaseAuthService(gh<_i609.AppConfig>()),
     );
@@ -634,6 +678,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i464.ShareInviteUseCase>(
       () => _i464.ShareInviteUseCase(gh<_i245.ShareService>()),
     );
+    gh.factory<_i695.ShareCurriculumExportUseCase>(
+      () => _i695.ShareCurriculumExportUseCase(gh<_i245.ShareService>()),
+    );
     gh.factory<_i648.ShareInviteTextUseCase>(
       () => _i648.ShareInviteTextUseCase(gh<_i245.ShareService>()),
     );
@@ -669,6 +716,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i772.KpiClient>(
       () => _i772.KpiClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
+    gh.factory<_i355.PickCurriculumFileUseCase>(
+      () => _i355.PickCurriculumFileUseCase(gh<_i245.FilePickService>()),
     );
     gh.factory<_i939.ContextChipCubit>(
       () => _i939.ContextChipCubit(gh<_i434.WatchSessionContextUseCase>()),
@@ -741,6 +791,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i86.AccountClient>(
       () => _i86.AccountClient(gh<_i361.Dio>(instanceName: 'edgeFunctionsDio')),
     );
+    gh.lazySingleton<_i277.CurriculumClient>(
+      () => _i277.CurriculumClient(
+        gh<_i361.Dio>(instanceName: 'edgeFunctionsDio'),
+      ),
+    );
     gh.lazySingleton<_i956.InvitesClient>(
       () =>
           _i956.InvitesClient(gh<_i361.Dio>(instanceName: 'edgeFunctionsDio')),
@@ -802,6 +857,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i951.NotificationsRemoteDataSource>(
       () => _i951.NotificationsRemoteDataSource(gh<_i70.NotificationsClient>()),
+    );
+    gh.lazySingleton<_i749.CurriculumRemoteDataSource>(
+      () => _i749.CurriculumRemoteDataSource(gh<_i277.CurriculumClient>()),
     );
     gh.lazySingleton<_i460.KpiRemoteDataSource>(
       () => _i460.KpiRemoteDataSource(
@@ -895,6 +953,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i997.AuthStateSource>(),
       ),
     );
+    gh.lazySingleton<_i806.CurriculumAdminService>(
+      () => _i918.CurriculumAdminServiceImpl(
+        gh<_i749.CurriculumRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i188.SettingsRemoteDataSource>(
       () => _i188.SettingsRemoteDataSource(gh<_i47.SettingsClient>()),
     );
@@ -908,6 +971,44 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i531.AdminScopeServiceImpl(
         gh<_i523.SessionContextService>(),
         gh<_i517.AdminRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i1.AddCurriculumQuestionUseCase>(
+      () =>
+          _i1.AddCurriculumQuestionUseCase(gh<_i806.CurriculumAdminService>()),
+    );
+    gh.factory<_i225.EditCurriculumItemUseCase>(
+      () => _i225.EditCurriculumItemUseCase(gh<_i806.CurriculumAdminService>()),
+    );
+    gh.factory<_i202.LoadCurriculumUseCase>(
+      () => _i202.LoadCurriculumUseCase(gh<_i806.CurriculumAdminService>()),
+    );
+    gh.factory<_i1029.AddContentLanguageUseCase>(
+      () =>
+          _i1029.AddContentLanguageUseCase(gh<_i806.CurriculumAdminService>()),
+    );
+    gh.factory<_i114.SetContentLanguageActiveUseCase>(
+      () => _i114.SetContentLanguageActiveUseCase(
+        gh<_i806.CurriculumAdminService>(),
+      ),
+    );
+    gh.factory<_i9.ApplyCurriculumUploadUseCase>(
+      () =>
+          _i9.ApplyCurriculumUploadUseCase(gh<_i806.CurriculumAdminService>()),
+    );
+    gh.factory<_i487.PreviewCurriculumUploadUseCase>(
+      () => _i487.PreviewCurriculumUploadUseCase(
+        gh<_i806.CurriculumAdminService>(),
+      ),
+    );
+    gh.factory<_i823.CurriculumCubit>(
+      () => _i823.CurriculumCubit(
+        gh<_i202.LoadCurriculumUseCase>(),
+        gh<_i225.EditCurriculumItemUseCase>(),
+        gh<_i1.AddCurriculumQuestionUseCase>(),
+        gh<_i1029.AddContentLanguageUseCase>(),
+        gh<_i114.SetContentLanguageActiveUseCase>(),
+        gh<_i695.ShareCurriculumExportUseCase>(),
       ),
     );
     gh.lazySingleton<_i924.SyncDatabase>(
@@ -998,6 +1099,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i299.HomeLocalDataSource>(
       () => _i299.HomeLocalDataSource(gh<_i924.SyncDatabase>()),
     );
+    gh.lazySingleton<_i263.ContentLanguageLocalDataSource>(
+      () => _i263.ContentLanguageLocalDataSource(gh<_i924.SyncDatabase>()),
+    );
     gh.lazySingleton<_i895.ProfileService>(
       () => _i945.ProfileServiceImpl(gh<_i188.SettingsRemoteDataSource>()),
     );
@@ -1048,6 +1152,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i686.InviteService>(),
         gh<_i160.InviteAttemptsService>(),
         gh<_i508.ClockService>(),
+      ),
+    );
+    gh.lazySingleton<_i548.ContentLanguageService>(
+      () => _i973.ContentLanguageServiceImpl(
+        gh<_i263.ContentLanguageLocalDataSource>(),
       ),
     );
     gh.factory<_i648.RefreshAccessUseCase>(
@@ -1140,6 +1249,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i659.RequestSyncUseCase>(
       () => _i659.RequestSyncUseCase(gh<_i468.SessionSyncService>()),
+    );
+    gh.factory<_i269.CurriculumUploadCubit>(
+      () => _i269.CurriculumUploadCubit(
+        gh<_i355.PickCurriculumFileUseCase>(),
+        gh<_i487.PreviewCurriculumUploadUseCase>(),
+        gh<_i9.ApplyCurriculumUploadUseCase>(),
+      ),
     );
     gh.lazySingleton<_i383.PendingSinceTracker>(
       () => _i383.PendingSinceTracker(
@@ -1298,6 +1414,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i246.IdGenerator>(),
       ),
     );
+    gh.factory<_i940.SelectContentLanguageUseCase>(
+      () => _i940.SelectContentLanguageUseCase(
+        gh<_i548.ContentLanguageService>(),
+      ),
+    );
+    gh.factory<_i725.WatchContentLanguageUseCase>(
+      () =>
+          _i725.WatchContentLanguageUseCase(gh<_i548.ContentLanguageService>()),
+    );
     gh.factory<_i497.DeleteExplorerViewUseCase>(
       () => _i497.DeleteExplorerViewUseCase(gh<_i298.SavedViewsService>()),
     );
@@ -1380,6 +1505,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i751.SessionLocalDataSource>(),
         gh<_i508.ClockService>(),
         gh<_i246.IdGenerator>(),
+      ),
+    );
+    gh.factory<_i195.ContentLanguageCubit>(
+      () => _i195.ContentLanguageCubit(
+        gh<_i725.WatchContentLanguageUseCase>(),
+        gh<_i940.SelectContentLanguageUseCase>(),
       ),
     );
     gh.factory<_i152.SettingsCubit>(

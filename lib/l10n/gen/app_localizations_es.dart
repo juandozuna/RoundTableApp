@@ -2586,6 +2586,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsNotifications => 'Notificaciones';
 
   @override
+  String get settingsContentLanguageKicker => 'Idioma del contenido';
+
+  @override
+  String get settingsContentLanguageHint =>
+      'Los valores y las preguntas se muestran en este idioma. Lo que aún no está traducido se ve en español.';
+
+  @override
   String get settingsSyncKicker => 'Sincronización';
 
   @override
@@ -5172,4 +5179,303 @@ class AppLocalizationsEs extends AppLocalizations {
   String calendarOpenTable(String table) {
     return 'Abrir la mesa $table';
   }
+
+  @override
+  String get curriculumNav => 'Currículo';
+
+  @override
+  String get curriculumTitle => 'Currículo';
+
+  @override
+  String get curriculumIntro =>
+      'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.';
+
+  @override
+  String get curriculumDeniedMessage =>
+      'Solo la administración de la plataforma puede ver y editar el currículo.';
+
+  @override
+  String curriculumLanguageBase(String name) {
+    return '$name (base)';
+  }
+
+  @override
+  String get curriculumAddLanguage => 'Agregar idioma';
+
+  @override
+  String get curriculumAddLanguageConfirm => 'Agregar';
+
+  @override
+  String get curriculumFieldLanguageName => 'Nombre del idioma';
+
+  @override
+  String get curriculumFieldLanguageNameHint => 'English';
+
+  @override
+  String get curriculumFieldLanguageCode => 'Código del idioma';
+
+  @override
+  String get curriculumFieldLanguageCodeHint => 'en';
+
+  @override
+  String get curriculumFieldLanguageCodeHelper =>
+      '2 o 3 letras minúsculas, por ejemplo en o pt.';
+
+  @override
+  String curriculumCompleteness(
+    String name,
+    int translated,
+    int total,
+    int percent,
+  ) {
+    return '$name: $translated de $total textos traducidos ($percent %)';
+  }
+
+  @override
+  String get curriculumCompletenessHint =>
+      'Lo que falta se muestra en español a quienes usan este idioma.';
+
+  @override
+  String get curriculumLanguageActive => 'Disponible en la app';
+
+  @override
+  String get curriculumLanguageHidden => 'Oculto';
+
+  @override
+  String get curriculumHideLanguage => 'Ocultar en la app';
+
+  @override
+  String get curriculumShowLanguage => 'Mostrar en la app';
+
+  @override
+  String get curriculumUpload => 'Subir currículo';
+
+  @override
+  String curriculumUploadTranslation(String name) {
+    return 'Subir traducción ($name)';
+  }
+
+  @override
+  String get curriculumExport => 'Compartir archivo del currículo';
+
+  @override
+  String curriculumExportSubject(String name) {
+    return 'Currículo ($name)';
+  }
+
+  @override
+  String curriculumModuleTitle(int number, String name) {
+    return 'Módulo $number · $name';
+  }
+
+  @override
+  String curriculumValueTitle(int number, String name) {
+    return '$number. $name';
+  }
+
+  @override
+  String curriculumValueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count valores',
+      one: '1 valor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String curriculumQuestionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count preguntas',
+      one: '1 pregunta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get curriculumUsedInSessions => 'ya se usó en sesiones';
+
+  @override
+  String get curriculumUntranslated =>
+      'Sin traducir: se muestra el texto en español.';
+
+  @override
+  String get curriculumQuestionInactive => 'desactivada';
+
+  @override
+  String get curriculumQuestionAnswered => 'con respuestas';
+
+  @override
+  String curriculumEditModule(int number) {
+    return 'Editar módulo $number';
+  }
+
+  @override
+  String curriculumEditValue(int number) {
+    return 'Editar valor $number';
+  }
+
+  @override
+  String curriculumEditQuestion(String code) {
+    return 'Editar pregunta $code';
+  }
+
+  @override
+  String get curriculumAddQuestion => 'Agregar pregunta';
+
+  @override
+  String curriculumAddQuestionTitle(String value) {
+    return 'Nueva pregunta para $value';
+  }
+
+  @override
+  String get curriculumAddQuestionConfirm => 'Agregar pregunta';
+
+  @override
+  String get curriculumSave => 'Guardar';
+
+  @override
+  String get curriculumSpanishText => 'Texto en español';
+
+  @override
+  String get curriculumFieldName => 'Nombre';
+
+  @override
+  String get curriculumFieldDescription => 'Descripción';
+
+  @override
+  String get curriculumFieldBooklet => 'Referencia del cuadernillo';
+
+  @override
+  String get curriculumFieldQuestionText => 'Texto de la pregunta';
+
+  @override
+  String get curriculumFieldQuestionCode => 'Código de la pregunta';
+
+  @override
+  String get curriculumFieldQuestionCodeHelper =>
+      'Identifica la pregunta; minúsculas, números y guion bajo. No se puede cambiar después.';
+
+  @override
+  String get curriculumFieldResponseType => 'Tipo de respuesta';
+
+  @override
+  String get curriculumFieldQuestionActive => 'Pregunta activa';
+
+  @override
+  String get curriculumFieldOrder => 'Orden';
+
+  @override
+  String get curriculumFieldStatus => 'Estado';
+
+  @override
+  String get curriculumResponseText => 'Texto';
+
+  @override
+  String get curriculumResponsePerson => 'Una persona';
+
+  @override
+  String get curriculumTypeLockedHint =>
+      'La pregunta ya tiene respuestas: no se puede cambiar su tipo.';
+
+  @override
+  String get curriculumToastSaved => 'Cambios guardados.';
+
+  @override
+  String get curriculumToastUnchanged => 'No había nada que cambiar.';
+
+  @override
+  String get curriculumToastQuestionAdded => 'Pregunta agregada.';
+
+  @override
+  String get curriculumToastLanguageAdded =>
+      'Idioma agregado. Ahora sube o escribe sus textos.';
+
+  @override
+  String get curriculumToastApplied => 'Currículo actualizado.';
+
+  @override
+  String get curriculumUploadTitle => 'Subir currículo';
+
+  @override
+  String curriculumUploadTranslationTitle(String code) {
+    return 'Subir traducción ($code)';
+  }
+
+  @override
+  String get curriculumUploadIntro =>
+      'Elige un archivo .json o .csv con los 5 módulos, los 48 valores y sus preguntas, o pega su contenido. Antes de aplicar verás qué cambia; no se guarda nada hasta que lo confirmes.';
+
+  @override
+  String get curriculumUploadTranslationIntro =>
+      'Elige un archivo .json o .csv con los textos traducidos (puede ser parcial) o pega su contenido. Antes de aplicar verás qué cambia.';
+
+  @override
+  String get curriculumPickFile => 'Elegir archivo';
+
+  @override
+  String curriculumPickedFile(String name) {
+    return 'Archivo: $name';
+  }
+
+  @override
+  String get curriculumPasteLabel => 'Contenido del archivo';
+
+  @override
+  String get curriculumPasteHint => 'Pega aquí el JSON o el CSV';
+
+  @override
+  String get curriculumReviewChanges => 'Revisar cambios';
+
+  @override
+  String get curriculumReviewTitle => 'Cambios que se aplicarían';
+
+  @override
+  String get curriculumApplyChanges => 'Aplicar cambios';
+
+  @override
+  String get curriculumNoChanges =>
+      'No hay cambios: el archivo ya coincide con lo que está guardado.';
+
+  @override
+  String get curriculumRefusedTitle => 'No se puede aplicar este archivo';
+
+  @override
+  String get curriculumDiffNew => 'nuevos';
+
+  @override
+  String get curriculumDiffChanged => 'con cambios';
+
+  @override
+  String get curriculumDiffReactivated => 'reactivadas';
+
+  @override
+  String get curriculumDiffDeactivated => 'se desactivan';
+
+  @override
+  String get curriculumDiffRemoved => 'se quitan';
+
+  @override
+  String get curriculumDiffKeptBecauseAnswered =>
+      'Tiene respuestas: se desactiva, no se borra.';
+
+  @override
+  String get curriculumDiffEmpty => '(vacío)';
+
+  @override
+  String curriculumDiffField(String field, String before, String after) {
+    return '$field: $before → $after';
+  }
+
+  @override
+  String get curriculumEntityModule => 'Módulo';
+
+  @override
+  String get curriculumEntityValue => 'Valor';
+
+  @override
+  String get curriculumEntityQuestion => 'Pregunta';
 }
