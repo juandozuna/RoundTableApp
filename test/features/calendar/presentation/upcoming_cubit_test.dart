@@ -116,6 +116,25 @@ void main() {
     },
   );
 
+  test(
+    'a failed refresh keeps the loaded sessions until the next data',
+    () async {
+      await cubit.load();
+      await emitManager();
+
+      sessions.addError(Exception('boom'));
+      await pumpEventQueue();
+      expect(cubit.state.status, UpcomingStatus.ready);
+      expect(cubit.state.visible, [central, norte]);
+
+      sessions.add(
+        UpcomingSessions(scope: UpcomingScope.manager, sessions: [central]),
+      );
+      await pumpEventQueue();
+      expect(cubit.state.visible, [central]);
+    },
+  );
+
   test('a member context is reported as unavailable', () async {
     await cubit.load();
     sessions.add(const UpcomingSessions(scope: UpcomingScope.unavailable));

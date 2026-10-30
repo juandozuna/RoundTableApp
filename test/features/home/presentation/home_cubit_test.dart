@@ -92,6 +92,24 @@ void main() {
   );
 
   blocTest<HomeCubit, HomeState>(
+    'a failed refresh keeps the loaded overview and the next data recovers',
+    build: build,
+    act: (cubit) async {
+      await cubit.load();
+      overviews.add(overview);
+      await pumpEventQueue();
+      overviews.addError(const ApiException(kind: ApiErrorKind.network));
+      await pumpEventQueue();
+      overviews.add(const HomeOverview.noContext());
+    },
+    expect: () => const [
+      HomeState(),
+      HomeState(status: HomeStatus.ready, overview: overview),
+      HomeState(status: HomeStatus.ready),
+    ],
+  );
+
+  blocTest<HomeCubit, HomeState>(
     'tracks connectivity and sync status',
     build: build,
     act: (_) {

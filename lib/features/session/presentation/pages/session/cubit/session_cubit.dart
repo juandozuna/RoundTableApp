@@ -68,6 +68,13 @@ class SessionCubit extends Cubit<SessionState> {
         _watchSession(tableId: tableId).listen(
           _onSession,
           onError: (Object error, StackTrace stackTrace) {
+            // After the first load a failed refresh is transient: keep the
+            // last view (the connection pill shows the problem) and recover
+            // on the next data.
+            if (_loaded) {
+              AppLog.warning('session', 'Live session refresh failed', error);
+              return;
+            }
             AppLog.error('session', 'Live session failed', error, stackTrace);
             emit(SessionState.failure(error));
           },
@@ -334,8 +341,7 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void _publish() {
-    if (isClosed || state is SessionFailure) return;
-    if (!_loaded) return;
+    if (isClosed || !_loaded) return;
     final view = _currentView;
     emit(
       view == null

@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/models/user_role.dart';
 import '../../../../../../core/services/connectivity/watch_connectivity_use_case.dart';
+import '../../../../../../core/services/logging/app_log.dart';
 import '../../../../../../core/services/session_context/session_context.dart';
 import '../../../../../../core/services/session_context/watch_session_context_use_case.dart';
 import '../../../../domain/use_cases/watch/watch_member_history_use_case.dart';
@@ -88,8 +89,18 @@ class ProgressCubit extends Cubit<ProgressState> {
     error: null,
   );
 
-  void _onError(Object error) =>
-      emit(state.copyWith(status: ProgressStatus.failure, error: error));
+  /// Once the history has loaded, a failed refresh keeps it on screen; the
+  /// next data replaces it.
+  void _onError(Object error) {
+    final loaded =
+        state.status == ProgressStatus.member ||
+        state.status == ProgressStatus.facilitator;
+    if (loaded) {
+      AppLog.warning('history', 'Progress refresh failed', error);
+      return;
+    }
+    emit(state.copyWith(status: ProgressStatus.failure, error: error));
+  }
 
   @override
   Future<void> close() async {
