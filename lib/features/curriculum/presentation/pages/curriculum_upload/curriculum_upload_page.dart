@@ -80,7 +80,7 @@ class _CurriculumUploadPageState extends State<CurriculumUploadPage> {
         l10n.curriculumToastApplied,
         kind: AppToastKind.success,
       );
-      context.go(_back);
+      context.canPop() ? context.pop() : context.go(_back);
     } else if (state.error != null) {
       AppToast.show(
         context,

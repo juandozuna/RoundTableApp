@@ -153,6 +153,13 @@ class CurriculumPage extends StatelessWidget {
     );
   }
 
+  /// The upload may change anything: reload when the person comes back.
+  Future<void> _openUpload(BuildContext context, String? locale) async {
+    final cubit = context.read<CurriculumCubit>();
+    await context.push<void>(CurriculumRoutes.uploadPath(locale: locale));
+    await cubit.reload();
+  }
+
   Future<void> _addLanguage(BuildContext context) async {
     final cubit = context.read<CurriculumCubit>();
     final language = await CurriculumTextDialogs.addLanguage(context);
@@ -240,9 +247,7 @@ class CurriculumPage extends StatelessWidget {
               : l10n.curriculumUploadTranslation(languageName ?? locale),
           icon: Icons.upload_file_rounded,
           fullWidth: false,
-          onPressed: online
-              ? () => context.push(CurriculumRoutes.uploadPath(locale: locale))
-              : null,
+          onPressed: online ? () => _openUpload(context, locale) : null,
         ),
         AppButton(
           label: l10n.curriculumExport,

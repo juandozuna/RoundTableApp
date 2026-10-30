@@ -26,6 +26,7 @@ export async function curriculum(browser) {
   sql("delete from curriculum_translations; delete from content_locales where not is_default");
   sql("delete from value_questions where question_code = 'e2e_extra'");
   const baseline = JSON.parse(JSON.stringify(example));
+  sql(`update curriculum_values set name = '${example.modules[0].values[0].name}' where sequence = 1`);
   const original = valueName(1);
 
   // ── Roles on the API ──
@@ -74,6 +75,8 @@ export async function curriculum(browser) {
     check('upload: the same file again has no changes', await admin.seen('No hay cambios', 20_000));
     check('upload: and offers nothing to apply', !(await admin.has('Aplicar cambios')));
     await admin.click('Cancelar', { role: 'button' });
+    await sleep(1500);
+    await admin.goto('/#/admin/curriculo');
     await admin.waitFor('Módulo 1 · Carácter');
 
     // A partial file is refused whole.
@@ -99,7 +102,7 @@ export async function curriculum(browser) {
     check('API: translations are refused for a language that does not exist yet', csvPreview.status === 404 && csvPreview.code === 'locale_not_found', JSON.stringify(csvPreview.json));
 
     // ── Edit text in the UI ──
-    await admin.click('Módulo 1 · Carácter', { role: 'button' });
+    await admin.click('Módulo 1 · Carácter');
     await admin.click('Editar valor 1', { role: 'button' });
     await admin.fill('Nombre *', 'Integridad editada');
     await admin.click('Guardar', { role: 'button', last: true });
@@ -130,14 +133,14 @@ export async function curriculum(browser) {
     await admin.click('Revisar cambios', { role: 'button' });
     check('translation: the preview lists the new texts', (await admin.seen('3 nuevos', 20_000)) && sql("select count(*) from curriculum_translations") === '0', (await admin.text()).slice(0, 600));
     await admin.click('Aplicar cambios', { role: 'button' });
-    check('translation: applied, and the completeness grows', (await admin.seen('Currículo actualizado.', 15_000)) && await admin.seen(/English: 3 de \d+ textos traducidos/, 15_000), (await admin.text()).slice(0, 400));
+    check('translation: applied, and the completeness grows', (await admin.seen('Currículo actualizado.', 15_000)) && await admin.seen(/English: 3 de \d+ textos traducidos/, 15_000), (await admin.text()).split('\n').filter((l) => /English|Módulo|traduc/.test(l)).join(' | '));
     check('server: translations stored per locale; the Spanish text is untouched',
       sql("select count(*) from curriculum_translations where locale = 'en'") === '3' && valueName(4) === 'Responsabilidad',
       sql('select entity_type, name from curriculum_translations'));
     await admin.shot('h-05-translation');
 
     // ── Edit one translated text in the UI ──
-    await admin.click('Módulo 1 · Character', { role: 'button' }).catch(() => {});
+    await admin.click('Módulo 1 · Character').catch(() => {});
     const valueNumber = Number(pendingValue);
     if (valueNumber <= 10) {
       await admin.click(`Editar valor ${valueNumber}`, { role: 'button' });
