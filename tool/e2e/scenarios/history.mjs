@@ -64,11 +64,12 @@ export async function history(browser) {
       sql(`select payload->>'completion' from audit_events where entity_id = ${SESSION} and event_type = 'session.closed' order by created_at desc limit 1`) === 'incomplete');
     check('server: the next session still follows up this value once',
       sql(`select count(*) from sessions n join sessions c on c.id = ${SESSION} where n.round_table_id = c.round_table_id and n.status = 'scheduled' and n.follow_up_value_id = c.value_id`) === '1');
+    // Another actor's change reaches an open screen on the next 30 s poll (ADR 0019).
     await scrollDown(facil);
-    check('facilitator sees the session marked "Incompleta" in the table history', await facil.seen('Incompleta', 20_000));
+    check('facilitator sees the session marked "Incompleta" in the table history', await facil.seen('Incompleta', 45_000));
     await facil.shot('h-05-incomplete-table-history');
     await scrollDown(ana);
-    check('member sees it marked "Incompleta" in their progress', await ana.seen('Incompleta', 20_000));
+    check('member sees it marked "Incompleta" in their progress', await ana.seen('Incompleta', 45_000));
     await ana.shot('h-05-incomplete-member-progress');
 
     // KPIs: the reports headline counts incomplete sessions.

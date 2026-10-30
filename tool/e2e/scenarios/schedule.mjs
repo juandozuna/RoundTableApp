@@ -125,8 +125,8 @@ export async function schedule(browser) {
     try {
       await facil.devSignIn('facil');
       await ana.devSignIn('ana');
-      check('facilitator Home marks the extraordinary session', await facil.seen('Sesión extraordinaria', 30_000), (await facil.text()).slice(0, 500));
-      check('member Home marks the extraordinary session', await ana.seen('Sesión extraordinaria', 30_000), (await ana.text()).slice(0, 500));
+      check('facilitator Home marks the extraordinary session', await facil.seen('Sesión extraordinaria', 45_000), (await facil.text()).slice(0, 500));
+      check('member Home marks the extraordinary session', await ana.seen('Sesión extraordinaria', 45_000), (await ana.text()).slice(0, 500));
       await facil.shot('s-03-home-facilitator-extra');
       await ana.shot('s-04-home-member-extra');
 
@@ -151,7 +151,7 @@ export async function schedule(browser) {
         sql(`select payload->>'reason' || ':' || (payload->>'value_advances') from audit_events where event_type = 'session.cancelled' and entity_id = '${cancelledId}' order by created_at desc limit 1`) === 'holiday:false');
       await coord.shot('s-06-after-cancel');
 
-      check('member Home explains the cancelled session', await ana.seen('Se canceló la sesión del', 30_000), (await ana.text()).slice(0, 500));
+      check('member Home explains the cancelled session', await ana.seen('Se canceló la sesión del', 45_000), (await ana.text()).slice(0, 500));
       await ana.shot('s-07-home-member-cancelled');
     } finally {
       await facil.close();
