@@ -1,6 +1,7 @@
 import '../../../../core/data/curriculum_names.dart';
 import '../../../../core/data/records/records.dart';
 import '../../../../core/models/session_status.dart';
+import '../../../../core/network/postgrest/postgrest.dart';
 import '../../domain/models/home_commitment.dart';
 import '../../domain/models/home_progress.dart';
 import '../models/home_records.dart';
@@ -25,8 +26,10 @@ abstract final class HomeTableMapper {
     return HomeTableRecord(
       tableId: table.id,
       tableName: table.name,
-      tableIsActive: table.status == 'active',
-      seats: members.where((m) => m.status == 'active').length,
+      tableIsActive: table.status == PostgrestValues.activeStatus,
+      seats: members
+          .where((m) => m.status == PostgrestValues.activeStatus)
+          .length,
       lastClosedAt: lastClosedAt,
       sessionId: pending?.id,
       sessionIsOpen: pending?.status == SessionStatus.open,
@@ -34,7 +37,8 @@ abstract final class HomeTableMapper {
       valueName: names.valueName(pending?.valueId),
       valueSequence: names.value(pending?.valueId)?.sequence,
       followUpValueName: names.valueName(pending?.followUpValueId),
-      sessionIsExtraordinary: pending?.kind == 'extraordinary',
+      sessionIsExtraordinary:
+          pending?.kind == PostgrestValues.extraordinaryKind,
       rescheduledFrom: pending?.originalScheduledAt?.toUtc(),
       cancelledNoticeFor: _cancelledSlot(sessions, after: lastClosedAt),
     );
@@ -60,7 +64,8 @@ abstract final class HomeTableMapper {
     DateTime? latest;
     for (final s in sessions) {
       if (s.status != SessionStatus.cancelled) continue;
-      if ((s.cancelledReason ?? '').startsWith('table_')) continue;
+      final reason = s.cancelledReason ?? '';
+      if (reason.startsWith(PostgrestValues.tableCancelReasonPrefix)) continue;
       final at = s.scheduledAt.toUtc();
       if (after != null && !at.isAfter(after)) continue;
       if (latest == null || at.isAfter(latest)) latest = at;

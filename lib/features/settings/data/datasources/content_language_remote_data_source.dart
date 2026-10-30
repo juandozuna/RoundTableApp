@@ -10,15 +10,17 @@ import '../../../../core/network/postgrest/postgrest.dart';
 class ContentLanguageRemoteDataSource {
   ContentLanguageRemoteDataSource(this._reads);
 
-  static const String _activeStatus = 'active';
-
   final TableReadsClient _reads;
 
   /// Active languages, the Spanish base first.
   Future<List<ContentLocaleRecord>> fetchActiveLocales() => guardApiCall(
     () => _reads.contentLocales(
       PostgrestQuery.of(
-        filters: {PostgrestColumns.status: PostgrestFilter.eq(_activeStatus)},
+        filters: {
+          PostgrestColumns.status: PostgrestFilter.eq(
+            PostgrestValues.activeStatus,
+          ),
+        },
         order: [
           PostgrestOrder.desc(PostgrestColumns.isDefault),
           PostgrestOrder.asc(PostgrestColumns.code),

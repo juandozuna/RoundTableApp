@@ -35,7 +35,9 @@ class CalendarRemoteDataSource {
       filters: {
         ...scope,
         PostgrestColumns.id: ?_eq(tableId),
-        PostgrestColumns.status: PostgrestFilter.eq('active'),
+        PostgrestColumns.status: PostgrestFilter.eq(
+          PostgrestValues.activeStatus,
+        ),
       },
       order: _byId,
     );
@@ -65,7 +67,9 @@ class CalendarRemoteDataSource {
           PostgrestColumns.role: PostgrestFilter.eq(
             UserRole.facilitator.wireValue,
           ),
-          PostgrestColumns.status: PostgrestFilter.eq('active'),
+          PostgrestColumns.status: PostgrestFilter.eq(
+            PostgrestValues.activeStatus,
+          ),
         },
         order: _byId,
       ),
@@ -122,8 +126,8 @@ class CalendarRemoteDataSource {
 
   /// A table closed or suspended cancels its pending session too; that is not
   /// a cancelled meeting worth showing.
-  static bool _isSlot(SessionRecord session) =>
-      !(session.cancelledReason ?? '').startsWith('table_');
+  static bool _isSlot(SessionRecord session) => !(session.cancelledReason ?? '')
+      .startsWith(PostgrestValues.tableCancelReasonPrefix);
 
   UpcomingSessionRecord _record(
     SessionRecord session,
@@ -141,7 +145,7 @@ class CalendarRemoteDataSource {
       status: session.status.wireValue,
       scheduledAt: session.scheduledAt.toUtc(),
       timezone: table.timezone,
-      isExtraordinary: session.kind == 'extraordinary',
+      isExtraordinary: session.kind == PostgrestValues.extraordinaryKind,
       originalScheduledAt: session.originalScheduledAt?.toUtc(),
       locationId: table.locationId,
       locationName: locationName,

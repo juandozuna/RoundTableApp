@@ -50,8 +50,8 @@ class SessionReadsRemoteDataSource {
     return value;
   }
 
-  static const Map<String, String> _active = {
-    PostgrestColumns.archivedAt: 'is.null',
+  static final Map<String, String> _active = {
+    PostgrestColumns.archivedAt: PostgrestFilter.isNull(),
   };
 
   // ------------------------------------------------------ who and where
@@ -68,7 +68,9 @@ class SessionReadsRemoteDataSource {
           PostgrestQuery.of(
             filters: {
               PostgrestColumns.authUserId: PostgrestFilter.eq(userId),
-              PostgrestColumns.status: PostgrestFilter.eq('active'),
+              PostgrestColumns.status: PostgrestFilter.eq(
+                PostgrestValues.activeStatus,
+              ),
               PostgrestColumns.roundTableId: ?(tableId == null
                   ? null
                   : PostgrestFilter.eq(tableId)),
@@ -136,7 +138,9 @@ class SessionReadsRemoteDataSource {
             PostgrestQuery.of(
               filters: {
                 PostgrestColumns.valueId: PostgrestFilter.eq(valueId),
-                PostgrestColumns.status: PostgrestFilter.eq('active'),
+                PostgrestColumns.status: PostgrestFilter.eq(
+                  PostgrestValues.activeStatus,
+                ),
               },
               order: [PostgrestOrder.asc(PostgrestColumns.sortOrder)],
             ),
@@ -230,7 +234,9 @@ class SessionReadsRemoteDataSource {
       PostgrestQuery.of(
         filters: {
           PostgrestColumns.roundTableId: PostgrestFilter.eq(tableId),
-          PostgrestColumns.status: PostgrestFilter.eq('active'),
+          PostgrestColumns.status: PostgrestFilter.eq(
+            PostgrestValues.activeStatus,
+          ),
         },
         order: [PostgrestOrder.asc(PostgrestColumns.id)],
       ),

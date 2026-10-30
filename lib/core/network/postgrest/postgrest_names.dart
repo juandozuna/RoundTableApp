@@ -62,3 +62,16 @@ abstract final class PostgrestParams {
   static const String limit = 'limit';
   static const String offset = 'offset';
 }
+
+/// Column values the reads filter or branch on.
+abstract final class PostgrestValues {
+  /// `status` of a record that is in use (tables, members, languages).
+  static const String activeStatus = 'active';
+
+  /// `sessions.kind` of a one-off session outside the weekly schedule.
+  static const String extraordinaryKind = 'extraordinary';
+
+  /// A session cancelled because its table closed or was suspended has a
+  /// `cancelled_reason` starting with this; it is not a cancelled meeting.
+  static const String tableCancelReasonPrefix = 'table_';
+}

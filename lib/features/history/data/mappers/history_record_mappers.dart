@@ -1,6 +1,7 @@
 import '../../../../core/data/curriculum_names.dart';
 import '../../../../core/data/records/records.dart';
 import '../../../../core/models/user_role.dart';
+import '../../../../core/network/postgrest/postgrest.dart';
 import '../../domain/models/history_snapshot.dart';
 
 extension SessionRecordHistoryMapper on SessionRecord {
@@ -77,7 +78,7 @@ extension TableMembersHistoryMapper on Iterable<TableMemberRecord> {
         personId: member.personId,
         name: '${member.firstName} ${member.lastName}'.trim(),
         isFacilitator: member.role == UserRole.facilitator,
-        isActive: member.status == 'active',
+        isActive: member.status == PostgrestValues.activeStatus,
       );
       final previous = byPerson[member.personId];
       if (previous == null || (entry.isActive && !previous.isActive)) {

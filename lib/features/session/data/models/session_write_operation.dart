@@ -8,6 +8,15 @@ enum SessionWriteType {
   final String wireValue;
 }
 
+/// JSON keys of the `sync-upload` request (api-contract.md §4).
+abstract final class SessionWriteKeys {
+  static const String batch = 'batch';
+  static const String op = 'op';
+  static const String type = 'type';
+  static const String id = 'id';
+  static const String opData = 'opData';
+}
+
 class SessionWriteOperation {
   const SessionWriteOperation({
     required this.type,
@@ -39,9 +48,9 @@ class SessionWriteOperation {
   final Map<String, Object?> data;
 
   Map<String, Object?> toJson() => {
-    'op': type.wireValue,
-    'type': table,
-    'id': id,
-    'opData': data,
+    SessionWriteKeys.op: type.wireValue,
+    SessionWriteKeys.type: table,
+    SessionWriteKeys.id: id,
+    SessionWriteKeys.opData: data,
   };
 }

@@ -83,7 +83,9 @@ class HomeTableRemoteDataSource {
         _client.tableMembers,
         filters: {
           ...onTable,
-          PostgrestColumns.status: PostgrestFilter.eq('active'),
+          PostgrestColumns.status: PostgrestFilter.eq(
+            PostgrestValues.activeStatus,
+          ),
         },
         order: [PostgrestOrder.asc(PostgrestColumns.id)],
       ),
