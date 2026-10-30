@@ -209,6 +209,58 @@ void main() {
       expect(modules.map((m) => m.total), [2, 1]);
     });
 
+    test('progress counts archived assessments too', () async {
+      client.seed(PostgrestTables.memberAssessments, [
+        RecordBuilders.assessment(
+          's1',
+          ana,
+          'v3',
+          7,
+          archivedAt: DateTime.utc(2026, 10, 30),
+        ),
+        RecordBuilders.assessment('s2', ana, 'v4', 6),
+      ]);
+
+      final record = await source.fetchMember(table, personId: ana);
+
+      // v3 only has an archived assessment and v4 a live one: both count.
+      expect(record.progress.modules.map((m) => m.completed), [2, 0]);
+      expect(record.progress.completed, 2);
+    });
+
+    test('the latest commitment is the newest live one', () async {
+      client.seed(PostgrestTables.memberCommitments, [
+        RecordBuilders.commitment(
+          's1',
+          ana,
+          'v3',
+          action: 'Antigua',
+          createdAt: DateTime.utc(2026, 10, 14),
+        ),
+        // Newer but listed second: only ordering picks it.
+        RecordBuilders.commitment(
+          's2',
+          ana,
+          'v4',
+          action: 'Reciente',
+          createdAt: DateTime.utc(2026, 10, 21),
+        ),
+        // The newest of all is archived and must not come back.
+        RecordBuilders.commitment(
+          's3',
+          ana,
+          'v9',
+          action: 'Archivada',
+          createdAt: DateTime.utc(2026, 10, 28),
+          archivedAt: DateTime.utc(2026, 10, 29),
+        ),
+      ]);
+
+      final record = await source.fetchMember(table, personId: ana);
+
+      expect(record.commitment?.actionText, 'Reciente');
+    });
+
     test('personal reads are scoped to the person', () async {
       await source.fetchMember(table, personId: ana);
 

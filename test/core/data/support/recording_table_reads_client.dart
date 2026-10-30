@@ -14,9 +14,10 @@ class TableRead {
 }
 
 /// In-memory [TableReadsClient]: returns the rows seeded per table (honoring
-/// `eq.` and `in.(…)` column filters like PostgREST, and `limit` and `offset`,
-/// so paging can be exercised) and records every query
-/// so tests can assert what was asked of PostgREST.
+/// `eq.`, `neq.`, `in.(…)`, `is.null`, `not.is.null` and `gt/gte/lt/lte.`
+/// column filters like PostgREST, `order` (nulls first on `desc`, last on
+/// `asc`) and `limit` and `offset`, so paging can be exercised) and records
+/// every query so tests can assert what was asked of PostgREST.
 class RecordingTableReadsClient implements TableReadsClient {
   final Map<String, List<Object>> _rows = {};
   final List<TableRead> reads = [];
@@ -40,9 +41,10 @@ class RecordingTableReadsClient implements TableReadsClient {
     reads.add(TableRead(table, query));
     final error = failure;
     if (error != null) throw error;
-    final rows = (_rows[table] ?? const <Object>[])
+    final matching = (_rows[table] ?? const <Object>[])
         .where((row) => _matches(row, query))
-        .cast<T>();
+        .toList();
+    final rows = _ordered(matching, query[PostgrestParams.order]).cast<T>();
     final offset = int.tryParse('${query[PostgrestParams.offset] ?? 0}') ?? 0;
     final limit = int.tryParse('${query[PostgrestParams.limit] ?? ''}');
     final page = rows.skip(offset);
@@ -122,21 +124,96 @@ class RecordingTableReadsClient implements TableReadsClient {
     Map<String, dynamic> query,
   ) => _read(PostgrestTables.memberCommitments, query);
 
-  /// Applies the `eq.` and `in.(…)` filters to a record's JSON; other
-  /// operators are not evaluated (the query is still recorded for asserts).
+  /// Applies the column filters to a record's JSON. `eq.` and `in.(…)` skip
+  /// columns the record does not model; the other operators read an absent
+  /// JSON key as SQL null (records omit nulls). Unknown operators are not
+  /// evaluated (the query is still recorded for asserts).
   static bool _matches(Object row, Map<String, dynamic> query) {
-    final json = (row as dynamic).toJson() as Map<String, dynamic>;
+    final json = _json(row);
     for (final MapEntry(:key, :value) in query.entries) {
-      if (value is! String || !json.containsKey(key)) continue;
-      final actual = '${json[key]}';
-      if (value.startsWith('eq.') && actual != value.substring(3)) {
-        return false;
-      }
-      if (value.startsWith('in.(') && value.endsWith(')')) {
+      if (value is! String) continue;
+      final actual = json[key];
+      final text = '$actual';
+      if (value == 'is.null') {
+        if (actual != null) return false;
+      } else if (value == 'not.is.null') {
+        if (actual == null) return false;
+      } else if (value.startsWith('eq.')) {
+        if (json.containsKey(key) && text != value.substring(3)) return false;
+      } else if (value.startsWith('in.(') && value.endsWith(')')) {
         final allowed = value.substring(4, value.length - 1).split(',');
-        if (!allowed.contains(actual)) return false;
+        if (json.containsKey(key) && !allowed.contains(text)) return false;
+      } else if (value.startsWith('neq.')) {
+        if (actual == null || text == value.substring(4)) return false;
+      } else if (_isRange(value)) {
+        if (actual == null || !_inRange(actual, value)) return false;
       }
     }
     return true;
   }
+
+  static const _rangeOperators = ['gte.', 'gt.', 'lte.', 'lt.'];
+
+  static bool _isRange(String value) => _rangeOperators.any(value.startsWith);
+
+  static bool _inRange(Object actual, String filter) {
+    final operator = _rangeOperators.firstWhere(filter.startsWith);
+    final bound = filter.substring(operator.length);
+    final order = _compare(actual, bound);
+    return switch (operator) {
+      'gte.' => order >= 0,
+      'gt.' => order > 0,
+      'lte.' => order <= 0,
+      _ => order < 0,
+    };
+  }
+
+  /// Numbers compare numerically, ISO timestamps chronologically (so
+  /// `…:00Z` and `….000Z` are equal), anything else as text.
+  static int _compare(Object a, Object b) {
+    final left = '$a';
+    final right = '$b';
+    final leftNum = num.tryParse(left);
+    final rightNum = num.tryParse(right);
+    if (leftNum != null && rightNum != null) return leftNum.compareTo(rightNum);
+    final leftTime = DateTime.tryParse(left);
+    final rightTime = DateTime.tryParse(right);
+    if (leftTime != null && rightTime != null) {
+      return leftTime.compareTo(rightTime);
+    }
+    return left.compareTo(right);
+  }
+
+  /// Sorts by the `order` terms (`column.asc|desc`, comma separated); the
+  /// sort is stable so rows equal on every term keep their seeded order.
+  static List<Object> _ordered(List<Object> rows, Object? order) {
+    if (order is! String || order.isEmpty) return rows;
+    final terms = [
+      for (final term in order.split(','))
+        (
+          column: term.substring(0, term.lastIndexOf('.')),
+          descending: term.endsWith('.desc'),
+        ),
+    ];
+    // List.sort is not stable: tie-break on the seeded position.
+    final indexed = [
+      for (var i = 0; i < rows.length; i++) (i, rows[i], _json(rows[i])),
+    ];
+    indexed.sort((a, b) {
+      for (final term in terms) {
+        final left = a.$3[term.column];
+        final right = b.$3[term.column];
+        // Postgres: nulls are the largest value (last on asc, first on desc).
+        final result = left == null || right == null
+            ? (left == null ? 1 : 0) - (right == null ? 1 : 0)
+            : _compare(left, right);
+        if (result != 0) return term.descending ? -result : result;
+      }
+      return a.$1.compareTo(b.$1);
+    });
+    return [for (final (_, row, _) in indexed) row];
+  }
+
+  static Map<String, dynamic> _json(Object row) =>
+      (row as dynamic).toJson() as Map<String, dynamic>;
 }

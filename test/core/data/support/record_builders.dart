@@ -107,6 +107,7 @@ abstract final class RecordBuilders {
     int score, {
     AssessmentKind kind = AssessmentKind.initial,
     String? justification,
+    DateTime? archivedAt,
   }) => MemberAssessmentRecord(
     id: 'as-$sessionId-$personId-${kind.wireValue}',
     organizationId: org,
@@ -117,6 +118,7 @@ abstract final class RecordBuilders {
     kind: kind,
     score: score,
     justification: justification,
+    archivedAt: archivedAt,
   );
 
   static MemberCommitmentRecord commitment(
@@ -127,6 +129,7 @@ abstract final class RecordBuilders {
     String? measure,
     CommitmentFollowUpStatus? status,
     DateTime? createdAt,
+    DateTime? archivedAt,
   }) => MemberCommitmentRecord(
     id: 'cm-$sessionId-$personId',
     organizationId: org,
@@ -138,6 +141,7 @@ abstract final class RecordBuilders {
     measureText: measure,
     followUpStatus: status,
     deviceCreatedAt: createdAt,
+    archivedAt: archivedAt,
   );
 
   static CurriculumModuleRecord module({
