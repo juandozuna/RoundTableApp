@@ -722,6 +722,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i648.ShareInviteTextUseCase>(
       () => _i648.ShareInviteTextUseCase(gh<_i245.ShareService>()),
     );
+    gh.lazySingleton<_i730.RemoteWatch>(
+      () => _i730.RemoteWatch(
+        gh<_i767.DataChangeSignal>(),
+        gh<_i83.AppLifecycleService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
     gh.factory<_i947.GetEnabledAuthMethodsUseCase>(
       () => _i947.GetEnabledAuthMethodsUseCase(gh<_i530.AuthMethodsService>()),
     );
@@ -730,12 +737,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i160.InviteAttemptsService>(
       () => _i291.InviteAttemptsServiceImpl(gh<_i508.ClockService>()),
-    );
-    gh.lazySingleton<_i730.RemoteWatch>(
-      () => _i730.RemoteWatch(
-        gh<_i767.DataChangeSignal>(),
-        gh<_i83.AppLifecycleService>(),
-      ),
     );
     gh.lazySingleton<_i1020.SyncStatusService>(
       () =>

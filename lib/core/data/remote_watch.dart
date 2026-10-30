@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../services/app_lifecycle/app_lifecycle_service.dart';
+import '../services/connectivity/connectivity_service.dart';
 import 'data_change_signal.dart';
 import 'data_scope.dart';
 
@@ -13,22 +14,25 @@ import 'data_scope.dart';
 /// Each call of [call] returns an independent single-subscription stream:
 /// - fetches on first listen and emits the result;
 /// - refetches when [DataChangeSignal] fires for one of `scopes`;
-/// - when `pollInterval` is set, refetches on that period while the app is in
-///   the foreground (polling stops in the background and a refetch runs when
-///   the app returns);
+/// - refetches when the app returns to the foreground and when the connection
+///   comes back, so a screen recovers without a tap;
+/// - when `pollInterval` is set, also refetches on that period while the app
+///   is in the foreground (polling stops in the background);
 /// - skips an emission equal to the previous one (lists, sets and maps
 ///   compare by content);
 /// - reports a failed fetch as a stream error and keeps watching, so the next
-///   trigger retries;
+///   trigger retries; the next successful fetch is always emitted, even when
+///   equal to the value before the error, so consumers see the recovery;
 /// - runs at most one fetch at a time; a trigger during a fetch queues exactly
 ///   one more run;
 /// - cancels its timer and subscriptions when the listener cancels.
 @lazySingleton
 class RemoteWatch {
-  RemoteWatch(this._signal, this._lifecycle);
+  RemoteWatch(this._signal, this._lifecycle, [this._connectivity]);
 
   final DataChangeSignal _signal;
   final AppLifecycleService _lifecycle;
+  final ConnectivityService? _connectivity;
 
   /// [scopes] null (the default) reacts to every signal; an empty set to none.
   Stream<T> call<T>(
@@ -41,6 +45,7 @@ class RemoteWatch {
       fetch: fetch,
       signal: _signal,
       lifecycle: _lifecycle,
+      connectivity: _connectivity,
       scopes: scopes,
       pollInterval: pollInterval,
       equals: equals ?? _contentEquals,
@@ -78,6 +83,7 @@ class _WatchSession<T> {
     required this.fetch,
     required this.signal,
     required this.lifecycle,
+    required this.connectivity,
     required this.scopes,
     required this.pollInterval,
     required this.equals,
@@ -88,6 +94,7 @@ class _WatchSession<T> {
   final Future<T> Function() fetch;
   final DataChangeSignal signal;
   final AppLifecycleService lifecycle;
+  final ConnectivityService? connectivity;
   final Set<DataScope>? scopes;
   final Duration? pollInterval;
   final bool Function(T previous, T next) equals;
@@ -95,6 +102,8 @@ class _WatchSession<T> {
   late final StreamController<T> _controller;
   StreamSubscription<DataScope>? _signalSubscription;
   StreamSubscription<bool>? _lifecycleSubscription;
+  StreamSubscription<bool>? _connectivitySubscription;
+  bool? _online;
   Timer? _timer;
   bool _closed = false;
   bool _fetching = false;
@@ -106,12 +115,13 @@ class _WatchSession<T> {
 
   void _start() {
     _signalSubscription = signal.changes.listen(_onSignal);
-    if (pollInterval != null) {
-      _lifecycleSubscription = lifecycle.watchForeground().listen(
-        _onForegroundChanged,
-      );
-      if (lifecycle.isForeground) _startTimer();
-    }
+    _lifecycleSubscription = lifecycle.watchForeground().listen(
+      _onForegroundChanged,
+    );
+    _connectivitySubscription = connectivity?.watchOnline().listen(
+      _onOnlineChanged,
+    );
+    if (pollInterval != null && lifecycle.isForeground) _startTimer();
     unawaited(_refresh());
   }
 
@@ -121,6 +131,7 @@ class _WatchSession<T> {
     _timer = null;
     await _signalSubscription?.cancel();
     await _lifecycleSubscription?.cancel();
+    await _connectivitySubscription?.cancel();
   }
 
   void _onSignal(DataScope scope) {
@@ -135,8 +146,14 @@ class _WatchSession<T> {
       _timer = null;
       return;
     }
-    _startTimer();
+    if (pollInterval != null) _startTimer();
     unawaited(_refresh());
+  }
+
+  void _onOnlineChanged(bool online) {
+    final reconnected = _online == false && online;
+    _online = online;
+    if (reconnected) unawaited(_refresh());
   }
 
   void _startTimer() {
@@ -160,7 +177,10 @@ class _WatchSession<T> {
         _controller.add(value);
       }
     } on Object catch (error, stackTrace) {
-      if (!_closed) _controller.addError(error, stackTrace);
+      if (!_closed) {
+        _hasValue = false;
+        _controller.addError(error, stackTrace);
+      }
     } finally {
       _fetching = false;
       if (_refetchQueued && !_closed) {

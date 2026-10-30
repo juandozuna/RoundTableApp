@@ -6,6 +6,7 @@ import 'package:gold_roundtables/core/data/data_change_signal.dart';
 import 'package:gold_roundtables/core/data/data_scope.dart';
 import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/services/app_lifecycle/app_lifecycle_service.dart';
+import 'package:gold_roundtables/core/services/connectivity/connectivity_service.dart';
 
 class FakeLifecycle implements AppLifecycleService {
   final StreamController<bool> _controller = StreamController<bool>.broadcast(
@@ -25,13 +26,38 @@ class FakeLifecycle implements AppLifecycleService {
   }
 }
 
+class FakeConnectivity implements ConnectivityService {
+  FakeConnectivity({bool online = true}) : _online = online;
+
+  final StreamController<bool> _controller = StreamController<bool>.broadcast(
+    sync: true,
+  );
+  bool _online;
+
+  @override
+  Future<bool> isOnline() async => _online;
+
+  @override
+  Stream<bool> watchOnline() async* {
+    yield _online;
+    yield* _controller.stream;
+  }
+
+  void setOnline(bool value) {
+    _online = value;
+    _controller.add(value);
+  }
+}
+
 class Harness {
-  Harness() {
-    watch = RemoteWatch(signal, lifecycle);
+  Harness({bool online = true})
+    : connectivity = FakeConnectivity(online: online) {
+    watch = RemoteWatch(signal, lifecycle, connectivity);
   }
 
   final DataChangeSignal signal = DataChangeSignal();
   final FakeLifecycle lifecycle = FakeLifecycle();
+  final FakeConnectivity connectivity;
   late final RemoteWatch watch;
   final List<Object?> values = [];
   final List<Object> errors = [];
@@ -184,6 +210,26 @@ void main() {
     });
   });
 
+  test('emits a value equal to the one before an error as the recovery', () {
+    fakeAsync((async) {
+      final h = Harness();
+      final sub = h.listen(
+        h.watch(() async {
+          h.fetches++;
+          if (h.fetches == 2) throw StateError('offline');
+          return 'A';
+        }, pollInterval: poll),
+      );
+      async.flushMicrotasks();
+      async.elapse(poll);
+      expect(h.errors, hasLength(1));
+
+      async.elapse(poll);
+      expect(h.values, ['A', 'A']);
+      sub.cancel();
+    });
+  });
+
   test('a failed first fetch is retried by the next signal', () {
     fakeAsync((async) {
       final h = Harness();
@@ -222,6 +268,53 @@ void main() {
 
       async.elapse(poll);
       expect(h.fetches, 3);
+      sub.cancel();
+    });
+  });
+
+  test('refetches on return to the foreground without a poll interval', () {
+    fakeAsync((async) {
+      final h = Harness();
+      final sub = h.listen(h.watch(() async => ++h.fetches));
+      async.flushMicrotasks();
+
+      h.lifecycle.setForeground(false);
+      async.flushMicrotasks();
+      expect(h.fetches, 1);
+
+      h.lifecycle.setForeground(true);
+      async.flushMicrotasks();
+      expect(h.values, [1, 2]);
+      async.elapse(poll * 5);
+      expect(h.fetches, 2);
+      sub.cancel();
+    });
+  });
+
+  test('refetches when the connection comes back', () {
+    fakeAsync((async) {
+      final h = Harness();
+      final sub = h.listen(h.watch(() async => ++h.fetches));
+      async.flushMicrotasks();
+
+      h.connectivity.setOnline(false);
+      async.flushMicrotasks();
+      expect(h.fetches, 1);
+
+      h.connectivity.setOnline(true);
+      async.flushMicrotasks();
+      expect(h.values, [1, 2]);
+      sub.cancel();
+    });
+  });
+
+  test('does not refetch for the initial online state', () {
+    fakeAsync((async) {
+      final h = Harness();
+      final sub = h.listen(h.watch(() async => ++h.fetches));
+      async.flushMicrotasks();
+
+      expect(h.fetches, 1);
       sub.cancel();
     });
   });
