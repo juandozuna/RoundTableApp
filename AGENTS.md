@@ -10,9 +10,10 @@ in [docs/adr](docs/adr/README.md). Requirements live in the RoundTables Obsidian
 - Backend: Supabase — Postgres + RLS, Auth, Edge Functions (TypeScript), pg_cron (ADR 0002).
 - Sign-in: email + password in production (ADR 0018); Google, Apple and Facebook stay implemented
   behind `AUTH_METHODS` (ADR 0007); no phone/SMS login.
-- Offline-first only for the session domain; administration, invites and KPI dashboards are
-  documented online-only exceptions (ADR 0003).
-- Local persistence and sync: PowerSync + Drift on mobile and web (ADR 0004).
+- Online only for now (ADR 0019, which supersedes ADR 0004 and amends ADR 0003): every read and
+  write goes to Supabase, there is no local database and no PowerSync. The session domain is
+  designed to become offline-first again with an own outbox (Drift + SQLite + a queue replayed to
+  `sync-upload`); keep its seams (UUID-keyed operation batches, domain service contracts).
 - Remote access: `supabase_flutter` for Auth only; Retrofit → Edge Functions for uploads and admin
   writes; Retrofit → PostgREST for online reads (ADR 0008).
 - Push: Firebase Cloud Messaging (ADR 0009).
@@ -39,9 +40,9 @@ Widget
     → Use case
       → Domain service contract
         → Data service implementation
-          → Local data source (Drift over the PowerSync database)
           → Remote data source
-            → Retrofit client
+            → Retrofit client (PostgREST reads, Edge Function writes)
+          → Local data source (future offline outbox, ADR 0019; none today)
 ```
 
 Distinguish runtime flow from source-code dependencies:
@@ -50,7 +51,7 @@ Distinguish runtime flow from source-code dependencies:
 - Domain does not depend on presentation or data implementations.
 - The application composition root connects contracts to implementations.
 
-The domain layer must remain independent of Flutter, Drift, PowerSync, Supabase, Dio, Retrofit,
+The domain layer must remain independent of Flutter, Supabase, Dio, Retrofit, any future local database,
 and platform plugins.
 
 Do not create repository interfaces or repository implementations. This architecture uses domain
@@ -68,7 +69,7 @@ lib/
     gen/                    Generated asset references
     models/                 Genuinely shared models
     network/                Shared HTTP (Dio, interceptors) and connectivity infrastructure
-    sync/                   PowerSync database, connector, sync status
+    sync/                   Connectivity and sync status (no database; future outbox)
     object_storage/         Shared storage infrastructure
     routing/                Router composition and transition helpers
     services/               Cross-cutting service abstractions and implementations
@@ -124,8 +125,6 @@ test/
 supabase/
   migrations/               SQL schema, RLS policies, constraints, rollups
   functions/                Edge Functions (TypeScript)
-powersync/
-  sync-rules.yaml           PowerSync sync rules (part of the security perimeter)
 ```
 
 Keep small features small. Do not create empty abstractions or speculative infrastructure merely
@@ -138,7 +137,8 @@ to fill this tree.
 - json_serializable for JSON serialization.
 - GetIt and injectable for dependency injection.
 - Dio and Retrofit for HTTP.
-- PowerSync for replication; Drift (drift_sqlite_async) for typed queries and reactive watches.
+- No local database today (PowerSync and Drift removed, ADR 0019). A future offline outbox adds
+  Drift on SQLite under the same domain contracts.
 - supabase_flutter for authentication only.
 - firebase_messaging for push.
 - go_router for navigation.
@@ -197,7 +197,7 @@ Each use case represents exactly one action.
 - Exactly one use case per file, one public `call(...)` entry point.
 - Group related use cases by area under `domain/use_cases/`.
 - Depend on a domain service contract or another use case.
-- Do not depend on a repository, data source, Retrofit client, Drift/PowerSync database, or
+- Do not depend on a repository, data source, Retrofit client, local database, or
   concrete data service implementation.
 - Do not place unrelated helpers or mappers inside use-case files.
 
@@ -211,68 +211,70 @@ harmful. Keep it narrow and document its rationale next to the dependency.
 ## 7. Domain service contracts
 
 Define abstract service contracts in `domain/services/`. A contract describes what a capability
-does, without exposing infrastructure details (e.g. a stream of locally available sessions,
-recording attendance, submitting a score, observing pending-sync state).
+does, without exposing infrastructure details (e.g. a stream of a table's sessions,
+recording attendance, submitting a score, observing connectivity).
 
-Its public interface must not expose Drift tables or row types, SQL, PowerSync types, Dio
+Its public interface must not expose database tables or row types, SQL, Dio
 responses or exceptions, Retrofit clients, Supabase types, or platform-plugin types.
 
 Keep each contract focused on one capability. The implementation belongs in `data/services/` and
 implements the domain contract.
 
-## 8. Offline-first data flow (session domain)
+## 8. Session domain data flow (online now, offline-ready seams)
 
 The session domain (attendance, follow-up score, reflection answers, current score, commitment)
-is offline-first. The local database supplies application data; the server synchronizes it.
-
-PowerSync owns replication (ADR 0004). This replaces the hand-written `isSynced` /
-merge-on-refresh orchestration:
-
-Entity creation and writes:
-1. Generate a UUID on the device.
-2. Write locally through the Drift local data source, in a transaction for related rows.
-3. Set `lastModified` / `device_created_at`.
-4. The change is published through the existing Drift watch stream.
-5. PowerSync queues the CRUD operation; pending state is read from PowerSync's queue and sync
-   status, exposed through a domain contract — never as a widget concern.
-6. When online, the PowerSync connector's `uploadData` calls the service implementation, which
-   sends the batch through the remote data source (Retrofit → `sync-upload` Edge Function).
-7. The server keeps the same entity ID; uploads are idempotent by UUID.
+is online only for now (ADR 0019). The server is the only copy; nothing is cached on disk or
+queued. The design keeps the seams an offline outbox needs later.
 
 Reads:
-- Return local data or a local watch stream immediately; PowerSync downloads server changes and
-  the Drift watch stream emits them. Do not make the UI poll or reload after writes.
+- Remote data sources read through Retrofit → PostgREST under the user's JWT; RLS is the access
+  control. Services expose them as `Future`s or `Stream`s through domain contracts.
+- Live screens (lobby, stages, roster) poll about every 5 seconds while visible and refetch right
+  after the user's own writes. Cancel the timer with the Cubit subscription. No Supabase Realtime.
 
-Conflict protection:
-- A download must not overwrite local changes that are still waiting to upload.
+Writes:
+1. Generate a UUID on the device for every new entity.
+2. Build the operation batch (op, table, UUID, data) in the data service.
+3. Send it immediately through the remote data source (Retrofit → `sync-upload` Edge Function).
+   Uploads are idempotent by UUID, so a retry is safe.
+4. Refetch the affected data after the response; map per-op rejections to domain failures.
+
+Offline:
+- No connection is an explicit state: the app shows the offline state, refuses the write with a
+  plain localized message, keeps the user's typed input in the form and queues nothing.
+- Never swallow a failed write; the failure reaches the Cubit state and the user.
+
+Server rules (unchanged):
 - Late answers are accepted and flagged `synced_late`; a member's submission marks them present
   (ADR 0005).
-- Keep sync and conflict policy in domain rules, data orchestration and the Edge Function — away
-  from widgets.
+- Keep conflict policy in domain rules, data orchestration and the Edge Function — away from
+  widgets.
 
-Live-server-authoritative exceptions (documented in ADR 0003): administration (organizations,
-locations, tables, users, roles), invites, and KPI dashboards. They call the server through remote
-data sources and show an explicit offline state. Do not silently extend these exceptions to other
-features.
+Future offline outbox (not built; ADR 0019): Drift tables mirroring `lib/core/data/records`, an
+outbox table of operation batches written with the local change, replay to `sync-upload` in order,
+incremental pull by `updated_at` that never overwrites rows with a pending batch. It plugs in as
+the local data source behind the existing service contracts; Cubits and use cases do not change.
+
+Administration (organizations, locations, tables, users, roles), invites and KPI dashboards were
+already live-server-authoritative (ADR 0003) and behave the same way.
 
 ## 9. Data-layer responsibilities
 
 Remote data source:
 - Calls the feature's Retrofit client (Edge Functions or PostgREST, ADR 0008).
-- Does not access Drift or PowerSync.
+- Does not access any local database.
 
-Local data source:
-- Reads and writes Drift over the PowerSync database.
-- Exposes reactive list/detail queries with `watch()`.
+Local data source (future, ADR 0019; none exists today):
+- Would read and write the offline outbox and cached rows in Drift/SQLite and expose reactive
+  queries with `watch()`.
 - Does not make network requests.
 
 Service implementation:
 - Implements the domain service contract.
 - Coordinates local and remote data sources; only it coordinates both.
 
-Keep Drift↔domain mapping on focused entity extensions such as `toModel()` and `toDrift()`.
-Keep database migrations, PowerSync sync rules, seeding and rollback paths documented and tested
-when changed.
+Keep record↔domain mapping on focused entity extensions such as `toModel()`.
+Keep database migrations, seeding and rollback paths documented and tested when changed.
 
 ## 10. Models and serialization
 
@@ -408,13 +410,13 @@ Do not claim implementation is complete until the application is proven to build
    `flutter build web`).
 6. Launch the app and confirm startup completes with no GetIt errors.
 7. Verify the changed user flow, including exit/back behavior.
-8. For Supabase changes: test RLS and PowerSync sync rules per role, so no cross-tenant read is
-   possible.
+8. For Supabase changes: test RLS per role (pgTAP and PostgREST reads signed in as each role in
+   `tool/e2e`), so no cross-tenant read is possible. There are no sync rules.
 9. Update Graphify last when the project uses it.
 
-Test meaningful behavior: use-case and service contracts, local persistence and reactive emissions,
-protection of pending local changes, sync success and failure, late-sync flagging, migrations,
-navigation, and platform integrations with fakes or mocks.
+Test meaningful behavior: use-case and service contracts, polling and refetch after writes, write
+success and failure including the offline refusal, late-sync flagging, migrations, navigation, and
+platform integrations with fakes or mocks.
 
 If a required check cannot run, state exactly what remains unverified.
 
