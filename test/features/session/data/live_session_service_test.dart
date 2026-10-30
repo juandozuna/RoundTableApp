@@ -10,6 +10,7 @@ import 'package:gold_roundtables/features/session/domain/models/live_session.dar
 import 'package:gold_roundtables/features/session/domain/models/value_question.dart';
 
 import '../../../core/data/support/online_data_stubs.dart';
+import '../../settings/support/stub_selected_language.dart';
 import '../support/fake_session_reads.dart';
 import '../support/fixed_clock.dart';
 import '../support/session_fixture.dart';
@@ -26,7 +27,7 @@ void main() {
     harness = WatchHarness();
     live = LiveSessionServiceImpl(
       reads,
-      StubContentLanguageService(),
+      StubSelectedLanguage(),
       harness.watch,
       clock,
     );

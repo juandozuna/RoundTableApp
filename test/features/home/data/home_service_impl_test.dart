@@ -18,6 +18,7 @@ import 'package:gold_roundtables/features/home/domain/models/home_table_alert.da
 import 'package:mocktail/mocktail.dart';
 
 import '../../../core/data/support/online_data_stubs.dart';
+import '../../settings/support/stub_selected_language.dart';
 
 class _MockTables extends Mock implements HomeTableRemoteDataSource {}
 
@@ -63,14 +64,14 @@ void main() {
 
   late _MockTables tables;
   late _MockRemote remote;
-  late StubContentLanguageService language;
+  late StubSelectedLanguage language;
   late WatchHarness harness;
   late HomeServiceImpl service;
 
   setUp(() {
     tables = _MockTables();
     remote = _MockRemote();
-    language = StubContentLanguageService();
+    language = StubSelectedLanguage();
     harness = WatchHarness();
     service = HomeServiceImpl(
       tables,

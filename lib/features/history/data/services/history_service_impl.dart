@@ -2,9 +2,8 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/data_scope.dart';
 import '../../../../core/data/remote_watch.dart';
-import '../../../../core/services/logging/app_log.dart';
 import '../../../settings/domain/models/content_language.dart';
-import '../../../settings/domain/services/content_language_service.dart';
+import '../../../settings/domain/services/selected_content_language_service.dart';
 import '../../domain/models/history_builder.dart';
 import '../../domain/models/member_history.dart';
 import '../../domain/models/table_history.dart';
@@ -19,7 +18,7 @@ class HistoryServiceImpl implements HistoryService {
   HistoryServiceImpl(this._remote, this._language, this._watch);
 
   final HistoryRemoteDataSource _remote;
-  final ContentLanguageService _language;
+  final SelectedContentLanguageService _language;
   final RemoteWatch _watch;
 
   static const Set<DataScope> _scopes = {
@@ -56,15 +55,10 @@ class HistoryServiceImpl implements HistoryService {
         scopes: _scopes,
       );
 
-  /// The chosen content language, or null for the Spanish base text (also
-  /// when the choice cannot be read, so the history still shows).
+  /// The chosen content language, or null for the Spanish base text. Read
+  /// from the device, so a failed language list never changes it.
   Future<String?> _translationLocale() async {
-    try {
-      final selected = (await _language.watch().first).selected;
-      return selected == ContentLanguageChoice.baseCode ? null : selected;
-    } on Object catch (error) {
-      AppLog.warning('history', 'Content language unreadable; Spanish', error);
-      return null;
-    }
+    final selected = await _language.readCode();
+    return selected == ContentLanguageChoice.baseCode ? null : selected;
   }
 }

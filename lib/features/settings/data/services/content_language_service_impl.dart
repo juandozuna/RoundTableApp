@@ -2,7 +2,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/data_change_signal.dart';
 import '../../../../core/data/data_scope.dart';
+import '../../../../core/data/records/records.dart';
 import '../../../../core/data/remote_watch.dart';
+import '../../../../core/services/logging/app_log.dart';
 import '../../domain/models/content_language.dart';
 import '../../domain/services/content_language_service.dart';
 import '../datasources/content_language_local_data_source.dart';
@@ -21,6 +23,7 @@ class ContentLanguageServiceImpl implements ContentLanguageService {
   final ContentLanguageLocalDataSource _local;
   final RemoteWatch _watch;
   final DataChangeSignal _signal;
+  List<ContentLanguage> _lastAvailable = const [];
 
   @override
   Stream<ContentLanguageChoice> watch() =>
@@ -33,8 +36,19 @@ class ContentLanguageServiceImpl implements ContentLanguageService {
   }
 
   Future<ContentLanguageChoice> _load() async {
-    final records = await _remote.fetchActiveLocales();
     final stored = await _local.readSelected();
+    final List<ContentLocaleRecord> records;
+    try {
+      records = await _remote.fetchActiveLocales();
+    } on Object catch (error) {
+      // The stored choice stands without the list, and the languages offered
+      // earlier stay selectable; the list is checked again on the next load.
+      AppLog.warning('settings', 'Content languages unavailable', error);
+      return ContentLanguageChoice(
+        available: _lastAvailable,
+        selected: stored ?? ContentLanguageChoice.baseCode,
+      );
+    }
     final available = [
       for (final record in records)
         ContentLanguage(
@@ -43,6 +57,7 @@ class ContentLanguageServiceImpl implements ContentLanguageService {
           isBase: record.isDefault,
         ),
     ];
+    _lastAvailable = available;
     // A stored language the curriculum does not offer is shown in Spanish.
     final selected = available.any((l) => l.code == stored)
         ? stored!

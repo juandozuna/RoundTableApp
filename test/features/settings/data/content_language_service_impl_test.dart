@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gold_roundtables/core/data/data_change_signal.dart';
+import 'package:gold_roundtables/core/data/data_scope.dart';
 import 'package:gold_roundtables/core/data/records/records.dart';
 import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/network/postgrest/postgrest.dart';
@@ -105,9 +106,36 @@ void main() {
     await subscription.cancel();
   });
 
-  test('a failed read is a stream error, not an empty list', () async {
+  test('a failed list keeps the stored choice, with no languages', () async {
+    await local.saveSelected('en');
     when(() => reads.contentLocales(any())).thenThrow(StateError('offline'));
 
-    await expectLater(service.watch(), emitsError(isA<StateError>()));
+    final choice = await service.watch().first;
+
+    expect(choice.selected, 'en');
+    expect(choice.available, isEmpty);
+    expect(choice.canChoose, isFalse);
+  });
+
+  test('a failed refresh keeps the languages loaded earlier', () async {
+    final signal = DataChangeSignal();
+    service = ContentLanguageServiceImpl(
+      ContentLanguageRemoteDataSource(reads),
+      local,
+      RemoteWatch(signal, _Foreground()),
+      signal,
+    );
+    final choices = <ContentLanguageChoice>[];
+    final subscription = service.watch().listen(choices.add);
+    await pumpEventQueue();
+    await local.saveSelected('en');
+    when(() => reads.contentLocales(any())).thenThrow(StateError('offline'));
+
+    signal.notify(DataScope.contentLanguage);
+    await pumpEventQueue();
+
+    expect(choices.last.selected, 'en');
+    expect(choices.last.available.map((l) => l.code), ['es', 'en']);
+    await subscription.cancel();
   });
 }

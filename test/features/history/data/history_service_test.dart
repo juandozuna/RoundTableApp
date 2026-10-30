@@ -13,6 +13,7 @@ import 'package:gold_roundtables/features/history/domain/models/member_history.d
 import '../../../core/data/support/online_data_stubs.dart';
 import '../../../core/data/support/record_builders.dart';
 import '../../../core/data/support/recording_table_reads_client.dart';
+import '../../settings/support/stub_selected_language.dart';
 
 /// History read through PostgREST: what the server holds for the table, the
 /// filters sent, and when it refetches.
@@ -25,7 +26,7 @@ void main() {
   final week4 = DateTime.utc(2026, 10, 29, 23);
 
   late RecordingTableReadsClient client;
-  late StubContentLanguageService language;
+  late StubSelectedLanguage language;
   late WatchHarness harness;
   late HistoryServiceImpl history;
 
@@ -81,7 +82,7 @@ void main() {
           status: CommitmentFollowUpStatus.kept,
         ),
       ]);
-    language = StubContentLanguageService();
+    language = StubSelectedLanguage();
     harness = WatchHarness();
     history = HistoryServiceImpl(
       HistoryRemoteDataSource(client, CurriculumNamesReader(client)),
@@ -212,16 +213,6 @@ void main() {
             .filter(PostgrestColumns.locale),
         'eq.en',
       );
-    });
-
-    test('an unreadable choice falls back to the Spanish text', () async {
-      language.unreadable = true;
-
-      final result = await history
-          .watchMemberHistory(tableId: table, personId: ana)
-          .first;
-
-      expect(result.values.single.name, 'Honestidad');
     });
   });
 

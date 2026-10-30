@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/data/data_scope.dart';
@@ -9,7 +7,7 @@ import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/session_status.dart';
 import '../../../../core/services/clock/clock_service.dart';
 import '../../../settings/domain/models/content_language.dart';
-import '../../../settings/domain/services/content_language_service.dart';
+import '../../../settings/domain/services/selected_content_language_service.dart';
 import '../../domain/models/live_session.dart';
 import '../../domain/models/today_session_selector.dart';
 import '../../domain/services/live_session_service.dart';
@@ -33,30 +31,20 @@ class LiveSessionServiceImpl implements LiveSessionService {
   static const Duration pollInterval = Duration(seconds: 5);
 
   final SessionReadsRemoteDataSource _reads;
-  final ContentLanguageService _contentLanguage;
+  final SelectedContentLanguageService _contentLanguage;
   final RemoteWatch _watch;
   final ClockService _clock;
 
   @override
   Stream<LiveSession?> watch({String? tableId}) async* {
-    // One subscription for the whole watch: asking the service on every poll
-    // would read the language list from the server each time.
-    final language = _SelectedLanguage(_contentLanguage.watch());
-    try {
-      yield* _watch<LiveSession?>(
-        () => _load(tableId, language),
-        scopes: const {DataScope.session, DataScope.contentLanguage},
-        pollInterval: pollInterval,
-      );
-    } finally {
-      await language.cancel();
-    }
+    yield* _watch<LiveSession?>(
+      () => _load(tableId),
+      scopes: const {DataScope.session, DataScope.contentLanguage},
+      pollInterval: pollInterval,
+    );
   }
 
-  Future<LiveSession?> _load(
-    String? tableId,
-    _SelectedLanguage language,
-  ) async {
+  Future<LiveSession?> _load(String? tableId) async {
     final now = _clock.nowUtc();
     final membership = await _reads.myMembership(tableId: tableId);
     if (membership == null) return null;
@@ -97,7 +85,7 @@ class LiveSessionServiceImpl implements LiveSessionService {
     ).waitUnwrapped;
 
     final text = await _curriculumText(
-      locale: await language.code(),
+      locale: await _contentLanguage.readCode(),
       valueIds: values.keys,
       questionIds: [for (final q in questions) q.id],
     );
@@ -175,36 +163,4 @@ class LiveSessionServiceImpl implements LiveSessionService {
       ),
     );
   }
-}
-
-/// The content language code in use, following the service's stream. Falls
-/// back to the Spanish base text while the choice is unknown (the language
-/// list could not be read).
-class _SelectedLanguage {
-  _SelectedLanguage(Stream<ContentLanguageChoice> choices) {
-    _subscription = choices.listen(
-      (choice) {
-        _code = choice.selected;
-        if (!_first.isCompleted) _first.complete();
-      },
-      onError: (Object _) {
-        if (!_first.isCompleted) _first.complete();
-      },
-    );
-  }
-
-  static const Duration _wait = Duration(seconds: 3);
-
-  final Completer<void> _first = Completer<void>();
-  late final StreamSubscription<ContentLanguageChoice> _subscription;
-  String _code = ContentLanguageChoice.baseCode;
-
-  Future<String> code() async {
-    if (!_first.isCompleted) {
-      await _first.future.timeout(_wait, onTimeout: () {});
-    }
-    return _code;
-  }
-
-  Future<void> cancel() => _subscription.cancel();
 }

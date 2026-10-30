@@ -466,10 +466,14 @@ import '../../features/settings/data/services/content_language_service_impl.dart
     as _i973;
 import '../../features/settings/data/services/profile_service_impl.dart'
     as _i945;
+import '../../features/settings/data/services/selected_content_language_service_impl.dart'
+    as _i840;
 import '../../features/settings/domain/services/app_info_service.dart' as _i483;
 import '../../features/settings/domain/services/content_language_service.dart'
     as _i548;
 import '../../features/settings/domain/services/profile_service.dart' as _i895;
+import '../../features/settings/domain/services/selected_content_language_service.dart'
+    as _i193;
 import '../../features/settings/domain/services/sign_out_service.dart' as _i428;
 import '../../features/settings/domain/use_cases/account/sign_out_use_case.dart'
     as _i185;
@@ -707,6 +711,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i200.OpenWhatsAppUseCase>(
       () => _i200.OpenWhatsAppUseCase(gh<_i162.ExternalLinkService>()),
     );
+    gh.lazySingleton<_i193.SelectedContentLanguageService>(
+      () => _i840.SelectedContentLanguageServiceImpl(
+        gh<_i263.ContentLanguageLocalDataSource>(),
+      ),
+    );
     gh.factory<_i492.SignInWithProviderUseCase>(
       () => _i492.SignInWithProviderUseCase(
         gh<_i59.AuthService>(),
@@ -907,15 +916,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i767.DataChangeSignal>(),
       ),
     );
-    gh.lazySingleton<_i677.HomeService>(
-      () => _i481.HomeServiceImpl(
-        gh<_i788.HomeTableRemoteDataSource>(),
-        gh<_i362.HomeRemoteDataSource>(),
-        gh<_i548.ContentLanguageService>(),
-        gh<_i508.ClockService>(),
-        gh<_i730.RemoteWatch>(),
-      ),
-    );
     gh.lazySingleton<_i625.AuditRemoteDataSource>(
       () => _i625.AuditRemoteDataSource(gh<_i800.AuditClient>()),
     );
@@ -938,20 +938,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i17.WatchConnectivityUseCase>(),
         gh<_i349.SignOutUseCase>(),
         gh<_i411.SignOutAndEraseLocalDataUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i530.LiveSessionService>(
-      () => _i635.LiveSessionServiceImpl(
-        gh<_i302.SessionReadsRemoteDataSource>(),
-        gh<_i548.ContentLanguageService>(),
-        gh<_i730.RemoteWatch>(),
-        gh<_i508.ClockService>(),
-      ),
-    );
-    gh.factory<_i246.WatchHomeOverviewUseCase>(
-      () => _i246.WatchHomeOverviewUseCase(
-        gh<_i434.WatchSessionContextUseCase>(),
-        gh<_i677.HomeService>(),
       ),
     );
     gh.lazySingleton<_i1010.AdminInvitesClient>(
@@ -1012,13 +998,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i625.SessionControlClient>(),
       ),
     );
-    gh.lazySingleton<_i346.HistoryService>(
-      () => _i971.HistoryServiceImpl(
-        gh<_i830.HistoryRemoteDataSource>(),
-        gh<_i548.ContentLanguageService>(),
-        gh<_i730.RemoteWatch>(),
-      ),
-    );
     gh.lazySingleton<_i817.SessionWriteGateway>(
       () => _i817.SessionWriteGateway(
         gh<_i215.SessionRemoteDataSource>(),
@@ -1044,9 +1023,24 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i947.GetEnabledAuthMethodsUseCase>(),
       ),
     );
+    gh.lazySingleton<_i530.LiveSessionService>(
+      () => _i635.LiveSessionServiceImpl(
+        gh<_i302.SessionReadsRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i730.RemoteWatch>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
     gh.lazySingleton<_i838.InviteDirectoryService>(
       () => _i526.InviteDirectoryServiceImpl(
         gh<_i558.InviteDirectoryRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i346.HistoryService>(
+      () => _i971.HistoryServiceImpl(
+        gh<_i830.HistoryRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i730.RemoteWatch>(),
       ),
     );
     gh.factory<_i940.SelectContentLanguageUseCase>(
@@ -1130,6 +1124,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i747.WatchMemberHistoryUseCase>(),
         gh<_i115.WatchTableHistoryUseCase>(),
         gh<_i17.WatchConnectivityUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i677.HomeService>(
+      () => _i481.HomeServiceImpl(
+        gh<_i788.HomeTableRemoteDataSource>(),
+        gh<_i362.HomeRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i508.ClockService>(),
+        gh<_i730.RemoteWatch>(),
       ),
     );
     gh.lazySingleton<_i1045.AdminManagementService>(
@@ -1232,13 +1235,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i940.SelectContentLanguageUseCase>(),
       ),
     );
-    gh.factory<_i275.HomeCubit>(
-      () => _i275.HomeCubit(
-        gh<_i246.WatchHomeOverviewUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-        gh<_i318.WatchSyncStatusUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i728.SessionControlService>(
       () => _i260.SessionControlServiceImpl(
         gh<_i215.SessionRemoteDataSource>(),
@@ -1289,6 +1285,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i126.CloseAnswersUseCase>(),
         gh<_i995.CloseSessionUseCase>(),
         gh<_i659.RequestSyncUseCase>(),
+      ),
+    );
+    gh.factory<_i246.WatchHomeOverviewUseCase>(
+      () => _i246.WatchHomeOverviewUseCase(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i677.HomeService>(),
       ),
     );
     gh.lazySingleton<_i705.AdminScopeService>(
@@ -1540,6 +1542,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i131.MemberDetailCubit(
         gh<_i2.LoadMemberDetailUseCase>(),
         gh<_i303.RevealMemberAnswersUseCase>(),
+      ),
+    );
+    gh.factory<_i275.HomeCubit>(
+      () => _i275.HomeCubit(
+        gh<_i246.WatchHomeOverviewUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i318.WatchSyncStatusUseCase>(),
       ),
     );
     gh.factory<_i269.CurriculumUploadCubit>(

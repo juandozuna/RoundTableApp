@@ -5,10 +5,9 @@ import '../../../../core/data/remote_watch.dart';
 import '../../../../core/data/wait_unwrapped.dart';
 import '../../../../core/models/user_role.dart';
 import '../../../../core/services/clock/clock_service.dart';
-import '../../../../core/services/logging/app_log.dart';
 import '../../../../core/services/session_context/session_context.dart';
 import '../../../settings/domain/models/content_language.dart';
-import '../../../settings/domain/services/content_language_service.dart';
+import '../../../settings/domain/services/selected_content_language_service.dart';
 import '../../domain/models/home_overview.dart';
 import '../../domain/models/home_session.dart';
 import '../../domain/models/table_health_rule.dart';
@@ -32,7 +31,7 @@ class HomeServiceImpl implements HomeService {
 
   final HomeTableRemoteDataSource _tables;
   final HomeRemoteDataSource _remote;
-  final ContentLanguageService _language;
+  final SelectedContentLanguageService _language;
   final ClockService _clock;
   final RemoteWatch _watch;
 
@@ -93,16 +92,11 @@ class HomeServiceImpl implements HomeService {
     );
   }
 
-  /// The chosen content language, or null for the Spanish base text (also
-  /// when the choice cannot be read, so the home still shows).
+  /// The chosen content language, or null for the Spanish base text. Read
+  /// from the device, so a failed language list never changes it.
   Future<String?> _translationLocale() async {
-    try {
-      final selected = (await _language.watch().first).selected;
-      return selected == ContentLanguageChoice.baseCode ? null : selected;
-    } on Object catch (error) {
-      AppLog.warning('home', 'Content language unreadable; Spanish', error);
-      return null;
-    }
+    final selected = await _language.readCode();
+    return selected == ContentLanguageChoice.baseCode ? null : selected;
   }
 
   HomeOverview _toMember(SessionContext context, HomeMemberRecord record) =>

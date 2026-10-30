@@ -5,6 +5,7 @@ import 'package:gold_roundtables/features/session/data/services/live_session_ser
 import 'package:gold_roundtables/features/session/domain/models/live_session.dart';
 
 import '../../../core/data/support/online_data_stubs.dart';
+import '../../settings/support/stub_selected_language.dart';
 import '../support/fake_session_reads.dart';
 import '../support/fixed_clock.dart';
 import '../support/session_fixture.dart';
@@ -30,11 +31,11 @@ CurriculumTranslationRecord _translation(
 /// device, falling back to the Spanish base text field by field.
 void main() {
   late FakeSessionReads reads;
-  late StubContentLanguageService language;
+  late StubSelectedLanguage language;
 
   setUp(() {
     reads = SessionFixture.seed(FakeSessionReads());
-    language = StubContentLanguageService();
+    language = StubSelectedLanguage();
     reads.translationRecords.addAll([
       _translation(
         CurriculumText.valueType,
@@ -95,13 +96,6 @@ void main() {
   test('the Spanish base text reads no translations', () async {
     final shown = await session();
     expect(shown.value.name, 'Responsabilidad');
-  });
-
-  test('a language list that cannot be read shows Spanish', () async {
-    language
-      ..selected = 'en'
-      ..unreadable = true;
-    expect((await session()).value.name, 'Responsabilidad');
   });
 
   group('CurriculumText', () {
