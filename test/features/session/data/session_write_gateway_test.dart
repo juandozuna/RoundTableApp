@@ -214,4 +214,20 @@ void main() {
       expect(called, isFalse);
     });
   });
+
+  test(
+    'fewer results than operations is a rejection, not an offline',
+    () async {
+      when(() => remote.uploadBatch(any())).thenAnswer((_) async => applied(1));
+
+      await expectLater(
+        gateway.upload([op(1), op(2)]),
+        throwsA(
+          isA<SessionWriteFailure>()
+              .having((f) => f.kind, 'kind', SessionWriteFailureKind.rejected)
+              .having((f) => f.isOffline, 'isOffline', isFalse),
+        ),
+      );
+    },
+  );
 }

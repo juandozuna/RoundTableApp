@@ -38,7 +38,8 @@ class SessionWriteGateway {
 
   /// Sends [operations] to `sync-upload` in batches of at most
   /// [SessionRemoteDataSource.maxBatch]. Throws
-  /// [SessionWriteFailure.rejected] when the server refused any of them.
+  /// [SessionWriteFailure.rejected] when the server refused any of them or
+  /// answered with fewer or more results than operations sent.
   Future<void> upload(
     List<SessionWriteOperation> operations, {
     Set<DataScope> scopes = _defaultScopes,
@@ -60,6 +61,15 @@ class SessionWriteGateway {
         final response = await _remote.uploadBatch([
           for (final operation in chunk) operation.toJson(),
         ]);
+        if (response.results.length != chunk.length) {
+          // A write without a verdict cannot count as accepted.
+          anyRejected = true;
+          AppLog.warning(
+            'session',
+            'sync-upload answered ${response.results.length} results for '
+                '${chunk.length} operations',
+          );
+        }
         for (var i = 0; i < response.results.length && i < chunk.length; i++) {
           final result = response.results[i];
           if (!result.isRejected) continue;
