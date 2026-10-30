@@ -104,6 +104,25 @@ void main() {
   );
 
   blocTest<SignOutCubit, SignOutState>(
+    'online-only status: offline with nothing pending never blocks sign-out',
+    build: () => build(
+      Stream.value(const SyncSnapshot(connection: SyncConnection.offline)),
+      online: false,
+    ),
+    act: (cubit) async {
+      await cubit.load();
+      await cubit.signOut();
+    },
+    expect: () => [
+      const SignOutState.checking(),
+      const SignOutState.confirm(pendingCount: 0, online: false),
+      const SignOutState.signingOut(),
+      const SignOutState.done(),
+    ],
+    verify: (_) => expect(calls, ['signOut']),
+  );
+
+  blocTest<SignOutCubit, SignOutState>(
     'warns about unsynced changes and whether syncing first is possible',
     build: () => build(Stream.value(snapshot(3)), online: false),
     act: (cubit) => cubit.load(),
