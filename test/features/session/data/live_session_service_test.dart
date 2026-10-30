@@ -1,60 +1,56 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/data/data_scope.dart';
+import 'package:gold_roundtables/core/models/assessment_kind.dart';
 import 'package:gold_roundtables/core/models/attendance_status.dart';
-import 'package:gold_roundtables/core/models/commitment_follow_up_status.dart';
+import 'package:gold_roundtables/core/models/session_stage.dart';
+import 'package:gold_roundtables/core/models/session_status.dart';
 import 'package:gold_roundtables/core/models/sync_state.dart';
-import 'package:gold_roundtables/core/sync/domain/sync_snapshot.dart';
-import 'package:gold_roundtables/core/sync/domain/sync_status_service.dart';
-import 'package:gold_roundtables/features/session/data/datasources/session_local_data_source.dart';
-import 'package:gold_roundtables/features/session/data/services/attendance_service_impl.dart';
 import 'package:gold_roundtables/features/session/data/services/live_session_service_impl.dart';
-import 'package:gold_roundtables/features/session/data/services/responses_service_impl.dart';
 import 'package:gold_roundtables/features/session/domain/models/live_session.dart';
-import 'package:gold_roundtables/features/session/domain/models/response_submissions.dart';
 import 'package:gold_roundtables/features/session/domain/models/value_question.dart';
 
-import '../support/counter_id_generator.dart';
+import '../../../core/data/support/online_data_stubs.dart';
+import '../support/fake_session_reads.dart';
+import '../support/fixed_clock.dart';
 import '../support/session_fixture.dart';
-import '../support/session_test_database.dart';
-
-class _StaticStatus implements SyncStatusService {
-  SyncSnapshot snapshot = const SyncSnapshot(
-    connection: SyncConnection.connected,
-  );
-
-  @override
-  Stream<SyncSnapshot> watch() => Stream.value(snapshot);
-}
 
 void main() {
-  late SessionTestDatabase db;
+  late FakeSessionReads reads;
   late FixedClock clock;
-  late CounterIdGenerator ids;
-  late SessionLocalDataSource local;
+  late WatchHarness harness;
   late LiveSessionServiceImpl live;
 
-  setUp(() async {
-    db = await SessionTestDatabase.open();
+  setUp(() {
+    reads = FakeSessionReads();
     clock = FixedClock(DateTime.utc(2026, 10, 29, 22, 30));
-    ids = CounterIdGenerator();
-    local = SessionLocalDataSource(db.drift, db.sync);
-    live = LiveSessionServiceImpl(local, _StaticStatus(), clock);
+    harness = WatchHarness();
+    live = LiveSessionServiceImpl(
+      reads,
+      StubContentLanguageService(),
+      harness.watch,
+      clock,
+    );
   });
 
-  tearDown(() => db.close());
+  Future<LiveSession> current() async =>
+      (await live.watch().firstWhere((s) => s != null))!;
 
-  Future<LiveSession> current() async {
-    final session = await live.watch().firstWhere((s) => s != null);
-    return session!;
-  }
+  test('polls every five seconds', () {
+    expect(LiveSessionServiceImpl.pollInterval, const Duration(seconds: 5));
+  });
 
-  test('emits null until the device holds a table and a session', () async {
+  test('emits null while the person has no seat', () async {
+    expect(await live.watch().first, isNull);
+  });
+
+  test('emits null while the table has no session yet', () async {
+    SessionFixture.seed(reads);
+    reads.sessions.clear();
     expect(await live.watch().first, isNull);
   });
 
   group('as a member', () {
-    setUp(() => SessionFixture.seed(db));
+    setUp(() => SessionFixture.seed(reads));
 
     test('exposes the response type of each question', () async {
       final session = await current();
@@ -88,301 +84,196 @@ void main() {
       expect((await current()).isToday, isFalse);
     });
 
-    test('saves the follow-up on the device and queues it', () async {
-      final service = ResponsesServiceImpl(local, clock, ids);
-      await service.submitFollowUp(
-        const FollowUpSubmission(
-          sessionId: Ids.session,
-          previousCommitmentId: Ids.anaPrevious,
-          status: CommitmentFollowUpStatus.partial,
-          score: 7,
-          note: 'Llamé dos veces.',
+    test('a member who left the table is not a participant', () async {
+      final index = reads.members.indexWhere((m) => m.personId == Ids.marta);
+      reads.members[index] = reads.members[index].copyWith(
+        leftAt: DateTime.utc(2026, 10, 1),
+      );
+      expect((await current()).seatCount, 3);
+    });
+
+    test('every row read from the server is synced, or synced late', () async {
+      reads.commitmentRows.add(
+        SessionFixture.commitment(
+          'cm-ana',
+          Ids.session,
+          Ids.ana,
+          Ids.value4,
+          'Entregar mis tareas · Cada viernes',
         ),
       );
+      var session = await current();
+      expect(session.me.commitment.syncState, SyncState.synced);
+      expect(session.controlChangesPending, isFalse);
+      expect(session.rejectedMessages, isEmpty);
 
-      final session = await current();
-      expect(session.me.followUp.isDone, isTrue);
-      expect(session.me.followUp.syncState, SyncState.pending);
-      expect(session.myResponses.followUp?.score, 7);
-      expect(
-        session.myResponses.followUp?.status,
-        CommitmentFollowUpStatus.partial,
-      );
+      reads.commitmentRows
+        ..clear()
+        ..add(
+          SessionFixture.commitment(
+            'cm-ana',
+            Ids.session,
+            Ids.ana,
+            Ids.value4,
+            'Entregar mis tareas · Cada viernes',
+            syncedLate: true,
+          ),
+        );
+      session = await current();
+      expect(session.me.commitment.syncState, SyncState.syncedLate);
+    });
 
-      final queued = await db.queuedEntries();
-      expect(queued.map((e) => '${e['op']} ${e['type']}'), [
-        'PATCH member_commitments',
-        'PUT member_assessments',
+    test('my own answers come back as my responses', () async {
+      reads.assessmentRows.addAll([
+        SessionFixture.assessment(Ids.ana, AssessmentKind.initial, 8),
+        SessionFixture.assessment(Ids.ana, AssessmentKind.followUp, 7),
       ]);
-      final patch = queued.first['data'] as Map<String, dynamic>;
-      expect(patch['follow_up_status'], 'partial');
-      expect(patch['follow_up_session_id'], Ids.session);
-      expect(patch['follow_up_device_at'], isNotNull);
-      final put = queued.last['data'] as Map<String, dynamic>;
-      expect(put['kind'], 'follow_up');
-      expect(put['score'], 7);
-      expect(put['session_id'], Ids.session);
-      expect(put['round_table_id'], Ids.table);
-      expect(put['device_created_at'], clock.now.toIso8601String());
-    });
-
-    test(
-      'stores a picked person next to the name and clears it later',
-      () async {
-        final service = ResponsesServiceImpl(local, clock, ids);
-        await service.submitReflection(
-          const ReflectionSubmission(
-            sessionId: Ids.session,
-            answers: {Ids.q1: 'Luis Prueba', Ids.q2: 'Cumplo casi siempre'},
-            answerPersonIds: {Ids.q1: Ids.luis},
-            score: 8,
-          ),
-        );
-        final picked = (await db.queuedEntries())
-            .where((e) => e['type'] == 'member_answers')
-            .map((e) => e['data'] as Map<String, dynamic>)
-            .singleWhere((d) => d['question_id'] == Ids.q1);
-        expect(picked['answer_text'], 'Luis Prueba');
-        expect(picked['answer_person_id'], Ids.luis);
-        expect(
-          (await current()).myResponses.reflection?.answers[Ids.q1],
-          'Luis Prueba',
-        );
-
-        await service.submitReflection(
-          const ReflectionSubmission(
-            sessionId: Ids.session,
-            answers: {Ids.q1: 'Mi tía Rosa', Ids.q2: 'Cumplo casi siempre'},
-            score: 8,
-          ),
-        );
-        final rows = await db.sync.powerSync.getAll(
-          'SELECT answer_text, answer_person_id FROM member_answers '
-          'WHERE question_id = ?',
-          [Ids.q1],
-        );
-        expect(rows, hasLength(1));
-        expect(rows.single['answer_text'], 'Mi tía Rosa');
-        expect(rows.single['answer_person_id'], isNull);
-      },
-    );
-
-    test('saves reflection and commitment with device ids', () async {
-      final service = ResponsesServiceImpl(local, clock, ids);
-      await service.submitReflection(
-        const ReflectionSubmission(
-          sessionId: Ids.session,
-          answers: {Ids.q1: 'Mi abuelo', Ids.q2: 'Cumplo casi siempre'},
-          score: 8,
-        ),
-      );
-      await service.submitCommitment(
-        const CommitmentSubmission(
-          sessionId: Ids.session,
-          what: 'Entregar mis tareas',
-          when: 'Cada viernes',
-          how: 'Cuántas veces',
-        ),
-      );
-
+      reads.answerRows.add(SessionFixture.answer(Ids.ana, Ids.q1, 'Mi abuelo'));
       final session = await current();
-      expect(session.me.reflection.isDone, isTrue);
-      expect(session.me.commitment.isDone, isTrue);
+      expect(session.myResponses.reflection?.score, 8);
       expect(session.myResponses.reflection?.answers[Ids.q1], 'Mi abuelo');
-      expect(
-        session.myResponses.commitment?.actionText,
-        'Entregar mis tareas · Cada viernes',
-      );
-      expect(await db.queuedChanges(), 4);
-      expect(await db.rowCount('member_answers'), 2);
+      expect(session.me.reflection.isDone, isTrue);
+      expect(session.me.followUp.score, 7);
     });
 
-    test(
-      'submitting twice edits the same rows instead of duplicating',
-      () async {
-        final service = ResponsesServiceImpl(local, clock, ids);
-        const first = ReflectionSubmission(
-          sessionId: Ids.session,
-          answers: {Ids.q1: 'Mi abuelo', Ids.q2: 'Cumplo'},
-          score: 8,
-        );
-        await service.submitReflection(first);
-        await service.submitReflection(first.copyWith(score: 9));
+    test('the latest of two attendance rows wins', () async {
+      reads.attendanceRows.addAll([
+        SessionFixture.attendance(
+          Ids.ana,
+          AttendanceStatus.absent,
+          id: 'att-a',
+          at: DateTime.utc(2026, 10, 29, 23, 0),
+        ),
+        SessionFixture.attendance(
+          Ids.ana,
+          AttendanceStatus.present,
+          id: 'att-b',
+          source: 'auto_submission',
+          at: DateTime.utc(2026, 10, 29, 23, 40),
+        ),
+      ]);
+      final session = await current();
+      expect(session.me.attendance, AttendanceStatus.present);
+      expect(session.me.attendanceAuto, isTrue);
+    });
 
-        expect(await db.rowCount('member_answers'), 2);
-        expect(await db.rowCount('member_assessments'), 1);
-        expect((await current()).myResponses.reflection?.score, 9);
-      },
-    );
-
-    test(
-      'a pending row turns synced after upload and synced late when flagged',
-      () async {
-        final service = ResponsesServiceImpl(local, clock, ids);
-        await service.submitCommitment(
-          const CommitmentSubmission(
-            sessionId: Ids.session,
-            what: 'Entregar mis tareas',
-            when: 'Cada viernes',
-            how: 'Cuántas veces',
-          ),
-        );
-        final id = (await db.queuedEntries()).single['id'] as String;
-
-        // Upload completes: the queue empties, the server copy syncs down.
-        await db.sync.powerSync.execute('DELETE FROM ps_crud');
-        expect((await current()).me.commitment.syncState, SyncState.synced);
-
-        await db.seedSynced('member_commitments', id, {
-          'organization_id': Ids.org,
-          'round_table_id': Ids.table,
-          'session_id': Ids.session,
-          'person_id': Ids.ana,
-          'value_id': Ids.value4,
-          'action_text': 'Entregar mis tareas · Cada viernes',
-          'synced_late': 1,
-        });
-        final late = await live.watch().firstWhere(
-          (s) => s?.me.commitment.syncState == SyncState.syncedLate,
-        );
-        expect(late, isNotNull);
-      },
-    );
-
-    test('shows syncing while a batch uploads', () async {
-      final status = _StaticStatus()
-        ..snapshot = const SyncSnapshot(
-          connection: SyncConnection.connected,
-          uploading: true,
-        );
-      final service = ResponsesServiceImpl(local, clock, ids);
-      await service.submitCommitment(
-        const CommitmentSubmission(
-          sessionId: Ids.session,
-          what: 'Entregar mis tareas',
-          when: 'Cada viernes',
-          how: 'Cuántas veces',
+    test('absent but answered is an auto-attendance still to come', () async {
+      reads.attendanceRows.add(
+        SessionFixture.attendance(Ids.ana, AttendanceStatus.absent),
+      );
+      reads.commitmentRows.add(
+        SessionFixture.commitment(
+          'cm-ana',
+          Ids.session,
+          Ids.ana,
+          Ids.value4,
+          'Entregar mis tareas · Cada viernes',
         ),
       );
-      final session = await LiveSessionServiceImpl(
-        local,
-        status,
-        clock,
-      ).watch().firstWhere((s) => s != null);
-      expect(session!.me.commitment.syncState, SyncState.syncing);
+      expect((await current()).me.autoAttendancePending, isTrue);
     });
 
-    test(
-      'a server copy under another id does not duplicate attendance',
-      () async {
-        await db.seedSynced('session_attendance', 'att-server', {
-          'session_id': Ids.session,
-          'person_id': Ids.ana,
-          'status': 'absent',
-          'source': 'facilitator',
-        });
-        await db.seedSynced('session_attendance', 'att-server-2', {
-          'session_id': Ids.session,
-          'person_id': Ids.ana,
-          'status': 'present',
-          'source': 'auto_submission',
-          'device_created_at': '2026-10-29T23:40:00Z',
-        });
-        final session = await current();
-        expect(session.me.attendance, AttendanceStatus.present);
-        expect(session.me.attendanceAuto, isTrue);
-      },
-    );
+    test('an own write refetches at once through the change signal', () async {
+      final emitted = <LiveSession?>[];
+      final subscription = live.watch().listen(emitted.add);
+      await pumpEventQueue(times: 100);
+      expect(emitted.last?.me.commitment.isDone, isFalse);
 
-    test(
-      'marks the auto-attendance as pending when absent but answered',
-      () async {
-        await db.seedSynced('session_attendance', 'att-1', {
-          'session_id': Ids.session,
-          'person_id': Ids.ana,
-          'status': 'absent',
-          'source': 'facilitator',
-        });
-        await ResponsesServiceImpl(local, clock, ids).submitCommitment(
-          const CommitmentSubmission(
-            sessionId: Ids.session,
-            what: 'Entregar mis tareas',
-            when: 'Cada viernes',
-            how: 'Cuántas veces',
-          ),
-        );
-        expect((await current()).me.autoAttendancePending, isTrue);
-      },
-    );
-
-    test('hides upload rejections after 48 hours', () async {
-      await db.sync.powerSync.execute(
-        'INSERT INTO sync_upload_rejections '
-        '(id, table_name, row_id, code, message, rejected_at) '
-        'VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          'r1',
-          'member_answers',
-          'x',
-          'session_closed',
-          'La sesión ya se cerró.',
-          '2026-10-29T20:00:00Z',
-        ],
+      reads.commitmentRows.add(
+        SessionFixture.commitment(
+          'cm-ana',
+          Ids.session,
+          Ids.ana,
+          Ids.value4,
+          'Entregar mis tareas · Cada viernes',
+        ),
       );
-      expect((await current()).rejectedMessages, ['La sesión ya se cerró.']);
-      clock.now = DateTime.utc(2026, 11, 2);
-      final later = await live.watch().first;
-      expect(later?.rejectedMessages, isEmpty);
+      harness.signal.notify(DataScope.session);
+      await pumpEventQueue(times: 100);
+
+      expect(emitted.last?.me.commitment.isDone, isTrue);
+      await subscription.cancel();
+    });
+
+    test('a failed read is a stream error and the watch recovers', () async {
+      final events = <Object?>[];
+      final subscription = live.watch().listen(events.add, onError: events.add);
+      await pumpEventQueue(times: 100);
+      expect(events.last, isA<LiveSession>());
+
+      reads.failure = StateError('offline');
+      harness.signal.notify(DataScope.session);
+      await pumpEventQueue(times: 100);
+      expect(events.last, isA<StateError>());
+
+      // The watch keeps going: the next change goes through.
+      reads.failure = null;
+      reads.attendanceRows.add(
+        SessionFixture.attendance(Ids.ana, AttendanceStatus.present),
+      );
+      harness.signal.notify(DataScope.session);
+      await pumpEventQueue(times: 100);
+      expect((events.last as LiveSession?)?.me.attendance, isNotNull);
+      await subscription.cancel();
     });
   });
 
-  group('as the facilitator', () {
-    setUp(() => SessionFixture.seed(db, asFacilitator: true));
+  group('which session is shown', () {
+    setUp(() => SessionFixture.seed(reads));
 
-    test('marks attendance offline, editing instead of duplicating', () async {
-      final attendance = AttendanceServiceImpl(local, clock, ids);
-      await attendance.markPresent(
-        sessionId: Ids.session,
-        personIds: [Ids.sofia, Ids.ana, Ids.luis],
-      );
-      await attendance.mark(
-        sessionId: Ids.session,
-        personId: Ids.ana,
-        status: AttendanceStatus.late,
-      );
-
+    test('an open session is shown without reading the closed one', () async {
+      reads.sessions
+        ..clear()
+        ..add(
+          SessionFixture.session(
+            status: SessionStatus.open,
+            stage: SessionStage.attendance,
+          ),
+        );
       final session = await current();
-      expect(session.iAmFacilitator, isTrue);
-      expect(session.me.attendance, AttendanceStatus.present);
-      expect(
-        session.participants
-            .firstWhere((p) => p.personId == Ids.ana)
-            .attendance,
-        AttendanceStatus.late,
-      );
-      expect(session.unmarkedParticipants.map((p) => p.personId), [Ids.marta]);
-      expect(await db.rowCount('session_attendance'), 3);
-      final ops = (await db.queuedEntries()).map((e) => e['op']).toList();
-      expect(ops, ['PUT', 'PUT', 'PUT', 'PATCH']);
+      expect(session.session.status, SessionStatus.open);
+      expect(reads.lastClosedReads, 0);
     });
+
+    test(
+      'right after closing, the closed session stays as the summary',
+      () async {
+        reads.sessions
+          ..clear()
+          ..addAll([
+            SessionFixture.session(
+              id: 'session-5',
+              at: DateTime.utc(2026, 11, 5, 23),
+            ),
+            SessionFixture.session(
+              status: SessionStatus.closed,
+              stage: SessionStage.closed,
+              endedAt: DateTime.utc(2026, 10, 29, 22, 0),
+            ),
+          ]);
+        final session = await current();
+        expect(session.session.id, Ids.session);
+        expect(session.session.isClosed, isTrue);
+        expect(session.isToday, isTrue);
+      },
+    );
+  });
+
+  group('as the facilitator', () {
+    setUp(() => SessionFixture.seed(reads, asFacilitator: true));
 
     test(
       'sees every participant progress and who has nothing to review',
       () async {
-        for (final (id, person, kind) in [
-          ('a1', Ids.luis, 'follow_up'),
-          ('a2', Ids.luis, 'initial'),
-        ]) {
-          await db.seedSynced('member_assessments', id, {
-            'round_table_id': Ids.table,
-            'session_id': Ids.session,
-            'person_id': person,
-            'kind': kind,
-            'score': 7,
-            'synced_late': kind == 'initial' ? 1 : 0,
-            'device_created_at': '2026-10-29T23:10:00Z',
-          });
-        }
+        reads.assessmentRows.addAll([
+          SessionFixture.assessment(Ids.luis, AssessmentKind.followUp, 7),
+          SessionFixture.assessment(
+            Ids.luis,
+            AssessmentKind.initial,
+            7,
+            syncedLate: true,
+          ),
+        ]);
         final session = await current();
         final luis = session.participants.firstWhere(
           (p) => p.personId == Ids.luis,
@@ -391,6 +282,7 @@ void main() {
           (p) => p.personId == Ids.marta,
         );
 
+        expect(session.iAmFacilitator, isTrue);
         expect(luis.followUp.syncState, SyncState.synced);
         expect(luis.reflection.syncState, SyncState.syncedLate);
         expect(luis.hasPreviousCommitment, isTrue);
@@ -398,5 +290,33 @@ void main() {
         expect(session.activity, hasLength(2));
       },
     );
+
+    test('picks up another member write on the next refetch', () async {
+      final emitted = <LiveSession?>[];
+      final subscription = live.watch().listen(emitted.add);
+      await pumpEventQueue(times: 100);
+      expect(
+        emitted.last!.participants
+            .firstWhere((p) => p.personId == Ids.luis)
+            .reflection
+            .isDone,
+        isFalse,
+      );
+
+      reads.assessmentRows.add(
+        SessionFixture.assessment(Ids.luis, AssessmentKind.initial, 9),
+      );
+      harness.signal.notify(DataScope.session); // what a poll tick does
+      await pumpEventQueue(times: 100);
+
+      expect(
+        emitted.last!.participants
+            .firstWhere((p) => p.personId == Ids.luis)
+            .reflection
+            .score,
+        9,
+      );
+      await subscription.cancel();
+    });
   });
 }

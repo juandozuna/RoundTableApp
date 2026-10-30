@@ -1,178 +1,138 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gold_roundtables/core/sync/data/sync_schema.dart';
-import 'package:gold_roundtables/core/sync/domain/sync_snapshot.dart';
-import 'package:gold_roundtables/core/sync/domain/sync_status_service.dart';
-import 'package:gold_roundtables/features/history/data/datasources/history_local_data_source.dart';
-import 'package:gold_roundtables/features/home/data/datasources/home_local_data_source.dart';
-import 'package:gold_roundtables/features/session/data/datasources/session_local_data_source.dart';
+import 'package:gold_roundtables/core/data/records/records.dart';
+import 'package:gold_roundtables/features/session/data/assembly/curriculum_text.dart';
 import 'package:gold_roundtables/features/session/data/services/live_session_service_impl.dart';
-import 'package:gold_roundtables/features/settings/data/datasources/content_language_local_data_source.dart';
-import 'package:gold_roundtables/features/settings/data/services/content_language_service_impl.dart';
+import 'package:gold_roundtables/features/session/domain/models/live_session.dart';
 
+import '../../../core/data/support/online_data_stubs.dart';
+import '../support/fake_session_reads.dart';
+import '../support/fixed_clock.dart';
 import '../support/session_fixture.dart';
-import '../support/session_test_database.dart';
 
-class _Connected implements SyncStatusService {
-  @override
-  Stream<SyncSnapshot> watch() =>
-      Stream.value(const SyncSnapshot(connection: SyncConnection.connected));
-}
+CurriculumTranslationRecord _translation(
+  String type,
+  String id, {
+  String locale = 'en',
+  String? name,
+  String? description,
+  String? questionText,
+}) => CurriculumTranslationRecord(
+  id: 'tr-$id-$locale',
+  locale: locale,
+  entityType: type,
+  entityId: id,
+  name: name,
+  description: description,
+  questionText: questionText,
+);
 
 /// ADR 0017: curriculum text follows the content language chosen on the
 /// device, falling back to the Spanish base text field by field.
 void main() {
-  late SessionTestDatabase db;
+  late FakeSessionReads reads;
+  late StubContentLanguageService language;
 
-  setUp(() async {
-    db = await SessionTestDatabase.open();
-    await SessionFixture.seed(db);
-    await db.seedSynced('content_locales', 'loc-es', {
-      'code': 'es',
-      'name': 'Español',
-      'is_default': 1,
-      'status': 'active',
-    });
-    await db.seedSynced('content_locales', 'loc-en', {
-      'code': 'en',
-      'name': 'English',
-      'is_default': 0,
-      'status': 'active',
-    });
-    await db.seedSynced('curriculum_translations', 'tr-value', {
-      'locale': 'en',
-      'entity_type': 'value',
-      'entity_id': Ids.value4,
-      'name': 'Responsibility',
-    });
-    await db.seedSynced('curriculum_translations', 'tr-q1', {
-      'locale': 'en',
-      'entity_type': 'question',
-      'entity_id': Ids.q1,
-      'question_text': 'Who is an example of this value for you?',
-    });
-    // Blank translated fields count as missing.
-    await db.seedSynced('curriculum_translations', 'tr-value3', {
-      'locale': 'en',
-      'entity_type': 'value',
-      'entity_id': Ids.value3,
-      'name': '   ',
-    });
+  setUp(() {
+    reads = SessionFixture.seed(FakeSessionReads());
+    language = StubContentLanguageService();
+    reads.translationRecords.addAll([
+      _translation(
+        CurriculumText.valueType,
+        Ids.value4,
+        name: 'Responsibility',
+      ),
+      _translation(
+        CurriculumText.questionType,
+        Ids.q1,
+        questionText: 'Who is an example of this value for you?',
+      ),
+      // Blank translated fields count as missing.
+      _translation(CurriculumText.valueType, Ids.value3, name: '   '),
+    ]);
   });
 
-  tearDown(() => db.close());
-
-  Future<void> chooseLocale(String code) =>
-      ContentLanguageLocalDataSource(db.sync).saveSelected(code);
-
-  LiveSessionServiceImpl liveService() => LiveSessionServiceImpl(
-    SessionLocalDataSource(db.drift, db.sync),
-    _Connected(),
-    FixedClock(DateTime.utc(2026, 10, 29, 22, 30)),
-  );
+  Future<LiveSession> session() async {
+    final harness = WatchHarness();
+    final live = LiveSessionServiceImpl(
+      reads,
+      language,
+      harness.watch,
+      FixedClock(DateTime.utc(2026, 10, 29, 22, 30)),
+    );
+    return (await live.watch().firstWhere((s) => s != null))!;
+  }
 
   test(
     'the session shows the translation, Spanish where it is missing',
     () async {
-      await chooseLocale('en');
-      final session = (await liveService().watch().firstWhere(
-        (s) => s != null,
-      ))!;
-      expect(session.value.name, 'Responsibility');
+      language.selected = 'en';
+      final shown = await session();
+
+      expect(shown.value.name, 'Responsibility');
       expect(
-        session.questions.first.text,
+        shown.questions.first.text,
         'Who is an example of this value for you?',
       );
       // Untranslated question and blank translated name fall back to Spanish.
-      expect(session.questions.last.text, '¿Por qué te diste ese puntaje?');
-      expect(session.followUpValue?.name, 'Honestidad');
+      expect(shown.questions.last.text, '¿Por qué te diste ese puntaje?');
+      expect(shown.followUpValue?.name, 'Honestidad');
     },
   );
 
   test(
     'no translations for the chosen language: everything is Spanish',
     () async {
-      await chooseLocale('fr');
-      final session = (await liveService().watch().firstWhere(
-        (s) => s != null,
-      ))!;
-      expect(session.value.name, 'Responsabilidad');
+      language.selected = 'fr';
+      final shown = await session();
+      expect(shown.value.name, 'Responsabilidad');
       expect(
-        session.questions.first.text,
+        shown.questions.first.text,
         '¿Quién es para ti un ejemplo de este valor?',
       );
     },
   );
 
-  test('changing the language re-emits the session', () async {
-    await chooseLocale('es');
-    final names = <String>[];
-    final subscription = liveService().watch().listen(
-      (s) => names.add(s!.value.name),
-    );
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-    await chooseLocale('en');
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    await subscription.cancel();
-    expect(names.first, 'Responsabilidad');
-    expect(names.last, 'Responsibility');
+  test('the Spanish base text reads no translations', () async {
+    final shown = await session();
+    expect(shown.value.name, 'Responsabilidad');
   });
 
-  test('home and history resolve the same way', () async {
-    await db.seedSynced('curriculum_modules', 'mod-1', {
-      'number': 1,
-      'name': 'Carácter',
-      'status': 'active',
-    });
-    await db.seedSynced('curriculum_translations', 'tr-mod', {
-      'locale': 'en',
-      'entity_type': 'module',
-      'entity_id': 'mod-1',
-      'name': 'Character',
-    });
-    await db.seedSynced('curriculum_values', Ids.value4, {
-      'module_id': 'mod-1',
-      'name': 'Responsabilidad',
-      'sequence': 4,
-      'status': 'active',
-    });
-    await chooseLocale('en');
-    final home = await HomeLocalDataSource(
-      db.sync,
-    ).watchFacilitatorTable(Ids.table).firstWhere((r) => r != null);
-    expect(home!.valueName, 'Responsibility');
-    expect(home.followUpValueName, 'Honestidad');
-
-    final history = await HistoryLocalDataSource(
-      db.sync,
-    ).watchSnapshot(Ids.table).first;
-    expect(history.values[Ids.value4]?.name, 'Responsibility');
-    expect(history.values[Ids.value4]?.moduleName, 'Character');
+  test('a language list that cannot be read shows Spanish', () async {
+    language
+      ..selected = 'en'
+      ..unreadable = true;
+    expect((await session()).value.name, 'Responsabilidad');
   });
 
-  test(
-    'the language setting lists active languages and falls back to Spanish',
-    () async {
-      final service = ContentLanguageServiceImpl(
-        ContentLanguageLocalDataSource(db.sync),
-      );
-      var choice = await service.watch().first;
-      expect(choice.available.map((l) => l.code), ['es', 'en']);
-      expect(choice.canChoose, isTrue);
-      expect(choice.selected, 'es');
+  group('CurriculumText', () {
+    test('translates field by field and trims', () {
+      final text = CurriculumText([
+        _translation(
+          CurriculumText.valueType,
+          Ids.value4,
+          name: ' Responsibility ',
+          description: '',
+        ),
+      ]);
+      final base = SessionFixture.value(
+        Ids.value4,
+        4,
+        'Responsabilidad',
+      ).copyWith(description: 'Cumplir lo que prometo');
 
-      await service.select('en');
-      choice = await service.watch().first;
-      expect(choice.selected, 'en');
+      final shown = text.value(base);
+      expect(shown.name, 'Responsibility');
+      expect(shown.description, 'Cumplir lo que prometo');
+    });
 
-      // A stored language the curriculum does not offer is shown as Spanish.
-      await service.select('fr');
-      choice = await service.watch().first;
-      expect(choice.selected, 'es');
+    test('a translation of another kind of row is ignored', () {
+      final text = CurriculumText([
+        _translation(CurriculumText.questionType, Ids.value4, name: 'X'),
+      ]);
       expect(
-        CoreSyncTables.contentLocaleKey,
-        'content_locale',
-        reason: 'the SQL fragments and the setting share this key',
+        text.value(SessionFixture.value(Ids.value4, 4, 'Responsabilidad')).name,
+        'Responsabilidad',
       );
-    },
-  );
+    });
+  });
 }
