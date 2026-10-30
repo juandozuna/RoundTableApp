@@ -15,7 +15,7 @@ class SelectedContentLanguageServiceImpl
   @override
   Future<String> readCode() async {
     try {
-      return await _local.readSelected() ?? ContentLanguageChoice.baseCode;
+      return await _local.readSelected();
     } on Object catch (error) {
       AppLog.warning('settings', 'Stored content language unreadable', error);
       return ContentLanguageChoice.baseCode;

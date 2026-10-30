@@ -519,6 +519,8 @@ import '../services/clock/system_clock_service.dart' as _i799;
 import '../services/connectivity/connectivity_service.dart' as _i1015;
 import '../services/connectivity/connectivity_service_impl.dart' as _i916;
 import '../services/connectivity/watch_connectivity_use_case.dart' as _i17;
+import '../services/device_language/device_language.dart' as _i304;
+import '../services/device_language/platform_device_language.dart' as _i196;
 import '../services/error_reporting/app_error_context_provider.dart' as _i204;
 import '../services/error_reporting/error_reporter.dart' as _i200;
 import '../services/error_reporting/error_reporting_module.dart' as _i439;
@@ -616,11 +618,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i785.LocalDataService>(
       () => _i375.LocalDataServiceImpl(gh<_i460.SharedPreferencesAsync>()),
     );
-    gh.lazySingleton<_i263.ContentLanguageLocalDataSource>(
-      () => _i263.ContentLanguageLocalDataSource(
-        gh<_i460.SharedPreferencesAsync>(),
-      ),
-    );
     gh.factory<_i454.LoadSessionDraftUseCase>(
       () => _i454.LoadSessionDraftUseCase(gh<_i369.SessionDraftService>()),
     );
@@ -646,6 +643,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LoadAppInfoUseCase(gh<_i483.AppInfoService>()),
     );
     gh.lazySingleton<_i246.IdGenerator>(() => _i766.UuidIdGenerator());
+    gh.lazySingleton<_i304.DeviceLanguage>(
+      () => _i196.PlatformDeviceLanguage(),
+    );
     gh.lazySingleton<_i524.OnlineVerificationStore>(
       () => _i112.SharedPrefsOnlineVerificationStore(
         gh<_i460.SharedPreferencesAsync>(),
@@ -676,6 +676,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i618.FirebasePushMessagingPlatform(
         gh<_i1068.FirebaseBootstrap>(),
         gh<_i609.AppConfig>(),
+      ),
+    );
+    gh.lazySingleton<_i263.ContentLanguageLocalDataSource>(
+      () => _i263.ContentLanguageLocalDataSource(
+        gh<_i460.SharedPreferencesAsync>(),
+        gh<_i304.DeviceLanguage>(),
       ),
     );
     gh.factory<_i434.WatchSessionContextUseCase>(

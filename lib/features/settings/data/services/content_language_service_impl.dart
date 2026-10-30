@@ -44,10 +44,7 @@ class ContentLanguageServiceImpl implements ContentLanguageService {
       // The stored choice stands without the list, and the languages offered
       // earlier stay selectable; the list is checked again on the next load.
       AppLog.warning('settings', 'Content languages unavailable', error);
-      return ContentLanguageChoice(
-        available: _lastAvailable,
-        selected: stored ?? ContentLanguageChoice.baseCode,
-      );
+      return ContentLanguageChoice(available: _lastAvailable, selected: stored);
     }
     final available = [
       for (final record in records)
@@ -60,7 +57,7 @@ class ContentLanguageServiceImpl implements ContentLanguageService {
     _lastAvailable = available;
     // A stored language the curriculum does not offer is shown in Spanish.
     final selected = available.any((l) => l.code == stored)
-        ? stored!
+        ? stored
         : ContentLanguageChoice.baseCode;
     return ContentLanguageChoice(available: available, selected: selected);
   }

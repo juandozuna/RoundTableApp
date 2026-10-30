@@ -7,6 +7,7 @@ import 'package:gold_roundtables/core/data/records/records.dart';
 import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/network/postgrest/postgrest.dart';
 import 'package:gold_roundtables/core/services/app_lifecycle/app_lifecycle_service.dart';
+import 'package:gold_roundtables/core/services/device_language/device_language.dart';
 import 'package:gold_roundtables/features/settings/data/datasources/content_language_local_data_source.dart';
 import 'package:gold_roundtables/features/settings/data/datasources/content_language_remote_data_source.dart';
 import 'package:gold_roundtables/features/settings/data/services/content_language_service_impl.dart';
@@ -50,7 +51,10 @@ void main() {
         _locale('en', 'English'),
       ],
     );
-    local = ContentLanguageLocalDataSource(SharedPreferencesAsync());
+    local = ContentLanguageLocalDataSource(
+      SharedPreferencesAsync(),
+      const _DeviceLanguage('es'),
+    );
     service = ContentLanguageServiceImpl(
       ContentLanguageRemoteDataSource(reads),
       local,
@@ -138,4 +142,11 @@ void main() {
     expect(choices.last.available.map((l) => l.code), ['es', 'en']);
     await subscription.cancel();
   });
+}
+
+class _DeviceLanguage implements DeviceLanguage {
+  const _DeviceLanguage(this.code);
+
+  @override
+  final String code;
 }

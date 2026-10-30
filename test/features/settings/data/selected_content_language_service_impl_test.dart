@@ -21,12 +21,6 @@ void main() {
     expect(await service.readCode(), 'en');
   });
 
-  test('returns Spanish when nothing was chosen', () async {
-    when(() => local.readSelected()).thenAnswer((_) async => null);
-
-    expect(await service.readCode(), ContentLanguageChoice.baseCode);
-  });
-
   test('returns Spanish when the stored choice cannot be read', () async {
     when(() => local.readSelected()).thenThrow(StateError('prefs'));
 
