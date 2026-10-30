@@ -272,6 +272,7 @@ export class App {
   /** Focuses a text field by its label and types. */
   async fill(label, value) {
     await this.waitFor(label, { timeout: 15_000 });
+    await this.scrollIntoView(label); // long forms: a field below the fold sits under the action bar
     const test = toTest(label);
     const nodes = await this.nodes();
     const field = nodes.find((n) => n.hasInput && test(n.text));

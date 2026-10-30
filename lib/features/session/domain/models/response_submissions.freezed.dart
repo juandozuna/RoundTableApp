@@ -477,9 +477,13 @@ class __$FollowUpSubmissionCopyWithImpl<$Res>
 mixin _$ReflectionSubmission {
   String get sessionId;
 
-  /// Answer text by question id.
+  /// Answer text by question id. A picked person's answer is their name.
   Map<String, String> get answers;
   int get score;
+
+  /// Person picked for a `person` question, by question id (RF-54). A
+  /// question missing here was answered with free text.
+  Map<String, String> get answerPersonIds;
 
   /// Optional "¿Por qué ese puntaje?" (RF-52).
   String? get justification;
@@ -503,6 +507,10 @@ mixin _$ReflectionSubmission {
                 other.sessionId == sessionId) &&
             const DeepCollectionEquality().equals(other.answers, answers) &&
             (identical(other.score, score) || other.score == score) &&
+            const DeepCollectionEquality().equals(
+              other.answerPersonIds,
+              answerPersonIds,
+            ) &&
             (identical(other.justification, justification) ||
                 other.justification == justification));
   }
@@ -513,12 +521,13 @@ mixin _$ReflectionSubmission {
     sessionId,
     const DeepCollectionEquality().hash(answers),
     score,
+    const DeepCollectionEquality().hash(answerPersonIds),
     justification,
   );
 
   @override
   String toString() {
-    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, justification: $justification)';
+    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, answerPersonIds: $answerPersonIds, justification: $justification)';
   }
 }
 
@@ -533,6 +542,7 @@ abstract mixin class $ReflectionSubmissionCopyWith<$Res> {
     String sessionId,
     Map<String, String> answers,
     int score,
+    Map<String, String> answerPersonIds,
     String? justification,
   });
 }
@@ -553,6 +563,7 @@ class _$ReflectionSubmissionCopyWithImpl<$Res>
     Object? sessionId = null,
     Object? answers = null,
     Object? score = null,
+    Object? answerPersonIds = null,
     Object? justification = freezed,
   }) {
     return _then(
@@ -569,6 +580,10 @@ class _$ReflectionSubmissionCopyWithImpl<$Res>
             ? _self.score
             : score // ignore: cast_nullable_to_non_nullable
                   as int,
+        answerPersonIds: null == answerPersonIds
+            ? _self.answerPersonIds
+            : answerPersonIds // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
         justification: freezed == justification
             ? _self.justification
             : justification // ignore: cast_nullable_to_non_nullable
@@ -675,6 +690,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
       String sessionId,
       Map<String, String> answers,
       int score,
+      Map<String, String> answerPersonIds,
       String? justification,
     )?
     $default, {
@@ -687,6 +703,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
           _that.sessionId,
           _that.answers,
           _that.score,
+          _that.answerPersonIds,
           _that.justification,
         );
       case _:
@@ -713,6 +730,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
       String sessionId,
       Map<String, String> answers,
       int score,
+      Map<String, String> answerPersonIds,
       String? justification,
     )
     $default,
@@ -724,6 +742,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
           _that.sessionId,
           _that.answers,
           _that.score,
+          _that.answerPersonIds,
           _that.justification,
         );
       case _:
@@ -749,6 +768,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
       String sessionId,
       Map<String, String> answers,
       int score,
+      Map<String, String> answerPersonIds,
       String? justification,
     )?
     $default,
@@ -760,6 +780,7 @@ extension ReflectionSubmissionPatterns on ReflectionSubmission {
           _that.sessionId,
           _that.answers,
           _that.score,
+          _that.answerPersonIds,
           _that.justification,
         );
       case _:
@@ -775,16 +796,18 @@ class _ReflectionSubmission implements ReflectionSubmission {
     required this.sessionId,
     required final Map<String, String> answers,
     required this.score,
+    final Map<String, String> answerPersonIds = const {},
     this.justification,
-  }) : _answers = answers;
+  }) : _answers = answers,
+       _answerPersonIds = answerPersonIds;
 
   @override
   final String sessionId;
 
-  /// Answer text by question id.
+  /// Answer text by question id. A picked person's answer is their name.
   final Map<String, String> _answers;
 
-  /// Answer text by question id.
+  /// Answer text by question id. A picked person's answer is their name.
   @override
   Map<String, String> get answers {
     if (_answers is EqualUnmodifiableMapView) return _answers;
@@ -794,6 +817,20 @@ class _ReflectionSubmission implements ReflectionSubmission {
 
   @override
   final int score;
+
+  /// Person picked for a `person` question, by question id (RF-54). A
+  /// question missing here was answered with free text.
+  final Map<String, String> _answerPersonIds;
+
+  /// Person picked for a `person` question, by question id (RF-54). A
+  /// question missing here was answered with free text.
+  @override
+  @JsonKey()
+  Map<String, String> get answerPersonIds {
+    if (_answerPersonIds is EqualUnmodifiableMapView) return _answerPersonIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_answerPersonIds);
+  }
 
   /// Optional "¿Por qué ese puntaje?" (RF-52).
   @override
@@ -819,6 +856,10 @@ class _ReflectionSubmission implements ReflectionSubmission {
                 other.sessionId == sessionId) &&
             const DeepCollectionEquality().equals(other._answers, _answers) &&
             (identical(other.score, score) || other.score == score) &&
+            const DeepCollectionEquality().equals(
+              other._answerPersonIds,
+              _answerPersonIds,
+            ) &&
             (identical(other.justification, justification) ||
                 other.justification == justification));
   }
@@ -829,12 +870,13 @@ class _ReflectionSubmission implements ReflectionSubmission {
     sessionId,
     const DeepCollectionEquality().hash(_answers),
     score,
+    const DeepCollectionEquality().hash(_answerPersonIds),
     justification,
   );
 
   @override
   String toString() {
-    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, justification: $justification)';
+    return 'ReflectionSubmission(sessionId: $sessionId, answers: $answers, score: $score, answerPersonIds: $answerPersonIds, justification: $justification)';
   }
 }
 
@@ -851,6 +893,7 @@ abstract mixin class _$ReflectionSubmissionCopyWith<$Res>
     String sessionId,
     Map<String, String> answers,
     int score,
+    Map<String, String> answerPersonIds,
     String? justification,
   });
 }
@@ -871,6 +914,7 @@ class __$ReflectionSubmissionCopyWithImpl<$Res>
     Object? sessionId = null,
     Object? answers = null,
     Object? score = null,
+    Object? answerPersonIds = null,
     Object? justification = freezed,
   }) {
     return _then(
@@ -887,6 +931,10 @@ class __$ReflectionSubmissionCopyWithImpl<$Res>
             ? _self.score
             : score // ignore: cast_nullable_to_non_nullable
                   as int,
+        answerPersonIds: null == answerPersonIds
+            ? _self._answerPersonIds
+            : answerPersonIds // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
         justification: freezed == justification
             ? _self.justification
             : justification // ignore: cast_nullable_to_non_nullable

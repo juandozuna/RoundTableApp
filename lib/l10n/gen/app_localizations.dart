@@ -3298,6 +3298,18 @@ abstract class AppLocalizations {
   /// **'respuestas cargadas tras la sesión'**
   String get kpiSyncedLateDetail;
 
+  /// No description provided for @kpiSessionsIncomplete.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesiones incompletas'**
+  String get kpiSessionsIncomplete;
+
+  /// No description provided for @kpiSessionsIncompleteDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'de {closed} sesiones cerradas, sin llegar a las respuestas'**
+  String kpiSessionsIncompleteDetail(int closed);
+
   /// No description provided for @kpiSeeDelayed.
   ///
   /// In es, this message translates to:
@@ -5734,6 +5746,24 @@ abstract class AppLocalizations {
   /// **'El contenido está en tu folleto; aquí solo anotas tus respuestas.'**
   String get sessionMemberReflectionHelper;
 
+  /// No description provided for @sessionMemberPersonPickHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca a alguien de tu mesa, o escribe otro nombre abajo.'**
+  String get sessionMemberPersonPickHelper;
+
+  /// No description provided for @sessionMemberPersonOtherLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Otra persona'**
+  String get sessionMemberPersonOtherLabel;
+
+  /// No description provided for @sessionMemberPersonOtherHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el nombre si no está en la lista'**
+  String get sessionMemberPersonOtherHint;
+
   /// No description provided for @sessionMemberReflectionScoreLabel.
   ///
   /// In es, this message translates to:
@@ -8042,6 +8072,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'En curso'**
   String get historySessionOpenNow;
+
+  /// No description provided for @historySessionIncomplete.
+  ///
+  /// In es, this message translates to:
+  /// **'Incompleta'**
+  String get historySessionIncomplete;
 
   /// No description provided for @historyAttendanceNone.
   ///

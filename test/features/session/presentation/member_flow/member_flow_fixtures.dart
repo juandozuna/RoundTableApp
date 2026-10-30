@@ -48,6 +48,7 @@ LiveSession buildSession({
   StepProgress reflection = StepProgress.none,
   StepProgress commitment = StepProgress.none,
   List<String> rejectedMessages = const [],
+  bool personQuestion = false,
 }) {
   final me = SessionParticipant(
     personId: 'ana',
@@ -96,13 +97,16 @@ LiveSession buildSession({
     followUpValue: hasFollowUpValue
         ? const CurriculumValue(id: 'value-3', name: 'Honestidad', sequence: 3)
         : null,
-    questions: const [
+    questions: [
       ValueQuestion(
         id: 'q1',
         text: '¿Quién es para ti un ejemplo?',
         sortOrder: 1,
+        responseType: personQuestion
+            ? QuestionResponseType.person
+            : QuestionResponseType.text,
       ),
-      ValueQuestion(
+      const ValueQuestion(
         id: 'q2',
         text: '¿Por qué te diste ese puntaje?',
         sortOrder: 2,

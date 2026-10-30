@@ -54,6 +54,7 @@ abstract final class LiveSessionAssembler {
             id: q.id,
             text: q.questionText ?? '',
             sortOrder: q.sortOrder ?? 0,
+            responseType: QuestionResponseType.parse(q.responseType),
           ),
       ],
       participants: participants,

@@ -47,18 +47,22 @@ abstract final class ResponseValidator {
     return errors;
   }
 
-  /// [answers] maps question id to the typed text.
+  /// [answers] maps question id to the typed text. Questions in
+  /// [pickedPersonQuestionIds] hold a name picked from the table, which has
+  /// no minimum length.
   static ResponseErrors reflection({
     required Map<String, String> answers,
     required Iterable<String> questionIds,
     required int? score,
+    Set<String> pickedPersonQuestionIds = const {},
   }) {
     final errors = <String, ResponseError>{};
     for (final id in questionIds) {
       final text = (answers[id] ?? '').trim();
       if (text.isEmpty) {
         errors[answerField(id)] = ResponseError.required;
-      } else if (text.length < AppLimits.shortTextMinLength) {
+      } else if (text.length < AppLimits.shortTextMinLength &&
+          !pickedPersonQuestionIds.contains(id)) {
         errors[answerField(id)] = ResponseError.tooShort;
       }
     }

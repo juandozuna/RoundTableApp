@@ -3,7 +3,17 @@
 // Run after `live-session` (or on the seeded demo data); the checks do not depend on how many
 // closed sessions fall inside the 8-week window the devices sync.
 import { App, check, sleep } from '../lib.mjs';
-import { resetDemoSession } from '../flows.mjs';
+import { refreshKpis, resetDemoSession, sql } from '../flows.mjs';
+
+/** The lists sit below the charts and are built lazily: scroll the page down so they exist. */
+async function scrollDown(app) {
+  const { height, width } = app.page.viewport();
+  await app.page.mouse.move(width / 2, height / 2);
+  for (let i = 0; i < 6; i++) {
+    await app.page.mouse.wheel({ deltaY: 900 });
+    await sleep(250);
+  }
+}
 
 const TAB = /^Progreso(\s*\n?Pestaña.*)?$/;
 
@@ -40,6 +50,44 @@ export async function history(browser) {
     await facil.click('Volver', { role: 'button' });
     check('back returns to the table history', await facil.seen('Progreso de la mesa', 10_000));
     await sleep(300);
+
+    // Incomplete session (RF-50): the facilitator's close happens before the answers stage, as the
+    // sessions function applies it (same SQL as the Edge Function), so the server marks it.
+    const SESSION = "md5('gold-roundtables:session:luz-03:4')::uuid";
+    const FACIL = "md5('gold-roundtables:user:facil')::uuid";
+    check('no session is marked incomplete before', !(await facil.has('Incompleta')) && !(await ana.has('Incompleta')));
+    sql(`select api.session_change(${FACIL}, ${SESSION}, '{"status":"open","stage":"attendance"}'::jsonb)`);
+    sql(`select api.session_change(${FACIL}, ${SESSION}, '{"status":"closed"}'::jsonb)`);
+    check('server: closed early → incomplete / closed_early',
+      sql(`select completion || '/' || incomplete_reason from sessions where id = ${SESSION}`) === 'incomplete/closed_early');
+    check('server: the close is audited with its completion',
+      sql(`select payload->>'completion' from audit_events where entity_id = ${SESSION} and event_type = 'session.closed' order by created_at desc limit 1`) === 'incomplete');
+    check('server: the next session still follows up this value once',
+      sql(`select count(*) from sessions n join sessions c on c.id = ${SESSION} where n.round_table_id = c.round_table_id and n.status = 'scheduled' and n.follow_up_value_id = c.value_id`) === '1');
+    await scrollDown(facil);
+    check('facilitator sees the session marked "Incompleta" in the table history', await facil.seen('Incompleta', 20_000));
+    await facil.shot('h-05-incomplete-table-history');
+    await scrollDown(ana);
+    check('member sees it marked "Incompleta" in their progress', await ana.seen('Incompleta', 20_000));
+    await ana.shot('h-05-incomplete-member-progress');
+    await ana.setOffline(true);
+    await scrollDown(ana);
+    check('the marker is kept offline', (await ana.seen('Sin conexión', 15_000)) && (await ana.has('Incompleta')));
+    await ana.setOffline(false);
+
+    // KPIs: the reports headline counts incomplete sessions.
+    refreshKpis();
+    const admin = await App.open(browser, 'admin-historial');
+    try {
+      await admin.devSignIn('admin');
+      await admin.click('Informes', { role: 'button' });
+      await admin.waitFor(/VALORES COMPLETADOS/, { timeout: 20_000 });
+      check('reports show the incomplete-sessions KPI', await admin.seen(/Sesiones incompletas: [1-9]/, 10_000));
+      await admin.shot('h-06-reports-incomplete');
+    } finally {
+      await admin.close();
+    }
+    resetDemoSession();
   } finally {
     await ana.close();
     await facil.close();

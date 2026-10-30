@@ -1923,6 +1923,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get kpiSyncedLateDetail => 'respuestas cargadas tras la sesión';
 
   @override
+  String get kpiSessionsIncomplete => 'Sesiones incompletas';
+
+  @override
+  String kpiSessionsIncompleteDetail(int closed) {
+    return 'de $closed sesiones cerradas, sin llegar a las respuestas';
+  }
+
+  @override
   String get kpiSeeDelayed => 'Ver retrasadas';
 
   @override
@@ -3484,6 +3492,17 @@ class AppLocalizationsEs extends AppLocalizations {
       'El contenido está en tu folleto; aquí solo anotas tus respuestas.';
 
   @override
+  String get sessionMemberPersonPickHelper =>
+      'Toca a alguien de tu mesa, o escribe otro nombre abajo.';
+
+  @override
+  String get sessionMemberPersonOtherLabel => 'Otra persona';
+
+  @override
+  String get sessionMemberPersonOtherHint =>
+      'Escribe el nombre si no está en la lista';
+
+  @override
   String sessionMemberReflectionScoreLabel(String value) {
     return 'Tu puntaje inicial en $value';
   }
@@ -4899,6 +4918,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get historySessionOpenNow => 'En curso';
+
+  @override
+  String get historySessionIncomplete => 'Incompleta';
 
   @override
   String get historyAttendanceNone => 'Sin registro';

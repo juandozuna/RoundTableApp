@@ -236,6 +236,11 @@ class ReportsPage extends StatelessWidget {
         ),
       ),
       KpiTile(
+        label: l10n.kpiSessionsIncomplete,
+        value: '${summary.sessionsIncomplete}',
+        detail: l10n.kpiSessionsIncompleteDetail(summary.sessionsClosed),
+      ),
+      KpiTile(
         label: l10n.kpiSyncedLate,
         value: '${summary.syncedLateRows}',
         detail: l10n.kpiSyncedLateDetail,

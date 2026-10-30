@@ -16,6 +16,9 @@ abstract class SessionDraft with _$SessionDraft {
     int? followUpScore,
     @Default('') String followUpJustification,
     @Default({}) Map<String, String> answers,
+
+    /// Person picked for a `person` question, by question id.
+    @Default({}) Map<String, String> answerPersonIds,
     int? reflectionScore,
     @Default('') String reflectionJustification,
     @Default('') String commitmentWhat,

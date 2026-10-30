@@ -35,10 +35,20 @@ export async function memberFollowUp(app, { outcome = 'Lo cumplí', note = 'Cump
   await app.click('Enviar seguimiento', { role: 'button' });
 }
 
-export async function memberValue(app, { why, who, situation, score = 7 }) {
+/**
+ * The "ejemplo" question is a person question (RF-54): `whoPick` taps a person of the table,
+ * otherwise `who` is typed in "Otra persona".
+ */
+export async function memberValue(app, { why, who, whoPick, situation, score = 7 }) {
   await app.waitFor('VALOR ACTUAL', { timeout: 30_000 });
+  // The form is long (people chips): start from the top so the first field is not under the sticky header.
+  const { height, width } = app.page.viewport();
+  await app.page.mouse.move(width / 2, height / 2);
+  await app.page.mouse.wheel({ deltaY: -5000 });
+  await sleep(400);
   await app.fill('¿Por qué te diste', why);
-  await app.fill('¿Quién es para ti', who);
+  if (whoPick) await app.click(whoPick, { role: 'button' });
+  else await app.fill('Otra persona', who);
   await app.fill('¿En qué situación', situation);
   await app.click(`Puntaje ${score}`, { role: 'button' });
   await app.click('Enviar y seguir al compromiso', { role: 'button' });

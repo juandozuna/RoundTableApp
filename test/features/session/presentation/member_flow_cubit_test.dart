@@ -154,6 +154,73 @@ void main() {
     verifyNever(() => reflection(any()));
   });
 
+  group('person answers', () {
+    test('picking a person stores their id and name, and sends both', () async {
+      when(() => reflection(any())).thenAnswer((_) async {});
+      cubit
+        ..setReflectionScore(8)
+        ..pickAnswerPerson('q1', 'sofia', 'Li')
+        ..setAnswer('q2', 'Cumplo');
+
+      await cubit.submitReflection(flow(stage: SessionStage.value));
+
+      final sent =
+          verify(() => reflection(captureAny())).captured.single
+              as ReflectionSubmission;
+      expect(sent.answers['q1'], 'Li', reason: 'a short name is accepted');
+      expect(sent.answerPersonIds, {'q1': 'sofia'});
+      expect(cubit.state.justSaved, MemberStep.reflection);
+    });
+
+    test('picking the same person again clears the choice', () {
+      cubit
+        ..pickAnswerPerson('q1', 'sofia', 'Sofía Prueba')
+        ..pickAnswerPerson('q1', 'sofia', 'Sofía Prueba');
+
+      expect(cubit.state.answerPersonIds, isEmpty);
+      expect(cubit.state.answers['q1'], '');
+    });
+
+    test('typing after a pick turns it into free text', () {
+      cubit
+        ..pickAnswerPerson('q1', 'sofia', 'Sofía Prueba')
+        ..setAnswer('q1', 'Mi abuela');
+
+      expect(cubit.state.answerPersonIds, isEmpty);
+      expect(cubit.state.answers['q1'], 'Mi abuela');
+    });
+
+    test('the text field echoing the picked name keeps the pick', () {
+      cubit
+        ..pickAnswerPerson('q1', 'sofia', 'Sofía Prueba')
+        ..setAnswer('q1', 'Sofía Prueba');
+
+      expect(cubit.state.answerPersonIds, {'q1': 'sofia'});
+    });
+
+    test('free text keeps its minimum length', () async {
+      cubit
+        ..setReflectionScore(8)
+        ..setAnswer('q1', 'Al')
+        ..setAnswer('q2', 'Cumplo');
+
+      await cubit.submitReflection(flow(stage: SessionStage.value));
+
+      expect(cubit.state.errors.keys, ['answer:q1']);
+      verifyNever(() => reflection(any()));
+    });
+
+    test('the picked person is part of the saved draft', () async {
+      await cubit.restoreDraft(sessionId: 'session-4', personId: 'ana');
+      cubit.pickAnswerPerson('q1', 'sofia', 'Sofía Prueba');
+      await Future<void>.delayed(
+        MemberFlowCubit.draftSaveDelay + const Duration(milliseconds: 50),
+      );
+
+      expect(drafts.stored['session-4/ana']?.answerPersonIds, {'q1': 'sofia'});
+    });
+  });
+
   test('the commitment needs qué, cuándo and cómo', () async {
     cubit.setCommitmentWhat('Llamar a mi abuela');
     await cubit.submitCommitment(flow(stage: SessionStage.value));

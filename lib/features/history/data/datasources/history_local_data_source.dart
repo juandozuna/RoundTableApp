@@ -54,7 +54,7 @@ SELECT v.id, v.sequence, ${ContentTextSql.name('value', 'v')} AS name,
 FROM curriculum_values v LEFT JOIN curriculum_modules m ON m.id = v.module_id''',
     );
     final sessions = await db.getAll(
-      'SELECT id, status, value_id, follow_up_value_id, scheduled_at '
+      'SELECT id, status, value_id, follow_up_value_id, scheduled_at, completion '
       'FROM sessions WHERE round_table_id = ?',
       [tableId],
     );
@@ -133,6 +133,7 @@ FROM curriculum_values v LEFT JOIN curriculum_modules m ON m.id = v.module_id'''
       valueId: row['value_id'] as String?,
       followUpValueId: row['follow_up_value_id'] as String?,
       scheduledAt: _date(row['scheduled_at']),
+      incomplete: row['completion'] == 'incomplete',
     );
   }
 

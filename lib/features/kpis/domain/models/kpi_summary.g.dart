@@ -26,6 +26,7 @@ Map<String, dynamic> _$KpiTableCountsToJson(_KpiTableCounts instance) =>
 
 _KpiSummary _$KpiSummaryFromJson(Map<String, dynamic> json) => _KpiSummary(
   sessionsClosed: (json['sessions_closed'] as num?)?.toInt() ?? 0,
+  sessionsIncomplete: (json['sessions_incomplete'] as num?)?.toInt() ?? 0,
   valuesCompleted: (json['values_completed'] as num?)?.toInt() ?? 0,
   memberValuesCompleted:
       (json['member_values_completed'] as num?)?.toInt() ?? 0,
@@ -49,6 +50,7 @@ _KpiSummary _$KpiSummaryFromJson(Map<String, dynamic> json) => _KpiSummary(
 Map<String, dynamic> _$KpiSummaryToJson(_KpiSummary instance) =>
     <String, dynamic>{
       'sessions_closed': instance.sessionsClosed,
+      'sessions_incomplete': instance.sessionsIncomplete,
       'values_completed': instance.valuesCompleted,
       'member_values_completed': instance.memberValuesCompleted,
       'attendance_pct': ?instance.attendancePct,

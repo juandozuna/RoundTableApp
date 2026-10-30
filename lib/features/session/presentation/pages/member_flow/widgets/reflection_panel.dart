@@ -9,12 +9,14 @@ import '../../../../../../core/widgets/score_grid.dart';
 import '../../../../domain/models/member_flow.dart';
 import '../../../../domain/models/member_step.dart';
 import '../../../../domain/models/response_validation.dart';
+import '../../../../domain/models/value_question.dart';
 import '../cubit/member_flow_cubit.dart';
 import '../cubit/member_flow_state.dart';
 import 'draft_text_field.dart';
 import 'locked_step_card.dart';
 import 'member_results.dart';
 import 'member_section_title.dart';
+import 'person_answer_field.dart';
 import 'response_error_text.dart';
 
 /// Current value, part 1: the reflection questions and the initial score.
@@ -83,17 +85,39 @@ class ReflectionPanel extends StatelessWidget {
         ),
         for (final question in session.questions) ...[
           const SizedBox(height: AppSpacing.lg),
-          DraftTextField(
-            key: ValueKey('answer-${question.id}'),
-            label: question.text,
-            text: state.answers[question.id] ?? '',
-            maxLength: 140,
-            errorText: errors.messageFor(
-              ResponseValidator.answerField(question.id),
-              l10n,
+          if (question.responseType == QuestionResponseType.person)
+            PersonAnswerField(
+              key: ValueKey('answer-${question.id}'),
+              question: question.text,
+              people: [
+                for (final p in session.participants)
+                  if (!p.isMe) p,
+              ],
+              text: state.answers[question.id] ?? '',
+              pickedPersonId: state.answerPersonIds[question.id],
+              errorText: errors.messageFor(
+                ResponseValidator.answerField(question.id),
+                l10n,
+              ),
+              onPick: (person) => cubit.pickAnswerPerson(
+                question.id,
+                person.personId,
+                person.fullName,
+              ),
+              onTyped: (text) => cubit.setAnswer(question.id, text),
+            )
+          else
+            DraftTextField(
+              key: ValueKey('answer-${question.id}'),
+              label: question.text,
+              text: state.answers[question.id] ?? '',
+              maxLength: 140,
+              errorText: errors.messageFor(
+                ResponseValidator.answerField(question.id),
+                l10n,
+              ),
+              onChanged: (text) => cubit.setAnswer(question.id, text),
             ),
-            onChanged: (text) => cubit.setAnswer(question.id, text),
-          ),
         ],
         const SizedBox(height: AppSpacing.lg),
         Text(

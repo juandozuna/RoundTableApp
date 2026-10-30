@@ -120,6 +120,11 @@ class Sessions extends Table with _PowerSyncId {
   TextColumn get answersClosedAt => text().nullable()();
   TextColumn get cancelledReason => text().nullable()();
 
+  /// `complete` or `incomplete`, set by the server when the session closes
+  /// (RF-50); `incomplete_reason` says why.
+  TextColumn get completion => text().nullable()();
+  TextColumn get incompleteReason => text().nullable()();
+
   /// `regular` or `extraordinary` (RF-30).
   TextColumn get kind => text().nullable()();
 
@@ -175,6 +180,10 @@ class MemberAnswers extends Table with _PowerSyncId, _CaptureColumns {
   TextColumn get valueId => text().nullable()();
   TextColumn get questionId => text().nullable()();
   TextColumn get answerText => text().nullable()();
+
+  /// The person picked for a `person` question (RF-54); `answerText` keeps
+  /// their name. Null for free text.
+  TextColumn get answerPersonId => text().nullable()();
 }
 
 @DataClassName('CommitmentRow')

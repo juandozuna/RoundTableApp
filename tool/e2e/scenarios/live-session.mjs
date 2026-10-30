@@ -75,7 +75,7 @@ export async function liveSession(browser) {
     await facil.click('Abrir valor actual', { role: 'button' });
     if (await facil.seen('Abrir ahora', 3000)) await facil.click('Abrir ahora', { role: 'button' });
     check('member moves to the value stage', await ana.seen('VALOR ACTUAL', 15_000));
-    await memberValue(ana, { why: 'Porque cumplo lo que prometo', who: 'Mi abuela', situation: 'Un plazo en el trabajo', score: 7 });
+    await memberValue(ana, { why: 'Porque cumplo lo que prometo', whoPick: 'Luis Ferrer', situation: 'Un plazo en el trabajo', score: 7 });
     await ana.shot('c-03-member-commitment');
     await memberCommitment(ana, { what: 'Llamar a mi abuela 2 veces' });
     check('member commitment saved', await ana.seen('Enviado', 15_000));
@@ -96,6 +96,7 @@ export async function liveSession(browser) {
     await sleep(3500);
     check('facilitator sees the closed-session summary', (await facil.seen('Sesión cerrada · 6 de 21 respuestas recibidas', 15_000)) && (await facil.has('Presentes (incluye facilitador)')));
     check('member sees the thank-you summary with their answers', (await ana.seen('SESIÓN CERRADA', 15_000)) && (await ana.has('Gracias, Ana Lucía')) && (await ana.has('Llamar a mi abuela 2 veces')));
+    check('member summary names the person picked as the example (RF-54)', await ana.has('Luis Ferrer'));
     await facil.shot('c-06-facilitator-summary');
     await ana.shot('c-06-member-summary');
 
@@ -104,6 +105,10 @@ export async function liveSession(browser) {
     check('server: 8 attendance rows, 4 assessments (follow-up + initial per person), 6 answers, 2 commitments',
       rows('session_attendance') === 8 && rows('member_assessments') === 4 && rows('member_answers') === 6 && rows('member_commitments') === 2,
       ['session_attendance', 'member_assessments', 'member_answers', 'member_commitments'].map((t) => `${t}=${rows(t)}`).join(' '));
+    check('server: complete session (closed from the answers stage)', sql(`select completion || '/' || coalesce(incomplete_reason, '-') from sessions where id = ${SESSION}`) === 'complete/-');
+    check('server: Ana\'s picked person is stored with the name; the facilitator\'s typed name has no person',
+      sql(`select string_agg(p.first_name || ':' || coalesce(a.answer_person_id::text, '-'), ',' order by p.first_name) from member_answers a join people p on p.id = a.person_id join value_questions q on q.id = a.question_id where a.session_id = ${SESSION} and q.response_type = 'person'`)
+        === `Ana Lucía:${sql("select md5('gold-roundtables:person:luis')::uuid")},Sofía:-`);
     check('server: no score of 5 stored', Number(sql('select count(*) from member_assessments where score = 5')) === 0);
     check('server: nothing flagged late (everything synced while the session was open)', Number(sql(`select count(*) from member_assessments where session_id = ${SESSION} and synced_late`)) === 0);
 

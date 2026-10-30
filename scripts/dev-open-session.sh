@@ -67,6 +67,7 @@ begin
   from public.round_tables where id = v_table;
   update public.sessions set status = 'scheduled', stage = 'lobby', scheduled_at = v_now,
     started_at = null, ended_at = null, answers_closed_at = null, cancelled_reason = null,
+    completion = null, incomplete_reason = null,
     kind = 'regular', original_scheduled_at = null,
     device_modified_at = null, archived_at = null where id = v_session;
 end $$;
