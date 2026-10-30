@@ -19,9 +19,11 @@ import '../../../domain/models/live_session.dart';
 import '../../../domain/models/member_flow.dart';
 import '../../../domain/models/member_step.dart';
 import '../../../domain/models/session_participant.dart';
+import '../../../domain/models/session_write_failure.dart';
 import '../../../session_routes.dart';
 import '../../widgets/session_connection_pill.dart';
 import '../../widgets/session_timer.dart';
+import '../../widgets/session_write_error_text.dart';
 import '../member_flow/member_flow_view.dart';
 import '../session/cubit/session_cubit.dart';
 import '../session/cubit/session_state.dart';
@@ -87,6 +89,11 @@ class FacilitatorSessionView extends StatelessWidget {
               previous.view.stage != current.view.stage,
           listener: (context, _) =>
               context.read<FacilitatorBoardCubit>().followCurrentStage(),
+        ),
+        BlocListener<FacilitatorBoardCubit, FacilitatorBoardState>(
+          listenWhen: (previous, current) =>
+              current.failure != null && current.failure != previous.failure,
+          listener: _onBoardFailure,
         ),
         BlocListener<SessionCubit, SessionState>(
           listenWhen: (_, current) =>
@@ -160,8 +167,21 @@ class FacilitatorSessionView extends StatelessWidget {
     if (prompt != null) await _showPrompt(context, cubit, prompt);
   }
 
+  void _onBoardFailure(BuildContext context, FacilitatorBoardState board) {
+    final l10n = context.l10n;
+    AppToast.show(
+      context,
+      sessionWriteErrorText(l10n, board.failure!, fallback: l10n.errorGeneric),
+      kind: AppToastKind.error,
+    );
+    context.read<FacilitatorBoardCubit>().consumeFailure();
+  }
+
   String _controlErrorText(BuildContext context, Object error) {
     final l10n = context.l10n;
+    if (error is SessionWriteFailure) {
+      return sessionWriteErrorText(l10n, error, fallback: l10n.errorGeneric);
+    }
     if (error is! ApiException) return l10n.errorGeneric;
     return switch (error.code) {
       'invalid_session_transition' => l10n.sessionBoardErrorTransition,

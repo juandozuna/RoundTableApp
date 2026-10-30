@@ -1,9 +1,7 @@
-import '../../../../core/models/health_status.dart';
 import '../../domain/models/home_commitment.dart';
 import '../../domain/models/home_progress.dart';
 
-/// A table and its pending session as read from the local database or from
-/// PostgREST. Data-layer only; the service maps it to domain models.
+/// A table and its pending session as read from PostgREST. Data-layer only; the service maps it to domain models.
 class HomeTableRecord {
   const HomeTableRecord({
     required this.tableId,
@@ -20,7 +18,6 @@ class HomeTableRecord {
     this.sessionIsExtraordinary = false,
     this.rescheduledFrom,
     this.cancelledNoticeFor,
-    this.health,
   });
 
   final String tableId;
@@ -42,9 +39,6 @@ class HomeTableRecord {
   /// Slot of the latest session an administrator cancelled since the last
   /// closed one; the table's next session carries the same value.
   final DateTime? cancelledNoticeFor;
-
-  /// Pre-computed by the server (`kpi_tables`); `null` for local rows.
-  final HealthStatus? health;
 }
 
 /// Personal part of a member's home.

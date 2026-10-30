@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Regenerates localizations and all build_runner output (freezed, json,
-# injectable, retrofit, drift). Run after changing ARB files, annotations or
+# injectable, retrofit). Run after changing ARB files, annotations or
 # generated models. Never edit generated files by hand.
 set -euo pipefail
 cd "$(dirname "$0")/.."

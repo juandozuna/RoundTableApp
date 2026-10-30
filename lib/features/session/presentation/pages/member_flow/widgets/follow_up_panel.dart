@@ -89,12 +89,7 @@ class FollowUpPanel extends StatelessWidget {
         children: [
           MemberResults(session: flow.session),
           const SizedBox(height: AppSpacing.md),
-          AppMessage(
-            tone: StatusTone.ok,
-            title: flow.isLive && !flow.session.iAmFacilitator
-                ? l10n.sessionMemberSentLive
-                : l10n.sessionMemberSavedOffline,
-          ),
+          AppMessage(tone: StatusTone.ok, title: l10n.sessionMemberSent),
         ],
       ),
     );

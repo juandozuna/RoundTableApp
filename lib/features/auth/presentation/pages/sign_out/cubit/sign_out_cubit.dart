@@ -19,7 +19,8 @@ class SignOutCubit extends Cubit<SignOutState> {
     this._signOutAndErase,
   ) : super(const SignOutState.checking());
 
-  /// How long "Sincronizar y salir" waits for the upload queue to drain.
+  /// How long "Sincronizar y salir" waits for the upload queue to drain
+  /// (always empty while the data layer is online-only).
   static const Duration syncTimeout = Duration(seconds: 45);
 
   final WatchSyncStatusUseCase _watchSync;
@@ -37,8 +38,9 @@ class SignOutCubit extends Cubit<SignOutState> {
     );
   }
 
-  /// Signs out keeping local data; unsent changes upload at the next sign-in
-  /// of the same person (ADR 0004).
+  /// Signs out keeping device-local data. With an outbox, unsent changes
+  /// would upload at the next sign-in of the same person; online-only there
+  /// are none.
   Future<void> signOut() => _finish(_signOut.call);
 
   Future<void> signOutAndErase() => _finish(_signOutAndErase.call);

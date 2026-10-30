@@ -20,7 +20,6 @@ build=true
 if $build; then
   require_cmd flutter
   load_supabase_keys
-  : "${POWERSYNC_URL:=http://127.0.0.1:${POWERSYNC_PORT}}"
   : "${DEV_AUTH:=true}"
   : "${AUTH_METHODS:=email,google,apple,facebook}"
   : "${APP_ENV:=local}"
@@ -28,7 +27,6 @@ if $build; then
   defines=(
     "--dart-define=SUPABASE_URL=$SUPABASE_URL"
     "--dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
-    "--dart-define=POWERSYNC_URL=$POWERSYNC_URL"
     "--dart-define=DEV_AUTH=$DEV_AUTH"
     "--dart-define=AUTH_METHODS=$AUTH_METHODS"
     "--dart-define=APP_ENV=$APP_ENV"

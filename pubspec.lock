@@ -169,14 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  charcode:
-    dependency: transitive
-    description:
-      name: charcode
-      sha256: fb0f1107cac15a5ea6ef0a6ef71a807b9e4267c713bb93e00e92d737cc8dbd8a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
   checked_yaml:
     dependency: transitive
     description:
@@ -193,14 +185,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  cli_util:
-    dependency: transitive
-    description:
-      name: cli_util
-      sha256: ff6785f7e9e3c38ac98b2fb035701789de90154024a75b6cb926445e83197d1c
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.2"
   clock:
     dependency: transitive
     description:
@@ -337,30 +321,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  drift:
-    dependency: "direct main"
-    description:
-      name: drift
-      sha256: bab55d542d63765f6250ee3e2c62e11bfa1145d4ec2ffa05353c8fb4e10b52c1
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.34.4"
-  drift_dev:
-    dependency: "direct dev"
-    description:
-      name: drift_dev
-      sha256: "9cfff1576b49725da0d32c040651a41ae195e8c4af8d8da301593e41d7abc2f7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.34.0"
-  drift_sqlite_async:
-    dependency: "direct main"
-    description:
-      name: drift_sqlite_async
-      sha256: "28c666847ecbc2e90dbcf8e8c2eecbf847a38af7e6480efc08f3a3c39e060f8d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   fake_async:
     dependency: transitive
     description:
@@ -829,14 +789,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  native_toolchain_c:
-    dependency: transitive
-    description:
-      name: native_toolchain_c
-      sha256: f9c168717100ae6d9fee9ffb0be379bf1f8b26b0f6bcbd4fdddcd931993a6a72
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.19.2"
   nested:
     dependency: transitive
     description:
@@ -1005,22 +957,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.1"
-  powersync:
-    dependency: "direct main"
-    description:
-      name: powersync
-      sha256: f4567cbf997c7ff796f0a139b70877a0fa0ff0965200ef045555841384ded76d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.5.0"
-  powersync_flutter_libs:
-    dependency: transitive
-    description:
-      name: powersync_flutter_libs
-      sha256: "24324947bffee25912abd3534203d7ab070b99d3186a8de658205ffb44902971"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0+eol"
   protobuf:
     dependency: transitive
     description:
@@ -1266,62 +1202,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.2"
-  sqlcipher_flutter_libs:
-    dependency: transitive
-    description:
-      name: sqlcipher_flutter_libs
-      sha256: "38d62d659d2fb8739bf25a42c9a350d1fdd6c29a5a61f13a946778ec75d27929"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.0+eol"
-  sqlite3:
-    dependency: transitive
-    description:
-      name: sqlite3
-      sha256: "4c7fe79840389aaeaf05fd093f795b631b5a98e2bd28d54e555c100f4a9c7a1c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.5.2"
-  sqlite3_connection_pool:
-    dependency: transitive
-    description:
-      name: sqlite3_connection_pool
-      sha256: "3cb5be5feb10933cc46fc25db8054dc5de9f90c72cdf386bd80d801e856a646a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.14"
-  sqlite3_flutter_libs:
-    dependency: transitive
-    description:
-      name: sqlite3_flutter_libs
-      sha256: "3ed7553eee7bb368f8950f58ba29f634e06e813c029aff6a0d60862b96de8454"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.0+eol"
-  sqlite3_web:
-    dependency: transitive
-    description:
-      name: sqlite3_web
-      sha256: "8c140bd9124c060dd54227c5ccc5e1ce32123ef5d0c2f8cf46820c6c511c6c63"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.5"
-  sqlite_async:
-    dependency: transitive
-    description:
-      name: sqlite_async
-      sha256: "1e35687e4053b6f48287e15c97cf6ee556b9770b12a048623e96af7742b3e9db"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.14.6"
-  sqlparser:
-    dependency: transitive
-    description:
-      name: sqlparser
-      sha256: "40bdddb306a727be9ce510bd2d2b9a6c9db6c586d846ef7b22e3990a2b24f02d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.44.5"
   stack_trace:
     dependency: transitive
     description:

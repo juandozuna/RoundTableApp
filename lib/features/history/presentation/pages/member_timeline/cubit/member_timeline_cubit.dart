@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/services/connectivity/watch_connectivity_use_case.dart';
+import '../../../../../../core/services/logging/app_log.dart';
 import '../../../../domain/models/member_history.dart';
 import '../../../../domain/use_cases/watch/watch_member_history_use_case.dart';
 import 'member_timeline_state.dart';
@@ -36,10 +37,18 @@ class MemberTimelineCubit extends Cubit<MemberTimelineState> {
           error: null,
         ),
       ),
-      onError: (Object error) => emit(
-        state.copyWith(status: MemberTimelineStatus.failure, error: error),
-      ),
+      onError: _onError,
     );
+  }
+
+  /// Once the timeline has loaded, a failed refresh keeps it on screen; the
+  /// next data replaces it.
+  void _onError(Object error) {
+    if (state.status == MemberTimelineStatus.ready) {
+      AppLog.warning('history', 'Member timeline refresh failed', error);
+      return;
+    }
+    emit(state.copyWith(status: MemberTimelineStatus.failure, error: error));
   }
 
   Future<void> retry() async {

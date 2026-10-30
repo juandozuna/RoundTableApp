@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Resets the local data: `supabase db reset` (migrations + seed), re-creates the PowerSync
-# replication role, wipes PowerSync's storage (its replication slot is invalid after a reset) and
-# restarts PowerSync. Web containers are left alone.
+# Resets the local data: `supabase db reset` (migrations + seed). Web containers are left alone.
 #
 # DESTRUCTIVE: wipes the local Supabase database. If other people/agents share this stack,
 # coordinate first. Pass --yes to skip the confirmation.
@@ -20,14 +18,6 @@ if [[ "${1:-}" != "--yes" ]]; then
   [[ "$answer" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
 fi
 
-info "Stopping PowerSync (drops its storage so it re-replicates from scratch)"
-compose --profile powersync down --volumes --remove-orphans
-
 info "supabase db reset"
 (cd "$repo_root" && supabase db reset)
-
-bash "$here/setup-powersync-replication.sh"
-
-info "Starting PowerSync"
-compose --profile powersync up -d --wait
-ok "PowerSync healthy — data reset and re-seeded (dev users keep password dev-password-123)"
+ok "Data reset and re-seeded (dev users keep password dev-password-123)"

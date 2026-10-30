@@ -16,8 +16,8 @@ re-creating components).
   a feature prefix on every key to avoid merge conflicts, e.g. `auth_...`).
 - Generated files are committed; run `tool/codegen.sh` after changing annotated code. The parent
   re-runs codegen after merging, so conflicts in generated files are not your problem.
-- Do not hand-edit generated files. Tests: bloc_test + mocktail for Cubits/use cases/services,
-  real-DB tests for Drift/PowerSync where relevant. `flutter analyze` must be clean and
+- Do not hand-edit generated files. Tests: bloc_test + mocktail for Cubits/use cases/services
+  (Drift/PowerSync were removed in ADR 0019). `flutter analyze` must be clean and
   `flutter test` must pass before you finish.
 - Online-only features show the shared OfflineBanner and disable writes when offline.
 - No secrets. No new dependencies unless unavoidable (justify in the report).

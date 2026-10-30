@@ -129,7 +129,7 @@ STATUS=$(curl -s -o /tmp/gr-smoke-body -w '%{http_code}' -X POST "$FN/notificati
   -H "x-cron-secret: $CRON_SECRET" -H 'Content-Type: application/json' -d '{}'); BODY=$(cat /tmp/gr-smoke-body)
 check "table health alerts enqueued (LUZ-07 has fewer than 3 people)" 200 '.enqueued>=1' true
 
-echo "── sync-upload (PowerSync uploadData)"
+echo "── sync-upload (op batch)"
 A1=$(uuid); A2=$(uuid); A3=$(uuid)
 call POST "$FN/sync-upload" "$T_ANA" "{\"batch\":[
   {\"op\":\"PUT\",\"type\":\"member_assessments\",\"id\":\"$A1\",\"opData\":{\"session_id\":\"$S4\",\"person_id\":\"$ANA\",\"kind\":\"follow_up\",\"score\":8,\"device_created_at\":\"$(iso -3)\"}},

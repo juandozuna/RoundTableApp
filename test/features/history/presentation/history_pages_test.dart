@@ -207,7 +207,9 @@ void main() {
           progressState: const ProgressState(status: ProgressStatus.failure),
         );
         expect(
-          find.text('No pudimos leer tu historial en este dispositivo.'),
+          find.text(
+            'No pudimos leer tu historial. Revisa tu conexión e inténtalo de nuevo.',
+          ),
           findsOneWidget,
         );
         await tester.tap(find.text('Reintentar'));

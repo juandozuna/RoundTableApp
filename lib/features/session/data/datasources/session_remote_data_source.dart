@@ -4,6 +4,7 @@ import '../../../../core/models/session_stage.dart';
 import '../../../../core/network/api_guard.dart';
 import '../client/session_control_client.dart';
 import '../client/session_sync_client.dart';
+import '../models/session_write_operation.dart';
 import '../models/sync_upload_response.dart';
 
 /// Edge Function calls of the session feature: the sync upload and the
@@ -19,7 +20,7 @@ class SessionRemoteDataSource {
   static const int maxBatch = 500;
 
   Future<SyncUploadResponse> uploadBatch(List<Map<String, Object?>> batch) =>
-      guardApiCall(() => _sync.upload({'batch': batch}));
+      guardApiCall(() => _sync.upload({SessionWriteKeys.batch: batch}));
 
   Future<void> open(String sessionId, {required SessionStage stage}) =>
       guardApiCall(() => _control.open(sessionId, {'stage': stage.wireValue}));

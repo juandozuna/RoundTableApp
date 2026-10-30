@@ -48,11 +48,6 @@ jobs:
           -x realtime,storage-api,imgproxy,mailpit,studio,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: pgTAP
         run: supabase test db
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - name: PowerSync sync rules (compile + per-user simulation)
-        run: bash powersync/tools/validate.sh
 
   deno:
     name: Edge Function tests (Deno)

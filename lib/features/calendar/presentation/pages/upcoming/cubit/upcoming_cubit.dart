@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/services/connectivity/watch_connectivity_use_case.dart';
+import '../../../../../../core/services/logging/app_log.dart';
 import '../../../../domain/models/upcoming_filter.dart';
 import '../../../../domain/models/upcoming_sessions.dart';
 import '../../../../domain/use_cases/watch/watch_upcoming_sessions_use_case.dart';
@@ -49,8 +50,15 @@ class UpcomingCubit extends Cubit<UpcomingState> {
     ),
   );
 
-  void _onError(Object error) =>
-      emit(state.copyWith(status: UpcomingStatus.failure, error: error));
+  /// Once the sessions have loaded, a failed refresh keeps them on screen;
+  /// the next data replaces them.
+  void _onError(Object error) {
+    if (state.status == UpcomingStatus.ready) {
+      AppLog.warning('calendar', 'Upcoming refresh failed', error);
+      return;
+    }
+    emit(state.copyWith(status: UpcomingStatus.failure, error: error));
+  }
 
   void _onConnectivity(bool online) {
     final reconnected = online && !state.online;

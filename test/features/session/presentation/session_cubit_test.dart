@@ -355,6 +355,35 @@ void main() {
     });
   });
 
+  test('a failed refresh after the first load keeps the last view', () async {
+    final view = await emit(table());
+
+    sessions.addError(const ApiException(kind: ApiErrorKind.network));
+    await pump();
+    expect(cubit.state, isA<SessionReady>());
+    expect((cubit.state as SessionReady).view.session, view.session);
+
+    connectivity.add(false);
+    await pump();
+    expect((cubit.state as SessionReady).view.isOnline, isFalse);
+
+    sessions.add(table(stage: SessionStage.followUp));
+    await pump();
+    expect(
+      (cubit.state as SessionReady).view.session.session.stage,
+      SessionStage.followUp,
+    );
+  });
+
+  test('a failure before the first load recovers when data arrives', () async {
+    sessions.addError(const ApiException(kind: ApiErrorKind.network));
+    await pump();
+    expect(cubit.state, isA<SessionFailure>());
+
+    await emit(table());
+    expect(cubit.state, isA<SessionReady>());
+  });
+
   test('reconnecting restarts sync and says so', () async {
     await emit(table());
     connectivity.add(false);

@@ -393,7 +393,7 @@ Authentication → Sessions / Settings (docs/implementation/offline-window.md, "
   [ ] "Single session per user" off
 Project settings
   [ ] Daily backups verified; PITR on a paid plan (docs/operations.md §2)
-Next (docs/deployment.md): PowerSync replication + service, web build and hosting, smoke test.
+Next (docs/deployment.md): web build and hosting, smoke test.
 CHECKLIST
 }
 

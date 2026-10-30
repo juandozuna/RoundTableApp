@@ -1,5 +1,5 @@
-// Scenario c — the live session with two browsers (facilitator + member) and the real PowerSync
-// service: stages follow live, attendance, follow-up, reflection, score (5 blocked), commitment by
+// Scenario c — the live session with two browsers (facilitator + member) read through PostgREST
+// (polled): stages follow live, attendance, follow-up, reflection, score (5 blocked), commitment by
 // the member and by the facilitator-as-participant, closing answers and the session, summaries.
 import { App, check, sleep } from '../lib.mjs';
 import { memberCommitment, memberFollowUp, memberValue, openSessionScreen, refreshKpis, resetDemoSession, sql } from '../flows.mjs';

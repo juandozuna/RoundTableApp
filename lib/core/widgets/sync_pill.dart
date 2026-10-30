@@ -7,17 +7,27 @@ import '../theme/status_tone.dart';
 import 'status_pill.dart';
 
 /// Sync state of captured answers: pendiente / sincronizando /
-/// sincronizado / sincronizado tarde.
+/// sincronizado / sincronizado tarde, or sin conexión when the app cannot
+/// reach the server.
 class SyncPill extends StatelessWidget {
   const SyncPill({super.key, required this.state, this.detail})
-    : compact = false;
+    : compact = false,
+      offline = false;
 
   /// Inline pill without the detail line.
   const SyncPill.compact({super.key, required this.state})
     : detail = null,
-      compact = true;
+      compact = true,
+      offline = false;
+
+  /// "Sin conexión": nothing can be sent until the connection returns.
+  const SyncPill.offline({super.key, this.detail})
+    : state = SyncState.pending,
+      compact = false,
+      offline = true;
 
   final SyncState state;
+  final bool offline;
 
   /// Second line, e.g. "3 cambios pendientes".
   final String? detail;
@@ -47,12 +57,17 @@ class SyncPill extends StatelessWidget {
     };
   }
 
+  StatusTone get _tone => offline ? StatusTone.offline : toneFor(state);
+  IconData get _icon => offline ? Icons.cloud_off_rounded : iconFor(state);
+
   @override
   Widget build(BuildContext context) {
-    final tone = toneFor(state);
-    final label = labelFor(context, state);
+    final tone = _tone;
+    final label = offline
+        ? context.l10n.connectivityOffline
+        : labelFor(context, state);
     if (compact) {
-      return StatusPill(tone: tone, label: label, icon: iconFor(state));
+      return StatusPill(tone: tone, label: label, icon: _icon);
     }
     final color = context.statusColors.of(tone);
     final detail = this.detail;
@@ -73,7 +88,7 @@ class SyncPill extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(iconFor(state), color: color, size: AppSizes.iconMd),
+            Icon(_icon, color: color, size: AppSizes.iconMd),
             const SizedBox(width: AppSpacing.sm + 2),
             Expanded(
               child: Column(

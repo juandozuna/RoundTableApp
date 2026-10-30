@@ -1,5 +1,7 @@
 # Live session feature (`lib/features/session`)
 
+> **Historical (ADR 0019).** This describes the PowerSync/Drift implementation that was removed; the app is now online only. Current design: [online-data-layer.md](online-data-layer.md) and [ADR 0019](../adr/0019-online-only-supabase-data-layer.md).
+
 How the offline-first live session is put together, how to run it locally, and what is still
 unverified. Architecture rules: [AGENTS.md](../../AGENTS.md). Prototype:
 [session-flow-b-mesa-en-vivo.html](../design/prototypes/session-flow-b-mesa-en-vivo.html).

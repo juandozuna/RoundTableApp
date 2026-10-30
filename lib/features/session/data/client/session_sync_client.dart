@@ -7,7 +7,8 @@ import '../models/sync_upload_response.dart';
 
 part 'session_sync_client.g.dart';
 
-/// `sync-upload` Edge Function: the PowerSync `uploadData` target.
+/// `sync-upload` Edge Function: receives session op batches (sent directly
+/// online; replayed by a future outbox, ADR 0019).
 @lazySingleton
 @RestApi()
 abstract class SessionSyncClient {

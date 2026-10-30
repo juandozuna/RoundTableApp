@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../../core/services/connectivity/watch_connectivity_use_case.dart';
+import '../../../../../../core/services/logging/app_log.dart';
 import '../../../../../../core/sync/domain/sync_snapshot.dart';
 import '../../../../../../core/sync/domain/watch_sync_status_use_case.dart';
 import '../../../../domain/models/home_overview.dart';
@@ -36,8 +37,15 @@ class HomeCubit extends Cubit<HomeState> {
     state.copyWith(status: HomeStatus.ready, overview: overview, error: null),
   );
 
-  void _onError(Object error) =>
-      emit(state.copyWith(status: HomeStatus.failure, error: error));
+  /// Once the overview has loaded, a failed refresh keeps it on screen; the
+  /// next data replaces it.
+  void _onError(Object error) {
+    if (state.status == HomeStatus.ready) {
+      AppLog.warning('home', 'Home refresh failed', error);
+      return;
+    }
+    emit(state.copyWith(status: HomeStatus.failure, error: error));
+  }
 
   void _onConnectivity(bool online) => emit(state.copyWith(online: online));
 

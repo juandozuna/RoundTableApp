@@ -1,5 +1,5 @@
-// Scenario — progress and history: a member sees their own history from the synced local tables
-// (also offline), the facilitator sees the table history and opens a member's timeline.
+// Scenario — progress and history: a member sees their own history (read online through
+// PostgREST, ADR 0019), the facilitator sees the table history and opens a member's timeline.
 // Run after `live-session` (or on the seeded demo data); the checks do not depend on how many
 // closed sessions fall inside the 8-week window the devices sync.
 import { App, check, sleep } from '../lib.mjs';
@@ -31,9 +31,9 @@ export async function history(browser) {
     check('member sees only their own screen, not the table roster', !(await ana.has('Integrantes')));
     await ana.shot('h-01-member-progress');
 
-    // Offline: the history keeps showing what the device holds.
+    // Online only (ADR 0019): going offline shows the offline state; nothing is promised from a device copy.
     await ana.setOffline(true);
-    check('offline banner appears and the history stays', (await ana.seen('Sin conexión', 15_000)) && (await ana.has('últimas 8 semanas')));
+    check('offline banner appears', await ana.seen('Sin conexión', 15_000));
     await ana.shot('h-02-member-progress-offline');
     await ana.setOffline(false);
 
@@ -64,16 +64,13 @@ export async function history(browser) {
       sql(`select payload->>'completion' from audit_events where entity_id = ${SESSION} and event_type = 'session.closed' order by created_at desc limit 1`) === 'incomplete');
     check('server: the next session still follows up this value once',
       sql(`select count(*) from sessions n join sessions c on c.id = ${SESSION} where n.round_table_id = c.round_table_id and n.status = 'scheduled' and n.follow_up_value_id = c.value_id`) === '1');
+    // Another actor's change reaches an open screen on the next 30 s poll (ADR 0019).
     await scrollDown(facil);
-    check('facilitator sees the session marked "Incompleta" in the table history', await facil.seen('Incompleta', 20_000));
+    check('facilitator sees the session marked "Incompleta" in the table history', await facil.seen('Incompleta', 45_000));
     await facil.shot('h-05-incomplete-table-history');
     await scrollDown(ana);
-    check('member sees it marked "Incompleta" in their progress', await ana.seen('Incompleta', 20_000));
+    check('member sees it marked "Incompleta" in their progress', await ana.seen('Incompleta', 45_000));
     await ana.shot('h-05-incomplete-member-progress');
-    await ana.setOffline(true);
-    await scrollDown(ana);
-    check('the marker is kept offline', (await ana.seen('Sin conexión', 15_000)) && (await ana.has('Incompleta')));
-    await ana.setOffline(false);
 
     // KPIs: the reports headline counts incomplete sessions.
     refreshKpis();

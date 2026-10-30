@@ -14,7 +14,7 @@ import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/offline_banner.dart';
 import '../../../../../core/widgets/role_chip.dart';
-import '../../../../../core/widgets/sync_pill.dart';
+import '../../../../../core/widgets/sync_status_pill.dart';
 import '../../../../auth/presentation/widgets/context_switcher.dart';
 import '../../../../home/home_routes.dart';
 import '../../../../notifications/notifications_routes.dart';
@@ -170,12 +170,7 @@ class SettingsPage extends StatelessWidget {
             style: context.textStyles.kicker,
           ),
           const SizedBox(height: AppSpacing.sm),
-          SyncPill(
-            state: sync.aggregateState,
-            detail: sync.hasStalePending
-                ? l10n.syncStaleWarning
-                : l10n.syncPendingCount(sync.pendingCount),
-          ),
+          SyncStatusPill(snapshot: sync),
         ],
       ),
     );

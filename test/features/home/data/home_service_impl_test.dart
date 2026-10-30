@@ -1,20 +1,29 @@
+import 'package:fake_async/fake_async.dart'; // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gold_roundtables/core/data/data_scope.dart';
+import 'package:gold_roundtables/core/data/remote_watch.dart';
 import 'package:gold_roundtables/core/models/health_reason.dart';
 import 'package:gold_roundtables/core/models/health_status.dart';
 import 'package:gold_roundtables/core/models/user_role.dart';
 import 'package:gold_roundtables/core/network/api_exception.dart';
 import 'package:gold_roundtables/core/services/clock/clock_service.dart';
 import 'package:gold_roundtables/core/services/session_context/session_context.dart';
-import 'package:gold_roundtables/features/home/data/datasources/home_local_data_source.dart';
 import 'package:gold_roundtables/features/home/data/datasources/home_remote_data_source.dart';
+import 'package:gold_roundtables/features/home/data/datasources/home_table_remote_data_source.dart';
 import 'package:gold_roundtables/features/home/data/models/home_records.dart';
 import 'package:gold_roundtables/features/home/data/services/home_service_impl.dart';
+import 'package:gold_roundtables/features/home/domain/models/home_commitment.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_kpi_summary.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_overview.dart';
+import 'package:gold_roundtables/features/home/domain/models/home_progress.dart';
 import 'package:gold_roundtables/features/home/domain/models/home_table_alert.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockLocal extends Mock implements HomeLocalDataSource {}
+import '../../../core/data/support/online_data_stubs.dart';
+import '../../settings/support/stub_selected_language.dart';
+import '../../support/spy_remote_watch.dart';
+
+class _MockTables extends Mock implements HomeTableRemoteDataSource {}
 
 class _MockRemote extends Mock implements HomeRemoteDataSource {}
 
@@ -33,6 +42,7 @@ void main() {
   );
   const member = SessionContext(
     role: UserRole.member,
+    personId: 'person-ana',
     tableId: 'table-1',
     organizationId: 'org-1',
   );
@@ -55,89 +65,83 @@ void main() {
     followUpValueName: 'Honestidad',
   );
 
-  late _MockLocal local;
+  late _MockTables tables;
   late _MockRemote remote;
+  late StubSelectedLanguage language;
+  late WatchHarness harness;
   late HomeServiceImpl service;
 
   setUp(() {
-    local = _MockLocal();
+    tables = _MockTables();
     remote = _MockRemote();
-    service = HomeServiceImpl(local, remote, _FixedClock());
+    language = StubSelectedLanguage();
+    harness = WatchHarness();
+    service = HomeServiceImpl(
+      tables,
+      remote,
+      language,
+      _FixedClock(),
+      harness.watch,
+    );
   });
 
-  test(
-    'facilitator home follows the local table and computes health',
-    () async {
-      when(
-        () => local.watchFacilitatorTable('table-1'),
-      ).thenAnswer((_) => Stream.value(record));
+  void tableIs(HomeTableRecord? table, {String? locale}) => when(
+    () => tables.fetchTable('table-1', locale: locale),
+  ).thenAnswer((_) async => table);
 
-      final overview = await service.watchOverview(facilitator).first;
-
-      final session = (overview as HomeFacilitator).session!;
-      expect(session.id, 'session-4');
-      expect(session.seatsTaken, 8);
-      expect(session.valueSequence, 4);
-      expect(session.followUpValueName, 'Honestidad');
-      expect(session.health, HealthStatus.active);
-      verifyNever(() => remote.fetchTable(any()));
-    },
-  );
-
-  test('a table that has not synced yet is read online once', () async {
-    when(
-      () => local.watchFacilitatorTable('table-1'),
-    ).thenAnswer((_) => Stream.value(null));
-    when(() => remote.fetchTable('table-1')).thenAnswer((_) async => record);
+  test('facilitator home reads the table and computes health', () async {
+    tableIs(record);
 
     final overview = await service.watchOverview(facilitator).first;
 
-    expect((overview as HomeFacilitator).session?.id, 'session-4');
+    final session = (overview as HomeFacilitator).session!;
+    expect(session.id, 'session-4');
+    expect(session.seatsTaken, 8);
+    expect(session.valueSequence, 4);
+    expect(session.followUpValueName, 'Honestidad');
+    expect(session.health, HealthStatus.active);
   });
 
-  test('offline first load shows the empty state, not an error', () async {
-    when(
-      () => local.watchFacilitatorTable('table-1'),
-    ).thenAnswer((_) => Stream.value(null));
-    when(
-      () => remote.fetchTable('table-1'),
-    ).thenThrow(const ApiException(kind: ApiErrorKind.network));
+  test('a table RLS does not show leaves the home without a session', () async {
+    tableIs(null);
 
     final overview = await service.watchOverview(facilitator).first;
 
     expect((overview as HomeFacilitator).session, isNull);
   });
 
-  test('falls back to PostgREST when the synced tables are missing', () async {
-    when(
-      () => local.watchFacilitatorTable('table-1'),
-    ).thenAnswer((_) => Stream.error(StateError('no such table: sessions')));
-    when(() => remote.fetchTable('table-1')).thenAnswer((_) async => record);
+  test('a facilitator without a table reads nothing', () async {
+    final overview = await service
+        .watchOverview(const SessionContext(role: UserRole.facilitator))
+        .first;
+
+    expect((overview as HomeFacilitator).session, isNull);
+    verifyZeroInteractions(tables);
+  });
+
+  test('the chosen content language is passed to the read', () async {
+    language.selected = 'en';
+    tableIs(record, locale: 'en');
 
     final overview = await service.watchOverview(facilitator).first;
 
-    expect(
-      (overview as HomeFacilitator).session?.tableName,
-      'Mesa Esperanza 03',
-    );
+    expect((overview as HomeFacilitator).session?.id, 'session-4');
   });
 
   test('exceptions to the schedule reach the home session (RF-30)', () async {
     final regularSlot = DateTime.utc(2026, 10, 28, 1);
     final cancelled = DateTime.utc(2026, 10, 21, 1);
-    when(() => local.watchFacilitatorTable('table-1')).thenAnswer(
-      (_) => Stream.value(
-        HomeTableRecord(
-          tableId: 'table-1',
-          tableName: 'Mesa',
-          tableIsActive: true,
-          seats: 3,
-          sessionId: 's',
-          scheduledAt: upcoming,
-          sessionIsExtraordinary: true,
-          rescheduledFrom: regularSlot,
-          cancelledNoticeFor: cancelled,
-        ),
+    tableIs(
+      HomeTableRecord(
+        tableId: 'table-1',
+        tableName: 'Mesa',
+        tableIsActive: true,
+        seats: 3,
+        sessionId: 's',
+        scheduledAt: upcoming,
+        sessionIsExtraordinary: true,
+        rescheduledFrom: regularSlot,
+        cancelledNoticeFor: cancelled,
       ),
     );
 
@@ -150,9 +154,7 @@ void main() {
   });
 
   test('a regular session carries no exception markers', () async {
-    when(
-      () => local.watchFacilitatorTable('table-1'),
-    ).thenAnswer((_) => Stream.value(record));
+    tableIs(record);
 
     final overview = await service.watchOverview(facilitator).first;
 
@@ -162,40 +164,57 @@ void main() {
     expect(session.cancelledNoticeFor, isNull);
   });
 
-  test('server health wins over the local rule', () async {
-    when(() => local.watchFacilitatorTable('table-1')).thenAnswer(
-      (_) => Stream.value(
+  test(
+    'health follows the table rule: an inactive table is inactive',
+    () async {
+      tableIs(
         HomeTableRecord(
           tableId: 'table-1',
           tableName: 'Mesa',
-          tableIsActive: true,
+          tableIsActive: false,
           seats: 3,
           sessionId: 's',
           scheduledAt: upcoming,
-          health: HealthStatus.delayed,
+        ),
+      );
+
+      final overview = await service.watchOverview(facilitator).first;
+
+      expect(
+        (overview as HomeFacilitator).session?.health,
+        HealthStatus.inactive,
+      );
+    },
+  );
+
+  test('member home carries the commitment and progress', () async {
+    when(
+      () => tables.fetchMember('table-1', personId: 'person-ana', locale: null),
+    ).thenAnswer(
+      (_) async => HomeMemberRecord(
+        table: record,
+        commitment: const HomeCommitment(
+          actionText: 'Hablar con ella',
+          valueName: 'Honestidad',
+          outcome: CommitmentOutcome.kept,
+        ),
+        progress: const HomeProgress(
+          modules: [
+            ModuleProgress(number: 1, name: 'Carácter', completed: 1, total: 2),
+          ],
         ),
       ),
     );
-
-    final overview = await service.watchOverview(facilitator).first;
-
-    expect((overview as HomeFacilitator).session?.health, HealthStatus.delayed);
-  });
-
-  test('member home carries commitment and progress', () async {
-    when(
-      () => local.watchMember('table-1'),
-    ).thenAnswer((_) => Stream.value(HomeMemberRecord(table: record)));
 
     final overview = await service.watchOverview(member).first;
 
     final home = overview as HomeMember;
     expect(home.session?.id, 'session-4');
-    expect(home.lastCommitment, isNull);
-    expect(home.progress.isEmpty, isTrue);
+    expect(home.lastCommitment?.actionText, 'Hablar con ella');
+    expect(home.progress.completed, 1);
   });
 
-  test('manager home loads KPIs and pending invites online', () async {
+  test('manager home loads KPIs, alerts and pending invites', () async {
     when(
       () => remote.fetchKpis('org-1'),
     ).thenAnswer((_) async => const HomeKpiSummary(valuesCompleted: 115));
@@ -220,14 +239,104 @@ void main() {
   });
 
   test('manager home surfaces offline as a stream error', () async {
+    when(() => remote.fetchKpis(any())).thenAnswer(
+      (_) => Future.error(const ApiException(kind: ApiErrorKind.network)),
+    );
+    when(() => remote.countPendingInvites(any())).thenAnswer((_) async => 0);
     when(
-      () => remote.fetchKpis(any()),
-    ).thenThrow(const ApiException(kind: ApiErrorKind.network));
+      () => remote.fetchTableAlerts(any()),
+    ).thenAnswer((_) async => const []);
 
     expect(
       service.watchOverview(coordinator).first,
       throwsA(isA<ApiException>()),
     );
+  });
+
+  group('refresh', () {
+    Future<int> refreshesAfter(DataScope scope) async {
+      var reads = 0;
+      when(() => tables.fetchTable('table-1', locale: null)).thenAnswer((
+        _,
+      ) async {
+        reads++;
+        return HomeTableRecord(
+          tableId: 'table-1',
+          tableName: 'Mesa',
+          tableIsActive: true,
+          seats: reads,
+          sessionId: 's',
+          scheduledAt: upcoming,
+        );
+      });
+      final sub = service.watchOverview(facilitator).listen((_) {});
+      await pumpEventQueue();
+      harness.signal.notify(scope);
+      await pumpEventQueue();
+      await sub.cancel();
+      return reads;
+    }
+
+    test('a session, schedule or admin change refetches', () async {
+      for (final scope in [
+        DataScope.home,
+        DataScope.session,
+        DataScope.calendar,
+        DataScope.admin,
+        DataScope.contentLanguage,
+      ]) {
+        expect(await refreshesAfter(scope), 2, reason: '$scope');
+      }
+    });
+
+    test('every role polls every 30 seconds', () {
+      final spy = SpyRemoteWatch(harness.signal, harness.lifecycle);
+      final polling = HomeServiceImpl(
+        tables,
+        remote,
+        language,
+        _FixedClock(),
+        spy,
+      );
+
+      for (final role in UserRole.values) {
+        polling.watchOverview(SessionContext(role: role, tableId: 'table-1'));
+      }
+
+      expect(spy.pollIntervals, everyElement(slowPollInterval));
+      expect(spy.pollIntervals, hasLength(UserRole.values.length));
+      expect(slowPollInterval, const Duration(seconds: 30));
+    });
+
+    test('a 30 second tick refetches other people\'s changes', () {
+      fakeAsync((async) {
+        var reads = 0;
+        when(() => tables.fetchTable('table-1', locale: null)).thenAnswer((
+          _,
+        ) async {
+          reads++;
+          return HomeTableRecord(
+            tableId: 'table-1',
+            tableName: 'Mesa',
+            tableIsActive: true,
+            seats: reads,
+            sessionId: 's',
+            scheduledAt: upcoming,
+          );
+        });
+        final sub = service.watchOverview(facilitator).listen((_) {});
+        async.flushMicrotasks();
+        expect(reads, 1);
+
+        async.elapse(slowPollInterval);
+        expect(reads, 2);
+        sub.cancel();
+      });
+    });
+
+    test('a history-only change does not', () async {
+      expect(await refreshesAfter(DataScope.history), 1);
+    });
   });
 }
 

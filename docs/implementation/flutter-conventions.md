@@ -8,9 +8,8 @@ holds the architecture rules; this document shows how they map onto the code in 
 
 ```bash
 flutter pub get
-./tool/codegen.sh          # gen-l10n + build_runner (freezed, json, injectable, retrofit, drift)
+./tool/codegen.sh          # gen-l10n + build_runner (freezed, json, injectable, retrofit)
 ./tool/check.sh            # flutter analyze + flutter test (must pass before every commit)
-./tool/setup_web.sh        # only after upgrading powersync / sqlite_async / sqlite3_web
 ```
 
 Run against the local stack (ports from [PLAN.md](PLAN.md)):
@@ -19,14 +18,12 @@ Run against the local stack (ports from [PLAN.md](PLAN.md)):
 flutter run -d chrome --web-port 3000 \
   --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
   --dart-define=SUPABASE_ANON_KEY=<anon or publishable key from `supabase status`> \
-  --dart-define=POWERSYNC_URL=http://127.0.0.1:8080 \
   --dart-define=DEV_AUTH=true \
   --dart-define=APP_ENV=local
 ```
 
 Every define is optional. Without `SUPABASE_*` the app starts signed out and remote calls fail
-with a clear `StateError`. Without `POWERSYNC_URL` the local database still opens, but nothing
-replicates. Firebase push (all platforms) needs `FIREBASE_API_KEY`, `FIREBASE_MESSAGING_SENDER_ID`,
+with a clear `StateError`. Firebase push (all platforms) needs `FIREBASE_API_KEY`, `FIREBASE_MESSAGING_SENDER_ID`,
 `FIREBASE_PROJECT_ID`, the platform's app id (`FIREBASE_WEB_APP_ID`, `FIREBASE_ANDROID_APP_ID`,
 `FIREBASE_IOS_APP_ID`) and, on web, `FIREBASE_VAPID_KEY` (details in `mobile.md`). Without them push is off and the app still
 starts (`FirebaseBootstrap.isAvailable == false`).
@@ -40,14 +37,14 @@ starts (`FirebaseBootstrap.isAvailable == false`).
 | Area | Location | Use it for |
 |---|---|---|
 | DI | `core/config/injection.dart` | `getIt`, `configureDependencies()` (generated `injection.config.dart`) |
-| Config | `core/config/app_config.dart` | Supabase/PowerSync URLs, env, dev-auth flag |
+| Config | `core/config/app_config.dart` | Supabase URL, env, dev-auth flag |
 | Constants | `core/constants/` | `AppLimits` (9 seats, invite code length, 24 h unsynced), API header/envelope keys, `DioNames` |
 | Shared models | `core/models/` | `UserRole`, `SessionStage`, `AttendanceStatus`, `AssessmentKind`, `SyncState`, `HealthStatus` (`@JsonValue` + `wireValue` / `tryParse`), `ScoreRules` |
 | Form rules | `core/form_rules/` | `AppFieldKind`, `FieldValidators`, `FieldTransformers`, `FieldFormatters`, `PhoneDisplayFormatter`, `FieldError` |
 | Network | `core/network/` | Named Dio instances, `AuthInterceptor`, `ApiException`, `guardApiCall`, `ApiException.userMessage(l10n)` |
 | Routing | `core/routing/` | `FeatureRouter`, `ShellDestination`, `AuthRedirectGuard`, `AppRouter`, `AppPageTransitions`, `context.popOrGo`, `RouteQueryKeys` |
 | Services | `core/services/` | `ClockService`, `IdGenerator`, `ConnectivityService`, `SessionContextService`, `AuthStateSource`, `AuthTokenProvider`, `FirebaseBootstrap`, `ExternalLinkService`, `ShareService`, `AppLog` |
-| Sync | `core/sync/` | `SyncDatabase`, `SyncSchemaContribution`, `SyncUploader`, `SyncStatusService`, `WatchSyncStatusUseCase`, `PowerSyncDriftMigration` |
+| Sync | `core/sync/` | `SyncStatusService`, `WatchSyncStatusUseCase` (connectivity only; no database, ADR 0019). PostgREST records and refresh helpers live in `core/data/` (see [online-data-layer.md](online-data-layer.md)) |
 | Theme | `core/theme/` | `AppTheme.light/dark`, `AppColors`, `StatusColors`, `AppTextStyles`, `AppSpacing`, `AppRadii`, `AppSizes`, `AppLayout`, `Contrast` |
 | Widgets | `core/widgets/` | See §9 |
 | Extensions | `core/extensions/` | `context.l10n/colors/statusColors/textStyles/textTheme/layout`, `String.initials`, `GoRouterState.extraAs<T>()` |
@@ -253,80 +250,25 @@ class InvitesRemoteDataSource {
 - `guardApiCall` turns `DioException` into `ApiException` (`kind`, `code`, `message`,
   `statusCode`). It reads the Edge Function envelope `{ "error": { "code", "message" } }` and
   PostgREST's `{ "code", "message" }`.
-- Keep Freezed models, Retrofit clients and Drift databases in separate files (as in the
-  folder template). A Drift database and a `json_serializable` model in one library break
-  generation ("Could not resolve annotation").
+- Keep Freezed models and Retrofit clients in separate files (as in the folder template).
 - Retrofit deserializes Freezed models directly. JSON is snake_case by default (`build.yaml`), so
   `@JsonKey` is needed only for exceptions.
 - Online-only screens (admin, invites, KPIs) show `OfflineBanner(detail:
   l10n.offlineDetailOnlineOnly, onRetry: ...)` when `WatchConnectivityUseCase` reports offline.
 
-### 3.8 Offline-first data (session feature)
+### 3.8 Session data (online now, ADR 0019)
 
-There is one PowerSync database. Feature Drift databases are typed views onto it.
+PowerSync and Drift are removed; there is no local database. Session reads go through Retrofit →
+PostgREST under RLS (records in `lib/core/data/records`), live screens poll about every 5 s and
+refetch after the user's own writes, and writes are UUID-keyed operation batches sent immediately
+to the `sync-upload` Edge Function. With no connection a write is refused with a plain message and
+nothing is queued. The full design is in [online-data-layer.md](online-data-layer.md); AGENTS.md §8
+has the rules, and ADR 0019 describes the future offline outbox (Drift tables mirroring the
+records, an outbox of op batches replayed to `sync-upload`, pull by `updated_at`).
 
-1. Declare the PowerSync tables. Never declare `id`; PowerSync adds it as a text UUID.
-
-   ```dart
-   class SessionSyncSchema implements SyncSchemaContribution {
-     const SessionSyncSchema();
-
-     @override
-     List<Table> get tables => const [
-       Table('attendance', [
-         Column.text('session_id'),
-         Column.text('member_id'),
-         Column.text('status'),            // AttendanceStatus.wireValue
-         Column.text('device_created_at'),
-         Column.integer('synced_late'),    // 0/1
-       ]),
-     ];
-   }
-   ```
-
-   Then add `SessionSyncSchema()` to `syncSchemaContributions`.
-
-2. Declare a Drift database over the same tables. Drift must not create tables:
-
-   ```dart
-   @DriftDatabase(tables: [AttendanceRows])
-   class SessionDriftDatabase extends _$SessionDriftDatabase {
-     SessionDriftDatabase(SyncDatabase db) : super(db.createDriftConnection());
-
-     @override
-     int get schemaVersion => 1;            // always 1; schema lives in PowerSync
-
-     @override
-     MigrationStrategy get migration => PowerSyncDriftMigration.strategy;
-   }
-   ```
-
-   Register it with a `@module` (`@lazySingleton SessionDriftDatabase db(SyncDatabase s) => ...`)
-   and use it only from the local data source. `SyncDatabase.open()` runs at bootstrap before
-   any UI, so `createDriftConnection()` is safe from then on.
-
-3. Writes: create the UUID with `IdGenerator`, set `device_created_at` with
-   `ClockService.nowUtc()`, write in a Drift transaction, and let watch streams update the UI.
-   PowerSync queues the CRUD operation.
-
-4. Uploads: implement `SyncUploader` in the session data layer
-   (`@LazySingleton(as: SyncUploader)`), sending the batch to `sync-upload` through Retrofit, and
-   **delete `lib/core/sync/data/queue_only_sync_uploader.dart`**. The session feature co-owns
-   `lib/core/sync/**`. Contract: return normally only after the server commits. Throw
-   `SyncUploadRejected` for permanent validation failures (logged and dropped so they cannot
-   block the queue). Throw anything else to retry later.
-
-5. Pending state: `SyncStatusService.watch()` → `SyncSnapshot` (`connection`, `uploading`,
-   `downloading`, `pendingCount`, `lastSyncedAt`, `pendingSince`, `hasStalePending` after 24 h,
-   `aggregateState`). `pendingSince` lives in the local-only table `local_sync_state`, so it
-   survives restarts.
-
-6. Sign-in/out lifecycle (`SyncLifecycle`): when signed out, sync **disconnects but keeps**
-   local data and unsent changes, which upload when the same user signs in again. When a
-   **different** user signs in, the device is cleared first (`local_sync_state.owner_user_id`),
-   so one user's data is never shown to another. An explicit "remove my data from this device"
-   action may call `SyncDatabase.disconnect(clearLocalData: true)` through a use case. That
-   deletes unsent changes too, so confirm first when `pendingCount > 0`.
+Writes: create the UUID with `IdGenerator`, stamp `device_created_at` with
+`ClockService.nowUtc()` (the server keeps it for `synced_late`), send the batch through the remote
+data source and map per-op rejections to domain failures.
 
 ### 3.9 Auth, context and sessions
 
@@ -334,8 +276,7 @@ There is one PowerSync database. Feature Drift databases are typed views onto it
   `SupabaseClient` for sign-in and sign-out (OAuth, dev email/password), behind its own
   `AuthService` contract.
 - `SupabaseAuthSession` (core) observes the Supabase session and exposes it as
-  `AuthStateSource` (drives the router guard and `SyncLifecycle`) and `AuthTokenProvider` (Dio and
-  PowerSync). The auth feature does not need to touch these classes.
+  `AuthStateSource` (drives the router guard) and `AuthTokenProvider` (Dio). The auth feature does not need to touch these classes.
 - `SessionContextService` holds the active role/context, and `AppShellCubit` filters
   destinations by its role. The default `InMemorySessionContextService` does not persist. The
   auth/context feature may replace it: add a persisted `@LazySingleton(as:
@@ -431,12 +372,6 @@ sources always win.
 
 ## 7. Web specifics
 
-- PowerSync on web needs `web/sqlite3.wasm` and `web/powersync_db.worker.js`. Both are committed.
-  The worker is **compiled from our lockfile** (`tool/setup_web.sh` → `tool/web/powersync_db_worker.dart`).
-  The prebuilt worker from the PowerSync 2.5.0 release spoke an older `sqlite_async` protocol and
-  failed with `No enum value with that name: "installBroadcastUpdates"`. Re-run the script after
-  any sqlite/powersync upgrade.
-- The local database file is `gold_roundtables.db` (OPFS on web).
 - URLs use Flutter's default hash strategy (`/#/dev/galeria`), so any static server works
   without SPA rewrites. Switching to path URLs needs a server fallback to `index.html`.
 - Web push needs a `firebase-messaging-sw.js` service worker. The notifications feature adds it.

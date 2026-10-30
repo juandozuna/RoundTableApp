@@ -1,5 +1,9 @@
 # 0003 — Offline-first only for the session domain
 
+**Amended by [0019](0019-online-only-supabase-data-layer.md):** the session domain is temporarily
+online only (explicit offline state, writes refused, nothing queued) until an own offline outbox
+is built. The decision below describes the target.
+
 ## Context
 The stakeholder answered "partially, connectivity is required" (PC-12) and "everyone has a phone"
 (PC-06). The product owner expects many members to lack reliable internet during sessions, and

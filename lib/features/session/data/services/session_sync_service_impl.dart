@@ -1,21 +1,16 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/sync/data/sync_database.dart';
+import '../../../../core/data/data_change_signal.dart';
+import '../../../../core/data/data_scope.dart';
 import '../../domain/services/session_sync_service.dart';
 
 @LazySingleton(as: SessionSyncService)
 class SessionSyncServiceImpl implements SessionSyncService {
-  SessionSyncServiceImpl(this._database);
+  SessionSyncServiceImpl(this._signal);
 
-  final SyncDatabase _database;
+  final DataChangeSignal _signal;
 
-  /// PowerSync uploads queued changes on its own while connected; this only
-  /// restarts replication when the connection was lost.
+  /// Live screens refetch now instead of waiting for the next poll.
   @override
-  Future<void> requestSync() async {
-    if (!_database.isOpen || _database.powerSync.currentStatus.connected) {
-      return;
-    }
-    await _database.connect();
-  }
+  Future<void> requestSync() async => _signal.notify(DataScope.session);
 }

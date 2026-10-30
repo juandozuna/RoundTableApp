@@ -14,7 +14,6 @@ WORKDIR /app
 
 ARG SUPABASE_URL=http://127.0.0.1:54321
 ARG SUPABASE_ANON_KEY
-ARG POWERSYNC_URL=http://127.0.0.1:8080
 ARG DEV_AUTH=true
 ARG AUTH_METHODS=email,google,apple,facebook
 ARG APP_ENV=local
@@ -40,7 +39,6 @@ RUN test -n "$SUPABASE_ANON_KEY" || (echo "SUPABASE_ANON_KEY build arg is requir
 RUN flutter build web --release --base-href / \
       --dart-define=SUPABASE_URL="$SUPABASE_URL" \
       --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
-      --dart-define=POWERSYNC_URL="$POWERSYNC_URL" \
       --dart-define=DEV_AUTH="$DEV_AUTH" \
       --dart-define=AUTH_METHODS="$AUTH_METHODS" \
       --dart-define=APP_ENV="$APP_ENV" \

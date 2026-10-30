@@ -197,9 +197,6 @@ import '../../features/auth/presentation/pages/sign_out/cubit/sign_out_cubit.dar
     as _i327;
 import '../../features/auth/presentation/routing/access_redirect_guard.dart'
     as _i393;
-import '../../features/calendar/data/client/calendar_client.dart' as _i515;
-import '../../features/calendar/data/datasources/calendar_local_data_source.dart'
-    as _i67;
 import '../../features/calendar/data/datasources/calendar_remote_data_source.dart'
     as _i141;
 import '../../features/calendar/data/services/table_wall_clock.dart' as _i640;
@@ -240,8 +237,8 @@ import '../../features/curriculum/presentation/pages/curriculum/cubit/curriculum
     as _i823;
 import '../../features/curriculum/presentation/pages/curriculum_upload/cubit/curriculum_upload_cubit.dart'
     as _i269;
-import '../../features/history/data/datasources/history_local_data_source.dart'
-    as _i437;
+import '../../features/history/data/datasources/history_remote_data_source.dart'
+    as _i830;
 import '../../features/history/data/services/history_service_impl.dart'
     as _i971;
 import '../../features/history/domain/services/history_service.dart' as _i346;
@@ -254,10 +251,10 @@ import '../../features/history/presentation/pages/member_timeline/cubit/member_t
 import '../../features/history/presentation/pages/progress/cubit/progress_cubit.dart'
     as _i780;
 import '../../features/home/data/client/home_client.dart' as _i564;
-import '../../features/home/data/datasources/home_local_data_source.dart'
-    as _i299;
 import '../../features/home/data/datasources/home_remote_data_source.dart'
     as _i362;
+import '../../features/home/data/datasources/home_table_remote_data_source.dart'
+    as _i788;
 import '../../features/home/data/services/home_service_impl.dart' as _i481;
 import '../../features/home/domain/services/home_service.dart' as _i677;
 import '../../features/home/domain/use_cases/overview/watch_home_overview_use_case.dart'
@@ -395,11 +392,10 @@ import '../../features/notifications/presentation/pages/notification_preferences
 import '../../features/session/data/client/session_control_client.dart'
     as _i625;
 import '../../features/session/data/client/session_sync_client.dart' as _i946;
-import '../../features/session/data/datasources/session_local_data_source.dart'
-    as _i751;
+import '../../features/session/data/datasources/session_reads_remote_data_source.dart'
+    as _i302;
 import '../../features/session/data/datasources/session_remote_data_source.dart'
     as _i215;
-import '../../features/session/data/local/session_drift_database.dart' as _i4;
 import '../../features/session/data/services/attendance_service_impl.dart'
     as _i1058;
 import '../../features/session/data/services/live_session_service_impl.dart'
@@ -410,11 +406,10 @@ import '../../features/session/data/services/session_control_service_impl.dart'
     as _i260;
 import '../../features/session/data/services/session_sync_service_impl.dart'
     as _i1002;
-import '../../features/session/data/services/session_sync_uploader.dart'
-    as _i194;
+import '../../features/session/data/services/session_write_gateway.dart'
+    as _i817;
 import '../../features/session/data/services/shared_prefs_session_draft_service.dart'
     as _i551;
-import '../../features/session/data/session_data_module.dart' as _i129;
 import '../../features/session/domain/services/attendance_service.dart'
     as _i620;
 import '../../features/session/domain/services/live_session_service.dart'
@@ -461,6 +456,8 @@ import '../../features/session/presentation/pages/session/cubit/session_cubit.da
 import '../../features/settings/data/client/settings_client.dart' as _i47;
 import '../../features/settings/data/datasources/content_language_local_data_source.dart'
     as _i263;
+import '../../features/settings/data/datasources/content_language_remote_data_source.dart'
+    as _i820;
 import '../../features/settings/data/datasources/settings_remote_data_source.dart'
     as _i188;
 import '../../features/settings/data/services/app_info_service_impl.dart'
@@ -469,10 +466,14 @@ import '../../features/settings/data/services/content_language_service_impl.dart
     as _i973;
 import '../../features/settings/data/services/profile_service_impl.dart'
     as _i945;
+import '../../features/settings/data/services/selected_content_language_service_impl.dart'
+    as _i840;
 import '../../features/settings/domain/services/app_info_service.dart' as _i483;
 import '../../features/settings/domain/services/content_language_service.dart'
     as _i548;
 import '../../features/settings/domain/services/profile_service.dart' as _i895;
+import '../../features/settings/domain/services/selected_content_language_service.dart'
+    as _i193;
 import '../../features/settings/domain/services/sign_out_service.dart' as _i428;
 import '../../features/settings/domain/use_cases/account/sign_out_use_case.dart'
     as _i185;
@@ -494,11 +495,18 @@ import '../../features/settings/presentation/pages/settings/cubit/settings_cubit
     as _i152;
 import '../../features/shell/presentation/cubit/context_chip_cubit.dart'
     as _i939;
+import '../data/curriculum_names.dart' as _i209;
+import '../data/data_change_signal.dart' as _i767;
+import '../data/remote_watch.dart' as _i730;
 import '../network/auth_token_provider.dart' as _i84;
 import '../network/network_module.dart' as _i200;
+import '../network/postgrest/postgrest.dart' as _i952;
+import '../network/postgrest/table_reads_client.dart' as _i148;
 import '../routing/app_router.dart' as _i282;
 import '../routing/app_shell/cubit/app_shell_cubit.dart' as _i1002;
 import '../routing/feature_router.dart' as _i878;
+import '../services/app_lifecycle/app_lifecycle_service.dart' as _i83;
+import '../services/app_lifecycle/widgets_app_lifecycle_service.dart' as _i860;
 import '../services/auth_session/auth_session_module.dart' as _i139;
 import '../services/auth_session/auth_state_source.dart' as _i997;
 import '../services/auth_session/online_verification_store.dart' as _i524;
@@ -511,6 +519,8 @@ import '../services/clock/system_clock_service.dart' as _i799;
 import '../services/connectivity/connectivity_service.dart' as _i1015;
 import '../services/connectivity/connectivity_service_impl.dart' as _i916;
 import '../services/connectivity/watch_connectivity_use_case.dart' as _i17;
+import '../services/device_language/device_language.dart' as _i304;
+import '../services/device_language/platform_device_language.dart' as _i196;
 import '../services/error_reporting/app_error_context_provider.dart' as _i204;
 import '../services/error_reporting/error_reporter.dart' as _i200;
 import '../services/error_reporting/error_reporting_module.dart' as _i439;
@@ -529,13 +539,7 @@ import '../services/session_context/watch_session_context_use_case.dart'
     as _i434;
 import '../services/share/share_service.dart' as _i245;
 import '../services/share/share_service_impl.dart' as _i827;
-import '../sync/data/pending_since_tracker.dart' as _i383;
-import '../sync/data/powersync_sync_database.dart' as _i405;
-import '../sync/data/powersync_sync_status_service.dart' as _i858;
-import '../sync/data/sync_database.dart' as _i924;
-import '../sync/data/sync_lifecycle.dart' as _i863;
-import '../sync/data/sync_schema.dart' as _i915;
-import '../sync/data/sync_uploader.dart' as _i529;
+import '../sync/data/connectivity_sync_status_service.dart' as _i931;
 import '../sync/domain/sync_status_service.dart' as _i1020;
 import '../sync/domain/watch_sync_status_use_case.dart' as _i318;
 import 'app_config.dart' as _i609;
@@ -548,18 +552,18 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final servicesModule = _$ServicesModule();
-    final appCompositionModule = _$AppCompositionModule();
     final notificationsModule = _$NotificationsModule();
+    final appCompositionModule = _$AppCompositionModule();
     final authSessionModule = _$AuthSessionModule();
     final errorReportingModule = _$ErrorReportingModule();
     final networkModule = _$NetworkModule();
-    final sessionDataModule = _$SessionDataModule();
     gh.factory<_i86.ParseInviteCodeUseCase>(
       () => const _i86.ParseInviteCodeUseCase(),
     );
     gh.singleton<_i609.AppConfig>(() => servicesModule.appConfig);
-    gh.lazySingleton<_i915.SyncSchemaRegistry>(
-      () => appCompositionModule.syncSchemaRegistry,
+    gh.lazySingleton<_i767.DataChangeSignal>(
+      () => _i767.DataChangeSignal(),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i895.Connectivity>(() => servicesModule.connectivity);
     gh.lazySingleton<_i640.TableWallClock>(() => _i640.TableWallClock());
@@ -581,6 +585,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i914.ClipboardService>(
       () => _i41.FlutterClipboardService(),
+    );
+    gh.lazySingleton<_i83.AppLifecycleService>(
+      () => _i860.WidgetsAppLifecycleService(),
     );
     gh.lazySingleton<_i309.CsvExportService>(() => _i58.CsvExportServiceImpl());
     gh.lazySingleton<_i523.SessionContextService>(
@@ -608,6 +615,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1068.FirebaseBootstrap>(
       () => _i326.FirebaseBootstrapImpl(gh<_i609.AppConfig>()),
     );
+    gh.lazySingleton<_i785.LocalDataService>(
+      () => _i375.LocalDataServiceImpl(gh<_i460.SharedPreferencesAsync>()),
+    );
     gh.factory<_i454.LoadSessionDraftUseCase>(
       () => _i454.LoadSessionDraftUseCase(gh<_i369.SessionDraftService>()),
     );
@@ -633,6 +643,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LoadAppInfoUseCase(gh<_i483.AppInfoService>()),
     );
     gh.lazySingleton<_i246.IdGenerator>(() => _i766.UuidIdGenerator());
+    gh.lazySingleton<_i304.DeviceLanguage>(
+      () => _i196.PlatformDeviceLanguage(),
+    );
     gh.lazySingleton<_i524.OnlineVerificationStore>(
       () => _i112.SharedPrefsOnlineVerificationStore(
         gh<_i460.SharedPreferencesAsync>(),
@@ -665,8 +678,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i609.AppConfig>(),
       ),
     );
+    gh.lazySingleton<_i263.ContentLanguageLocalDataSource>(
+      () => _i263.ContentLanguageLocalDataSource(
+        gh<_i460.SharedPreferencesAsync>(),
+        gh<_i304.DeviceLanguage>(),
+      ),
+    );
     gh.factory<_i434.WatchSessionContextUseCase>(
       () => _i434.WatchSessionContextUseCase(gh<_i523.SessionContextService>()),
+    );
+    gh.lazySingleton<_i468.SessionSyncService>(
+      () => _i1002.SessionSyncServiceImpl(gh<_i767.DataChangeSignal>()),
     );
     gh.lazySingleton<_i997.AuthStateSource>(
       () => authSessionModule.authStateSource(gh<_i171.SupabaseAuthSession>()),
@@ -695,6 +717,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i200.OpenWhatsAppUseCase>(
       () => _i200.OpenWhatsAppUseCase(gh<_i162.ExternalLinkService>()),
     );
+    gh.lazySingleton<_i193.SelectedContentLanguageService>(
+      () => _i840.SelectedContentLanguageServiceImpl(
+        gh<_i263.ContentLanguageLocalDataSource>(),
+      ),
+    );
     gh.factory<_i492.SignInWithProviderUseCase>(
       () => _i492.SignInWithProviderUseCase(
         gh<_i59.AuthService>(),
@@ -710,6 +737,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i648.ShareInviteTextUseCase>(
       () => _i648.ShareInviteTextUseCase(gh<_i245.ShareService>()),
     );
+    gh.lazySingleton<_i730.RemoteWatch>(
+      () => _i730.RemoteWatch(
+        gh<_i767.DataChangeSignal>(),
+        gh<_i83.AppLifecycleService>(),
+        gh<_i1015.ConnectivityService>(),
+      ),
+    );
     gh.factory<_i947.GetEnabledAuthMethodsUseCase>(
       () => _i947.GetEnabledAuthMethodsUseCase(gh<_i530.AuthMethodsService>()),
     );
@@ -719,6 +753,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i160.InviteAttemptsService>(
       () => _i291.InviteAttemptsServiceImpl(gh<_i508.ClockService>()),
     );
+    gh.lazySingleton<_i1020.SyncStatusService>(
+      () =>
+          _i931.ConnectivitySyncStatusService(gh<_i1015.ConnectivityService>()),
+    );
+    gh.factory<_i659.RequestSyncUseCase>(
+      () => _i659.RequestSyncUseCase(gh<_i468.SessionSyncService>()),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.postgrestDio(
         gh<_i609.AppConfig>(),
@@ -726,14 +767,20 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'postgrestDio',
     );
+    gh.factory<_i411.SignOutAndEraseLocalDataUseCase>(
+      () => _i411.SignOutAndEraseLocalDataUseCase(
+        gh<_i59.AuthService>(),
+        gh<_i785.LocalDataService>(),
+      ),
+    );
+    gh.lazySingleton<_i148.TableReadsClient>(
+      () => _i148.TableReadsClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
+    );
     gh.lazySingleton<_i349.AdminReadClient>(
       () => _i349.AdminReadClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
     gh.lazySingleton<_i800.AuditClient>(
       () => _i800.AuditClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
-    );
-    gh.lazySingleton<_i515.CalendarClient>(
-      () => _i515.CalendarClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
     gh.lazySingleton<_i564.HomeClient>(
       () => _i564.HomeClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
@@ -746,8 +793,28 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i772.KpiClient>(
       () => _i772.KpiClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
+    gh.lazySingleton<_i209.CurriculumNamesReader>(
+      () => _i209.CurriculumNamesReader(gh<_i952.TableReadsClient>()),
+    );
+    gh.lazySingleton<_i141.CalendarRemoteDataSource>(
+      () => _i141.CalendarRemoteDataSource(gh<_i952.TableReadsClient>()),
+    );
     gh.factory<_i355.PickCurriculumFileUseCase>(
       () => _i355.PickCurriculumFileUseCase(gh<_i245.FilePickService>()),
+    );
+    gh.factory<_i318.WatchSyncStatusUseCase>(
+      () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
+    );
+    gh.lazySingleton<_i362.HomeRemoteDataSource>(
+      () => _i362.HomeRemoteDataSource(gh<_i564.HomeClient>()),
+    );
+    gh.lazySingleton<_i781.UpcomingSessionsService>(
+      () => _i1003.UpcomingSessionsServiceImpl(
+        gh<_i141.CalendarRemoteDataSource>(),
+        gh<_i508.ClockService>(),
+        gh<_i640.TableWallClock>(),
+        gh<_i730.RemoteWatch>(),
+      ),
     );
     gh.factory<_i939.ContextChipCubit>(
       () => _i939.ContextChipCubit(gh<_i434.WatchSessionContextUseCase>()),
@@ -786,14 +853,23 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'edgeFunctionsDio',
     );
-    gh.lazySingleton<_i141.CalendarRemoteDataSource>(
-      () => _i141.CalendarRemoteDataSource(gh<_i515.CalendarClient>()),
+    gh.lazySingleton<_i298.SavedViewsService>(
+      () => _i512.SavedViewsServiceImpl(
+        gh<_i460.SharedPreferencesAsync>(),
+        gh<_i84.AuthTokenProvider>(),
+      ),
     );
     gh.lazySingleton<_i282.AppRouter>(
       () => _i282.AppRouter(
         gh<_i997.AuthStateSource>(),
         gh<_i878.FeatureRouterRegistry>(),
       ),
+    );
+    gh.factory<_i497.DeleteExplorerViewUseCase>(
+      () => _i497.DeleteExplorerViewUseCase(gh<_i298.SavedViewsService>()),
+    );
+    gh.factory<_i242.LoadSavedViewsUseCase>(
+      () => _i242.LoadSavedViewsUseCase(gh<_i298.SavedViewsService>()),
     );
     gh.factory<_i836.GetRemainingAttemptsUseCase>(
       () =>
@@ -802,15 +878,48 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1002.AppShellCubit>(
       () => _i1002.AppShellCubit(gh<_i434.WatchSessionContextUseCase>()),
     );
+    gh.lazySingleton<_i820.ContentLanguageRemoteDataSource>(
+      () => _i820.ContentLanguageRemoteDataSource(gh<_i952.TableReadsClient>()),
+    );
     gh.lazySingleton<_i558.InviteDirectoryRemoteDataSource>(
       () => _i558.InviteDirectoryRemoteDataSource(
         gh<_i111.InviteDirectoryClient>(),
       ),
     );
-    gh.lazySingleton<_i362.HomeRemoteDataSource>(
-      () => _i362.HomeRemoteDataSource(
-        gh<_i564.HomeClient>(),
+    gh.lazySingleton<_i302.SessionReadsRemoteDataSource>(
+      () => _i302.SessionReadsRemoteDataSource(
+        gh<_i952.TableReadsClient>(),
         gh<_i84.AuthTokenProvider>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i169.WatchUnsyncedAlertUseCase>(
+      () => _i169.WatchUnsyncedAlertUseCase(
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i795.NotificationPreferencesService>(),
+      ),
+    );
+    gh.factory<_i246.UnsyncedAlertCubit>(
+      () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
+    );
+    gh.lazySingleton<_i830.HistoryRemoteDataSource>(
+      () => _i830.HistoryRemoteDataSource(
+        gh<_i952.TableReadsClient>(),
+        gh<_i209.CurriculumNamesReader>(),
+      ),
+    );
+    gh.lazySingleton<_i788.HomeTableRemoteDataSource>(
+      () => _i788.HomeTableRemoteDataSource(
+        gh<_i952.TableReadsClient>(),
+        gh<_i209.CurriculumNamesReader>(),
+      ),
+    );
+    gh.lazySingleton<_i548.ContentLanguageService>(
+      () => _i973.ContentLanguageServiceImpl(
+        gh<_i820.ContentLanguageRemoteDataSource>(),
+        gh<_i263.ContentLanguageLocalDataSource>(),
+        gh<_i730.RemoteWatch>(),
+        gh<_i767.DataChangeSignal>(),
       ),
     );
     gh.lazySingleton<_i625.AuditRemoteDataSource>(
@@ -821,6 +930,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i523.SessionContextService>(),
         gh<_i282.AppRouter>(),
         gh<_i609.AppConfig>(),
+      ),
+    );
+    gh.factory<_i596.SaveExplorerViewUseCase>(
+      () => _i596.SaveExplorerViewUseCase(
+        gh<_i298.SavedViewsService>(),
+        gh<_i246.IdGenerator>(),
+      ),
+    );
+    gh.factory<_i327.SignOutCubit>(
+      () => _i327.SignOutCubit(
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i349.SignOutUseCase>(),
+        gh<_i411.SignOutAndEraseLocalDataUseCase>(),
       ),
     );
     gh.lazySingleton<_i1010.AdminInvitesClient>(
@@ -869,10 +992,24 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i47.SettingsClient(gh<_i361.Dio>(instanceName: 'edgeFunctionsDio')),
     );
+    gh.factory<_i168.WatchUpcomingSessionsUseCase>(
+      () => _i168.WatchUpcomingSessionsUseCase(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i781.UpcomingSessionsService>(),
+      ),
+    );
     gh.lazySingleton<_i215.SessionRemoteDataSource>(
       () => _i215.SessionRemoteDataSource(
         gh<_i946.SessionSyncClient>(),
         gh<_i625.SessionControlClient>(),
+      ),
+    );
+    gh.lazySingleton<_i817.SessionWriteGateway>(
+      () => _i817.SessionWriteGateway(
+        gh<_i215.SessionRemoteDataSource>(),
+        gh<_i302.SessionReadsRemoteDataSource>(),
+        gh<_i1015.ConnectivityService>(),
+        gh<_i767.DataChangeSignal>(),
       ),
     );
     gh.factory<_i259.ResetPasswordCubit>(
@@ -893,16 +1030,37 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i947.GetEnabledAuthMethodsUseCase>(),
       ),
     );
+    gh.lazySingleton<_i530.LiveSessionService>(
+      () => _i635.LiveSessionServiceImpl(
+        gh<_i302.SessionReadsRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i730.RemoteWatch>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
     gh.lazySingleton<_i838.InviteDirectoryService>(
       () => _i526.InviteDirectoryServiceImpl(
         gh<_i558.InviteDirectoryRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i346.HistoryService>(
+      () => _i971.HistoryServiceImpl(
+        gh<_i830.HistoryRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i730.RemoteWatch>(),
+      ),
+    );
+    gh.factory<_i940.SelectContentLanguageUseCase>(
+      () => _i940.SelectContentLanguageUseCase(
+        gh<_i548.ContentLanguageService>(),
+      ),
+    );
+    gh.factory<_i725.WatchContentLanguageUseCase>(
+      () =>
+          _i725.WatchContentLanguageUseCase(gh<_i548.ContentLanguageService>()),
+    );
     gh.lazySingleton<_i393.AccountRemoteDataSource>(
       () => _i393.AccountRemoteDataSource(gh<_i86.AccountClient>()),
-    );
-    gh.lazySingleton<_i529.SyncUploader>(
-      () => _i194.SessionSyncUploader(gh<_i215.SessionRemoteDataSource>()),
     );
     gh.lazySingleton<_i517.AdminRemoteDataSource>(
       () => _i517.AdminRemoteDataSource(
@@ -918,8 +1076,42 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
+    gh.factory<_i975.WatchLiveSessionUseCase>(
+      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
+    );
     gh.lazySingleton<_i951.NotificationsRemoteDataSource>(
       () => _i951.NotificationsRemoteDataSource(gh<_i70.NotificationsClient>()),
+    );
+    gh.lazySingleton<_i307.ResponsesService>(
+      () => _i716.ResponsesServiceImpl(
+        gh<_i302.SessionReadsRemoteDataSource>(),
+        gh<_i817.SessionWriteGateway>(),
+        gh<_i508.ClockService>(),
+        gh<_i246.IdGenerator>(),
+      ),
+    );
+    gh.factory<_i747.WatchMemberHistoryUseCase>(
+      () => _i747.WatchMemberHistoryUseCase(gh<_i346.HistoryService>()),
+    );
+    gh.factory<_i115.WatchTableHistoryUseCase>(
+      () => _i115.WatchTableHistoryUseCase(gh<_i346.HistoryService>()),
+    );
+    gh.lazySingleton<_i620.AttendanceService>(
+      () => _i1058.AttendanceServiceImpl(
+        gh<_i302.SessionReadsRemoteDataSource>(),
+        gh<_i817.SessionWriteGateway>(),
+        gh<_i508.ClockService>(),
+        gh<_i246.IdGenerator>(),
+      ),
+    );
+    gh.factory<_i1002.SubmitCommitmentUseCase>(
+      () => _i1002.SubmitCommitmentUseCase(gh<_i307.ResponsesService>()),
+    );
+    gh.factory<_i833.SubmitFollowUpUseCase>(
+      () => _i833.SubmitFollowUpUseCase(gh<_i307.ResponsesService>()),
+    );
+    gh.factory<_i58.SubmitReflectionUseCase>(
+      () => _i58.SubmitReflectionUseCase(gh<_i307.ResponsesService>()),
     );
     gh.lazySingleton<_i749.CurriculumRemoteDataSource>(
       () => _i749.CurriculumRemoteDataSource(gh<_i277.CurriculumClient>()),
@@ -932,6 +1124,23 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i887.AccountService>(
       () => _i958.AccountServiceImpl(gh<_i393.AccountRemoteDataSource>()),
+    );
+    gh.factory<_i780.ProgressCubit>(
+      () => _i780.ProgressCubit(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i747.WatchMemberHistoryUseCase>(),
+        gh<_i115.WatchTableHistoryUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i677.HomeService>(
+      () => _i481.HomeServiceImpl(
+        gh<_i788.HomeTableRemoteDataSource>(),
+        gh<_i362.HomeRemoteDataSource>(),
+        gh<_i193.SelectedContentLanguageService>(),
+        gh<_i508.ClockService>(),
+        gh<_i730.RemoteWatch>(),
+      ),
     );
     gh.lazySingleton<_i1045.AdminManagementService>(
       () => _i392.AdminManagementServiceImpl(gh<_i517.AdminRemoteDataSource>()),
@@ -1007,6 +1216,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i838.InviteDirectoryService>(),
       ),
     );
+    gh.factory<_i307.MarkAttendanceUseCase>(
+      () => _i307.MarkAttendanceUseCase(gh<_i620.AttendanceService>()),
+    );
+    gh.factory<_i23.MarkEveryonePresentUseCase>(
+      () => _i23.MarkEveryonePresentUseCase(gh<_i620.AttendanceService>()),
+    );
     gh.lazySingleton<_i569.NotificationService>(
       () => _i566.NotificationServiceImpl(
         gh<_i295.PushMessagingPlatform>(),
@@ -1021,6 +1236,37 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i749.CurriculumRemoteDataSource>(),
       ),
     );
+    gh.factory<_i195.ContentLanguageCubit>(
+      () => _i195.ContentLanguageCubit(
+        gh<_i725.WatchContentLanguageUseCase>(),
+        gh<_i940.SelectContentLanguageUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i728.SessionControlService>(
+      () => _i260.SessionControlServiceImpl(
+        gh<_i215.SessionRemoteDataSource>(),
+        gh<_i817.SessionWriteGateway>(),
+        gh<_i508.ClockService>(),
+      ),
+    );
+    gh.factory<_i305.MemberTimelineCubit>(
+      () => _i305.MemberTimelineCubit(
+        gh<_i747.WatchMemberHistoryUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
+    );
+    gh.factory<_i126.CloseAnswersUseCase>(
+      () => _i126.CloseAnswersUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i995.CloseSessionUseCase>(
+      () => _i995.CloseSessionUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i545.OpenSessionUseCase>(
+      () => _i545.OpenSessionUseCase(gh<_i728.SessionControlService>()),
+    );
+    gh.factory<_i736.SetSessionStageUseCase>(
+      () => _i736.SetSessionStageUseCase(gh<_i728.SessionControlService>()),
+    );
     gh.lazySingleton<_i188.SettingsRemoteDataSource>(
       () => _i188.SettingsRemoteDataSource(gh<_i47.SettingsClient>()),
     );
@@ -1029,6 +1275,30 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i936.LoadAuditEventsUseCase>(
       () => _i936.LoadAuditEventsUseCase(gh<_i542.AuditService>()),
+    );
+    gh.factory<_i480.UpcomingCubit>(
+      () => _i480.UpcomingCubit(
+        gh<_i168.WatchUpcomingSessionsUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+      ),
+    );
+    gh.factory<_i817.SessionCubit>(
+      () => _i817.SessionCubit(
+        gh<_i975.WatchLiveSessionUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i545.OpenSessionUseCase>(),
+        gh<_i736.SetSessionStageUseCase>(),
+        gh<_i126.CloseAnswersUseCase>(),
+        gh<_i995.CloseSessionUseCase>(),
+        gh<_i659.RequestSyncUseCase>(),
+      ),
+    );
+    gh.factory<_i246.WatchHomeOverviewUseCase>(
+      () => _i246.WatchHomeOverviewUseCase(
+        gh<_i434.WatchSessionContextUseCase>(),
+        gh<_i677.HomeService>(),
+      ),
     );
     gh.lazySingleton<_i705.AdminScopeService>(
       () => _i531.AdminScopeServiceImpl(
@@ -1074,12 +1344,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i695.ShareCurriculumExportUseCase>(),
       ),
     );
-    gh.lazySingleton<_i924.SyncDatabase>(
-      () => _i405.PowerSyncSyncDatabase(
-        gh<_i609.AppConfig>(),
-        gh<_i915.SyncSchemaRegistry>(),
-        gh<_i84.AuthTokenProvider>(),
-        gh<_i529.SyncUploader>(),
+    gh.factory<_i1059.FacilitatorBoardCubit>(
+      () => _i1059.FacilitatorBoardCubit(
+        gh<_i307.MarkAttendanceUseCase>(),
+        gh<_i23.MarkEveryonePresentUseCase>(),
       ),
     );
     gh.factory<_i256.LoadLocationUseCase>(
@@ -1128,36 +1396,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i569.NotificationService>(),
       ),
     );
-    gh.lazySingleton<_i468.SessionSyncService>(
-      () => _i1002.SessionSyncServiceImpl(gh<_i924.SyncDatabase>()),
-    );
     gh.lazySingleton<_i585.KpiService>(
       () => _i970.KpiServiceImpl(gh<_i460.KpiRemoteDataSource>()),
     );
-    gh.lazySingleton<_i298.SavedViewsService>(
-      () => _i512.SavedViewsServiceImpl(gh<_i924.SyncDatabase>()),
-    );
-    gh.lazySingleton<_i1020.SyncStatusService>(
-      () => _i858.PowerSyncSyncStatusService(
-        gh<_i924.SyncDatabase>(),
-        gh<_i609.AppConfig>(),
-        gh<_i508.ClockService>(),
+    gh.factory<_i174.MemberFlowCubit>(
+      () => _i174.MemberFlowCubit(
+        gh<_i833.SubmitFollowUpUseCase>(),
+        gh<_i58.SubmitReflectionUseCase>(),
+        gh<_i1002.SubmitCommitmentUseCase>(),
+        gh<_i454.LoadSessionDraftUseCase>(),
+        gh<_i363.SaveSessionDraftUseCase>(),
       ),
-    );
-    gh.lazySingleton<_i785.LocalDataService>(
-      () => _i375.LocalDataServiceImpl(gh<_i924.SyncDatabase>()),
-    );
-    gh.lazySingleton<_i67.CalendarLocalDataSource>(
-      () => _i67.CalendarLocalDataSource(gh<_i924.SyncDatabase>()),
-    );
-    gh.lazySingleton<_i437.HistoryLocalDataSource>(
-      () => _i437.HistoryLocalDataSource(gh<_i924.SyncDatabase>()),
-    );
-    gh.lazySingleton<_i299.HomeLocalDataSource>(
-      () => _i299.HomeLocalDataSource(gh<_i924.SyncDatabase>()),
-    );
-    gh.lazySingleton<_i263.ContentLanguageLocalDataSource>(
-      () => _i263.ContentLanguageLocalDataSource(gh<_i924.SyncDatabase>()),
     );
     gh.lazySingleton<_i895.ProfileService>(
       () => _i945.ProfileServiceImpl(gh<_i188.SettingsRemoteDataSource>()),
@@ -1169,14 +1418,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i422.PersonDetailCubit(
         gh<_i985.LoadPersonDetailUseCase>(),
         gh<_i479.UpdatePersonUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i781.UpcomingSessionsService>(
-      () => _i1003.UpcomingSessionsServiceImpl(
-        gh<_i67.CalendarLocalDataSource>(),
-        gh<_i141.CalendarRemoteDataSource>(),
-        gh<_i508.ClockService>(),
-        gh<_i640.TableWallClock>(),
       ),
     );
     gh.lazySingleton<_i393.AccessRedirectGuard>(
@@ -1218,11 +1459,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
-    gh.lazySingleton<_i548.ContentLanguageService>(
-      () => _i973.ContentLanguageServiceImpl(
-        gh<_i263.ContentLanguageLocalDataSource>(),
-      ),
-    );
     gh.factory<_i648.RefreshAccessUseCase>(
       () => _i648.RefreshAccessUseCase(gh<_i656.AccessSessionService>()),
     );
@@ -1243,6 +1479,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1005.LoadTableDetailUseCase(
         gh<_i680.AdminDirectoryService>(),
         gh<_i585.KpiService>(),
+      ),
+    );
+    gh.factory<_i911.CommandPaletteCubit>(
+      () => _i911.CommandPaletteCubit(
+        gh<_i108.LoadOrganizationsUseCase>(),
+        gh<_i543.LoadTablesUseCase>(),
+        gh<_i242.LoadSavedViewsUseCase>(),
       ),
     );
     gh.factory<_i289.RedeemInviteUseCase>(
@@ -1295,9 +1538,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i354.LoadReportOptionsUseCase>(
       () => _i354.LoadReportOptionsUseCase(gh<_i585.KpiService>()),
     );
-    gh.lazySingleton<_i346.HistoryService>(
-      () => _i971.HistoryServiceImpl(gh<_i437.HistoryLocalDataSource>()),
-    );
     gh.factory<_i739.LoadOrganizationDetailUseCase>(
       () => _i739.LoadOrganizationDetailUseCase(
         gh<_i680.AdminDirectoryService>(),
@@ -1311,8 +1551,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i303.RevealMemberAnswersUseCase>(),
       ),
     );
-    gh.factory<_i659.RequestSyncUseCase>(
-      () => _i659.RequestSyncUseCase(gh<_i468.SessionSyncService>()),
+    gh.factory<_i275.HomeCubit>(
+      () => _i275.HomeCubit(
+        gh<_i246.WatchHomeOverviewUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i318.WatchSyncStatusUseCase>(),
+      ),
     );
     gh.factory<_i269.CurriculumUploadCubit>(
       () => _i269.CurriculumUploadCubit(
@@ -1320,13 +1564,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i487.PreviewCurriculumUploadUseCase>(),
         gh<_i9.ApplyCurriculumUploadUseCase>(),
       ),
-    );
-    gh.lazySingleton<_i383.PendingSinceTracker>(
-      () => _i383.PendingSinceTracker(
-        gh<_i924.SyncDatabase>(),
-        gh<_i508.ClockService>(),
-      ),
-      dispose: (i) => i.stop(),
     );
     gh.factory<_i615.WatchAdminScopeUseCase>(
       () => _i615.WatchAdminScopeUseCase(gh<_i705.AdminScopeService>()),
@@ -1343,6 +1580,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ClockService>(),
       ),
     );
+    gh.factory<_i640.ExplorerCubit>(
+      () => _i640.ExplorerCubit(
+        gh<_i1038.LoadExplorerDataUseCase>(),
+        gh<_i242.LoadSavedViewsUseCase>(),
+        gh<_i596.SaveExplorerViewUseCase>(),
+        gh<_i497.DeleteExplorerViewUseCase>(),
+        gh<_i228.ExportCsvUseCase>(),
+      ),
+    );
     gh.factory<_i931.InvitesManagerCubit>(
       () => _i931.InvitesManagerCubit(
         gh<_i276.ListInvitesUseCase>(),
@@ -1350,18 +1596,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i569.RenewInviteUseCase>(),
         gh<_i434.WatchSessionContextUseCase>(),
         gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i411.SignOutAndEraseLocalDataUseCase>(
-      () => _i411.SignOutAndEraseLocalDataUseCase(
-        gh<_i59.AuthService>(),
-        gh<_i785.LocalDataService>(),
-      ),
-    );
-    gh.factory<_i596.SaveExplorerViewUseCase>(
-      () => _i596.SaveExplorerViewUseCase(
-        gh<_i298.SavedViewsService>(),
-        gh<_i246.IdGenerator>(),
       ),
     );
     gh.factory<_i69.ScanCubit>(
@@ -1376,9 +1610,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i325.UpdateProfileUseCase>(
       () => _i325.UpdateProfileUseCase(gh<_i895.ProfileService>()),
-    );
-    gh.factory<_i318.WatchSyncStatusUseCase>(
-      () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
     );
     gh.factory<_i844.TableDetailCubit>(
       () => _i844.TableDetailCubit(
@@ -1406,15 +1637,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i850.InvitePersonUseCase>(),
       ),
     );
-    gh.factory<_i168.WatchUpcomingSessionsUseCase>(
-      () => _i168.WatchUpcomingSessionsUseCase(
-        gh<_i434.WatchSessionContextUseCase>(),
-        gh<_i781.UpcomingSessionsService>(),
-      ),
-    );
-    gh.lazySingleton<_i4.SessionDriftDatabase>(
-      () => sessionDataModule.sessionDriftDatabase(gh<_i924.SyncDatabase>()),
-    );
     gh.factory<_i933.InvitePersonCubit>(
       () => _i933.InvitePersonCubit(
         gh<_i108.LoadOrganizationsUseCase>(),
@@ -1429,12 +1651,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i325.UpdateProfileUseCase>(),
       ),
     );
-    gh.lazySingleton<_i751.SessionLocalDataSource>(
-      () => _i751.SessionLocalDataSource(
-        gh<_i4.SessionDriftDatabase>(),
-        gh<_i924.SyncDatabase>(),
-      ),
-    );
     gh.factory<_i578.ReportsCubit>(
       () => _i578.ReportsCubit(
         gh<_i289.LoadReportUseCase>(),
@@ -1442,13 +1658,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i84.LoadDrillLevelUseCase>(),
         gh<_i228.ExportCsvUseCase>(),
         gh<_i615.WatchAdminScopeUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i677.HomeService>(
-      () => _i481.HomeServiceImpl(
-        gh<_i299.HomeLocalDataSource>(),
-        gh<_i362.HomeRemoteDataSource>(),
-        gh<_i508.ClockService>(),
       ),
     );
     gh.factory<_i185.SignOutUseCase>(
@@ -1471,28 +1680,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i228.ExportCsvUseCase>(),
       ),
     );
-    gh.lazySingleton<_i620.AttendanceService>(
-      () => _i1058.AttendanceServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i508.ClockService>(),
-        gh<_i246.IdGenerator>(),
-      ),
-    );
-    gh.factory<_i940.SelectContentLanguageUseCase>(
-      () => _i940.SelectContentLanguageUseCase(
-        gh<_i548.ContentLanguageService>(),
-      ),
-    );
-    gh.factory<_i725.WatchContentLanguageUseCase>(
-      () =>
-          _i725.WatchContentLanguageUseCase(gh<_i548.ContentLanguageService>()),
-    );
-    gh.factory<_i497.DeleteExplorerViewUseCase>(
-      () => _i497.DeleteExplorerViewUseCase(gh<_i298.SavedViewsService>()),
-    );
-    gh.factory<_i242.LoadSavedViewsUseCase>(
-      () => _i242.LoadSavedViewsUseCase(gh<_i298.SavedViewsService>()),
-    );
     gh.factory<_i81.OrganizationDetailCubit>(
       () => _i81.OrganizationDetailCubit(
         gh<_i739.LoadOrganizationDetailUseCase>(),
@@ -1508,18 +1695,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i677.LoadInviteUseCase>(
       () => _i677.LoadInviteUseCase(gh<_i276.ListInvitesUseCase>()),
-    );
-    gh.factory<_i747.WatchMemberHistoryUseCase>(
-      () => _i747.WatchMemberHistoryUseCase(gh<_i346.HistoryService>()),
-    );
-    gh.factory<_i115.WatchTableHistoryUseCase>(
-      () => _i115.WatchTableHistoryUseCase(gh<_i346.HistoryService>()),
-    );
-    gh.factory<_i169.WatchUnsyncedAlertUseCase>(
-      () => _i169.WatchUnsyncedAlertUseCase(
-        gh<_i318.WatchSyncStatusUseCase>(),
-        gh<_i795.NotificationPreferencesService>(),
-      ),
     );
     gh.factory<_i660.AccessCubit>(
       () => _i660.AccessCubit(
@@ -1540,43 +1715,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i17.WatchConnectivityUseCase>(),
       ),
     );
-    gh.factory<_i246.UnsyncedAlertCubit>(
-      () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
-    );
-    gh.factory<_i780.ProgressCubit>(
-      () => _i780.ProgressCubit(
-        gh<_i434.WatchSessionContextUseCase>(),
-        gh<_i747.WatchMemberHistoryUseCase>(),
-        gh<_i115.WatchTableHistoryUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i911.CommandPaletteCubit>(
-      () => _i911.CommandPaletteCubit(
-        gh<_i108.LoadOrganizationsUseCase>(),
-        gh<_i543.LoadTablesUseCase>(),
-        gh<_i242.LoadSavedViewsUseCase>(),
-      ),
-    );
-    gh.factory<_i307.MarkAttendanceUseCase>(
-      () => _i307.MarkAttendanceUseCase(gh<_i620.AttendanceService>()),
-    );
-    gh.factory<_i23.MarkEveryonePresentUseCase>(
-      () => _i23.MarkEveryonePresentUseCase(gh<_i620.AttendanceService>()),
-    );
-    gh.lazySingleton<_i307.ResponsesService>(
-      () => _i716.ResponsesServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i508.ClockService>(),
-        gh<_i246.IdGenerator>(),
-      ),
-    );
-    gh.factory<_i195.ContentLanguageCubit>(
-      () => _i195.ContentLanguageCubit(
-        gh<_i725.WatchContentLanguageUseCase>(),
-        gh<_i940.SelectContentLanguageUseCase>(),
-      ),
-    );
     gh.factory<_i152.SettingsCubit>(
       () => _i152.SettingsCubit(
         gh<_i434.WatchSessionContextUseCase>(),
@@ -1585,70 +1723,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i869.LoadProfileUseCase>(),
         gh<_i752.LoadAppInfoUseCase>(),
         gh<_i185.SignOutUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i863.SyncLifecycle>(
-      () => _i863.SyncLifecycle(
-        gh<_i924.SyncDatabase>(),
-        gh<_i383.PendingSinceTracker>(),
-        gh<_i997.AuthStateSource>(),
-      ),
-      dispose: (i) => i.stop(),
-    );
-    gh.factory<_i305.MemberTimelineCubit>(
-      () => _i305.MemberTimelineCubit(
-        gh<_i747.WatchMemberHistoryUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i640.ExplorerCubit>(
-      () => _i640.ExplorerCubit(
-        gh<_i1038.LoadExplorerDataUseCase>(),
-        gh<_i242.LoadSavedViewsUseCase>(),
-        gh<_i596.SaveExplorerViewUseCase>(),
-        gh<_i497.DeleteExplorerViewUseCase>(),
-        gh<_i228.ExportCsvUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i530.LiveSessionService>(
-      () => _i635.LiveSessionServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i1020.SyncStatusService>(),
-        gh<_i508.ClockService>(),
-      ),
-    );
-    gh.factory<_i480.UpcomingCubit>(
-      () => _i480.UpcomingCubit(
-        gh<_i168.WatchUpcomingSessionsUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i327.SignOutCubit>(
-      () => _i327.SignOutCubit(
-        gh<_i318.WatchSyncStatusUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-        gh<_i349.SignOutUseCase>(),
-        gh<_i411.SignOutAndEraseLocalDataUseCase>(),
-      ),
-    );
-    gh.factory<_i246.WatchHomeOverviewUseCase>(
-      () => _i246.WatchHomeOverviewUseCase(
-        gh<_i434.WatchSessionContextUseCase>(),
-        gh<_i677.HomeService>(),
-      ),
-    );
-    gh.lazySingleton<_i728.SessionControlService>(
-      () => _i260.SessionControlServiceImpl(
-        gh<_i751.SessionLocalDataSource>(),
-        gh<_i215.SessionRemoteDataSource>(),
-        gh<_i1015.ConnectivityService>(),
-        gh<_i508.ClockService>(),
-      ),
-    );
-    gh.factory<_i1059.FacilitatorBoardCubit>(
-      () => _i1059.FacilitatorBoardCubit(
-        gh<_i307.MarkAttendanceUseCase>(),
-        gh<_i23.MarkEveryonePresentUseCase>(),
       ),
     );
     gh.factory<_i995.ShareCubit>(
@@ -1660,72 +1734,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i434.WatchSessionContextUseCase>(),
       ),
     );
-    gh.factory<_i975.WatchLiveSessionUseCase>(
-      () => _i975.WatchLiveSessionUseCase(gh<_i530.LiveSessionService>()),
-    );
-    gh.factory<_i1002.SubmitCommitmentUseCase>(
-      () => _i1002.SubmitCommitmentUseCase(gh<_i307.ResponsesService>()),
-    );
-    gh.factory<_i833.SubmitFollowUpUseCase>(
-      () => _i833.SubmitFollowUpUseCase(gh<_i307.ResponsesService>()),
-    );
-    gh.factory<_i58.SubmitReflectionUseCase>(
-      () => _i58.SubmitReflectionUseCase(gh<_i307.ResponsesService>()),
-    );
-    gh.factory<_i275.HomeCubit>(
-      () => _i275.HomeCubit(
-        gh<_i246.WatchHomeOverviewUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-        gh<_i318.WatchSyncStatusUseCase>(),
-      ),
-    );
-    gh.factory<_i126.CloseAnswersUseCase>(
-      () => _i126.CloseAnswersUseCase(gh<_i728.SessionControlService>()),
-    );
-    gh.factory<_i995.CloseSessionUseCase>(
-      () => _i995.CloseSessionUseCase(gh<_i728.SessionControlService>()),
-    );
-    gh.factory<_i545.OpenSessionUseCase>(
-      () => _i545.OpenSessionUseCase(gh<_i728.SessionControlService>()),
-    );
-    gh.factory<_i736.SetSessionStageUseCase>(
-      () => _i736.SetSessionStageUseCase(gh<_i728.SessionControlService>()),
-    );
-    gh.factory<_i817.SessionCubit>(
-      () => _i817.SessionCubit(
-        gh<_i975.WatchLiveSessionUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-        gh<_i318.WatchSyncStatusUseCase>(),
-        gh<_i545.OpenSessionUseCase>(),
-        gh<_i736.SetSessionStageUseCase>(),
-        gh<_i126.CloseAnswersUseCase>(),
-        gh<_i995.CloseSessionUseCase>(),
-        gh<_i659.RequestSyncUseCase>(),
-      ),
-    );
-    gh.factory<_i174.MemberFlowCubit>(
-      () => _i174.MemberFlowCubit(
-        gh<_i833.SubmitFollowUpUseCase>(),
-        gh<_i58.SubmitReflectionUseCase>(),
-        gh<_i1002.SubmitCommitmentUseCase>(),
-        gh<_i454.LoadSessionDraftUseCase>(),
-        gh<_i363.SaveSessionDraftUseCase>(),
-      ),
-    );
     return this;
   }
 }
 
 class _$ServicesModule extends _i553.ServicesModule {}
 
-class _$AppCompositionModule extends _i431.AppCompositionModule {}
-
 class _$NotificationsModule extends _i166.NotificationsModule {}
+
+class _$AppCompositionModule extends _i431.AppCompositionModule {}
 
 class _$AuthSessionModule extends _i139.AuthSessionModule {}
 
 class _$ErrorReportingModule extends _i439.ErrorReportingModule {}
 
 class _$NetworkModule extends _i200.NetworkModule {}
-
-class _$SessionDataModule extends _i129.SessionDataModule {}

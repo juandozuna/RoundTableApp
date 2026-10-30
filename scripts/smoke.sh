@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Smoke test of the running local stack (read-only: no data is changed):
-#   Supabase REST · Edge Function · GoTrue dev login · PowerSync liveness + CORS + a real sync
-#   stream for the facilitator · web server and PowerSync web assets.
+#   Supabase REST (under RLS) · Edge Function · GoTrue dev login · web server.
 #
 #   bash scripts/smoke.sh [--no-web]
 #
-# Targets the local stack. SMOKE_WEB_ORIGIN, SMOKE_POWERSYNC_URL and SUPABASE_URL/SUPABASE_ANON_KEY
+# Targets the local stack. SMOKE_WEB_ORIGIN and SUPABASE_URL/SUPABASE_ANON_KEY
 # override the local defaults (e.g. a staging stack that has the dev accounts). The hosted
 # environment has no dev accounts: use scripts/smoke-hosted.sh there.
 set -uo pipefail
@@ -34,7 +33,6 @@ expect_header() { # header-substring url [curl args]
 }
 
 web_origin="${SMOKE_WEB_ORIGIN:-http://127.0.0.1:${WEB_PORT}}"
-powersync="${SMOKE_POWERSYNC_URL:-http://127.0.0.1:${POWERSYNC_PORT}}"
 api="$SUPABASE_URL"
 
 info "Supabase"
@@ -47,32 +45,17 @@ token="$(dev_login facil@dev.local 2>/dev/null | sed -n 's/.*"access_token":"\([
 check "GoTrue dev login (facil@dev.local)" test -n "$token"
 check "PostgREST read as facil (curriculum_modules)" bash -c \
   "curl -fsS '$api/rest/v1/curriculum_modules?select=id&limit=1' -H 'apikey: $SUPABASE_ANON_KEY' -H 'Authorization: Bearer $token' | grep -q '\"id\"'"
+check "PostgREST read as facil sees Mesa Esperanza 03 (RLS scope)" bash -c \
+  "curl -fsS '$api/rest/v1/round_tables?select=name' -H 'apikey: $SUPABASE_ANON_KEY' -H 'Authorization: Bearer $token' | grep -q 'Mesa Esperanza 03'"
 check "Edge Function invites/preview (anonymous, MESA34)" bash -c \
   "curl -fsS '$api/functions/v1/invites/preview?code=MESA34' -H 'apikey: $SUPABASE_ANON_KEY' | grep -q MESA34"
 check "Edge Function admin/me requires a user (401 without token)" expect_status 401 "$api/functions/v1/admin/me" -H "apikey: $SUPABASE_ANON_KEY"
 check "Edge Function admin/me with facil token" expect_status 200 "$api/functions/v1/admin/me" -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $token"
 
-info "PowerSync"
-check "liveness probe" expect_status 200 "$powersync/probes/liveness"
-check "readiness probe" expect_status 200 "$powersync/probes/readiness"
-check "CORS preflight from $web_origin" expect_header 'access-control-allow-origin' -X OPTIONS "$powersync/sync/stream" \
-  -H "Origin: $web_origin" -H 'Access-Control-Request-Method: POST' -H 'Access-Control-Request-Headers: authorization,content-type'
-if command -v node >/dev/null 2>&1; then
-  check "sync stream for facil@dev.local contains Mesa Esperanza 03" \
-    env SUPABASE_URL="$api" SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" POWERSYNC_URL="$powersync" \
-    node "$here/powersync-sync-check.mjs" facil@dev.local "Mesa Esperanza 03"
-else
-  warn "node not found: skipping the sync stream check"
-fi
-
 if $check_web; then
   info "Web ($web_origin)"
   check "index.html served" bash -c "curl -fsS '$web_origin/' | grep -q flutter_bootstrap"
   check "main.dart.js served" expect_status 200 "$web_origin/main.dart.js"
-  check "powersync_db.worker.js served (no SPA fallback)" bash -c \
-    "curl -fsS -I '$web_origin/powersync_db.worker.js' | tr -d '\r' | grep -iq 'content-type: .*javascript'"
-  check "sqlite3.wasm served as application/wasm" bash -c \
-    "curl -fsS -I '$web_origin/sqlite3.wasm' | tr -d '\r' | grep -iq 'content-type: application/wasm'"
   check "missing asset is a real 404" expect_status 404 "$web_origin/does-not-exist.js"
 fi
 

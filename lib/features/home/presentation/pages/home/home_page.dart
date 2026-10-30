@@ -19,7 +19,7 @@ import '../../../../../core/widgets/offline_banner.dart';
 import '../../../../../core/widgets/seat_pips.dart';
 import '../../../../../core/widgets/skeleton.dart';
 import '../../../../../core/widgets/status_pill.dart';
-import '../../../../../core/widgets/sync_pill.dart';
+import '../../../../../core/widgets/sync_status_pill.dart';
 import '../../../../auth/presentation/widgets/context_switcher.dart';
 import '../../../../notifications/presentation/widgets/unsynced_data_banner.dart';
 import '../../../domain/models/home_commitment.dart';
@@ -585,11 +585,6 @@ class HomePage extends StatelessWidget {
         sync.pendingCount == 0) {
       return Text(l10n.syncUnavailable, style: context.textTheme.bodySmall);
     }
-    return SyncPill(
-      state: sync.aggregateState,
-      detail: sync.hasStalePending
-          ? l10n.syncStaleWarning
-          : l10n.syncPendingCount(sync.pendingCount),
-    );
+    return SyncStatusPill(snapshot: sync);
   }
 }

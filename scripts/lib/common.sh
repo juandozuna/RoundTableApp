@@ -21,15 +21,10 @@ load_env() {
     set +a
   fi
   : "${SUPABASE_PROJECT_ID:=gold-roundtables}"
-  : "${POWERSYNC_DB_PASSWORD:=powersync_local_dev}"
-  : "${POWERSYNC_STORAGE_PASSWORD:=powersync_storage_local_dev}"
-  : "${DOCKER_HOST_ALIAS:=host.docker.internal}"
   : "${SUPABASE_DB_PORT:=54322}"
   : "${SUPABASE_API_PORT:=54321}"
-  : "${POWERSYNC_PORT:=8080}"
   : "${WEB_PORT:=3000}"
-  export SUPABASE_PROJECT_ID POWERSYNC_DB_PASSWORD POWERSYNC_STORAGE_PASSWORD DOCKER_HOST_ALIAS \
-    SUPABASE_DB_PORT SUPABASE_API_PORT POWERSYNC_PORT WEB_PORT
+  export SUPABASE_PROJECT_ID SUPABASE_DB_PORT SUPABASE_API_PORT WEB_PORT
 }
 
 supabase_db_container() { echo "supabase_db_${SUPABASE_PROJECT_ID}"; }

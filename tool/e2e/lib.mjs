@@ -305,8 +305,8 @@ export class App {
   }
 
   /**
-   * Cuts (or restores) the browser's network for this context: the page and the PowerSync worker.
-   * CDP's emulation is per target, and the sync stream lives in a worker, so both are covered.
+   * Cuts (or restores) the browser's network for this context: the page and any worker it runs.
+   * CDP's emulation is per target, so each one is covered.
    */
   async setOffline(offline) {
     this.offline = offline;

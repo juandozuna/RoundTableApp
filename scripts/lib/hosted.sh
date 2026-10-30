@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Helpers for the hosted-deployment scripts (deploy-hosted.sh, build-web.sh, smoke-hosted.sh,
-# setup-powersync-replication.sh --hosted). Source it; do not execute it.
+# Helpers for the hosted-deployment scripts (deploy-hosted.sh, build-web.sh, smoke-hosted.sh).
+# Source it; do not execute it.
 #
 # Deliberately never reads the local `.env`: local-stack values (DEV_AUTH=true, 127.0.0.1 URLs)
 # must not leak into a hosted build or deploy.

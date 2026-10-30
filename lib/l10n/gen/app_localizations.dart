@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlineDetailSavedLocally.
   ///
   /// In es, this message translates to:
-  /// **'lo que respondas se guarda en este teléfono'**
+  /// **'los cambios no se pueden enviar hasta que vuelva la conexión'**
   String get offlineDetailSavedLocally;
 
   /// No description provided for @syncPending.
@@ -375,6 +375,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sincronizado tarde'**
   String get syncSyncedLate;
+
+  /// No description provided for @syncOfflineDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Los cambios no se pueden enviar hasta que vuelva la conexión.'**
+  String get syncOfflineDetail;
 
   /// No description provided for @syncUnavailable.
   ///
@@ -4609,7 +4615,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionSharedUnavailableMessage.
   ///
   /// In es, this message translates to:
-  /// **'Conéctate a internet una vez para descargar tu mesa y la sesión de esta semana.'**
+  /// **'Conéctate a internet para ver tu mesa y la sesión de esta semana.'**
   String get sessionSharedUnavailableMessage;
 
   /// No description provided for @sessionSharedNotTodayTitle.
@@ -4825,7 +4831,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionBoardOfflineSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Sin internet: ves lo tuyo; el resto llega al sincronizar'**
+  /// **'Sin internet: no puedes ver ni enviar cambios hasta que vuelva la conexión'**
   String get sessionBoardOfflineSubtitle;
 
   /// No description provided for @sessionBoardNoLiveData.
@@ -5119,7 +5125,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionBoardVerbalClosing.
   ///
   /// In es, this message translates to:
-  /// **'Cerramos respuestas. Guarden lo que falte; con internet se sincroniza solo. Ahora cierro la sesión.'**
+  /// **'Cerramos respuestas. Envíen lo que falte, con conexión a internet. Ahora cierro la sesión.'**
   String get sessionBoardVerbalClosing;
 
   /// No description provided for @sessionBoardAttendanceMissing.
@@ -6010,23 +6016,17 @@ abstract class AppLocalizations {
   /// **'Cerrado'**
   String get sessionMemberDockClosed;
 
-  /// No description provided for @sessionMemberSentLive.
+  /// No description provided for @sessionMemberSent.
   ///
   /// In es, this message translates to:
   /// **'Enviado.'**
-  String get sessionMemberSentLive;
+  String get sessionMemberSent;
 
   /// No description provided for @sessionMemberSentWaitingFacilitator.
   ///
   /// In es, this message translates to:
   /// **'Enviado. Falta que el facilitador cierre las respuestas.'**
   String get sessionMemberSentWaitingFacilitator;
-
-  /// No description provided for @sessionMemberSavedOffline.
-  ///
-  /// In es, this message translates to:
-  /// **'Guardado en este teléfono. Sigue con el siguiente paso cuando quieras.'**
-  String get sessionMemberSavedOffline;
 
   /// No description provided for @sessionMemberRecapKickerFinished.
   ///
@@ -6055,7 +6055,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberRecapTitleOffline.
   ///
   /// In es, this message translates to:
-  /// **'Todo guardado en tu teléfono'**
+  /// **'Falta enviar tus respuestas'**
   String get sessionMemberRecapTitleOffline;
 
   /// No description provided for @sessionMemberRecapTitlePending.
@@ -6067,7 +6067,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberRecapOfflineInfo.
   ///
   /// In es, this message translates to:
-  /// **'Cuando tengas internet, tus respuestas se sincronizan solas. Si la sesión ya cerró, se marcarán “Sincronizado tarde”.'**
+  /// **'Sin internet tus respuestas no se envían. Conéctate y vuelve a enviarlas.'**
   String get sessionMemberRecapOfflineInfo;
 
   /// No description provided for @sessionMemberRecapAnswersClosed.
@@ -6139,7 +6139,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncPendingDetailOffline.
   ///
   /// In es, this message translates to:
-  /// **'Se enviará cuando tengas internet.'**
+  /// **'Se podrá enviar cuando tengas internet.'**
   String get sessionMemberSyncPendingDetailOffline;
 
   /// No description provided for @sessionMemberSyncSyncedDetail.
@@ -6157,7 +6157,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncOfflineTitle.
   ///
   /// In es, this message translates to:
-  /// **'Sin internet · todo se guarda en este teléfono'**
+  /// **'Sin internet · no se pueden enviar respuestas'**
   String get sessionMemberSyncOfflineTitle;
 
   /// No description provided for @sessionMemberSyncOfflineFacilitator.
@@ -6169,7 +6169,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberSyncOfflineMember.
   ///
   /// In es, this message translates to:
-  /// **'Tu facilitador te guía de palabra. Sigue a tu ritmo.'**
+  /// **'Lo que escribas sigue aquí; envíalo cuando vuelva la conexión.'**
   String get sessionMemberSyncOfflineMember;
 
   /// No description provided for @sessionMemberAutoPendingTitle.
@@ -6217,7 +6217,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionMemberOfflineBannerDetail.
   ///
   /// In es, this message translates to:
-  /// **'todo se guarda en este teléfono'**
+  /// **'no se pueden enviar respuestas hasta que vuelva la conexión'**
   String get sessionMemberOfflineBannerDetail;
 
   /// No description provided for @navAccount.
@@ -6583,7 +6583,7 @@ abstract class AppLocalizations {
   /// No description provided for @authNoticeOfflineDetail.
   ///
   /// In es, this message translates to:
-  /// **'El primer inicio de sesión en este teléfono requiere conexión. Después, tu sesión de mesa sigue funcionando sin internet.'**
+  /// **'Para entrar necesitas conexión a internet.'**
   String get authNoticeOfflineDetail;
 
   /// No description provided for @authNoticeCredentialsTitle.
@@ -6661,7 +6661,7 @@ abstract class AppLocalizations {
   /// No description provided for @authAccessOfflineBody.
   ///
   /// In es, this message translates to:
-  /// **'La primera vez que entras en este teléfono hace falta conexión. Después, tu sesión de mesa sigue funcionando sin internet.'**
+  /// **'Para entrar necesitas conexión a internet. Conéctate y vuelve a intentarlo.'**
   String get authAccessOfflineBody;
 
   /// No description provided for @authOfflineWindowTitle.
@@ -8095,13 +8095,13 @@ abstract class AppLocalizations {
   /// No description provided for @historyWindowNote.
   ///
   /// In es, this message translates to:
-  /// **'Ves las últimas 8 semanas guardadas en este dispositivo. Lo anterior sigue a salvo en el servidor.'**
+  /// **'Ves las últimas 8 semanas. Lo anterior sigue a salvo en el servidor.'**
   String get historyWindowNote;
 
   /// No description provided for @historyOfflineDetail.
   ///
   /// In es, this message translates to:
-  /// **'estás viendo lo guardado en este dispositivo'**
+  /// **'conéctate a internet para ver el historial actualizado'**
   String get historyOfflineDetail;
 
   /// No description provided for @historyUnavailableTitle.
@@ -8406,7 +8406,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyLoadError.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos leer tu historial en este dispositivo.'**
+  /// **'No pudimos leer tu historial. Revisa tu conexión e inténtalo de nuevo.'**
   String get historyLoadError;
 
   /// No description provided for @adminSessionsTitle.
@@ -8784,7 +8784,7 @@ abstract class AppLocalizations {
   /// No description provided for @curriculumIntro.
   ///
   /// In es, this message translates to:
-  /// **'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.'**
+  /// **'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies se ve en todos los dispositivos al guardar.'**
   String get curriculumIntro;
 
   /// No description provided for @curriculumDeniedMessage.

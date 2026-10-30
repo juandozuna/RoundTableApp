@@ -1,5 +1,9 @@
 # Requirements trace and gap audit
 
+> Audit written before ADR 0019: rows that cite PowerSync, Drift, sync rules or the `offline` e2e
+> scenario describe the removed implementation (the app is online only; offline capture returns with
+> an own outbox). Re-audit after the rework.
+
 Audit of `main` (commit `b0c521c`) against the RoundTables vault (notes 01–07: RF-01…75, RNF-01…25,
 PC-01…15, answered P-xx), `docs/adr`, `AGENTS.md` and the prototypes. Status is from reading code,
 migrations, tests and e2e scenarios; nothing was run (no build, no test run, Docker stack untouched),

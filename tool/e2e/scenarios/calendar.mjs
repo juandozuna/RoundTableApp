@@ -1,6 +1,6 @@
 // Scenario — calendar of upcoming sessions (RF-26, issue #7): a coordinator sees every table's next
 // session on the table's own clock with the extraordinary / rescheduled / cancelled markers and
-// filters by location and table; a facilitator sees only their table, also offline; a member has
+// filters by location and table; a facilitator sees only their table; a member has
 // no Calendario.
 import { App, check } from '../lib.mjs';
 import { resetDemoSession, sql } from '../flows.mjs';
@@ -74,7 +74,7 @@ export async function calendar(browser) {
     await coord.close();
   }
 
-  // ── Facilitator: only their own table, and still there offline ───────────────────────────────────
+  // ── Facilitator: only their own table ───────────────────────────────────
   const facil = await App.open(browser, 'facil-calendario-lista');
   try {
     await facil.devSignIn('facil');
@@ -83,10 +83,7 @@ export async function calendar(browser) {
     check('facilitator: no filters and no other table', !(await facil.has('Ubicación')) && !(await facil.has('Mesa Fe 01')));
     await facil.shot('g-04-calendar-facilitator');
     await facil.setOffline(true);
-    // No page reload offline: leave the calendar and come back, so a fresh cubit reads the device.
-    await facil.click('Inicio', { role: 'button' });
-    await facil.click('Calendario', { role: 'button' });
-    check('facilitator: the list is still there offline, from the local data', await facil.seen('Mesa Esperanza 03', 20_000) && await facil.seen('Sin conexión', 10_000), (await facil.text()).slice(0, 500));
+    check('facilitator: offline shows the offline state (online only, ADR 0019)', await facil.seen('Sin conexión', 20_000));
     await facil.shot('g-05-calendar-facilitator-offline');
     await facil.setOffline(false);
   } finally {

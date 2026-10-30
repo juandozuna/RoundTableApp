@@ -1,4 +1,5 @@
-// POST /functions/v1/sync-upload — PowerSync uploadData target (ADR 0004/0008).
+// POST /functions/v1/sync-upload — write endpoint of the session domain (ADR 0008/0019).
+// The online-only app sends a batch right away; a future offline outbox replays queued batches here.
 // Applies a CRUD batch for the session-domain tables; every op is applied or rejected
 // independently and idempotently by id. See docs/implementation/api-contract.md.
 import { requireCaller } from "../_shared/auth.ts";

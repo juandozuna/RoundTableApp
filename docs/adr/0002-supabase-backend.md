@@ -23,4 +23,4 @@ database constraints, and repeated in Edge Functions where requests are validate
 ## Consequences
 - Tenant security lives in RLS policies, which need automated tests per role.
 - Edge Functions run on Deno/TypeScript, a second language next to Dart.
-- PowerSync connects to the same Postgres (ADR 0004).
+- PowerSync connected to the same Postgres (ADR 0004); removed by ADR 0019.

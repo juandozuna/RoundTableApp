@@ -4,9 +4,10 @@ import '../../models/sync_state.dart';
 
 part 'sync_snapshot.freezed.dart';
 
-/// Connection of the local database to the PowerSync service.
+/// Connection of the app to the server (online-only now; a future local
+/// outbox reports its own connection here too, ADR 0019).
 enum SyncConnection {
-  /// Sync is not configured or the local database failed to open.
+  /// The server is not configured.
   unavailable,
 
   /// Not connected (signed out, no network or service unreachable).
@@ -15,8 +16,8 @@ enum SyncConnection {
   connected,
 }
 
-/// What the user needs to know about synchronization, free of PowerSync
-/// types (ADR 0004).
+/// What the user needs to know about synchronization, free of transport
+/// types (ADR 0019).
 @freezed
 abstract class SyncSnapshot with _$SyncSnapshot {
   const factory SyncSnapshot({

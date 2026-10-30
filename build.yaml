@@ -10,7 +10,3 @@ targets:
       freezed:
         options:
           format: true
-      drift_dev:
-        options:
-          # Tables live in PowerSync's schema; Drift only queries and watches them.
-          store_date_time_values_as_text: true

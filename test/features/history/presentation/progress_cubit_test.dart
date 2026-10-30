@@ -143,6 +143,30 @@ void main() {
     expect(cubit.state.status, ProgressStatus.member);
   });
 
+  test('a failed refresh keeps the loaded history', () async {
+    final histories = StreamController<MemberHistory>();
+    addTearDown(histories.close);
+    when(
+      () => watchMember(
+        tableId: any(named: 'tableId'),
+        personId: any(named: 'personId'),
+      ),
+    ).thenAnswer((_) => histories.stream);
+    await cubit.load();
+    await emitContext(memberContext);
+    histories.add(anaHistory);
+    await pumpEventQueue();
+
+    histories.addError(StateError('offline'));
+    await pumpEventQueue();
+    expect(cubit.state.status, ProgressStatus.member);
+    expect(cubit.state.member, anaHistory);
+
+    histories.add(const MemberHistory(personId: 'ana', name: 'Ana M.'));
+    await pumpEventQueue();
+    expect(cubit.state.member?.name, 'Ana M.');
+  });
+
   test('tracks connectivity for the offline banner', () async {
     await cubit.load();
     online.add(false);
@@ -167,6 +191,28 @@ void main() {
       await timeline.retry();
       await pumpEventQueue();
       verify(() => watchMember(tableId: 't1', personId: 'ana')).called(2);
+    });
+
+    test('a failed refresh keeps the loaded timeline', () async {
+      final histories = StreamController<MemberHistory>();
+      addTearDown(histories.close);
+      when(
+        () => watchMember(
+          tableId: any(named: 'tableId'),
+          personId: any(named: 'personId'),
+        ),
+      ).thenAnswer((_) => histories.stream);
+      final timeline = MemberTimelineCubit(watchMember, watchConnectivity);
+      addTearDown(timeline.close);
+
+      await timeline.load(tableId: 't1', personId: 'ana');
+      histories.add(anaHistory);
+      await pumpEventQueue();
+      histories.addError(StateError('offline'));
+      await pumpEventQueue();
+
+      expect(timeline.state.status, MemberTimelineStatus.ready);
+      expect(timeline.state.history, anaHistory);
     });
 
     test('reports a failure', () async {

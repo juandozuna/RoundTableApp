@@ -12,7 +12,6 @@ import '../core/services/error_reporting/error_reporter.dart';
 import '../core/services/error_reporting/logging_error_reporter.dart';
 import '../core/services/firebase/firebase_bootstrap.dart';
 import '../core/services/logging/app_log.dart';
-import '../core/sync/data/sync_lifecycle.dart';
 import 'app.dart';
 
 /// Startup order: config → error handlers → Supabase Auth → DI → optional
@@ -50,7 +49,6 @@ Future<void> bootstrap() async {
   await getIt<ErrorContextProvider>().prepare();
   reporter = getIt<ErrorReporter>();
   await getIt<FirebaseBootstrap>().initialize();
-  await getIt<SyncLifecycle>().start();
 
   runApp(GoldRoundtablesApp(router: getIt<AppRouter>().config));
 }

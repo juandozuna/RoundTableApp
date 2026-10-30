@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One command to run the whole app locally:
-#   Supabase (CLI) → PowerSync replication role → PowerSync Service + storage → web app.
+#   Supabase (CLI) → web app.
 #
 #   bash scripts/dev-up.sh                 # web built in Docker (docker/web/Dockerfile; default)
 #   bash scripts/dev-up.sh --local-web     # web built with the host Flutter (faster rebuilds)
@@ -37,17 +37,9 @@ else
 fi
 load_supabase_keys
 
-bash "$here/setup-powersync-replication.sh"
-
-info "Starting PowerSync Service"
-compose --profile powersync up -d --wait
-ok "PowerSync Service healthy"
-
 case "$mode" in
   local) bash "$here/web-dev-serve.sh" ;;
   docker)
-    : "${POWERSYNC_URL:=http://127.0.0.1:${POWERSYNC_PORT}}"
-    export POWERSYNC_URL
     info "Building the web image (slow the first time)"
     compose --profile web rm -sf web-local >/dev/null 2>&1 || true
     compose --profile web up -d --build --wait web
@@ -62,7 +54,6 @@ cat <<INFO
   Gold Roundtables is up
   ──────────────────────────────────────────────────────────────
   Web app        http://127.0.0.1:${WEB_PORT}
-  PowerSync      http://127.0.0.1:${POWERSYNC_PORT}   (liveness: /probes/liveness)
   Supabase API   ${SUPABASE_URL}
   Studio         http://127.0.0.1:54323
   Mail (Mailpit) http://127.0.0.1:54324

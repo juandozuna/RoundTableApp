@@ -13,7 +13,6 @@ macos
 linux
 windows
 supabase
-powersync
 docs
 graphify-out
 .env
