@@ -17,6 +17,13 @@ ARG SUPABASE_ANON_KEY
 ARG POWERSYNC_URL=http://127.0.0.1:8080
 ARG DEV_AUTH=true
 ARG APP_ENV=local
+# Optional (hosted/self-hosted production builds; empty = off). See docs/deployment.md.
+ARG ERROR_REPORT_URL=
+ARG FIREBASE_API_KEY=
+ARG FIREBASE_APP_ID=
+ARG FIREBASE_MESSAGING_SENDER_ID=
+ARG FIREBASE_PROJECT_ID=
+ARG FIREBASE_VAPID_KEY=
 # Set to true only if generated files (freezed, json, injectable, drift, retrofit) are not committed.
 ARG RUN_CODEGEN=false
 
@@ -34,7 +41,13 @@ RUN flutter build web --release --base-href / \
       --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
       --dart-define=POWERSYNC_URL="$POWERSYNC_URL" \
       --dart-define=DEV_AUTH="$DEV_AUTH" \
-      --dart-define=APP_ENV="$APP_ENV"
+      --dart-define=APP_ENV="$APP_ENV" \
+      --dart-define=ERROR_REPORT_URL="$ERROR_REPORT_URL" \
+      --dart-define=FIREBASE_API_KEY="$FIREBASE_API_KEY" \
+      --dart-define=FIREBASE_APP_ID="$FIREBASE_APP_ID" \
+      --dart-define=FIREBASE_MESSAGING_SENDER_ID="$FIREBASE_MESSAGING_SENDER_ID" \
+      --dart-define=FIREBASE_PROJECT_ID="$FIREBASE_PROJECT_ID" \
+      --dart-define=FIREBASE_VAPID_KEY="$FIREBASE_VAPID_KEY"
 
 FROM nginx:1.27-alpine
 COPY docker/web/nginx.conf /etc/nginx/conf.d/default.conf

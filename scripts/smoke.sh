@@ -4,6 +4,10 @@
 #   stream for the facilitator · web server and PowerSync web assets.
 #
 #   bash scripts/smoke.sh [--no-web]
+#
+# Targets the local stack. SMOKE_WEB_ORIGIN, SMOKE_POWERSYNC_URL and SUPABASE_URL/SUPABASE_ANON_KEY
+# override the local defaults (e.g. a staging stack that has the dev accounts). The hosted
+# environment has no dev accounts: use scripts/smoke-hosted.sh there.
 set -uo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=scripts/lib/common.sh
@@ -29,8 +33,8 @@ expect_header() { # header-substring url [curl args]
   curl -s -I --max-time 10 "$@" | tr -d '\r' | grep -iq -- "$want" || { echo "header '$want' missing from: $*"; return 1; }
 }
 
-web_origin="http://127.0.0.1:${WEB_PORT}"
-powersync="http://127.0.0.1:${POWERSYNC_PORT}"
+web_origin="${SMOKE_WEB_ORIGIN:-http://127.0.0.1:${WEB_PORT}}"
+powersync="${SMOKE_POWERSYNC_URL:-http://127.0.0.1:${POWERSYNC_PORT}}"
 api="$SUPABASE_URL"
 
 info "Supabase"

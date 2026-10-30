@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects (ignored by other hosts).
+# The app uses hash routing (`/#/invite/<CODE>`), but the Edge Functions build invite links as
+# <APP_PUBLIC_URL>/invite/<CODE> (supabase/functions/{admin,invites}/index.ts). Send those to the
+# hash route; without this rule the path is lost and the visitor lands on the home screen.
+/invite/* /#/invite/:splat 302
