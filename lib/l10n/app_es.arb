@@ -1467,6 +1467,8 @@
   "settingsProfileUnavailable": "Perfil no disponible",
   "settingsEditProfile": "Editar mis datos",
   "settingsNotifications": "Notificaciones",
+  "settingsContentLanguageKicker": "Idioma del contenido",
+  "settingsContentLanguageHint": "Los valores y las preguntas se muestran en este idioma. Lo que aún no está traducido se ve en español.",
   "settingsSyncKicker": "Sincronización",
   "settingsAboutKicker": "Acerca de",
   "settingsVersion": "Versión {version} ({build})",
@@ -3110,5 +3112,211 @@
         "type": "String"
       }
     }
-  }
+  },
+  "curriculumNav": "Currículo",
+  "curriculumTitle": "Currículo",
+  "curriculumIntro": "Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.",
+  "curriculumDeniedMessage": "Solo la administración de la plataforma puede ver y editar el currículo.",
+  "curriculumLanguageBase": "{name} (base)",
+  "@curriculumLanguageBase": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumAddLanguage": "Agregar idioma",
+  "curriculumAddLanguageConfirm": "Agregar",
+  "curriculumFieldLanguageName": "Nombre del idioma",
+  "curriculumFieldLanguageNameHint": "English",
+  "curriculumFieldLanguageCode": "Código del idioma",
+  "curriculumFieldLanguageCodeHint": "en",
+  "curriculumFieldLanguageCodeHelper": "2 o 3 letras minúsculas, por ejemplo en o pt.",
+  "curriculumCompleteness": "{name}: {translated} de {total} textos traducidos ({percent} %)",
+  "@curriculumCompleteness": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "translated": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "curriculumCompletenessHint": "Lo que falta se muestra en español a quienes usan este idioma.",
+  "curriculumLanguageActive": "Disponible en la app",
+  "curriculumLanguageHidden": "Oculto",
+  "curriculumHideLanguage": "Ocultar en la app",
+  "curriculumShowLanguage": "Mostrar en la app",
+  "curriculumUpload": "Subir currículo",
+  "curriculumUploadTranslation": "Subir traducción ({name})",
+  "@curriculumUploadTranslation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumExport": "Compartir archivo del currículo",
+  "curriculumExportSubject": "Currículo ({name})",
+  "@curriculumExportSubject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumModuleTitle": "Módulo {number} · {name}",
+  "@curriculumModuleTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumValueTitle": "{number}. {name}",
+  "@curriculumValueTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumValueCount": "{count, plural, =1{1 valor} other{{count} valores}}",
+  "@curriculumValueCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "curriculumQuestionCount": "{count, plural, =1{1 pregunta} other{{count} preguntas}}",
+  "@curriculumQuestionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "curriculumUsedInSessions": "ya se usó en sesiones",
+  "curriculumUntranslated": "Sin traducir: se muestra el texto en español.",
+  "curriculumQuestionInactive": "desactivada",
+  "curriculumQuestionAnswered": "con respuestas",
+  "curriculumEditModule": "Editar módulo {number}",
+  "@curriculumEditModule": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "curriculumEditValue": "Editar valor {number}",
+  "@curriculumEditValue": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "curriculumEditQuestion": "Editar pregunta {code}",
+  "@curriculumEditQuestion": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumAddQuestion": "Agregar pregunta",
+  "curriculumAddQuestionTitle": "Nueva pregunta para {value}",
+  "@curriculumAddQuestionTitle": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumAddQuestionConfirm": "Agregar pregunta",
+  "curriculumSave": "Guardar",
+  "curriculumSpanishText": "Texto en español",
+  "curriculumFieldName": "Nombre",
+  "curriculumFieldDescription": "Descripción",
+  "curriculumFieldBooklet": "Referencia del cuadernillo",
+  "curriculumFieldQuestionText": "Texto de la pregunta",
+  "curriculumFieldQuestionCode": "Código de la pregunta",
+  "curriculumFieldQuestionCodeHelper": "Identifica la pregunta; minúsculas, números y guion bajo. No se puede cambiar después.",
+  "curriculumFieldResponseType": "Tipo de respuesta",
+  "curriculumFieldQuestionActive": "Pregunta activa",
+  "curriculumFieldOrder": "Orden",
+  "curriculumFieldStatus": "Estado",
+  "curriculumResponseText": "Texto",
+  "curriculumResponsePerson": "Una persona",
+  "curriculumTypeLockedHint": "La pregunta ya tiene respuestas: no se puede cambiar su tipo.",
+  "curriculumToastSaved": "Cambios guardados.",
+  "curriculumToastUnchanged": "No había nada que cambiar.",
+  "curriculumToastQuestionAdded": "Pregunta agregada.",
+  "curriculumToastLanguageAdded": "Idioma agregado. Ahora sube o escribe sus textos.",
+  "curriculumToastApplied": "Currículo actualizado.",
+  "curriculumUploadTitle": "Subir currículo",
+  "curriculumUploadTranslationTitle": "Subir traducción ({code})",
+  "@curriculumUploadTranslationTitle": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumUploadIntro": "Elige un archivo .json o .csv con los 5 módulos, los 48 valores y sus preguntas, o pega su contenido. Antes de aplicar verás qué cambia; no se guarda nada hasta que lo confirmes.",
+  "curriculumUploadTranslationIntro": "Elige un archivo .json o .csv con los textos traducidos (puede ser parcial) o pega su contenido. Antes de aplicar verás qué cambia.",
+  "curriculumPickFile": "Elegir archivo",
+  "curriculumPickedFile": "Archivo: {name}",
+  "@curriculumPickedFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumPasteLabel": "Contenido del archivo",
+  "curriculumPasteHint": "Pega aquí el JSON o el CSV",
+  "curriculumReviewChanges": "Revisar cambios",
+  "curriculumReviewTitle": "Cambios que se aplicarían",
+  "curriculumApplyChanges": "Aplicar cambios",
+  "curriculumNoChanges": "No hay cambios: el archivo ya coincide con lo que está guardado.",
+  "curriculumRefusedTitle": "No se puede aplicar este archivo",
+  "curriculumDiffNew": "nuevos",
+  "curriculumDiffChanged": "con cambios",
+  "curriculumDiffReactivated": "reactivadas",
+  "curriculumDiffDeactivated": "se desactivan",
+  "curriculumDiffRemoved": "se quitan",
+  "curriculumDiffKeptBecauseAnswered": "Tiene respuestas: se desactiva, no se borra.",
+  "curriculumDiffEmpty": "(vacío)",
+  "curriculumDiffField": "{field}: {before} → {after}",
+  "@curriculumDiffField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "after": {
+        "type": "String"
+      }
+    }
+  },
+  "curriculumEntityModule": "Módulo",
+  "curriculumEntityValue": "Valor",
+  "curriculumEntityQuestion": "Pregunta"
 }

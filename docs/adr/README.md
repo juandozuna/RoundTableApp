@@ -21,6 +21,7 @@ Source requirements: the RoundTables Obsidian vault (notes 00–07).
 | [0014](0014-facilitator-is-participant.md) | The facilitator is also a participant (counts toward 9) | Accepted |
 | [0015](0015-login-and-admin-design-directions.md) | Login "Puerta única" and admin "Explorador de mesas" design directions | Accepted |
 | [0016](0016-role-matrix-and-curriculum-import.md) | Role matrix (coordinator adds members) and curriculum import path | Accepted |
+| [0017](0017-curriculum-admin-and-content-languages.md) | Curriculum administration in the backoffice and content languages (translations per locale, Spanish fallback) | Accepted |
 
 Constraints that shaped every decision: one part-time developer, NGO budget under ~US$100/month,
 multiple countries from the pilot, thousands of users across 6+ organizations.

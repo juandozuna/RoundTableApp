@@ -74,6 +74,14 @@ export const ERRORS = {
   person_linked_elsewhere: [409, "Esta invitación ya está vinculada a otra cuenta."],
   identity_linked_elsewhere: [409, "Tu cuenta ya está vinculada a otra persona de esta organización."],
   no_person: [409, "Tu cuenta todavía no está vinculada a ninguna invitación."],
+  curriculum_invalid: [422, "El archivo del currículo no es válido."],
+  curriculum_locked: [409, "Ese cambio altera datos que ya se usaron en sesiones."],
+  question_type_locked: [409, "La pregunta ya tiene respuestas: no se puede cambiar su tipo de respuesta."],
+  question_last_active: [409, "Cada valor necesita al menos una pregunta activa."],
+  duplicate_question: [409, "Ya existe una pregunta activa con ese código en este valor."],
+  duplicate_locale: [409, "Ese idioma ya está registrado."],
+  locale_not_found: [404, "Ese idioma no está registrado."],
+  locale_is_default: [409, "El español es el idioma base: se edita en el currículo."],
   internal_error: [500, "Ocurrió un error inesperado. Inténtalo de nuevo."],
 } as const satisfies Record<string, readonly [number, string]>;
 

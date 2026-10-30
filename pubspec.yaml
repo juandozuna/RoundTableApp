@@ -33,6 +33,7 @@ dependencies:
   dio: ^5.11.1
   drift: ^2.34.4
   drift_sqlite_async: ^0.3.1
+  file_picker: ^13.3.0
   firebase_core: ^5.1.0
   firebase_messaging: ^17.0.1
   flutter:

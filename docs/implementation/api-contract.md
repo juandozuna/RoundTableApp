@@ -500,6 +500,32 @@ schedules one. Moving a member: target must have a seat (`table_full`), facilita
 moved (`cannot_move_facilitator`). Paused/inactive organizations reject admin writes
 (`organization_inactive`).
 
+### admin — curriculum and content languages (platform admin, online-only, ADR 0017)
+
+Authorization: `app.require_platform_admin` (others get `403 forbidden`). Every write takes an
+advisory lock, runs in one transaction and writes an audit event (`curriculum.*`).
+
+| Method & path | Body | Response |
+|---|---|---|
+| `GET /admin/curriculum?locale=xx` | — | `{ locale, locales: [{ code, name, is_default, status, completeness: { total, translated } \| null }], modules: [{ id, number, name, description, status, translation, values: [{ id, number (1–48), number_in_module, name, description, booklet_reference, status, used_by_closed_sessions, translation, questions: [{ id, code, text, sort_order, response_type, status, answered, translation }] }] }] }` — `translation` is `{ name, description, text }` of `locale` or `null` |
+| `POST /admin/curriculum/import` | `{ curriculum: {modules…} \| csv: "…", dry_run?, source? }` — file format in `curriculum-import.md` | `{ dry_run, applied, changes: [{ entity: module\|value\|question, key, label, action: create\|update\|reactivate\|deactivate, fields: { f: { from, to } }, answered? }], refused: [{ entity, key, label, code, message }] }`. `dry_run: true` writes nothing; without it a non-empty `refused` is `409 curriculum_locked` and nothing is applied; invalid file `422 curriculum_invalid` (`error.problems`) |
+| `PATCH /admin/curriculum/modules/{id}` | `{ name?, description?, locale? }` | `{ changed, change? }` — with a non-default `locale` it edits that language's translation (blank clears), otherwise the Spanish text |
+| `PATCH /admin/curriculum/values/{id}` | `{ name?, description?, booklet_reference?, locale? }` | same |
+| `PATCH /admin/curriculum/questions/{id}` | `{ text?, response_type?, status? active\|inactive, sort_order?, locale? }` | same; `409 question_type_locked` (answered question), `409 question_last_active` |
+| `POST /admin/curriculum/values/{id}/questions` | `{ code [a-z0-9_]{1,40}, text, response_type? }` | `201 { id, code }`; reuses (reactivates) a deactivated question with the same code; `409 duplicate_question` |
+| `POST /admin/curriculum/locales` | `{ code (2–3 letters), name }` | `201 { locale }`; `409 duplicate_locale` |
+| `PATCH /admin/curriculum/locales/{code}` | `{ name?, status? active\|inactive }` | `{ locale }`; `404 locale_not_found` |
+| `POST /admin/curriculum/locales/{code}/import` | `{ curriculum \| csv, dry_run?, source? }` — same shape as the curriculum file but partial (only `number`/`code` keys and the translated `name`/`description`/`text`) | `{ dry_run, applied, locale, changes: [{ …, action: create\|update\|delete }], refused: [] }`; `404 locale_not_found`, `409 locale_is_default`, `422 curriculum_invalid` (unknown module/value/question) |
+
+New error codes: `curriculum_invalid`, `curriculum_locked`, `question_type_locked`,
+`question_last_active`, `duplicate_question`, `duplicate_locale`, `locale_not_found`,
+`locale_is_default`.
+
+Reads on devices: `content_locales` and `curriculum_translations` (`id, locale, entity_type,
+entity_id, name, description, question_text`) are part of the `curriculum` sync stream; PostgREST
+exposes them select-only to every signed-in user. The app picks the row of the selected content
+language and falls back to the Spanish column, field by field.
+
 ### answers-reveal
 
 `POST /functions/v1/answers-reveal` — coordinator/admin of the organization or facilitator of the
@@ -715,8 +741,9 @@ supabase start                      # applies migrations + seed on first start
 supabase db reset                   # re-apply migrations + seed
 supabase test db                    # pgTAP: RLS scope, invariants, sync, invites/admin, rate limits,
                                     # KPI freshness, notification scheduling, hardening (167 tests)
-docker run --rm -v "$PWD/supabase/functions":/app -w /app denoland/deno:2.1.4 \
-  deno test --allow-env _shared/    # pure logic: validation, state machine, late sync, batches, client address
+docker run --rm -v "$PWD":/repo -w /repo/supabase/functions denoland/deno:2.1.4 \
+  deno test --allow-env --allow-read _shared/   # pure logic: validation, state machine, late sync, batches,
+                                    # client address, curriculum file validation/CSV (+ parity with scripts/)
 cp supabase/functions/.env.example supabase/functions/.env
 supabase functions serve --env-file supabase/functions/.env &
 bash supabase/tests/functions/smoke.sh   # curl flows with the dev users (run after a reset)

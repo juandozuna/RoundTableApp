@@ -12,8 +12,9 @@ import { history } from './scenarios/history.mjs';
 import { schedule } from './scenarios/schedule.mjs';
 import { calendar } from './scenarios/calendar.mjs';
 import { health } from './scenarios/health.mjs';
+import { curriculum } from './scenarios/curriculum.mjs';
 
-const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin, history, schedule, calendar, health };
+const all = { 'sign-in': signIn, invites, isolation, responsive, 'live-session': liveSession, offline, admin, history, schedule, calendar, health, curriculum };
 const selected = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(all);
 const browser = await launch();
 try {

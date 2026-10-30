@@ -8,6 +8,8 @@ abstract final class SessionTables {
   static const String curriculumModules = 'curriculum_modules';
   static const String curriculumValues = 'curriculum_values';
   static const String valueQuestions = 'value_questions';
+  static const String contentLocales = 'content_locales';
+  static const String curriculumTranslations = 'curriculum_translations';
   static const String organizations = 'organizations';
   static const String locations = 'locations';
   static const String people = 'people';
@@ -76,6 +78,20 @@ class SessionSyncSchema implements SyncSchemaContribution {
       Column.integer('sort_order'),
       Column.text('response_type'),
       Column.text('status'),
+    ]),
+    Table(SessionTables.contentLocales, [
+      Column.text('code'),
+      Column.text('name'),
+      Column.integer('is_default'),
+      Column.text('status'),
+    ]),
+    Table(SessionTables.curriculumTranslations, [
+      Column.text('locale'),
+      Column.text('entity_type'),
+      Column.text('entity_id'),
+      Column.text('name'),
+      Column.text('description'),
+      Column.text('question_text'),
     ]),
     Table(SessionTables.organizations, [
       Column.text('name'),

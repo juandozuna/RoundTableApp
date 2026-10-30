@@ -4384,6 +4384,18 @@ abstract class AppLocalizations {
   /// **'Notificaciones'**
   String get settingsNotifications;
 
+  /// No description provided for @settingsContentLanguageKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma del contenido'**
+  String get settingsContentLanguageKicker;
+
+  /// No description provided for @settingsContentLanguageHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Los valores y las preguntas se muestran en este idioma. Lo que aún no está traducido se ve en español.'**
+  String get settingsContentLanguageHint;
+
   /// No description provided for @settingsSyncKicker.
   ///
   /// In es, this message translates to:
@@ -8468,6 +8480,491 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Abrir la mesa {table}'**
   String calendarOpenTable(String table);
+
+  /// No description provided for @curriculumNav.
+  ///
+  /// In es, this message translates to:
+  /// **'Currículo'**
+  String get curriculumNav;
+
+  /// No description provided for @curriculumTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Currículo'**
+  String get curriculumTitle;
+
+  /// No description provided for @curriculumIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Los 5 módulos, los 48 valores y sus preguntas de reflexión. Aquí puedes subir el contenido, corregir textos y agregar idiomas. Lo que cambies llega a los dispositivos al sincronizar.'**
+  String get curriculumIntro;
+
+  /// No description provided for @curriculumDeniedMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo la administración de la plataforma puede ver y editar el currículo.'**
+  String get curriculumDeniedMessage;
+
+  /// No description provided for @curriculumLanguageBase.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} (base)'**
+  String curriculumLanguageBase(String name);
+
+  /// No description provided for @curriculumAddLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar idioma'**
+  String get curriculumAddLanguage;
+
+  /// No description provided for @curriculumAddLanguageConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get curriculumAddLanguageConfirm;
+
+  /// No description provided for @curriculumFieldLanguageName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del idioma'**
+  String get curriculumFieldLanguageName;
+
+  /// No description provided for @curriculumFieldLanguageNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'English'**
+  String get curriculumFieldLanguageNameHint;
+
+  /// No description provided for @curriculumFieldLanguageCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código del idioma'**
+  String get curriculumFieldLanguageCode;
+
+  /// No description provided for @curriculumFieldLanguageCodeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'en'**
+  String get curriculumFieldLanguageCodeHint;
+
+  /// No description provided for @curriculumFieldLanguageCodeHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'2 o 3 letras minúsculas, por ejemplo en o pt.'**
+  String get curriculumFieldLanguageCodeHelper;
+
+  /// No description provided for @curriculumCompleteness.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}: {translated} de {total} textos traducidos ({percent} %)'**
+  String curriculumCompleteness(
+    String name,
+    int translated,
+    int total,
+    int percent,
+  );
+
+  /// No description provided for @curriculumCompletenessHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que falta se muestra en español a quienes usan este idioma.'**
+  String get curriculumCompletenessHint;
+
+  /// No description provided for @curriculumLanguageActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible en la app'**
+  String get curriculumLanguageActive;
+
+  /// No description provided for @curriculumLanguageHidden.
+  ///
+  /// In es, this message translates to:
+  /// **'Oculto'**
+  String get curriculumLanguageHidden;
+
+  /// No description provided for @curriculumHideLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar en la app'**
+  String get curriculumHideLanguage;
+
+  /// No description provided for @curriculumShowLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar en la app'**
+  String get curriculumShowLanguage;
+
+  /// No description provided for @curriculumUpload.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir currículo'**
+  String get curriculumUpload;
+
+  /// No description provided for @curriculumUploadTranslation.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir traducción ({name})'**
+  String curriculumUploadTranslation(String name);
+
+  /// No description provided for @curriculumExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir archivo del currículo'**
+  String get curriculumExport;
+
+  /// No description provided for @curriculumExportSubject.
+  ///
+  /// In es, this message translates to:
+  /// **'Currículo ({name})'**
+  String curriculumExportSubject(String name);
+
+  /// No description provided for @curriculumModuleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo {number} · {name}'**
+  String curriculumModuleTitle(int number, String name);
+
+  /// No description provided for @curriculumValueTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'{number}. {name}'**
+  String curriculumValueTitle(int number, String name);
+
+  /// No description provided for @curriculumValueCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 valor} other{{count} valores}}'**
+  String curriculumValueCount(int count);
+
+  /// No description provided for @curriculumQuestionCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 pregunta} other{{count} preguntas}}'**
+  String curriculumQuestionCount(int count);
+
+  /// No description provided for @curriculumUsedInSessions.
+  ///
+  /// In es, this message translates to:
+  /// **'ya se usó en sesiones'**
+  String get curriculumUsedInSessions;
+
+  /// No description provided for @curriculumUntranslated.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin traducir: se muestra el texto en español.'**
+  String get curriculumUntranslated;
+
+  /// No description provided for @curriculumQuestionInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'desactivada'**
+  String get curriculumQuestionInactive;
+
+  /// No description provided for @curriculumQuestionAnswered.
+  ///
+  /// In es, this message translates to:
+  /// **'con respuestas'**
+  String get curriculumQuestionAnswered;
+
+  /// No description provided for @curriculumEditModule.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar módulo {number}'**
+  String curriculumEditModule(int number);
+
+  /// No description provided for @curriculumEditValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar valor {number}'**
+  String curriculumEditValue(int number);
+
+  /// No description provided for @curriculumEditQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar pregunta {code}'**
+  String curriculumEditQuestion(String code);
+
+  /// No description provided for @curriculumAddQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar pregunta'**
+  String get curriculumAddQuestion;
+
+  /// No description provided for @curriculumAddQuestionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva pregunta para {value}'**
+  String curriculumAddQuestionTitle(String value);
+
+  /// No description provided for @curriculumAddQuestionConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar pregunta'**
+  String get curriculumAddQuestionConfirm;
+
+  /// No description provided for @curriculumSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get curriculumSave;
+
+  /// No description provided for @curriculumSpanishText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto en español'**
+  String get curriculumSpanishText;
+
+  /// No description provided for @curriculumFieldName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get curriculumFieldName;
+
+  /// No description provided for @curriculumFieldDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get curriculumFieldDescription;
+
+  /// No description provided for @curriculumFieldBooklet.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia del cuadernillo'**
+  String get curriculumFieldBooklet;
+
+  /// No description provided for @curriculumFieldQuestionText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto de la pregunta'**
+  String get curriculumFieldQuestionText;
+
+  /// No description provided for @curriculumFieldQuestionCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de la pregunta'**
+  String get curriculumFieldQuestionCode;
+
+  /// No description provided for @curriculumFieldQuestionCodeHelper.
+  ///
+  /// In es, this message translates to:
+  /// **'Identifica la pregunta; minúsculas, números y guion bajo. No se puede cambiar después.'**
+  String get curriculumFieldQuestionCodeHelper;
+
+  /// No description provided for @curriculumFieldResponseType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de respuesta'**
+  String get curriculumFieldResponseType;
+
+  /// No description provided for @curriculumFieldQuestionActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregunta activa'**
+  String get curriculumFieldQuestionActive;
+
+  /// No description provided for @curriculumFieldOrder.
+  ///
+  /// In es, this message translates to:
+  /// **'Orden'**
+  String get curriculumFieldOrder;
+
+  /// No description provided for @curriculumFieldStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get curriculumFieldStatus;
+
+  /// No description provided for @curriculumResponseText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto'**
+  String get curriculumResponseText;
+
+  /// No description provided for @curriculumResponsePerson.
+  ///
+  /// In es, this message translates to:
+  /// **'Una persona'**
+  String get curriculumResponsePerson;
+
+  /// No description provided for @curriculumTypeLockedHint.
+  ///
+  /// In es, this message translates to:
+  /// **'La pregunta ya tiene respuestas: no se puede cambiar su tipo.'**
+  String get curriculumTypeLockedHint;
+
+  /// No description provided for @curriculumToastSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios guardados.'**
+  String get curriculumToastSaved;
+
+  /// No description provided for @curriculumToastUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'No había nada que cambiar.'**
+  String get curriculumToastUnchanged;
+
+  /// No description provided for @curriculumToastQuestionAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregunta agregada.'**
+  String get curriculumToastQuestionAdded;
+
+  /// No description provided for @curriculumToastLanguageAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma agregado. Ahora sube o escribe sus textos.'**
+  String get curriculumToastLanguageAdded;
+
+  /// No description provided for @curriculumToastApplied.
+  ///
+  /// In es, this message translates to:
+  /// **'Currículo actualizado.'**
+  String get curriculumToastApplied;
+
+  /// No description provided for @curriculumUploadTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir currículo'**
+  String get curriculumUploadTitle;
+
+  /// No description provided for @curriculumUploadTranslationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir traducción ({code})'**
+  String curriculumUploadTranslationTitle(String code);
+
+  /// No description provided for @curriculumUploadIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un archivo .json o .csv con los 5 módulos, los 48 valores y sus preguntas, o pega su contenido. Antes de aplicar verás qué cambia; no se guarda nada hasta que lo confirmes.'**
+  String get curriculumUploadIntro;
+
+  /// No description provided for @curriculumUploadTranslationIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un archivo .json o .csv con los textos traducidos (puede ser parcial) o pega su contenido. Antes de aplicar verás qué cambia.'**
+  String get curriculumUploadTranslationIntro;
+
+  /// No description provided for @curriculumPickFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir archivo'**
+  String get curriculumPickFile;
+
+  /// No description provided for @curriculumPickedFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo: {name}'**
+  String curriculumPickedFile(String name);
+
+  /// No description provided for @curriculumPasteLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contenido del archivo'**
+  String get curriculumPasteLabel;
+
+  /// No description provided for @curriculumPasteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el JSON o el CSV'**
+  String get curriculumPasteHint;
+
+  /// No description provided for @curriculumReviewChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar cambios'**
+  String get curriculumReviewChanges;
+
+  /// No description provided for @curriculumReviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios que se aplicarían'**
+  String get curriculumReviewTitle;
+
+  /// No description provided for @curriculumApplyChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicar cambios'**
+  String get curriculumApplyChanges;
+
+  /// No description provided for @curriculumNoChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay cambios: el archivo ya coincide con lo que está guardado.'**
+  String get curriculumNoChanges;
+
+  /// No description provided for @curriculumRefusedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede aplicar este archivo'**
+  String get curriculumRefusedTitle;
+
+  /// No description provided for @curriculumDiffNew.
+  ///
+  /// In es, this message translates to:
+  /// **'nuevos'**
+  String get curriculumDiffNew;
+
+  /// No description provided for @curriculumDiffChanged.
+  ///
+  /// In es, this message translates to:
+  /// **'con cambios'**
+  String get curriculumDiffChanged;
+
+  /// No description provided for @curriculumDiffReactivated.
+  ///
+  /// In es, this message translates to:
+  /// **'reactivadas'**
+  String get curriculumDiffReactivated;
+
+  /// No description provided for @curriculumDiffDeactivated.
+  ///
+  /// In es, this message translates to:
+  /// **'se desactivan'**
+  String get curriculumDiffDeactivated;
+
+  /// No description provided for @curriculumDiffRemoved.
+  ///
+  /// In es, this message translates to:
+  /// **'se quitan'**
+  String get curriculumDiffRemoved;
+
+  /// No description provided for @curriculumDiffKeptBecauseAnswered.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiene respuestas: se desactiva, no se borra.'**
+  String get curriculumDiffKeptBecauseAnswered;
+
+  /// No description provided for @curriculumDiffEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'(vacío)'**
+  String get curriculumDiffEmpty;
+
+  /// No description provided for @curriculumDiffField.
+  ///
+  /// In es, this message translates to:
+  /// **'{field}: {before} → {after}'**
+  String curriculumDiffField(String field, String before, String after);
+
+  /// No description provided for @curriculumEntityModule.
+  ///
+  /// In es, this message translates to:
+  /// **'Módulo'**
+  String get curriculumEntityModule;
+
+  /// No description provided for @curriculumEntityValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor'**
+  String get curriculumEntityValue;
+
+  /// No description provided for @curriculumEntityQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregunta'**
+  String get curriculumEntityQuestion;
 }
 
 class _AppLocalizationsDelegate

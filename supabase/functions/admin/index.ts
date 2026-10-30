@@ -1,36 +1,14 @@
 // Administration (online-only, ADR 0003): organizations, coordinators, locations, tables,
 // facilitators, memberships, people, roles, own profile. Every write is audit-logged in SQL.
+import { op } from "../_shared/api_op.ts";
 import { requireCaller } from "../_shared/auth.ts";
 import { callApi } from "../_shared/db.ts";
-import { ApiError } from "../_shared/errors.ts";
-import { json, type Params, readJson, type Route, serveRoutes } from "../_shared/http.ts";
-import { isUuid, type Json, validate, type Validator } from "../_shared/validation.ts";
+import { json, type Route, serveRoutes } from "../_shared/http.ts";
+import type { Json, Validator } from "../_shared/validation.ts";
+import { curriculumRoutes } from "./curriculum.ts";
 
 const ORG_KINDS = ["foundation", "school", "company", "church", "community", "other"];
 const appUrl = () => (Deno.env.get("APP_PUBLIC_URL") ?? "http://127.0.0.1:3000").replace(/\/+$/, "");
-
-/** Builds a handler: auth → body → validation → api.<fn>(p_uid, p_input). */
-function op(
-  fn: string,
-  opts: {
-    rules?: (v: Validator, body: Json) => void;
-    input?: (body: Json, params: Params) => Json;
-    status?: number;
-    wrap?: string;
-  } = {},
-) {
-  return async (req: Request, params: Params) => {
-    for (const value of Object.values(params)) {
-      if (!isUuid(value)) throw new ApiError("validation_failed", "Identificador no válido.");
-    }
-    const caller = await requireCaller(req);
-    const body = req.method === "GET" ? {} : await readJson(req);
-    if (opts.rules) validate(body, (v) => opts.rules!(v, body));
-    const input = opts.input ? opts.input(body, params) : body;
-    const result = await callApi<Json>(fn, { p_uid: caller.userId, p_input: input });
-    return json(req, opts.wrap ? { [opts.wrap]: result } : result, opts.status ?? 200);
-  };
-}
 
 const orgRules = (required: boolean) => (v: Validator) =>
   v.text("name", { required, min: 2, max: 120 })
@@ -269,6 +247,9 @@ const routes: Route[] = [
       wrap: "role_assignment",
     }),
   },
+
+  // ── Curriculum and content languages (platform admin, ADR 0017) ──
+  ...curriculumRoutes,
 ];
 
 serveRoutes("admin", routes);

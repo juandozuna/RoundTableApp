@@ -96,6 +96,9 @@ const all = (rows, pred) => rows.length > 0 && rows.every(pred);
 const luz03 = id("table:luz-03");
 const ana = await download(id("user:ana"));
 check("member: curriculum (48 values) is synced", ana.byTable("curriculum_values").length === 48);
+check("member: content languages and every translation are synced (ADR 0017)",
+  ana.byTable("content_locales").some((r) => r.code === "es" && r.is_default)
+    && ana.byTable("curriculum_translations").length === snap("curriculum_translations").length);
 check("member: only own answers", all(ana.byTable("member_answers"), (r) => r.person_id === id("person:ana")));
 check("member: only own scores", all(ana.byTable("member_assessments"), (r) => r.person_id === id("person:ana")));
 check("member: own previous commitment available for follow-up",
@@ -134,7 +137,8 @@ check("platform admin: no tenant session data offline (admin is online-only)",
 const stranger = await download("00000000-0000-0000-0000-00000000dead");
 check("unknown user: only curriculum",
   stranger.byTable("people").length === 0 && stranger.byTable("sessions").length === 0
-    && stranger.byTable("curriculum_modules").length === 5);
+    && stranger.byTable("curriculum_modules").length === 5
+    && stranger.byTable("content_locales").length > 0);
 
 const archived = snap("member_answers").filter((r) => r.archived_at).length;
 console.log(`info ${bucketRows.size} buckets, ${archived} archived answer rows excluded`);
