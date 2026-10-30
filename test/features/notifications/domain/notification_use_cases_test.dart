@@ -234,6 +234,15 @@ void main() {
       expect(emitted.last, isNull);
     });
 
+    test('online-only status (nothing ever pending) never alerts', () async {
+      listen();
+      sync.controller
+        ..add(const SyncSnapshot(connection: SyncConnection.connected))
+        ..add(const SyncSnapshot(connection: SyncConnection.offline));
+      await pumpEventQueue();
+      expect(emitted.whereType<UnsyncedAlert>(), isEmpty);
+    });
+
     test('stays silent when the user turned the alert off', () async {
       await preferences.save(
         const NotificationPreferences(unsyncedAlert: false),
