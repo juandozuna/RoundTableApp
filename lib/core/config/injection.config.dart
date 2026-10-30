@@ -494,11 +494,16 @@ import '../../features/settings/presentation/pages/settings/cubit/settings_cubit
     as _i152;
 import '../../features/shell/presentation/cubit/context_chip_cubit.dart'
     as _i939;
+import '../data/data_change_signal.dart' as _i767;
+import '../data/remote_watch.dart' as _i730;
 import '../network/auth_token_provider.dart' as _i84;
 import '../network/network_module.dart' as _i200;
+import '../network/postgrest/table_reads_client.dart' as _i148;
 import '../routing/app_router.dart' as _i282;
 import '../routing/app_shell/cubit/app_shell_cubit.dart' as _i1002;
 import '../routing/feature_router.dart' as _i878;
+import '../services/app_lifecycle/app_lifecycle_service.dart' as _i83;
+import '../services/app_lifecycle/widgets_app_lifecycle_service.dart' as _i860;
 import '../services/auth_session/auth_session_module.dart' as _i139;
 import '../services/auth_session/auth_state_source.dart' as _i997;
 import '../services/auth_session/online_verification_store.dart' as _i524;
@@ -529,9 +534,9 @@ import '../services/session_context/watch_session_context_use_case.dart'
     as _i434;
 import '../services/share/share_service.dart' as _i245;
 import '../services/share/share_service_impl.dart' as _i827;
+import '../sync/data/connectivity_sync_status_service.dart' as _i931;
 import '../sync/data/pending_since_tracker.dart' as _i383;
 import '../sync/data/powersync_sync_database.dart' as _i405;
-import '../sync/data/powersync_sync_status_service.dart' as _i858;
 import '../sync/data/sync_database.dart' as _i924;
 import '../sync/data/sync_lifecycle.dart' as _i863;
 import '../sync/data/sync_schema.dart' as _i915;
@@ -561,6 +566,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i915.SyncSchemaRegistry>(
       () => appCompositionModule.syncSchemaRegistry,
     );
+    gh.lazySingleton<_i767.DataChangeSignal>(
+      () => _i767.DataChangeSignal(),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i895.Connectivity>(() => servicesModule.connectivity);
     gh.lazySingleton<_i640.TableWallClock>(() => _i640.TableWallClock());
     gh.lazySingleton<_i460.SharedPreferencesAsync>(
@@ -581,6 +590,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i914.ClipboardService>(
       () => _i41.FlutterClipboardService(),
+    );
+    gh.lazySingleton<_i83.AppLifecycleService>(
+      () => _i860.WidgetsAppLifecycleService(),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i309.CsvExportService>(() => _i58.CsvExportServiceImpl());
     gh.lazySingleton<_i523.SessionContextService>(
@@ -719,12 +732,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i160.InviteAttemptsService>(
       () => _i291.InviteAttemptsServiceImpl(gh<_i508.ClockService>()),
     );
+    gh.lazySingleton<_i730.RemoteWatch>(
+      () => _i730.RemoteWatch(
+        gh<_i767.DataChangeSignal>(),
+        gh<_i83.AppLifecycleService>(),
+      ),
+    );
+    gh.lazySingleton<_i1020.SyncStatusService>(
+      () =>
+          _i931.ConnectivitySyncStatusService(gh<_i1015.ConnectivityService>()),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.postgrestDio(
         gh<_i609.AppConfig>(),
         gh<_i84.AuthTokenProvider>(),
       ),
       instanceName: 'postgrestDio',
+    );
+    gh.lazySingleton<_i148.TableReadsClient>(
+      () => _i148.TableReadsClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
     );
     gh.lazySingleton<_i349.AdminReadClient>(
       () => _i349.AdminReadClient(gh<_i361.Dio>(instanceName: 'postgrestDio')),
@@ -748,6 +774,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i355.PickCurriculumFileUseCase>(
       () => _i355.PickCurriculumFileUseCase(gh<_i245.FilePickService>()),
+    );
+    gh.factory<_i318.WatchSyncStatusUseCase>(
+      () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
     );
     gh.factory<_i939.ContextChipCubit>(
       () => _i939.ContextChipCubit(gh<_i434.WatchSessionContextUseCase>()),
@@ -812,6 +841,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i564.HomeClient>(),
         gh<_i84.AuthTokenProvider>(),
       ),
+    );
+    gh.factory<_i169.WatchUnsyncedAlertUseCase>(
+      () => _i169.WatchUnsyncedAlertUseCase(
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i795.NotificationPreferencesService>(),
+      ),
+    );
+    gh.factory<_i246.UnsyncedAlertCubit>(
+      () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
     );
     gh.lazySingleton<_i625.AuditRemoteDataSource>(
       () => _i625.AuditRemoteDataSource(gh<_i800.AuditClient>()),
@@ -1137,13 +1175,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i298.SavedViewsService>(
       () => _i512.SavedViewsServiceImpl(gh<_i924.SyncDatabase>()),
     );
-    gh.lazySingleton<_i1020.SyncStatusService>(
-      () => _i858.PowerSyncSyncStatusService(
-        gh<_i924.SyncDatabase>(),
-        gh<_i609.AppConfig>(),
-        gh<_i508.ClockService>(),
-      ),
-    );
     gh.lazySingleton<_i785.LocalDataService>(
       () => _i375.LocalDataServiceImpl(gh<_i924.SyncDatabase>()),
     );
@@ -1371,14 +1402,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i627.ReadClipboardTextUseCase>(),
       ),
     );
+    gh.factory<_i327.SignOutCubit>(
+      () => _i327.SignOutCubit(
+        gh<_i318.WatchSyncStatusUseCase>(),
+        gh<_i17.WatchConnectivityUseCase>(),
+        gh<_i349.SignOutUseCase>(),
+        gh<_i411.SignOutAndEraseLocalDataUseCase>(),
+      ),
+    );
     gh.factory<_i869.LoadProfileUseCase>(
       () => _i869.LoadProfileUseCase(gh<_i895.ProfileService>()),
     );
     gh.factory<_i325.UpdateProfileUseCase>(
       () => _i325.UpdateProfileUseCase(gh<_i895.ProfileService>()),
-    );
-    gh.factory<_i318.WatchSyncStatusUseCase>(
-      () => _i318.WatchSyncStatusUseCase(gh<_i1020.SyncStatusService>()),
     );
     gh.factory<_i844.TableDetailCubit>(
       () => _i844.TableDetailCubit(
@@ -1515,12 +1551,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i115.WatchTableHistoryUseCase>(
       () => _i115.WatchTableHistoryUseCase(gh<_i346.HistoryService>()),
     );
-    gh.factory<_i169.WatchUnsyncedAlertUseCase>(
-      () => _i169.WatchUnsyncedAlertUseCase(
-        gh<_i318.WatchSyncStatusUseCase>(),
-        gh<_i795.NotificationPreferencesService>(),
-      ),
-    );
     gh.factory<_i660.AccessCubit>(
       () => _i660.AccessCubit(
         gh<_i662.WatchAccessStateUseCase>(),
@@ -1539,9 +1569,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i563.WatchAuthFailuresUseCase>(),
         gh<_i17.WatchConnectivityUseCase>(),
       ),
-    );
-    gh.factory<_i246.UnsyncedAlertCubit>(
-      () => _i246.UnsyncedAlertCubit(gh<_i169.WatchUnsyncedAlertUseCase>()),
     );
     gh.factory<_i780.ProgressCubit>(
       () => _i780.ProgressCubit(
@@ -1621,14 +1648,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i480.UpcomingCubit(
         gh<_i168.WatchUpcomingSessionsUseCase>(),
         gh<_i17.WatchConnectivityUseCase>(),
-      ),
-    );
-    gh.factory<_i327.SignOutCubit>(
-      () => _i327.SignOutCubit(
-        gh<_i318.WatchSyncStatusUseCase>(),
-        gh<_i17.WatchConnectivityUseCase>(),
-        gh<_i349.SignOutUseCase>(),
-        gh<_i411.SignOutAndEraseLocalDataUseCase>(),
       ),
     );
     gh.factory<_i246.WatchHomeOverviewUseCase>(

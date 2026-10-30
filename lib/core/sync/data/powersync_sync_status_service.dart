@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:injectable/injectable.dart';
 import 'package:powersync/powersync.dart';
 
 import '../../config/app_config.dart';
@@ -11,7 +10,8 @@ import '../domain/unsynced_changes_policy.dart';
 import 'sync_database.dart';
 import 'sync_schema.dart';
 
-@LazySingleton(as: SyncStatusService)
+/// Not registered in DI: [ConnectivitySyncStatusService] is the active
+/// [SyncStatusService] while the app is online-only. Deleted with PowerSync.
 class PowerSyncSyncStatusService implements SyncStatusService {
   PowerSyncSyncStatusService(this._database, this._config, this._clock);
 
