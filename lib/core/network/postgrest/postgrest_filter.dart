@@ -85,7 +85,7 @@ abstract final class PostgrestQuery {
     int? offset,
   }) => {
     ...filters,
-    if (select != null) PostgrestParams.select: select,
+    PostgrestParams.select: ?select,
     if (order.isNotEmpty) PostgrestParams.order: order.join(','),
     if (limit != null) PostgrestParams.limit: '$limit',
     if (offset != null) PostgrestParams.offset: '$offset',
