@@ -54,8 +54,14 @@ export async function isolation(browser) {
   check('API: sessions of another organization\'s table are invisible', Array.isArray(foreignSessions) && foreignSessions.length === 0);
   const memberView = await apiRows('ana@dev.local', 'round_tables?select=code');
   check('API: a member only sees their own table', Array.isArray(memberView) && memberView.length === 1 && memberView[0].code === 'LUZ-03', JSON.stringify(memberView));
+  const anaPerson = sql("select id from people where email = 'ana@dev.local'");
+  const peersAssessments = Number(sql(`select count(*) from member_assessments where person_id <> '${anaPerson}'`));
+  const anaOwnAssessments = Number(sql(`select count(*) from member_assessments where person_id = '${anaPerson}'`));
+  check('fixture: other people have scores too, so an empty read below would mean something', peersAssessments > 0 && anaOwnAssessments > 0);
   const anaOthers = await apiRows('ana@dev.local', 'member_assessments?select=person_id');
-  check('API: a member reads only their table\'s data (RLS), never other organizations', Array.isArray(anaOthers));
+  check('API: a member reads exactly their own scores (RLS), never other people\'s', Array.isArray(anaOthers) && anaOthers.length === anaOwnAssessments && anaOthers.every((row) => row.person_id === anaPerson), JSON.stringify(anaOthers).slice(0, 200));
+  const anaAskingForPeers = await apiRows('ana@dev.local', `member_assessments?select=person_id&person_id=neq.${anaPerson}`);
+  check('API: asking for other people\'s scores explicitly returns nothing', Array.isArray(anaAskingForPeers) && anaAskingForPeers.length === 0, JSON.stringify(anaAskingForPeers).slice(0, 200));
   await postgrestReads();
 }
 
@@ -72,9 +78,17 @@ async function readAs(token, path) {
   return { status: response.status, rows: Array.isArray(body) ? body : [], body };
 }
 
+/** PostgREST's row cap (`max_rows`) is 1000 on the local stack; `PAGE` asks for no more. */
+const MAX_ROWS = 1000;
 const ids = (rows, key) => [...new Set(rows.map((row) => row[key]))];
+// Vacuously true for no rows: always pair it with `exactly` or a row count so an empty read cannot pass.
 const only = (rows, key, allowed) => ids(rows, key).every((value) => allowed.includes(value));
 const count = (query) => Number(sql(query));
+/** What the database holds for a scope, capped like the API read. */
+const expected = (query) => Math.min(count(query), MAX_ROWS);
+/** A successful read that returned exactly the [wanted] rows, all inside [allowed] on [key]. */
+const exactly = (result, key, allowed, wanted) =>
+  result.status === 200 && result.rows.length === wanted && only(result.rows, key, allowed);
 
 /**
  * Per-role PostgREST reads of the session-domain tables. Expectations come from the database itself
@@ -90,69 +104,84 @@ export async function postgrestReads() {
   const answerAuthorsAtLuz03 = count(`select count(distinct person_id) from member_answers where round_table_id = '${luz03}'`);
   check('fixture: the demo table has answers from several people', answersAtLuz03 > 0 && answerAuthorsAtLuz03 > 1);
 
+  const individual = ['member_answers', 'member_commitments', 'member_assessments'];
+  const peersData = Object.fromEntries(individual.map((table) => [table, count(`select count(*) from ${table}`)]));
+  check('fixture: every individual-answer table has rows, so the scoped reads below are not vacuous', individual.every((table) => peersData[table] > 0));
+  const ownCount = (table, person) => count(`select count(*) from ${table} where person_id = '${person}'`);
+
   // ── Member (ana, Mesa Esperanza 03) ──────────────────────────────────────────────────────────
   const ana = await tokenFor('ana@dev.local');
   const anaPerson = personOf('ana@dev.local');
   const anaSessions = await readAs(ana, 'sessions?select=id,round_table_id,organization_id');
-  check('member: reads the sessions of their own table only', anaSessions.rows.length > 0 && only(anaSessions.rows, 'round_table_id', [luz03]), JSON.stringify(anaSessions.body).slice(0, 200));
+  check('member: reads exactly the sessions of their own table', exactly(anaSessions, 'round_table_id', [luz03], expected(`select count(*) from sessions where round_table_id = '${luz03}'`)), JSON.stringify(anaSessions.body).slice(0, 200));
   const anaAttendance = await readAs(ana, 'session_attendance?select=round_table_id,organization_id');
-  check('member: attendance rows stay inside their table', anaAttendance.rows.length > 0 && only(anaAttendance.rows, 'round_table_id', [luz03]));
-  for (const table of ['member_answers', 'member_commitments', 'member_assessments']) {
+  check('member: attendance rows are exactly their table\'s', exactly(anaAttendance, 'round_table_id', [luz03], expected(`select count(*) from session_attendance where round_table_id = '${luz03}'`)));
+  for (const table of individual) {
     const own = await readAs(ana, `${table}?select=person_id,round_table_id`);
-    check(`member: ${table} returns only their own rows (never a peer's)`, own.status === 200 && only(own.rows, 'person_id', [anaPerson]), JSON.stringify(own.body).slice(0, 200));
+    check(`member: ${table} returns exactly their own rows (never a peer's)`, (table === 'member_commitments' || ownCount(table, anaPerson) > 0) && exactly(own, 'person_id', [anaPerson], expected(`select count(*) from ${table} where person_id = '${anaPerson}'`)), JSON.stringify(own.body).slice(0, 200));
   }
   const anaPeople = await readAs(ana, 'people?select=id,organization_id');
   check('member: people returns only their own row (peers appear only as names in table_members)', anaPeople.rows.length === 1 && anaPeople.rows[0].id === anaPerson, JSON.stringify(anaPeople.body).slice(0, 200));
   const anaRoster = await readAs(ana, 'table_members?select=round_table_id,organization_id,first_name');
-  check('member: roster is their table only', anaRoster.rows.length > 1 && only(anaRoster.rows, 'round_table_id', [luz03]) && only(anaRoster.rows, 'organization_id', [luzOrg]));
+  check('member: roster is exactly their table', anaRoster.rows.length > 1 && exactly(anaRoster, 'round_table_id', [luz03], expected(`select count(*) from table_members where round_table_id = '${luz03}'`)) && only(anaRoster.rows, 'organization_id', [luzOrg]));
 
   // ── Facilitator (Mesa Esperanza 03) ──────────────────────────────────────────────────────────
   const facil = await tokenFor('facil@dev.local');
   const facilSessions = await readAs(facil, 'sessions?select=round_table_id');
-  check('facilitator: sessions are their table only', facilSessions.rows.length > 0 && only(facilSessions.rows, 'round_table_id', [luz03]));
-  for (const table of ['member_answers', 'member_commitments', 'member_assessments']) {
+  check('facilitator: sessions are exactly their table\'s', exactly(facilSessions, 'round_table_id', [luz03], expected(`select count(*) from sessions where round_table_id = '${luz03}'`)));
+  for (const table of individual) {
     const rows = await readAs(facil, `${table}?select=person_id,round_table_id`);
-    check(`facilitator: ${table} stays inside their table`, rows.status === 200 && only(rows.rows, 'round_table_id', [luz03]), JSON.stringify(rows.body).slice(0, 200));
+    const atTable = expected(`select count(*) from ${table} where round_table_id = '${luz03}'`);
+    check(`facilitator: ${table} are exactly their table's (${atTable}), none of the ${peersData[table]} overall`, atTable > 0 && exactly(rows, 'round_table_id', [luz03], atTable), JSON.stringify(rows.body).slice(0, 200));
   }
   const facilAnswers = await readAs(facil, 'member_answers?select=person_id,round_table_id');
   check('facilitator: sees the answers of their whole table (every author, every row)',
     facilAnswers.rows.length === answersAtLuz03 && ids(facilAnswers.rows, 'person_id').length === answerAuthorsAtLuz03,
     `rows=${facilAnswers.rows.length}/${answersAtLuz03} authors=${ids(facilAnswers.rows, 'person_id').length}/${answerAuthorsAtLuz03}`);
   const facilPeople = await readAs(facil, 'people?select=id,organization_id');
-  check('facilitator: people are their organization\'s, and only the table\'s members', facilPeople.rows.length > 1 && only(facilPeople.rows, 'organization_id', [luzOrg])
-    && facilPeople.rows.length <= count(`select count(distinct person_id) from table_members where round_table_id = '${luz03}'`));
+  check('facilitator: people are exactly their table\'s members', facilPeople.rows.length > 1 && only(facilPeople.rows, 'organization_id', [luzOrg])
+    && facilPeople.rows.length === count(`select count(distinct person_id) from table_members where round_table_id = '${luz03}'`));
   const facilAttendance = await readAs(facil, 'session_attendance?select=round_table_id');
-  check('facilitator: attendance is their table only', facilAttendance.rows.length > 0 && only(facilAttendance.rows, 'round_table_id', [luz03]));
+  check('facilitator: attendance is exactly their table\'s', exactly(facilAttendance, 'round_table_id', [luz03], expected(`select count(*) from session_attendance where round_table_id = '${luz03}'`)));
 
   // ── Coordinator (Fundación Luz): the whole organization, but never individual answers ────────
   const coord = await tokenFor('coord@dev.local');
   const coordPerson = personOf('coord@dev.local');
-  for (const table of ['sessions', 'session_attendance', 'table_members', 'people']) {
+  const orgScope = {
+    sessions: `select count(*) from sessions where organization_id = '${luzOrg}'`,
+    session_attendance: `select count(*) from session_attendance where organization_id = '${luzOrg}'`,
+    table_members: `select count(*) from table_members where organization_id = '${luzOrg}'`,
+    people: `select count(*) from people where organization_id = '${luzOrg}'`,
+  };
+  for (const [table, query] of Object.entries(orgScope)) {
     const rows = await readAs(coord, `${table}?select=organization_id`);
-    check(`coordinator: ${table} are all in their organization`, rows.rows.length > 0 && only(rows.rows, 'organization_id', [luzOrg]), `${table}: ${JSON.stringify(ids(rows.rows, 'organization_id'))}`);
+    check(`coordinator: ${table} are exactly their organization's`, exactly(rows, 'organization_id', [luzOrg], expected(query)) && rows.rows.length > 0, `${table}: ${rows.rows.length} rows ${JSON.stringify(ids(rows.rows, 'organization_id'))}`);
   }
-  for (const table of ['member_answers', 'member_commitments', 'member_assessments']) {
+  for (const table of individual) {
     const rows = await readAs(coord, `${table}?select=person_id`);
-    check(`coordinator: ${table} holds nobody else's individual answers (PC-10)`, rows.status === 200 && only(rows.rows, 'person_id', [coordPerson]), JSON.stringify(rows.body).slice(0, 200));
+    check(`coordinator: ${table} holds nobody else's individual answers (PC-10), though the organization has ${peersData[table]}`, exactly(rows, 'person_id', [coordPerson], ownCount(table, coordPerson)), JSON.stringify(rows.body).slice(0, 200));
   }
 
   // ── A user of another organization (Colegio Horizonte's coordinator) ─────────────────────────
   const other = await tokenFor('coord.horizonte@seed.local');
-  for (const table of ['sessions', 'session_attendance', 'table_members', 'people']) {
+  const otherPerson = personOf('coord.horizonte@seed.local');
+  for (const table of Object.keys(orgScope)) {
     const rows = await readAs(other, `${table}?select=organization_id`);
-    check(`other organization: ${table} contain nothing of Fundación Luz or Empresa Andina`, rows.status === 200 && !ids(rows.rows, 'organization_id').some((org) => org === luzOrg || org === andinaOrg) && only(rows.rows, 'organization_id', [horizonteOrg]),
+    const mine = expected(`select count(*) from ${table} where organization_id = '${horizonteOrg}'`);
+    check(`other organization: ${table} are exactly theirs and nothing of Fundación Luz or Empresa Andina`, mine > 0 && exactly(rows, 'organization_id', [horizonteOrg], mine) && !ids(rows.rows, 'organization_id').some((org) => org === luzOrg || org === andinaOrg),
       `${table}: ${JSON.stringify(ids(rows.rows, 'organization_id'))}`);
   }
-  for (const table of ['member_answers', 'member_commitments', 'member_assessments']) {
+  for (const table of individual) {
     const rows = await readAs(other, `${table}?select=person_id`);
-    check(`other organization: ${table} returns no row of another organization`, rows.status === 200 && only(rows.rows, 'person_id', [personOf('coord.horizonte@seed.local')]), JSON.stringify(rows.body).slice(0, 200));
+    check(`other organization: ${table} returns no row of another organization`, exactly(rows, 'person_id', [otherPerson], ownCount(table, otherPerson)), JSON.stringify(rows.body).slice(0, 200));
   }
   const luzSessionsForOther = await readAs(other, `sessions?select=id&round_table_id=eq.${luz03}`);
-  check('other organization: asking for Mesa Esperanza 03 by id still returns nothing', luzSessionsForOther.rows.length === 0);
+  check('other organization: asking for Mesa Esperanza 03 by id still returns nothing (a 200 with no rows)', luzSessionsForOther.status === 200 && luzSessionsForOther.rows.length === 0);
 
-  // ── Nobody signed in ─────────────────────────────────────────────────────────────────────────
-  for (const table of ['sessions', 'member_answers', 'people', 'table_members']) {
+  // ── Nobody signed in: the anon role has no privilege on any of them ──────────────────────────
+  const publicTables = ['sessions', 'session_attendance', 'member_answers', 'member_commitments', 'member_assessments', 'people', 'table_members', 'curriculum_modules', 'content_locales'];
+  for (const table of publicTables) {
     const rows = await readAs(null, `${table}?select=id`);
-    check(`anonymous: ${table} returns no rows`, rows.rows.length === 0, `status=${rows.status}`);
+    check(`anonymous: ${table} is refused (401/403) and returns no rows`, [401, 403].includes(rows.status) && rows.rows.length === 0, `status=${rows.status} ${JSON.stringify(rows.body).slice(0, 120)}`);
   }
 }
