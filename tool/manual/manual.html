@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Gold Roundtables · Manual de uso</title>
+<link rel="stylesheet" href="manual.css">
+</head>
+<body>
+
+<!-- Portada -->
+<section class="cover">
+  <div class="cover-mark">GR</div>
+  <p class="kicker">Manual de uso · Versión 1.0 · Octubre 2026</p>
+  <h1>Gold Roundtables</h1>
+  <p class="cover-sub">Mesas de valores · Guía completa para administrar organizaciones, mesas y personas, y para dirigir y vivir cada sesión semanal.</p>
+  <div class="cover-links">
+    <div><span>Aplicación</span><strong>https://roundtable-v1.web.app</strong></div>
+    <div><span>Página de ayuda</span><strong>https://juandozuna.github.io/RoundTableApp/</strong></div>
+  </div>
+  <div class="cover-roles">
+    <span class="role admin">Administrador</span>
+    <span class="role coord">Coordinador</span>
+    <span class="role facil">Facilitador</span>
+    <span class="role member">Miembro</span>
+  </div>
+</section>
+
+<!-- Índice (lo completa build.mjs) -->
+<section class="toc-page">
+  <h2 class="no-toc">Contenido</h2>
+  <nav id="toc"></nav>
+</section>
+
+<!-- 1 -->
+<section class="chapter">
+<h2 id="que-es">1. Qué es Gold Roundtables</h2>
+<p>Gold Roundtables es la aplicación de las <strong>mesas de valores</strong>: grupos pequeños que se reúnen una vez por semana para trabajar un valor del currículo (5 módulos, 48 valores). En cada sesión cada persona:</p>
+<ol class="steps">
+  <li><strong>Revisa</strong> cómo le fue con el compromiso de la semana anterior (seguimiento).</li>
+  <li><strong>Reflexiona</strong> sobre el valor de la semana respondiendo unas preguntas cortas.</li>
+  <li><strong>Se califica</strong> de 1 a 10 en ese valor (el 5 no se permite).</li>
+  <li><strong>Escribe un compromiso</strong> concreto para la semana: qué hará, cuándo y cómo lo medirá.</li>
+</ol>
+<p>La aplicación funciona en el navegador de la computadora y del teléfono, en <strong>https://roundtable-v1.web.app</strong>. No hay que instalar nada. Se entra con <strong>correo y contraseña</strong>.</p>
+
+<div class="callout info"><strong>Cómo está organizado todo.</strong> Organización → Ubicación (sede) → Mesa → Personas. Una organización (fundación, colegio, empresa, iglesia…) tiene una o varias ubicaciones; cada mesa pertenece a una ubicación, tiene un facilitador y de 3 a 9 personas <em>contando al facilitador</em>.</div>
+
+<h3>1.1 Conceptos clave</h3>
+<table class="grid">
+  <tr><th>Concepto</th><th>Qué significa</th></tr>
+  <tr><td>Organización</td><td>La institución que participa. Tipo: Fundación, Colegio, Empresa, Iglesia, Comunidad u Otro. Estados: Activa, Pausada, Desactivada. Las organizaciones nunca ven los datos de otras.</td></tr>
+  <tr><td>Ubicación (sede)</td><td>Un lugar físico de la organización (nombre, ciudad, región, dirección). Una mesa siempre pertenece a una ubicación.</td></tr>
+  <tr><td>Mesa</td><td>Grupo semanal con nombre, código único (por ejemplo <code>LUZ-07</code>), día, hora y zona horaria fijos. Estados: Activa, Pausada, Completada, Cerrada.</td></tr>
+  <tr><td>Sesión</td><td>La reunión semanal de una mesa. El sistema mantiene siempre una sesión pendiente por mesa y programa la siguiente al cerrar la actual.</td></tr>
+  <tr><td>Valor</td><td>Tema del currículo que se trabaja en una sesión (por ejemplo «Integridad»). Al cerrar la sesión la mesa avanza al valor siguiente.</td></tr>
+  <tr><td>Puntaje</td><td>Número entero de 1 a 10. <strong>El 5 no se permite</strong> para evitar respuestas neutras.</td></tr>
+  <tr><td>Compromiso</td><td>Una acción concreta para la semana. Se revisa una sola vez, en la sesión siguiente.</td></tr>
+  <tr><td>Invitación</td><td>La forma de dar acceso a una persona: un código de 6 caracteres, un enlace y un QR que vencen en 14 días.</td></tr>
+</table>
+
+<h3>1.2 El ciclo de una mesa</h3>
+<div class="flow">
+  <div><b>1</b>Se crea la mesa y se invita al facilitador</div>
+  <div><b>2</b>Se invitan los miembros (hasta 8)</div>
+  <div><b>3</b>Cada semana el facilitador abre la sesión</div>
+  <div><b>4</b>Todos responden desde su teléfono</div>
+  <div><b>5</b>El facilitador cierra y la mesa avanza de valor</div>
+</div>
+</section>
+
+<!-- 2 -->
+<section class="chapter">
+<h2 id="roles">2. Roles y permisos</h2>
+<p>Hay cuatro roles. Una misma cuenta puede tener varios (por ejemplo, coordinadora de una organización y miembro de una mesa) y cambiar entre ellos con el <strong>chip de contexto</strong> que aparece arriba a la derecha («Estás como …»).</p>
+
+<table class="grid roles-table">
+  <tr><th>Rol</th><th>Alcance</th><th>Qué puede hacer</th></tr>
+  <tr><td><span class="role admin">Administrador</span></td><td>Toda la plataforma</td><td>Crea y edita organizaciones (también las pausa, reanuda y desactiva), ubicaciones y mesas; invita coordinadores, facilitadores y miembros en cualquier organización; ve Informes y Auditoría de todo; es el único que ve y edita el Currículo.</td></tr>
+  <tr><td><span class="role coord">Coordinador</span></td><td>Su organización</td><td>Crea y edita ubicaciones y mesas de su organización; invita facilitadores y miembros; mueve y desactiva personas; cambia facilitadores; reprograma, cancela y agrega sesiones; ve Informes y Auditoría de su organización. No crea organizaciones ni invita coordinadores.</td></tr>
+  <tr><td><span class="role facil">Facilitador</span></td><td>Su mesa</td><td>Dirige la sesión semanal y además responde como un participante más; invita miembros solo a su mesa; ve el progreso de la mesa y de cada integrante.</td></tr>
+  <tr><td><span class="role member">Miembro</span></td><td>Su mesa</td><td>Participa en la sesión desde su teléfono y ve su propio progreso. No invita a nadie.</td></tr>
+</table>
+
+<h3>2.1 Quién puede invitar a quién</h3>
+<table class="grid">
+  <tr><th>Quien invita</th><th>Coordinador</th><th>Facilitador</th><th>Miembro</th></tr>
+  <tr><td>Administrador</td><td class="yes">Sí</td><td class="yes">Sí</td><td class="yes">Sí</td></tr>
+  <tr><td>Coordinador</td><td class="no">No</td><td class="yes">Sí, en su organización</td><td class="yes">Sí, en su organización</td></tr>
+  <tr><td>Facilitador</td><td class="no">No</td><td class="no">No</td><td class="yes">Sí, solo a su mesa</td></tr>
+  <tr><td>Miembro</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+</table>
+
+<h3>2.2 Pestañas que ve cada rol</h3>
+<p>En computadora las pestañas aparecen en una barra lateral; en el teléfono, en la barra inferior.</p>
+<table class="grid tabs">
+  <tr><th>Pestaña</th><th>Administrador</th><th>Coordinador</th><th>Facilitador</th><th>Miembro</th></tr>
+  <tr><td>Inicio</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+  <tr><td>Sesión</td><td></td><td></td><td class="yes">●</td><td class="yes">●</td></tr>
+  <tr><td>Calendario</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td></td></tr>
+  <tr><td>Progreso</td><td></td><td></td><td class="yes">●</td><td class="yes">●</td></tr>
+  <tr><td>Mesas (Explorador)</td><td class="yes">●</td><td class="yes">●</td><td></td><td></td></tr>
+  <tr><td>Informes</td><td class="yes">●</td><td class="yes">●</td><td></td><td></td></tr>
+  <tr><td>Auditoría</td><td class="yes">●</td><td class="yes">●</td><td></td><td></td></tr>
+  <tr><td>Currículo</td><td class="yes">●</td><td></td><td></td><td></td></tr>
+  <tr><td>Invitaciones</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td></td></tr>
+  <tr><td>Ajustes</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+</table>
+
+<h3>2.3 Varios roles en una cuenta</h3>
+<p>Si tu cuenta tiene más de un rol, la primera vez verás <strong>«¿Con qué rol entras hoy?»</strong>. La app recuerda tu elección. Para cambiar después, toca el chip de contexto de arriba y elige otro rol o mesa en <strong>«Cambiar de contexto»</strong>. Las pestañas cambian según el contexto activo. Si solo tienes un rol, el chip no se puede tocar.</p>
+
+<div class="callout privacy"><strong>Privacidad.</strong> Las respuestas individuales solo las ven el facilitador de la mesa, el coordinador y la administración. Cada vez que alguien abre las respuestas de una persona queda registrado en la Auditoría («Respuestas consultadas»).</div>
+</section>
+
+<!-- 3 -->
+<section class="chapter">
+<h2 id="primeros-pasos">3. Primeros pasos</h2>
+
+<h3>3.1 Abrir la aplicación</h3>
+<p>Abre <strong>https://roundtable-v1.web.app</strong> en Chrome, Safari, Edge o Firefox, en la computadora o en el teléfono. Verás la pantalla <strong>«Entra a tu mesa»</strong>.</p>
+<figure data-shot="sign-in"><figcaption>Pantalla de entrada: correo, contraseña y el bloque «¿Te invitaron?».</figcaption></figure>
+<div class="callout tip"><strong>Consejo para el teléfono.</strong> En el navegador del teléfono usa «Agregar a pantalla de inicio» (Safari: botón Compartir; Chrome: menú ⋮). Así la app queda como un ícono más.</div>
+
+<h3>3.2 Crear una cuenta</h3>
+<ol class="steps">
+  <li>En «Entra a tu mesa» toca <strong>«¿Primera vez? Crear cuenta»</strong>.</li>
+  <li>Escribe tu <strong>Correo</strong>, una <strong>Contraseña nueva</strong> (mínimo 8 caracteres) y <strong>Repite la contraseña</strong>.</li>
+  <li>Toca <strong>«Crear cuenta»</strong>. Entras de inmediato.</li>
+</ol>
+<figure data-shot="create-account"><figcaption>Modo «Crea tu cuenta».</figcaption></figure>
+<div class="callout warn"><strong>Una cuenta nueva todavía no ve nada.</strong> Verás «Todavía no tienes un rol asignado» hasta que aceptes una invitación (sección 8) o un administrador te asigne un rol. Usa el mismo correo con el que te invitaron.</div>
+
+<h3>3.3 Entrar</h3>
+<ol class="steps">
+  <li>Escribe tu <strong>Correo</strong> y tu <strong>Contraseña</strong>.</li>
+  <li>Toca <strong>«Entrar»</strong>. Si la cuenta tiene un solo rol entras directo a <strong>Inicio</strong>.</li>
+</ol>
+<p>Si los datos no coinciden verás «Correo o contraseña incorrectos.» Después de varios intentos fallidos: «Hiciste muchos intentos — Espera unos minutos e inténtalo de nuevo.»</p>
+
+<h3>3.4 Olvidé mi contraseña</h3>
+<ol class="steps">
+  <li>Toca <strong>«¿Olvidaste tu contraseña?»</strong>, escribe tu correo y toca <strong>«Enviar enlace»</strong>.</li>
+  <li>Abre el correo que te llega y toca el enlace <strong>en el mismo navegador</strong> donde lo pediste.</li>
+  <li>En «Elige tu contraseña nueva» escríbela dos veces y toca <strong>«Guardar contraseña»</strong>.</li>
+</ol>
+<figure data-shot="forgot-password"><figcaption>«Recupera tu contraseña».</figcaption></figure>
+<p>Si el enlace caducó o ya se usó, verás «El enlace ya no sirve»: pide uno nuevo.</p>
+
+<h3>3.5 Pantallas de acceso</h3>
+<table class="grid">
+  <tr><th>Mensaje</th><th>Qué significa</th><th>Qué hacer</th></tr>
+  <tr><td>Todavía no tienes un rol asignado</td><td>La cuenta existe pero no tiene invitación aceptada.</td><td>Toca «Tengo un código de invitación» o pide una invitación. Luego «Actualizar».</td></tr>
+  <tr><td>No encontramos tu cuenta</td><td>La cuenta no está vinculada a ninguna persona registrada.</td><td>Canjea tu código de invitación.</td></tr>
+  <tr><td>Tu cuenta está desactivada</td><td>Un administrador o coordinador la desactivó.</td><td>Habla con tu coordinador; puede reactivarla.</td></tr>
+  <tr><td>Necesitas internet para entrar</td><td>No hay conexión.</td><td>Conéctate y toca «Reintentar».</td></tr>
+</table>
+<figure data-shot="no-role"><figcaption>Cuenta sin rol: «Todavía no tienes un rol asignado».</figcaption></figure>
+
+<h3>3.6 Cerrar sesión</h3>
+<p><strong>Ajustes → «Cerrar sesión»</strong> (al final de la pantalla) y confirma en el diálogo «¿Cerrar sesión?».</p>
+</section>
+
+<!-- 4 -->
+<section class="chapter">
+<h2 id="poner-en-marcha">4. Poner en marcha una organización (lista rápida)</h2>
+<p>Este es el orden recomendado para el administrador cuando llega una organización nueva. Cada paso está explicado en detalle en la sección 5.</p>
+<ol class="checklist">
+  <li><strong>Crear la organización</strong> con su contacto principal y marcar «Invitar ahora al contacto como primer Coordinador» (5.2).</li>
+  <li><strong>Enviar la invitación del coordinador</strong> por WhatsApp desde la pantalla «Compartir invitación» (5.9).</li>
+  <li><strong>Crear las ubicaciones</strong> (sedes) de la organización (5.4).</li>
+  <li><strong>Crear cada mesa</strong> con su día, hora y zona horaria, e invitar a su facilitador desde el mismo formulario (5.5).</li>
+  <li><strong>Invitar a los miembros</strong> de cada mesa, uno por uno, hasta 8 por mesa (5.9 y 5.10). El facilitador también puede invitarlos.</li>
+  <li><strong>Revisar en «Invitaciones»</strong> quién aceptó y renovar las vencidas (5.11).</li>
+  <li><strong>Verificar el Calendario</strong>: cada mesa activa debe mostrar su próxima sesión (5.17).</li>
+  <li><strong>El día de la sesión</strong>, el facilitador la abre desde Inicio o Sesión (sección 7).</li>
+</ol>
+<div class="callout tip"><strong>Reparto del trabajo.</strong> El administrador puede crear solo la organización y su primer coordinador; el coordinador se encarga después de sedes, mesas y facilitadores, y cada facilitador invita a su propia mesa.</div>
+</section>
+
+<!-- 5 -->
+<section class="chapter">
+<h2 id="administrador">5. Guía del Administrador</h2>
+<p class="lead">El administrador (personal de la iglesia) ve toda la plataforma. Sus pestañas: Inicio, Calendario, Mesas, Informes, Auditoría, Currículo, Invitaciones y Ajustes.</p>
+
+<h3>5.1 Inicio</h3>
+<p>Muestra el <strong>Resumen de tus mesas</strong> (Valores completados, Mejora estimada, Asistencia, Mesas activas, Mesas retrasadas), las <strong>Mesas que necesitan atención</strong> (baja asistencia, menos de 3 personas, retrasadas) y cuántas invitaciones están pendientes. «Ver el tablero completo» abre Informes.</p>
+<figure data-shot="admin-home"><figcaption>Inicio del administrador.</figcaption></figure>
+
+<h3>5.2 Crear una organización</h3>
+<ol class="steps">
+  <li>Ve a la pestaña <strong>Mesas</strong> y toca <strong>«Crear» → «Crear organización»</strong>. (También: <kbd>Ctrl</kbd>+<kbd>K</kbd> o <kbd>⌘</kbd>+<kbd>K</kbd> y escribe «Crear organización».)</li>
+  <li>Sección <strong>Organización</strong>: <strong>Nombre</strong>, <strong>Tipo</strong> (Fundación, Colegio, Empresa, Iglesia, Comunidad, Otro), <strong>País</strong> y, si quieres, <strong>Región / ciudad</strong>.</li>
+  <li>Sección <strong>Contacto principal</strong>: <strong>Nombre completo</strong>, <strong>Correo</strong> y <strong>Teléfono</strong> opcional con código de país (por ejemplo +507 6123 4567). El teléfono es solo de contacto, no sirve para entrar.</li>
+  <li>Deja marcada <strong>«Invitar ahora al contacto como primer Coordinador»</strong> si esa persona coordinará la organización.</li>
+  <li>Toca <strong>«Crear organización»</strong>.</li>
+</ol>
+<figure data-shot="org-form"><figcaption>Formulario «Nueva organización».</figcaption></figure>
+<figure data-shot="org-created"><figcaption>Organización creada: la invitación del primer coordinador lista para compartir.</figcaption></figure>
+<p>Si marcaste la casilla, se abre directamente la invitación del coordinador para compartirla (5.9). Si no, se abre la ficha de la organización. Un nombre repetido da «Ya existe una organización con ese nombre.»</p>
+
+<h3>5.3 Ficha, edición, pausa y desactivación de una organización</h3>
+<p>Desde el Explorador (pestaña Mesas → «Organizaciones») toca una organización para abrir su ficha: datos principales, coordinación, ubicaciones, mesas e indicadores, y la actividad reciente.</p>
+<figure data-shot="org-detail"><figcaption>Ficha de la organización.</figcaption></figure>
+<ul>
+  <li><strong>Editar</strong>: botón «Editar», cambia los datos y toca «Guardar cambios».</li>
+  <li><strong>Pausar</strong>: detiene sesiones e invitaciones nuevas; los datos se conservan. «Reanudar» la vuelve a activar.</li>
+  <li><strong>Desactivar</strong>: nadie de la organización podrá entrar. Para confirmar hay que <strong>escribir el nombre exacto</strong> de la organización. El historial y los informes se conservan.</li>
+</ul>
+<div class="callout warn">Con una organización pausada o desactivada no se puede hacer ningún cambio en ella.</div>
+
+<h3>5.4 Crear una ubicación (sede)</h3>
+<ol class="steps">
+  <li>En la ficha de la organización, sección <strong>Ubicaciones</strong>, toca <strong>«Nueva ubicación»</strong>.</li>
+  <li>Escribe el <strong>Nombre de la ubicación</strong> (obligatorio, por ejemplo «Sede Central») y, si quieres, <strong>Ciudad</strong>, <strong>Región</strong> y <strong>Dirección</strong>.</li>
+  <li>Toca <strong>«Crear ubicación»</strong>.</li>
+</ol>
+<figure data-shot="location-form"><figcaption>Formulario de ubicación.</figcaption></figure>
+<p>Para editarla, tócala en la lista; ahí también puedes desmarcar «Ubicación activa». Sin ubicaciones no se pueden crear mesas.</p>
+
+<h3>5.5 Crear una mesa</h3>
+<ol class="steps">
+  <li>Pestaña <strong>Mesas → «Crear» → «Crear mesa»</strong> (o «Crear mesa» en la ficha de la organización).</li>
+  <li><strong>Identidad</strong>: elige la <strong>Organización</strong>, escribe el <strong>Nombre de la mesa</strong> y un <strong>Código</strong> único dentro de la organización (formato AAA-00, por ejemplo <code>LUZ-07</code>).</li>
+  <li><strong>Ubicación y horario</strong>: <strong>Ubicación</strong>, <strong>Día</strong>, <strong>Hora</strong> y <strong>Zona horaria</strong> (se propone la del país). El facilitador ve el horario pero no puede cambiarlo.</li>
+  <li><strong>Programa</strong>: <strong>Módulo</strong> y <strong>Valor</strong> con el que empieza la mesa. Si no eliges, empieza en el valor 1.</li>
+  <li><strong>Facilitador</strong> (obligatorio): elige una persona existente de la organización, o toca <strong>«Invitar a un facilitador nuevo»</strong> y escribe Nombre, Apellido, Correo y, si quieres, Teléfono.</li>
+  <li>Toca <strong>«Crear mesa»</strong>.</li>
+</ol>
+<figure data-shot="table-form"><figcaption>Formulario «Nueva mesa».</figcaption></figure>
+<p>Si el facilitador es nuevo, se abre su invitación para compartirla. El sistema programa automáticamente la <strong>primera sesión</strong> en el siguiente horario semanal.</p>
+
+<h3>5.6 Ficha de la mesa: editar horario, pausar, cerrar</h3>
+<p>Toca una mesa en el Explorador para ver su ficha: avisos (sin facilitador, retrasada, faltan personas, mesa llena, baja asistencia), programación, próxima sesión, facilitador e integrantes.</p>
+<figure data-shot="table-detail"><figcaption>Ficha de la mesa con su próxima sesión e integrantes.</figcaption></figure>
+<figure data-shot="table-members"><figcaption>Integrantes de la mesa con las acciones Ver respuestas, Mover y Desactivar.</figcaption></figure>
+<ul>
+  <li><strong>«Editar horario»</strong>: cambia nombre, código, ubicación, día, hora, zona horaria, valor y <strong>Estado</strong> (Activa, Pausada, Cerrada). Con <strong>«Vigente desde»</strong> programas un cambio de horario a partir de una fecha futura sin mover las sesiones anteriores. Todo queda en el <strong>Historial de horarios</strong>.</li>
+  <li><strong>Pausar o cerrar</strong>: en Editar horario cambia el Estado. Una mesa pausada o cerrada no programa sesiones nuevas y aparece como «Inactiva» en los informes.</li>
+  <li><strong>Retroceder en el programa</strong>: si eliges un valor anterior, la app pregunta «¿Retroceder en el programa?». Las sesiones ya hechas se conservan.</li>
+</ul>
+
+<h3>5.7 Reprogramar, cancelar o agregar una sesión</h3>
+<p>En la ficha de la mesa, tarjeta <strong>Próxima sesión</strong>:</p>
+<table class="grid">
+  <tr><th>Botón</th><th>Para qué</th><th>Efecto</th></tr>
+  <tr><td>Reprogramar</td><td>Mover solo esta sesión a otra fecha y hora</td><td>El resto del calendario no cambia. Aparece la insignia «Reprogramada».</td></tr>
+  <tr><td>Cancelar sesión</td><td>Feriado, fuerza mayor u otro motivo</td><td><strong>El valor no avanza</strong>: la próxima sesión trabaja el mismo valor.</td></tr>
+  <tr><td>Sesión extraordinaria</td><td>Una reunión adicional antes de la próxima regular</td><td>Trabaja el valor actual y, al hacerla, el programa avanza. Solo una pendiente a la vez.</td></tr>
+</table>
+<p>Una sesión que ya empezó no se puede cambiar.</p>
+<figure data-shot="reschedule"><figcaption>«Reprogramar la sesión».</figcaption></figure>
+
+<h3>5.8 Cambiar el facilitador</h3>
+<p>En la ficha de la mesa toca el ícono ⇄ <strong>«Cambiar facilitador»</strong>, elige al nuevo facilitador y decide si el anterior se queda como miembro. El historial se conserva.</p>
+<figure data-shot="change-facilitator"><figcaption>«Cambiar facilitador».</figcaption></figure>
+
+<h3>5.9 Invitar a una persona (cualquier rol)</h3>
+<p>Hay dos caminos equivalentes:</p>
+<ul>
+  <li>Pestaña <strong>Invitaciones → «Invitar»</strong> (pantalla «Nueva invitación»).</li>
+  <li>Pestaña <strong>Mesas → «Crear» → «Invitar persona»</strong>, o en la ficha de una mesa <strong>«Agregar miembro» → «Invitar a una persona nueva»</strong>.</li>
+</ul>
+<ol class="steps">
+  <li>Escribe <strong>Nombre</strong>, <strong>Apellido</strong>, <strong>Correo</strong> y <strong>Teléfono</strong> con código de país (el teléfono se usa para enviar por WhatsApp). <strong>Cargo</strong> es opcional.</li>
+  <li>Elige el <strong>Rol</strong>: Miembro, Facilitador o Coordinador. Los roles que no puedes invitar aparecen con candado.</li>
+  <li>Elige el alcance: la <strong>Organización</strong> (para un coordinador) o la <strong>Mesa</strong> (para facilitador o miembro). La lista de mesas muestra cuántos lugares están ocupados («7/9»).</li>
+  <li>Toca <strong>«Crear invitación»</strong> (o «Crear e invitar»).</li>
+</ol>
+<figure data-shot="invite-form"><figcaption>«Nueva invitación»: datos, rol y mesa, con el medidor de lugares.</figcaption></figure>
+<p>Se abre <strong>«Compartir invitación»</strong> con el <strong>código QR</strong>, el <strong>código de 6 caracteres</strong> y la fecha de vencimiento (14 días). Opciones:</p>
+<ul>
+  <li><strong>WhatsApp</strong>: abre WhatsApp con el mensaje ya escrito para el teléfono de la persona.</li>
+  <li><strong>Copiar enlace</strong> / <strong>Copiar código</strong>: para enviarlos por otro medio.</li>
+  <li><strong>Mostrar QR grande</strong>: para mostrarlo en persona.</li>
+  <li><strong>Invitar a otra persona</strong>: vuelve al formulario en un toque.</li>
+</ul>
+<figure data-shot="invite-share"><figcaption>«Compartir invitación»: QR, código y botones para enviarla.</figcaption></figure>
+<div class="callout tip"><strong>Usa la pestaña Invitaciones para enviar por WhatsApp.</strong> La pantalla para compartir que se abre desde Invitaciones tiene el botón WhatsApp. La que se abre desde Mesas → «Crear» → «Invitar persona» (o al crear una organización o una mesa) ofrece «Compartir», «Copiar enlace» y «Copiar código»; con «Compartir» en el teléfono también puedes elegir WhatsApp.</div>
+<div class="callout info"><strong>Cada invitación pendiente reserva un lugar en la mesa.</strong> El lugar queda ocupado hasta que la persona acepta o la invitación se revoca.</div>
+
+<h4>Por rol</h4>
+<ul>
+  <li><span class="role coord">Coordinador</span> Solo el administrador. Lo más rápido: al crear la organización con la casilla marcada, o en la ficha de la organización con «Invitar coordinador».</li>
+  <li><span class="role facil">Facilitador</span> Administrador o coordinador. Lo normal es invitarlo al crear la mesa. Si la mesa ya tiene facilitador, usa «Cambiar facilitador».</li>
+  <li><span class="role member">Miembro</span> Administrador, coordinador o el facilitador de esa mesa.</li>
+  <li><strong>Persona ya registrada sin mesa</strong>: en la ficha de la mesa, «Agregar miembro» → «Agregar una persona existente». No necesita código.</li>
+</ul>
+
+<h3>5.10 Agregar muchas personas</h3>
+<div class="callout warn"><strong>No hay carga masiva.</strong> La aplicación no importa listas ni archivos CSV de personas: cada persona necesita su propia invitación, porque cada código se acepta una sola vez y queda atado a esa persona.</div>
+<p>La forma más rápida:</p>
+<ol class="steps">
+  <li>Prepara una lista con Nombre, Apellido, Correo, Teléfono y la mesa de cada persona.</li>
+  <li>Abre <strong>Invitaciones → «Invitar»</strong>, llena los datos de la primera persona y toca «Crear invitación».</li>
+  <li>En «Compartir invitación» toca <strong>WhatsApp</strong> para enviarla.</li>
+  <li>Toca <strong>«Invitar a otra persona»</strong> y repite. Cada persona toma menos de un minuto.</li>
+  <li>Reparte el trabajo: el administrador invita a los coordinadores, los coordinadores a los facilitadores, y cada facilitador a los miembros de su mesa.</li>
+</ol>
+<p>Recuerda el límite: 9 personas por mesa contando al facilitador, es decir, hasta 8 miembros. Si invitas muchas personas muy rápido, la app puede pedir que esperes un minuto.</p>
+
+<h3>5.11 Gestionar las invitaciones</h3>
+<p>La pestaña <strong>Invitaciones</strong> lista todas las invitaciones con buscador y filtros <strong>Todas / Pendiente / Aceptada / Vencida / Revocada</strong>.</p>
+<figure data-shot="invites-manager"><figcaption>Gestor de invitaciones.</figcaption></figure>
+<table class="grid">
+  <tr><th>Acción</th><th>Cuándo</th><th>Qué hace</th></tr>
+  <tr><td>Compartir</td><td>Pendientes</td><td>Vuelve a abrir la pantalla para enviarla.</td></tr>
+  <tr><td>Renovar</td><td>Pendientes y vencidas</td><td>Crea un <strong>código nuevo</strong> con 14 días más. El código anterior deja de servir.</td></tr>
+  <tr><td>Revocar</td><td>Pendientes y vencidas</td><td>El enlace, el código y el QR dejan de funcionar y se libera el lugar. No se puede deshacer.</td></tr>
+</table>
+<p>En computadora o tablet puedes marcar varias filas y <strong>Renovar</strong> o <strong>Revocar</strong> todas a la vez.</p>
+
+<h3>5.12 Mover, desactivar y reactivar personas</h3>
+<ul>
+  <li><strong>Mover de mesa</strong>: en la ficha de la mesa, ícono «Mover a {nombre}», elige la mesa de destino (de la misma organización y con lugar) y toca «Mover». El historial viaja con la persona. Al facilitador no se le puede mover: primero cambia el facilitador.</li>
+  <li><strong>Desactivar en una mesa</strong>: ícono «Desactivar a {nombre}». Deja de contar en la mesa y libera su lugar; sus respuestas se conservan.</li>
+  <li><strong>Desactivar una persona</strong>: en su ficha (Explorador → Personas), «Desactivar persona». Termina sus lugares, roles e invitaciones pendientes. «Reactivar» la vuelve a habilitar.</li>
+  <li><strong>Corregir datos</strong>: la ficha de otra persona es de solo lectura. Cada persona corrige sus datos en Ajustes → «Editar mis datos». Si el correo de una invitación está mal, revócala y crea otra.</li>
+</ul>
+<figure data-shot="person-detail"><figcaption>Ficha de una persona.</figcaption></figure>
+
+<h3>5.13 El Explorador</h3>
+<p>La pestaña <strong>Mesas</strong> es el Explorador: tres listas (<strong>Mesas</strong>, <strong>Organizaciones</strong>, <strong>Personas</strong>) con buscador, vistas rápidas y filtros.</p>
+<figure data-shot="explorer"><figcaption>Explorador con la lista de mesas.</figcaption></figure>
+<ul>
+  <li><strong>Vistas</strong> (chips): Mesas retrasadas, Baja asistencia, Menos de 3 personas, Sincronizado tarde; Organizaciones sin mesas o sin coordinador; Coordinadores, Facilitadores, Miembros, Invitaciones pendientes, Inactivos.</li>
+  <li><strong>Filtros</strong>: país, organización, ubicación, facilitador y estado. «Guardar vista» guarda la búsqueda y los filtros con un nombre, en este dispositivo.</li>
+  <li><strong>Selección</strong>: marca filas para sumar sus indicadores; «Abrir en Informes» o «Exportar CSV».</li>
+  <li><strong>Buscador rápido</strong>: <kbd>Ctrl</kbd>+<kbd>K</kbd> (Windows) o <kbd>⌘</kbd>+<kbd>K</kbd> (Mac) para crear, invitar o ir a una mesa escribiendo.</li>
+</ul>
+<figure data-shot="explorer-filters"><figcaption>Filtros del Explorador.</figcaption></figure>
+<figure data-shot="command-palette"><figcaption>Buscador rápido (Ctrl+K / ⌘+K).</figcaption></figure>
+
+<h3>5.14 Informes</h3>
+<p>La pestaña <strong>Informes</strong> calcula los indicadores en el servidor. Filtra por período (4, 12 o 26 semanas), país, organización, ubicación, mesa, facilitador y valor. Cada gráfico se puede ver como tabla y exportar a CSV.</p>
+<figure data-shot="reports"><figcaption>Informes: tarjetas de indicadores y gráficos.</figcaption></figure>
+<table class="grid">
+  <tr><th>Indicador</th><th>Qué mide</th></tr>
+  <tr><td>Valores completados</td><td>Cuántos valores distintos han cerrado las mesas (de 48 posibles por mesa).</td></tr>
+  <tr><td>Mejora estimada</td><td>Promedio de (puntaje de seguimiento − puntaje inicial) en el mismo valor.</td></tr>
+  <tr><td>Asistencia</td><td>Porcentaje de presentes y tardíos. Alerta bajo 70 %.</td></tr>
+  <tr><td>Mesas</td><td>Activas, retrasadas e inactivas.</td></tr>
+  <tr><td>Sesiones incompletas</td><td>Sesiones cerradas antes de llegar a las respuestas.</td></tr>
+  <tr><td>Sincronizado tarde</td><td>Respuestas que llegaron después de cerrar la sesión.</td></tr>
+</table>
+<p><strong>Estados de una mesa</strong>: <em>Al día</em>; <em>Retrasada</em> (sesión pendiente vencida más de 1 día o sin sesión cerrada en más de 9 días); <em>Inactiva</em> (pausada, cerrada o más de 28 días sin sesión); <em>Completada</em> (terminó los 48 valores).</p>
+<figure data-shot="reports-breakdown"><figcaption>Desglose por niveles en Informes.</figcaption></figure>
+<p>El <strong>Desglose</strong> baja de país a organización, mesa y miembro. Para ver las respuestas de una persona hay que tocar <strong>«Mostrar respuestas (se registra)»</strong>: la consulta queda en la Auditoría.</p>
+<figure data-shot="member-answers"><figcaption>Respuestas individuales de un miembro (la consulta queda registrada).</figcaption></figure>
+
+<h3>5.15 Auditoría</h3>
+<p>Registro de solo lectura de todo lo que pasa: organizaciones, ubicaciones y mesas creadas o cambiadas, miembros agregados o movidos, invitaciones, roles, sesiones abiertas y cerradas, y respuestas consultadas. Se filtra por tipo y se busca por actor u objeto. «Exportar CSV» descarga lo que ves.</p>
+<figure data-shot="audit"><figcaption>Auditoría.</figcaption></figure>
+
+<h3>5.16 Currículo</h3>
+<p>Solo el administrador. Muestra los 5 módulos, los 48 valores y sus preguntas de reflexión.</p>
+<ul>
+  <li><strong>Editar</strong>: toca el lápiz de un módulo, valor o pregunta. Las preguntas no se borran: se desactivan.</li>
+  <li><strong>Subir currículo</strong>: «Elegir archivo» (.json o .csv) → «Revisar cambios» → «Aplicar cambios». Nada se guarda hasta confirmar.</li>
+  <li><strong>Idiomas</strong>: «Agregar idioma» y «Subir traducción». Lo que no esté traducido se muestra en español.</li>
+</ul>
+<figure data-shot="curriculum"><figcaption>Currículo.</figcaption></figure>
+<figure data-shot="curriculum-upload"><figcaption>«Subir currículo»: elegir archivo, revisar y aplicar.</figcaption></figure>
+<div class="callout warn"><strong>Importante.</strong> Hoy el currículo cargado es un ejemplo con nombres provisionales. Antes de empezar con organizaciones reales hay que subir el currículo definitivo.</div>
+
+<h3>5.17 Calendario</h3>
+<p>«Próximas sesiones» agrupadas por día, con la hora de cada mesa y sus insignias (En curso, Cancelada, Reprogramada, Extraordinaria). Se puede filtrar por ubicación, facilitador y mesa.</p>
+<figure data-shot="calendar"><figcaption>Calendario de próximas sesiones.</figcaption></figure>
+</section>
+
+<!-- 6 -->
+<section class="chapter">
+<h2 id="coordinador">6. Guía del Coordinador</h2>
+<p class="lead">El coordinador administra <strong>su organización</strong>. Sus pestañas: Inicio, Calendario, Mesas, Informes, Auditoría, Invitaciones y Ajustes.</p>
+<p>Hace lo mismo que el administrador (secciones 5.4 a 5.17) dentro de su organización, con estas diferencias:</p>
+<ul>
+  <li>El Explorador se llama <strong>«Mi organización»</strong> y no tiene la lista de organizaciones.</li>
+  <li><strong>No puede</strong> crear organizaciones, pausarlas ni invitar coordinadores.</li>
+  <li><strong>Sí puede</strong> crear ubicaciones y mesas, invitar facilitadores y miembros, mover y desactivar personas, cambiar facilitadores, reprogramar, cancelar y agregar sesiones extraordinarias.</li>
+  <li>Informes y Auditoría muestran solo su organización.</li>
+  <li>Un coordinador no ocupa lugar en una mesa. Si también quiere participar, necesita una invitación como miembro.</li>
+</ul>
+<figure data-shot="coord-home"><figcaption>Inicio del coordinador.</figcaption></figure>
+<figure data-shot="coord-explorer"><figcaption>«Mi organización»: las mesas de la organización.</figcaption></figure>
+</section>
+
+<!-- 7 -->
+<section class="chapter">
+<h2 id="facilitador">7. Guía del Facilitador</h2>
+<p class="lead">El facilitador dirige la sesión semanal de su mesa y además responde como un participante más. Sus pestañas: Inicio, Sesión, Calendario, Progreso, Invitaciones y Ajustes.</p>
+
+<h3>7.1 Inicio</h3>
+<p>La tarjeta <strong>Próxima sesión</strong> muestra el valor, el valor de seguimiento, la fecha y hora, los lugares ocupados y el estado de la mesa, con el botón <strong>«Abrir sesión»</strong>.</p>
+<figure data-shot="facil-home"><figcaption>Inicio del facilitador.</figcaption></figure>
+
+<h3>7.2 Antes de la sesión</h3>
+<ul>
+  <li>La sesión se puede abrir desde <strong>12 horas antes</strong> de la hora programada.</li>
+  <li><strong>Confirma que tienes internet</strong>: la aplicación funciona solo en línea.</li>
+  <li>Pide a los miembros que entren a la app y abran la pestaña <strong>Sesión</strong> en su teléfono.</li>
+</ul>
+
+<h3>7.3 Dirigir la sesión, paso a paso</h3>
+<p>La pestaña <strong>Sesión</strong> tiene dos partes: <strong>«Dirigir la mesa»</strong> y <strong>«Mis respuestas»</strong>. Arriba hay una barra con 5 etapas: <strong>1 Abrir · 2 Lista · 3 Seguimiento · 4 Valor · 5 Cierre</strong>. Un solo botón abajo lleva a la etapa siguiente.</p>
+<figure data-shot="facil-lobby"><figcaption>Etapa 1 · Apertura.</figcaption></figure>
+<ol class="steps">
+  <li><strong>Apertura</strong> — toca <strong>«Abrir sesión»</strong>. Los miembros ven la sesión en vivo.</li>
+  <li><strong>Lista (asistencia)</strong> — toca cada asiento de la mesa y elige <strong>Presente, Tarde, Justificado o Ausente</strong>, o usa <strong>«Marcar a todos Presente»</strong>. Luego toca <strong>«Abrir seguimiento»</strong>.</li>
+  <li><strong>Seguimiento</strong> — cada persona responde cómo le fue con su compromiso de la semana anterior. Verás «N de N respondieron». Toca <strong>«Abrir valor actual»</strong>; si alguien no ha respondido, la app pregunta si quieres esperar.</li>
+  <li><strong>Valor actual</strong> — todos responden las preguntas de reflexión, se califican y escriben su compromiso. Responde también tú con <strong>«Responder yo · faltan N pasos»</strong>. Cuando todos terminen, toca <strong>«Cerrar respuestas»</strong>.</li>
+  <li><strong>Cierre</strong> — toca <strong>«Cerrar sesión»</strong> y confirma. Se envía el resumen y la mesa pasa al valor siguiente.</li>
+</ol>
+<figure data-shot="facil-attendance"><figcaption>Etapa 2 · Lista: la mesa redonda con los asientos.</figcaption></figure>
+<figure data-shot="facil-attendance-options"><figcaption>Al tocar un asiento: Presente, Tarde, Justificado o Ausente.</figcaption></figure>
+<figure data-shot="facil-followup"><figcaption>Etapa 3 · Seguimiento: quién ya respondió.</figcaption></figure>
+<figure data-shot="facil-value"><figcaption>Etapa 4 · Valor actual.</figcaption></figure>
+<figure data-shot="facil-close-answers"><figcaption>Aviso antes de cerrar las respuestas si alguien no ha terminado.</figcaption></figure>
+<figure data-shot="facil-my-answers"><figcaption>«Mis respuestas»: el facilitador también responde.</figcaption></figure>
+<figure data-shot="facil-closed"><figcaption>Etapa 5 · Cierre y resumen de la sesión.</figcaption></figure>
+<div class="callout tip"><strong>La pantalla se actualiza sola</strong> cada pocos segundos. La sección «Actividad en vivo» muestra quién respondió cada paso. El cronómetro es solo informativo: la meta es 30 minutos y no corta la sesión.</div>
+<p>Si alguien estaba marcado Ausente y responde, pasa automáticamente a Presente («Asistencia automática»). Puedes tocar una etapa anterior para mirarla sin cambiar el estado de la sesión.</p>
+
+<h3>7.4 Invitar miembros a tu mesa</h3>
+<p>Pestaña <strong>Invitaciones → «Invitar»</strong>. Tu mesa ya viene elegida. Sigue los pasos de la sección 5.9 y envía la invitación por WhatsApp.</p>
+<figure data-shot="facil-invite"><figcaption>Un facilitador invitando a un miembro: su mesa ya viene elegida. Si la mesa está llena (9/9) la app avisa que no hay lugares.</figcaption></figure>
+
+<h3>7.5 Progreso de la mesa</h3>
+<p>Pestaña <strong>Progreso</strong>: sesiones realizadas, asistencia, promedios por valor y la lista de integrantes. «Ver el recorrido de {nombre}» abre el historial de una persona.</p>
+<figure data-shot="facil-progress"><figcaption>Progreso de la mesa.</figcaption></figure>
+<figure data-shot="facil-member-journey"><figcaption>Recorrido de un integrante.</figcaption></figure>
+</section>
+
+<!-- 8 -->
+<section class="chapter">
+<h2 id="miembro">8. Guía del Miembro</h2>
+<p class="lead">El miembro participa desde su teléfono. Sus pestañas: Inicio, Sesión, Progreso y Ajustes.</p>
+
+<h3>8.1 Unirte con tu invitación</h3>
+<p>Quien te invitó te envió un enlace, un código de 6 caracteres o un QR. Sigue este orden:</p>
+<ol class="steps">
+  <li>Abre <strong>https://roundtable-v1.web.app</strong> y <strong>crea tu cuenta</strong> con el mismo correo con el que te invitaron (sección 3.2), o entra si ya la tienes.</li>
+  <li>Verás «Todavía no tienes un rol asignado». Toca <strong>«Tengo un código de invitación»</strong>.</li>
+  <li>Escribe los <strong>6 caracteres</strong> (o pégalos) y toca <strong>«Continuar»</strong>. Con la sesión ya iniciada también puedes abrir directamente el enlace que te enviaron.</li>
+  <li>Revisa a qué te unes (organización, mesa, rol) y toca <strong>«Unirme como …»</strong>.</li>
+  <li>Confirma tu perfil y toca <strong>«Confirmar y entrar»</strong>, y luego <strong>«Entrar a mi mesa»</strong>.</li>
+</ol>
+<figure data-shot="invite-code"><figcaption>«Escribe tu código».</figcaption></figure>
+<div class="callout warn"><strong>Primero la cuenta, después el código.</strong> Si abres el enlace de invitación sin haber entrado, la app muestra botones de Google, Apple y Facebook que hoy no están habilitados. No los uses: entra con correo y contraseña y vuelve a abrir el enlace o escribe el código.</div>
+<p>Problemas frecuentes: «Esta invitación venció» (pide que la renueven), «Esta invitación ya se usó» (el código sirve una sola vez), «No encontramos ese código» (revisa letras y números; tras varios intentos espera 60 segundos).</p>
+
+<h3>8.2 Inicio</h3>
+<p>Ves tu <strong>Próxima sesión</strong>, <strong>Tu último compromiso</strong> y <strong>Tu camino</strong> (cuántos de los 48 valores llevas).</p>
+<figure data-shot="member-home"><figcaption>Inicio del miembro.</figcaption></figure>
+
+<h3>8.3 Participar en la sesión</h3>
+<p>El día de la sesión abre la pestaña <strong>Sesión</strong>. Los pasos se desbloquean cuando tu facilitador abre cada etapa.</p>
+<ol class="steps">
+  <li><strong>Espera</strong>: «Esperando a tu facilitador» hasta que abra la sesión.</li>
+  <li><strong>Asistencia</strong>: tu facilitador pasa lista. Ves tu estado.</li>
+  <li><strong>Seguimiento</strong>: lee tu compromiso de la semana pasada y responde <strong>«¿Cómo te fue?»</strong> (Lo cumplí / Cumplí una parte / No pude cumplirlo), califícate de nuevo y, si quieres, añade una frase. Toca <strong>«Enviar seguimiento»</strong>. Si es tu primera sesión, este paso se omite.</li>
+  <li><strong>Valor actual · parte 1</strong>: responde las preguntas de reflexión (el contenido está en tu folleto), elige tu <strong>puntaje inicial</strong> de 1 a 10 (el 5 no se permite) y toca <strong>«Enviar y seguir al compromiso»</strong>.</li>
+  <li><strong>Valor actual · parte 2</strong>: escribe tu compromiso: <strong>Qué haré</strong>, <strong>Cuándo</strong> y <strong>Cómo lo mediré</strong>. Toca <strong>«Enviar mi compromiso»</strong>.</li>
+  <li><strong>Listo</strong>: espera a que tu facilitador cierre la sesión. Verás «Gracias, {nombre}» con tu resumen.</li>
+</ol>
+<figure data-shot="member-waiting"><figcaption>«Esperando a tu facilitador».</figcaption></figure>
+<figure data-shot="member-followup"><figcaption>Seguimiento del compromiso anterior.</figcaption></figure>
+<figure data-shot="member-value"><figcaption>Preguntas de reflexión y puntaje (el 5 está bloqueado).</figcaption></figure>
+<figure data-shot="member-commitment"><figcaption>Tu compromiso de esta semana.</figcaption></figure>
+<figure data-shot="member-done"><figcaption>Sesión terminada.</figcaption></figure>
+<div class="callout info">Lo que escribes y aún no envías se guarda en el teléfono y vuelve a aparecer si cierras la pantalla.</div>
+
+<h3>8.4 Mi progreso</h3>
+<p>Pestaña <strong>Progreso</strong>: asistencia, promedios, una gráfica de puntaje inicial y de seguimiento por valor, y el detalle de cada valor con tus compromisos. Muestra las últimas 8 semanas.</p>
+<figure data-shot="member-progress"><figcaption>«Mi progreso».</figcaption></figure>
+</section>
+
+<!-- 9 -->
+<section class="chapter">
+<h2 id="ajustes">9. Ajustes y notificaciones</h2>
+<ul>
+  <li><strong>Editar mis datos</strong>: nombre, apellido, cargo y teléfono. El correo solo lo puede cambiar la coordinación.</li>
+  <li><strong>Notificaciones</strong>: «Avisos de la mesa» (recordatorio de sesión, de compromiso y cuando se abre una etapa), avisos dentro de la app. Toca «Permitir avisos» y acepta el permiso del navegador.</li>
+  <li><strong>Idioma del contenido</strong>: el idioma de los valores y preguntas, cuando el currículo tiene traducciones.</li>
+  <li><strong>Cerrar sesión</strong>.</li>
+</ul>
+<figure data-shot="settings"><figcaption>Ajustes.</figcaption></figure>
+<figure data-shot="notifications"><figcaption>Preferencias de notificaciones.</figcaption></figure>
+<p>El tema claro u oscuro sigue la configuración del dispositivo. La interfaz está en español.</p>
+<div class="callout warn">Las notificaciones al teléfono (push) todavía están en configuración. Mientras tanto, el facilitador debe recordar a su mesa la hora de la sesión.</div>
+</section>
+
+<!-- 10 -->
+<section class="chapter">
+<h2 id="sin-internet">10. Sin internet</h2>
+<p>La aplicación funciona <strong>solo con conexión</strong>. Sin internet:</p>
+<ul>
+  <li>Verás «Sin conexión» o «Sin internet» en la pantalla.</li>
+  <li>Al enviar, aparece <strong>«No hay conexión con el servidor. Revisa tu internet.»</strong> Lo que escribiste <strong>se queda en el formulario</strong>, pero <strong>no se guarda para después</strong>: cuando vuelva la conexión, toca enviar otra vez.</li>
+  <li>Si el facilitador ya cerró las respuestas, ya no se puede enviar.</li>
+</ul>
+<div class="callout tip">Si ves textos que hablan de «guardado en este teléfono» o «sincronizar más tarde», ignóralos: son de una versión anterior. Lo que vale es lo de esta sección.</div>
+</section>
+
+<!-- 11 -->
+<section class="chapter">
+<h2 id="faq">11. Preguntas frecuentes</h2>
+<dl class="faq">
+  <dt>Olvidé mi contraseña.</dt><dd>«¿Olvidaste tu contraseña?» en la pantalla de entrada; abre el enlace del correo en el mismo navegador (sección 3.4).</dd>
+  <dt>Mi invitación venció.</dt><dd>Dura 14 días. Quien te invitó la <strong>renueva</strong> en Invitaciones → Renovar y te envía el código nuevo.</dd>
+  <dt>Me equivoqué de correo o nombre al invitar.</dt><dd>Revoca la invitación (libera el lugar) y crea una nueva.</dd>
+  <dt>«Esta invitación ya se usó».</dt><dd>Cada código sirve una sola vez. Si fue la misma persona, debe entrar con la misma cuenta.</dd>
+  <dt>La mesa está llena (9/9).</dt><dd>Mueve o desactiva a alguien, revoca una invitación pendiente o elige otra mesa. Las invitaciones pendientes ocupan lugar.</dd>
+  <dt>No puedo invitar un facilitador a esta mesa.</dt><dd>Ya tiene uno. Usa «Cambiar facilitador» en la ficha de la mesa.</dd>
+  <dt>¿Por qué no puedo elegir el 5?</dt><dd>Es una regla del programa para evitar respuestas neutras.</dd>
+  <dt>Me marcaron Ausente pero participé.</dt><dd>Si respondes, pasas automáticamente a Presente.</dd>
+  <dt>No veo las pestañas que esperaba.</dt><dd>Dependen del rol activo. Toca el chip «Estás como …» y elige otro contexto. Si falta un rol, pide la invitación correspondiente.</dd>
+  <dt>¿Qué significa «Retrasada»?</dt><dd>La sesión pendiente venció hace más de un día o la mesa lleva más de 9 días sin cerrar una sesión.</dd>
+  <dt>¿Qué es «Sincronizado tarde»?</dt><dd>Respuestas que llegaron después de cerrar la sesión. Se aceptan (si fueron hasta 15 minutos después) y quedan marcadas.</dd>
+  <dt>¿Quién ve mis respuestas?</dt><dd>Tu facilitador, tu coordinador y la administración. Cada consulta individual queda registrada.</dd>
+  <dt>El QR no se escanea en la computadora.</dt><dd>El escaneo funciona en la app del teléfono; en la computadora usa el enlace o el código.</dd>
+  <dt>Hay textos que mencionan Google, Apple o Facebook.</dt><dd>Hoy se entra solo con correo y contraseña; esos textos quedan de una versión anterior.</dd>
+</dl>
+</section>
+
+<!-- 12 -->
+<section class="chapter">
+<h2 id="demo">12. Cuentas de demostración</h2>
+<p>Para practicar existe la organización <strong>«Organización Demo»</strong> con la mesa <strong>«Mesa Demo 01»</strong> (9 de 9 personas, cuatro sesiones con historial, se reúne los viernes a las 18:00, hora de Panamá). Todas las cuentas usan la contraseña <code>password</code>.</p>
+<table class="grid">
+  <tr><th>Rol</th><th>Nombre</th><th>Correo</th></tr>
+  <tr><td><span class="role admin">Administrador</span></td><td>Valeria Castro</td><td><code>admin@demo.example.com</code></td></tr>
+  <tr><td><span class="role coord">Coordinadora</span></td><td>Gabriela Ríos</td><td><code>coordinadora@demo.example.com</code></td></tr>
+  <tr><td><span class="role facil">Facilitador</span></td><td>Ricardo Morales</td><td><code>facilitador@demo.example.com</code></td></tr>
+  <tr><td><span class="role member">Miembros</span></td><td>Ana, Luis, Marta, Jorge, Carmen, Diego, Elena, Tomás</td><td><code>miembro1@demo.example.com</code> … <code>miembro8@demo.example.com</code></td></tr>
+</table>
+<div class="callout warn"><strong>Solo para pruebas.</strong> Los correos de demostración no reciben mensajes. Antes de trabajar con organizaciones reales, crea tu propia cuenta de administrador y desactiva o cambia la contraseña de la cuenta de administrador demo.</div>
+
+<h3>Glosario rápido</h3>
+<table class="grid">
+  <tr><td>Chip de contexto</td><td>El botón «Estás como …» de arriba, para cambiar de rol o de mesa.</td></tr>
+  <tr><td>Explorador</td><td>La pestaña Mesas: listas de mesas, organizaciones y personas.</td></tr>
+  <tr><td>Seguimiento</td><td>La revisión del compromiso de la semana anterior.</td></tr>
+  <tr><td>Sesión extraordinaria</td><td>Una reunión adicional que adelanta el programa.</td></tr>
+  <tr><td>Vigente desde</td><td>Fecha a partir de la cual aplica un cambio de horario.</td></tr>
+</table>
+</section>
+
+</body>
+</html>

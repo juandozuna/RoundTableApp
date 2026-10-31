@@ -1,0 +1,95 @@
+/* Gold Roundtables user manual — print stylesheet (A4). Colors follow lib/core/theme/app_palette.dart (light). */
+@page { size: A4; margin: 18mm 16mm 20mm; }
+@page :first { margin: 0; }
+
+:root {
+  --ink: #1b1438; --mut: #554c7e; --acc: #5b3fe0; --accg: #7a4df0; --bg: #f3f0ff; --surf2: #ece7ff;
+  --line: #c9bff0; --lime: #096b3a; --amber: #8a5200; --mag: #b0165f; --sky: #0b5c8a;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; margin: 0; }
+
+h1, h2, h3, h4 { line-height: 1.2; color: var(--ink); }
+h2 { font-size: 21pt; margin: 0 0 10pt; padding-bottom: 6pt; border-bottom: 3px solid var(--acc); }
+h3 { font-size: 13.5pt; margin: 18pt 0 6pt; color: var(--acc); break-after: avoid; }
+h4 { font-size: 11pt; margin: 12pt 0 4pt; }
+p, li { orphans: 3; widows: 3; }
+.lead { font-size: 11.5pt; color: var(--mut); }
+code, kbd { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 9pt; background: var(--surf2); border-radius: 4px; padding: 1px 4px; }
+kbd { border: 1px solid var(--line); }
+
+.chapter { break-before: page; }
+
+/* Cover */
+.cover { height: 297mm; padding: 34mm 24mm; color: #fff; position: relative; overflow: hidden;
+  background: radial-gradient(120% 80% at 85% 10%, #8a6cff 0%, transparent 55%), linear-gradient(160deg, #2a1d6b 0%, #120c2e 70%); }
+.cover-mark { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, #f5c84b, #d89b1d);
+  color: #2a1d6b; font-weight: 800; font-size: 24px; display: grid; place-items: center; margin-bottom: 26mm; }
+.cover .kicker { letter-spacing: .14em; text-transform: uppercase; font-size: 9pt; color: #c7b6ff; margin: 0 0 8pt; }
+.cover h1 { color: #fff; font-size: 46pt; margin: 0 0 12pt; letter-spacing: -.02em; }
+.cover-sub { font-size: 14pt; max-width: 135mm; color: #e7e1ff; }
+.cover-links { margin-top: 22mm; display: grid; gap: 8pt; }
+.cover-links div { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 10px; padding: 8pt 12pt; max-width: 130mm; }
+.cover-links span { display: block; font-size: 8.5pt; text-transform: uppercase; letter-spacing: .1em; color: #c7b6ff; }
+.cover-links strong { font-size: 12pt; }
+.cover-roles { position: absolute; bottom: 26mm; left: 24mm; display: flex; gap: 6pt; }
+
+/* Roles */
+.role { display: inline-block; font-size: 8.5pt; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.role.admin { background: #ece7ff; color: #5b3fe0; }
+.role.coord { background: #e3f4ff; color: #0b5c8a; }
+.role.facil { background: #fff1dc; color: #8a5200; }
+.role.member { background: #e3f7ec; color: #096b3a; }
+
+/* TOC */
+.toc-page { break-before: page; }
+#toc ol { list-style: none; padding: 0; margin: 0; }
+#toc > ol > li { margin: 6pt 0 2pt; font-weight: 700; font-size: 11.5pt; }
+#toc li li { font-weight: 400; font-size: 10pt; margin: 1pt 0 1pt 14pt; color: var(--mut); }
+#toc a { color: inherit; text-decoration: none; }
+
+/* Tables */
+table.grid { width: 100%; border-collapse: collapse; margin: 8pt 0 12pt; font-size: 9.5pt; break-inside: auto; }
+table.grid th { background: var(--acc); color: #fff; text-align: left; padding: 5pt 7pt; font-weight: 600; }
+table.grid td { border-bottom: 1px solid var(--line); padding: 5pt 7pt; vertical-align: top; }
+table.grid tr { break-inside: avoid; }
+table.grid tr:nth-child(even) td { background: #faf8ff; }
+td.yes { color: var(--lime); font-weight: 700; }
+td.no { color: var(--mag); }
+table.tabs td:not(:first-child), table.tabs th:not(:first-child) { text-align: center; }
+
+/* Steps */
+ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 8pt 0 12pt; }
+ol.steps > li { counter-increment: s; position: relative; padding: 3pt 0 3pt 28pt; break-inside: avoid; }
+ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 2pt; width: 19pt; height: 19pt; border-radius: 50%;
+  background: var(--acc); color: #fff; font-weight: 700; font-size: 9pt; display: grid; place-items: center; }
+ol.checklist { list-style: none; padding: 0; counter-reset: c; }
+ol.checklist > li { counter-increment: c; padding: 7pt 10pt 7pt 36pt; margin: 6pt 0; border: 1px solid var(--line); border-radius: 10px; position: relative; break-inside: avoid; }
+ol.checklist > li::before { content: counter(c); position: absolute; left: 10pt; top: 7pt; font-weight: 800; color: var(--acc); font-size: 13pt; }
+
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6pt; margin: 10pt 0; }
+.flow div { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8pt; font-size: 9pt; }
+.flow b { display: block; color: var(--acc); font-size: 15pt; }
+
+/* Callouts */
+.callout { border-radius: 10px; padding: 9pt 12pt; margin: 10pt 0; border-left: 4px solid; break-inside: avoid; font-size: 10pt; }
+.callout.info { background: #f3f0ff; border-color: var(--acc); }
+.callout.tip { background: #e8f8ef; border-color: #1f9d5c; }
+.callout.warn { background: #fff4e2; border-color: #d98a00; }
+.callout.privacy { background: #fdeef5; border-color: var(--mag); }
+
+/* Figures */
+figure { margin: 10pt 0 14pt; break-inside: avoid; page-break-inside: avoid; text-align: center; display: table; width: 100%; }
+figure img { display: inline-block; vertical-align: top; margin: 0 auto; break-inside: avoid; page-break-inside: avoid; max-width: 100%; max-height: 120mm; border: 1px solid var(--line); border-radius: 8px; }
+figure.phone img { max-height: 115mm; }
+figcaption { font-size: 8.5pt; color: var(--mut); margin-top: 4pt; font-style: italic; }
+
+dl.faq dt { font-weight: 700; margin-top: 9pt; color: var(--acc); break-after: avoid; }
+dl.faq dd { margin: 2pt 0 0 0; }
+
+@media screen {
+  body { background: #e4defa; }
+  .cover, .toc-page, .chapter { background: #fff; max-width: 210mm; margin: 0 auto 12px; padding: 18mm 16mm; }
+  .cover { padding: 34mm 24mm; background: radial-gradient(120% 80% at 85% 10%, #8a6cff 0%, transparent 55%), linear-gradient(160deg, #2a1d6b 0%, #120c2e 70%); }
+}

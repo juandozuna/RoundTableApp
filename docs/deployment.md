@@ -220,6 +220,15 @@ domain in the Pages project (Custom domains) and then update `APP_PUBLIC_URL` / 
 re-run `bash scripts/deploy-hosted.sh --only secrets` plus the Auth URL settings. Previews need
 their own origin in `ALLOWED_ORIGINS` to talk to Supabase.
 
+### 4.1c Landing page and user manual (GitHub Pages)
+
+`site/` is a static landing page (Spanish how-to guides per role, link into the app) published to
+https://juandozuna.github.io/RoundTableApp/ by `.github/workflows/pages.yml` on every push to `main`
+that touches `site/`. The manual PDF `site/manual/gold-roundtables-manual.pdf` is generated from
+`tool/manual/manual.html` with `node tool/manual/build.mjs` (needs `npm ci` in `tool/e2e` for
+puppeteer-core); screenshots live in `site/img/manual/` and are mapped to figures in
+`tool/manual/shots.json`.
+
 ### 4.2 Self-hosted nginx image (`docker/web`)
 
 ```bash
